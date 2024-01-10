@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+  
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>Softmax函數的性質</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././softmax20240109.html">
+<meta name="twitter:title" content="執迷的博客 ~ Softmax函數的性質">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ Softmax函數的性質" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href=".">Blog</a></li>
+        
+         
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <article>
+        <h2 class="post_title post_detail"><a href="././softmax20240109.html" rel="bookmark" title="Permalink to Softmax函數的性質">Softmax函數的性質</a></h2>
+        <div class="entry-content blog-post">
+            <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Softmax函數的性質</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="softmax函數_files/libs/clipboard/clipboard.min.js"></script>
+<script src="softmax函數_files/libs/quarto-html/quarto.js"></script>
+<script src="softmax函數_files/libs/quarto-html/popper.min.js"></script>
+<script src="softmax函數_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="softmax函數_files/libs/quarto-html/anchor.min.js"></script>
+<link href="softmax函數_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="softmax函數_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="softmax函數_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="softmax函數_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="softmax函數_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Softmax函數的性質</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">发布日期</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2024年1月9日</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Softmax是深度學習模型中常用的一種函數，常常用在分類模型的最後一層。向量經過softmax函數後，其總和等於1，因此能夠作爲分類模型的輸出，用來逼近一個真實的概率分佈。</p>
+<section id="數學定義" class="level2">
+<h2 class="anchored" data-anchor-id="數學定義">數學定義</h2>
+<p>softmax函數的定義為： <span id="eq-softmax-def"><span class="math display">\[
+\sigma(\vec z)_i = \frac{e^{z_i}}{\sum_j e^{z_j}},
+\qquad(1)\]</span></span> 其中，<span class="math inline">\(\vec z\)</span>為輸入向量。用自然語言來表述，softmax的計算方式就是先以自然常數<span class="math inline">\(e\)</span>為底，以輸入向量中的各個數為指數，求冪，得到新向量。再對新向量作歸一化，使其和為<span class="math inline">\(1\)</span>.</p>
+<p>經過softmax函數處理，輸出向量中各個數均大於等於0，且總和為1.</p>
+</section>
+<section id="softmax的上溢和下溢問題" class="level2">
+<h2 class="anchored" data-anchor-id="softmax的上溢和下溢問題">Softmax的上溢和下溢問題</h2>
+<p>softmax在計算機的實際運算過程中，常常遇到上溢和下溢問題。 設<span class="math inline">\(\vec z\)</span>是softmax函數的輸入。假如<span class="math inline">\(\vec z\)</span>中的數值都極小（趨於負無窮大），這時公式<a href="#eq-softmax-def">方程式&nbsp;1</a>的分母接近0，容易導致產生的數超出浮點型的上限，這被稱爲<strong>下溢</strong>；反之，若<span class="math inline">\(\vec z\)</span>中存在特別大的數，由於函數<span class="math inline">\(e^{x}\)</span>增長極快，輸出的數也很可能超出浮點型的上限，這被稱爲<strong>上溢</strong>。</p>
+<section id="上溢和下溢問題的應對方法" class="level3">
+<h3 class="anchored" data-anchor-id="上溢和下溢問題的應對方法">上溢和下溢問題的應對方法</h3>
+<p>softmax函数有這樣的特性：<span class="math inline">\(softmax(\vec z + y) = softmax(\vec z), \forall y \in \mathbb R\)</span>，即對輸入向量隨意加上任意一個數，輸出都不會變。</p>
+<p>選取<span class="math inline">\(y=-z_k\)</span>，其中<span class="math inline">\(k=\max_j(z_j)\)</span>，可以解决这一问题。这时，<span class="math inline">\(\forall j, e^{z_j +y}\)</span>在<span class="math inline">\(j=k\)</span>时取得最大值，最大值为1，于是不存在上溢。同时，由于分母必然大于等于1，因此也不存在下溢。</p>
+<p>順便，在使用pytorch内置的softmax函數時，不必擔心上溢下溢的問題，pytorch已經爲我們處理好了。盡管如此，瞭解這一問題和應對方法仍然有助於幫助我們理解計算機在數值計算中常常遇到的各類難題，觸類旁通。</p>
+</section>
+</section>
+<section id="結語" class="level2">
+<h2 class="anchored" data-anchor-id="結語">結語</h2>
+<p>記得在讀碩士的最後一學期時，有一回面試一家公司。這家公司是國内小有名氣的中厰。面試時，面試官問了softmax函數的問題，我便以上面所述的内容對之。面試結束的時候，面試官笑著説，記得幾年前，我問同樣的問題，幾乎沒幾個人答得上來。但是，今年同樣的問題，居然人人都能回答上來呢。</p>
+<p>聽到面試官的話，我也不禁感慨。看來這幾年時間過去，深度學習/人工智能的賽道確實是越來越卷了。作爲一名準備面試的學生，這個問題在我看來確實是常識。再過幾年，它會不會成爲一般本科生，甚至中小學生的常識呢。笑。</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
+        </div>
+        <div class="post_list">
+            <span>By </span>
+            <a href="./">@執迷</a>
+            <span> in </span>
+            <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 深度學習">[ 深度學習 ]</a></span>
+            <span class="post_date">2024-01-09</span>
+            <div><span>Tags : </span>
+                
+                
+                <span><a href="./">#深度學習, </a></span>
+                
+                
+            </div>
+
+            <div class="entry-social">
+                <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././softmax20240109.html&text=Softmax函數的性質&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+                <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././softmax20240109.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+                <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././softmax20240109.html&t=Softmax函數的性質"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+                <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././softmax20240109.html&title=Softmax函數的性質" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+                <span class="mail"><a href="mailto:?subject=Softmax函數的性質&amp;body=Viens découvrir un article à propos de [Softmax函數的性質] sur le site de 執迷. ././softmax20240109.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+            </div>
+        </div>
+        
+    </article>
+</section>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+  </footer>
+
+  
+
+</body>
+</html>
