@@ -1,0 +1,88 @@
+<html>
+
+<head>
+<script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript" src="https://antidestiny.gitee.io/mylab/lib/mathjs/9.4.4/math.min.js"></script>
+<script type="text/javascript" src="./math.js"></script>
+
+<script>
+    var cvx = null, ctx = null, pts = [];
+    var pts = [
+        {x: 100, y: 100},
+        {x:50, y:50},
+        {x:60, y:70}
+    ];
+    
+    function exec() {
+        //画点
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+        pts.forEach(function(value) {
+            ctx.fillStyle = "green";
+            ctx.beginPath();
+            ctx.arc(value.x, value.y, 3, 0, 6.3);
+            ctx.fill();
+        });
+    
+        if (pts.length <= 1)
+            return;
+    
+        let x_y_1 = math.zeros(pts.length, 3)
+        for(let i = 0; i < pts.length; i++)
+            x_y_1.subset(math.index(i, [0, 1, 2]), [pts[i].x, pts[i].y, 1])
+        res = math.eigens(math.multiply(math.transpose(x_y_1), x_y_1))
+        res = res[1]
+        a = res.get([2, 0])
+        b = res.get([2, 1])
+        c = res.get([2, 2])
+        
+        ctx.beginPath()
+        ctx.strokeStyle = 'orange'
+        ctx.moveTo(-a * c / (a**2 + b**2) + 100000 * (-b), -b * c / (a**2 + b**2) + 100000* a)
+        ctx.lineTo(-a * c / (a**2 + b**2) - 100000 * (-b), -b * c / (a**2 + b**2) - 100000 * a)
+        ctx.stroke()
+    }
+    
+    function getEventPosition(ev) {
+        var x, y;
+        if (ev.layerX || ev.layerX == 0) {
+            x = ev.layerX;
+            y = ev.layerY;
+        } else if (ev.offsetX || ev.offsetX == 0) {
+            // Opera
+            x = ev.offsetX;
+            y = ev.offsetY;
+        }
+        return {
+            x: x,
+            y: y
+        };
+    }
+    
+    function on_btn_clear_clicked() {
+        pts = [
+        ];
+    }
+    
+    function onload() {
+        cvs = document.getElementById('canvas');
+        ctx = cvs.getContext('2d');
+        cvs.addEventListener('click', function(e) {
+            let pos = getEventPosition(e);
+            pts.push(pos);
+        }, false);
+        window.setInterval("exec()", 100);
+        console.log("程序设置完成！")
+    }
+</script>
+</head>
+<body onload="onload()">
+    
+<div>
+<div id="program-window">
+<canvas style="border:2px solid #eee; background-color:white" width="314" height="200" id="canvas">浏览器不兼容。</canvas>
+</div>
+<button onclick="on_btn_clear_clicked()">清空</button>
+<br>
+
+</body>
+</html>
