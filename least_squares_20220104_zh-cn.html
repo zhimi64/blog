@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
+
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  
+
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>最小二乘法求解直线拟合问题</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././least_squares_20220104_zh-cn.html">
+<meta name="twitter:title" content="執迷的博客 ~ 最小二乘法求解直线拟合问题">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ 最小二乘法求解直线拟合问题" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
+        
+         
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <article>
+        <h2 class="post_title post_detail"><a href="././least_squares_20220104_zh-cn.html" rel="bookmark" title="Permalink to 最小二乘法求解直线拟合问题">最小二乘法求解直线拟合问题</a></h2>
+        
+        <p>
+            <span id="busuanzi_container_page_pv">
+                本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+            </span>
+        </p>
+        
+        <div class="entry-content blog-post">
+            <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>最小二乘法求解直線擬合問題</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="最小二乘法求解直線擬合問題_files/libs/clipboard/clipboard.min.js"></script>
+<script src="最小二乘法求解直線擬合問題_files/libs/quarto-html/quarto.js"></script>
+<script src="最小二乘法求解直線擬合問題_files/libs/quarto-html/popper.min.js"></script>
+<script src="最小二乘法求解直線擬合問題_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="最小二乘法求解直線擬合問題_files/libs/quarto-html/anchor.min.js"></script>
+<link href="最小二乘法求解直線擬合問題_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="最小二乘法求解直線擬合問題_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="最小二乘法求解直線擬合問題_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="最小二乘法求解直線擬合問題_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="最小二乘法求解直線擬合問題_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">最小二乘法求解直線擬合問題</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">发布日期</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2022年1月4日</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="hidden">
+<p><span class="math display">\[
+\def \v#1{{\boldsymbol{#1}}}
+\def \argmax#1{\underset{#1}{\operatorname{argmax}}}
+\]</span></p>
+</div>
+<p>最小二乘（least squares）的含義是最小化誤差的平方和。以最小二乘為目標的優化方法叫做<strong>最小二乘法</strong>。其中有綫性解的方法叫做<strong>綫性最小二乘法</strong>。</p>
+<p>下面的小程序給出了最小二乘的一個應用例子。通過鼠標點擊，可以在方框中添加二維點。如果方框中有兩個以上的點，程序就會應用綫性最小二乘法，找到使誤差平方和最小的直綫。下文將會詳細介紹程序的計算原理。</p>
+<object data="./least_squares_20220104/snippet.html" width="100%" height="300pt">
+瀏覽器不支持！！
+</object>
+<section id="問題定義" class="level2">
+<h2 class="anchored" data-anchor-id="問題定義">問題定義</h2>
+<p><strong>問題：</strong>已知二維平面上的有一系列點 <span class="math inline">\((x_k, y_k)\)</span>，<span class="math inline">\(k=1,2,3,\cdots\)</span>要求用最小二乘法擬合直線。</p>
+<p><strong>解:</strong> 設直線方程爲<span class="math inline">\(ax+by+c=0\)</span>，則有 <span class="math display">\[\left(\begin{matrix}
+x_1 &amp; y_1 &amp; 1\\
+x_2 &amp; y_2 &amp; 1\\
+\vdots &amp; \vdots &amp; \vdots\end{matrix}\right)
+\left(\begin{matrix}
+a\\b\\c
+\end{matrix}\right)=0
+\]</span><br> 方程滿足<span class="math inline">\(A\v{x}=0\)</span>的形式。其中<span class="math inline">\(A\)</span>是<span class="math inline">\(k\times 3\)</span>的矩陣，<span class="math inline">\(x=(a, b, c)^T\)</span>.</p>
+<p>所謂最小二乘法，即是求解<span class="math inline">\(x\)</span>使得 <span class="math display">\[||Ax||^2=(Ax)^T Ax=x^T A^T A x\]</span> 的值最小。</p>
+<p>這個問題顯然有一個解<span class="math inline">\(x=0\)</span>，但這個解沒有意義，因爲它不能構成直線的係數，人們把這個解叫做“平凡解（trivial solution）”。</p>
+<p>爲了排除平凡解，引入一個<strong>約束條件</strong>： <span class="math display">\[x^Tx=1\]</span></p>
+<p>問題變爲約束條件下求最小值的問題，可以運用<strong>拉格朗日乘數法</strong>。令 <span class="math display">\[L(x)=x^TA^TAx-\lambda(x^Tx-1)\]</span></p>
+<p><span class="math inline">\(L(x)\)</span>最小時，<span class="math display">\[{\partial L(x)\over \partial x} = 0,\]</span> 因此 <span class="math display">\[A^TAx - \lambda x = 0\]</span></p>
+<p>因此<span class="math inline">\(\lambda\)</span>是<span class="math inline">\(A^TA\)</span>的特徵值，<span class="math inline">\(x\)</span>是<span class="math inline">\(A^T A\)</span>對應<span class="math inline">\(\lambda\)</span>的一個單位特徵向量，記<span class="math inline">\(x=\boldsymbol{e_\lambda}\)</span>。代入得<span class="math inline">\(L(\boldsymbol{e_\lambda})=\lambda \boldsymbol{e_\lambda}^T \boldsymbol{e_\lambda}=\lambda\)</span>。<span class="math inline">\(\lambda\)</span>最小時，<span class="math inline">\(L(x)\)</span>取得最小值。換言之，<span class="math inline">\(A^TA\)</span>的最小特徵值對應的單位特徵向量即是所求的解。</p>
+<p>求矩陣的特徵特徵向量有幾種方法。注意這裏的<span class="math inline">\(A^T A\)</span>是實對稱矩陣，可以用<a href="https://en.wikipedia.org/wiki/Jacobi_eigenvalue_algorithm">Jacobi eigenvalue algorithm</a>求特徵值。另一種常見的方法則是使用SVD分解。</p>
+<section id="用svd分解求解最小二乘問題" class="level3">
+<h3 class="anchored" data-anchor-id="用svd分解求解最小二乘問題">用SVD分解求解最小二乘問題</h3>
+<p>根據SVD分解， <span class="math display">\[A=UDV^T=
+\left[\begin{matrix}
+\boldsymbol{u_0} | \cdots | \boldsymbol{u_{p-1}}
+\end{matrix}\right]
+\left[\begin{matrix}
+\boldsymbol{\sigma_0} &amp; &amp; \\
+    &amp; \ddots &amp; \\
+    &amp; &amp; \boldsymbol{\sigma_{p-1}}
+    \end{matrix}\right]
+\left[\begin{matrix}
+\boldsymbol{v_0^T}\\ \hline
+\vdots\\ \hline
+\boldsymbol{v_{p-1}^T}
+\end{matrix}\right]
+\]</span> 注意到<span class="math inline">\(A^TA=(UDV^T)^T(UDV^T)=VDU^TUDV^T=V\Lambda V^T\)</span> 其中，<span class="math inline">\(\Lambda\)</span>的第i行的非0元素<span class="math inline">\(\lambda_i=\sigma_i^2\)</span> 兩邊右乘<span class="math inline">\(V\)</span>得到 <span class="math display">\[(A^TA)V=V\Lambda\]</span> 即是說，<span class="math inline">\(V\)</span>的每一個列向量<span class="math inline">\(\boldsymbol{v_j}\)</span>都是<span class="math inline">\(A^TA\)</span>的特徵向量，對應的特徵值是<span class="math inline">\(\lambda_j\)</span>.</p>
+</section>
+</section>
+<section id="總結" class="level2">
+<h2 class="anchored" data-anchor-id="總結">總結</h2>
+<p>為瞭解決文中所述的帶平凡解的最小二乘問題，本文先引入約束條件<span class="math inline">\(x^Tx=1\)</span>，然後運用拉格朗日乘數法來求解最小值。實際上，還有其它種形式的約束條件，例如，可以約定<span class="math inline">\(b=1\)</span>，但這樣一來， 直線方程從一般式退化成斜截式，就無法表示平行於y軸的直線了。儘管有缺陷，這種形式的約束條件也還是很常用。</p>
+<p>若是採用斜截式，經過求導等數學推導步驟，一樣可以求出直線的參數。但不論採用何種約束條件，這兩種方法都是以最小化誤差的平方和為目的的，都可以叫做最小二乘法。</p>
+<p>最小二乘法不僅可以用於直線的擬合，還可以用於擬合圓、二項式、平面……等等模型。歷史上，高斯就成功用最小二乘法預測了穀神星的軌跡。</p>
+</section>
+<section id="參考資料" class="level2">
+<h2 class="anchored" data-anchor-id="參考資料">參考資料</h2>
+<ul>
+<li><a href="http://cs-courses.mines.edu/csci508/schedule/03/SVD.pdf">SVD 分解</a></li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
+        </div>
+        <div class="post_list">
+            <span>By </span>
+            <a href="./">@執迷</a>
+            <span> in </span>
+            <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 機器學習">[ 機器學習 ]</a></span>
+            <span class="post_date">2022-01-04</span>
+            <div><span>Tags : </span>
+                
+                
+                <span><a href="./">#最小二乘法, </a></span>
+                
+                
+            </div>
+
+            <div class="entry-social">
+                <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././least_squares_20220104_zh-cn.html&text=最小二乘法求解直线拟合问题&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+                <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././least_squares_20220104_zh-cn.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+                <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././least_squares_20220104_zh-cn.html&t=最小二乘法求解直线拟合问题"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+                <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././least_squares_20220104_zh-cn.html&title=最小二乘法求解直线拟合问题" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+                <span class="mail"><a href="mailto:?subject=最小二乘法求解直线拟合问题&amp;body=Viens découvrir un article à propos de [最小二乘法求解直线拟合问题] sur le site de 執迷. ././least_squares_20220104_zh-cn.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+            </div>
+        </div>
+        
+    </article>
+</section>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
+</body>
+</html>
