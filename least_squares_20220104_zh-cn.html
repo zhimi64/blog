@@ -115,14 +115,11 @@
         
         <div class="entry-content blog-post">
             <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh"><head>
 
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-
+<html lang="zh" xml:lang="zh" xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta charset="utf-8"/>
+<meta content="quarto-1.2.269" name="generator"/>
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
 <title>最小二乘法求解直線擬合問題</title>
 <style>
 code{white-space: pre-wrap;}
@@ -137,84 +134,66 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 </style>
-
-
 <script src="最小二乘法求解直線擬合問題_files/libs/clipboard/clipboard.min.js"></script>
 <script src="最小二乘法求解直線擬合問題_files/libs/quarto-html/quarto.js"></script>
 <script src="最小二乘法求解直線擬合問題_files/libs/quarto-html/popper.min.js"></script>
 <script src="最小二乘法求解直線擬合問題_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="最小二乘法求解直線擬合問題_files/libs/quarto-html/anchor.min.js"></script>
-<link href="最小二乘法求解直線擬合問題_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="最小二乘法求解直線擬合問題_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="最小二乘法求解直線擬合問題_files/libs/quarto-html/tippy.css" rel="stylesheet"/>
+<link href="最小二乘法求解直線擬合問題_files/libs/quarto-html/quarto-syntax-highlighting.css" id="quarto-text-highlighting-styles" rel="stylesheet"/>
 <script src="最小二乘法求解直線擬合問題_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="最小二乘法求解直線擬合問題_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="最小二乘法求解直線擬合問題_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
-
+<link href="最小二乘法求解直線擬合問題_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet"/>
+<link data-mode="light" href="最小二乘法求解直線擬合問題_files/libs/bootstrap/bootstrap.min.css" id="quarto-bootstrap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
 </head>
-
 <body class="fullcontent">
-
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
+<header class="quarto-title-block default" id="title-block-header">
 <div class="quarto-title">
-<h1 class="title">最小二乘法求解直線擬合問題</h1>
+<h1 class="title">最小二乘法求解直线拟合问题</h1>
 </div>
-
-
-
 <div class="quarto-title-meta">
-
-    
-    <div>
-    <div class="quarto-title-meta-heading">发布日期</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">2022年1月4日</p>
-    </div>
-  </div>
-  
-    
-  </div>
-  
-
+<div>
+<div class="quarto-title-meta-heading">发布日期</div>
+<div class="quarto-title-meta-contents">
+<p class="date">2022年1月4日</p>
+</div>
+</div>
+</div>
 </header>
-
 <div class="hidden">
 <p><span class="math display">\[
 \def \v#1{{\boldsymbol{#1}}}
 \def \argmax#1{\underset{#1}{\operatorname{argmax}}}
 \]</span></p>
 </div>
-<p>最小二乘（least squares）的含義是最小化誤差的平方和。以最小二乘為目標的優化方法叫做<strong>最小二乘法</strong>。其中有綫性解的方法叫做<strong>綫性最小二乘法</strong>。</p>
-<p>下面的小程序給出了最小二乘的一個應用例子。通過鼠標點擊，可以在方框中添加二維點。如果方框中有兩個以上的點，程序就會應用綫性最小二乘法，找到使誤差平方和最小的直綫。下文將會詳細介紹程序的計算原理。</p>
-<object data="./least_squares_20220104/snippet.html" width="100%" height="300pt">
-瀏覽器不支持！！
+<p>最小二乘（least squares）的含义是最小化误差的平方和。以最小二乘为目标的优化方法叫做<strong>最小二乘法</strong>。其中有线性解的方法叫做<strong>线性最小二乘法</strong>。</p>
+<p>下面的小程序给出了最小二乘的一个应用例子。通过鼠标点击，可以在方框中添加二维点。如果方框中有两个以上的点，程序就会应用线性最小二乘法，找到使误差平方和最小的直线。下文将会详细介绍程序的计算原理。</p>
+<object data="./least_squares_20220104/snippet.html" height="300pt" width="100%">
+浏览器不支持！！
 </object>
-<section id="問題定義" class="level2">
-<h2 class="anchored" data-anchor-id="問題定義">問題定義</h2>
-<p><strong>問題：</strong>已知二維平面上的有一系列點 <span class="math inline">\((x_k, y_k)\)</span>，<span class="math inline">\(k=1,2,3,\cdots\)</span>要求用最小二乘法擬合直線。</p>
-<p><strong>解:</strong> 設直線方程爲<span class="math inline">\(ax+by+c=0\)</span>，則有 <span class="math display">\[\left(\begin{matrix}
+<section class="level2" id="問題定義">
+<h2 class="anchored" data-anchor-id="問題定義">问题定义</h2>
+<p><strong>问题：</strong>已知二维平面上的有一系列点 <span class="math inline">\((x_k, y_k)\)</span>，<span class="math inline">\(k=1,2,3,\cdots\)</span>要求用最小二乘法拟合直线。</p>
+<p><strong>解:</strong> 设直线方程为<span class="math inline">\(ax+by+c=0\)</span>，则有 <span class="math display">\[\left(\begin{matrix}
 x_1 &amp; y_1 &amp; 1\\
 x_2 &amp; y_2 &amp; 1\\
 \vdots &amp; \vdots &amp; \vdots\end{matrix}\right)
 \left(\begin{matrix}
 a\\b\\c
 \end{matrix}\right)=0
-\]</span><br> 方程滿足<span class="math inline">\(A\v{x}=0\)</span>的形式。其中<span class="math inline">\(A\)</span>是<span class="math inline">\(k\times 3\)</span>的矩陣，<span class="math inline">\(x=(a, b, c)^T\)</span>.</p>
-<p>所謂最小二乘法，即是求解<span class="math inline">\(x\)</span>使得 <span class="math display">\[||Ax||^2=(Ax)^T Ax=x^T A^T A x\]</span> 的值最小。</p>
-<p>這個問題顯然有一個解<span class="math inline">\(x=0\)</span>，但這個解沒有意義，因爲它不能構成直線的係數，人們把這個解叫做“平凡解（trivial solution）”。</p>
-<p>爲了排除平凡解，引入一個<strong>約束條件</strong>： <span class="math display">\[x^Tx=1\]</span></p>
-<p>問題變爲約束條件下求最小值的問題，可以運用<strong>拉格朗日乘數法</strong>。令 <span class="math display">\[L(x)=x^TA^TAx-\lambda(x^Tx-1)\]</span></p>
-<p><span class="math inline">\(L(x)\)</span>最小時，<span class="math display">\[{\partial L(x)\over \partial x} = 0,\]</span> 因此 <span class="math display">\[A^TAx - \lambda x = 0\]</span></p>
-<p>因此<span class="math inline">\(\lambda\)</span>是<span class="math inline">\(A^TA\)</span>的特徵值，<span class="math inline">\(x\)</span>是<span class="math inline">\(A^T A\)</span>對應<span class="math inline">\(\lambda\)</span>的一個單位特徵向量，記<span class="math inline">\(x=\boldsymbol{e_\lambda}\)</span>。代入得<span class="math inline">\(L(\boldsymbol{e_\lambda})=\lambda \boldsymbol{e_\lambda}^T \boldsymbol{e_\lambda}=\lambda\)</span>。<span class="math inline">\(\lambda\)</span>最小時，<span class="math inline">\(L(x)\)</span>取得最小值。換言之，<span class="math inline">\(A^TA\)</span>的最小特徵值對應的單位特徵向量即是所求的解。</p>
-<p>求矩陣的特徵特徵向量有幾種方法。注意這裏的<span class="math inline">\(A^T A\)</span>是實對稱矩陣，可以用<a href="https://en.wikipedia.org/wiki/Jacobi_eigenvalue_algorithm">Jacobi eigenvalue algorithm</a>求特徵值。另一種常見的方法則是使用SVD分解。</p>
-<section id="用svd分解求解最小二乘問題" class="level3">
-<h3 class="anchored" data-anchor-id="用svd分解求解最小二乘問題">用SVD分解求解最小二乘問題</h3>
-<p>根據SVD分解， <span class="math display">\[A=UDV^T=
+\]</span><br/> 方程满足<span class="math inline">\(A\v{x}=0\)</span>的形式。其中<span class="math inline">\(A\)</span>是<span class="math inline">\(k\times 3\)</span>的矩阵，<span class="math inline">\(x=(a, b, c)^T\)</span>.</p>
+<p>所谓最小二乘法，即是求解<span class="math inline">\(x\)</span>使得 <span class="math display">\[||Ax||^2=(Ax)^T Ax=x^T A^T A x\]</span> 的值最小。</p>
+<p>这个问题显然有一个解<span class="math inline">\(x=0\)</span>，但这个解没有意义，因为它不能构成直线的系数，人们把这个解叫做“平凡解（trivial solution）”。</p>
+<p>为了排除平凡解，引入一个<strong>约束条件</strong>： <span class="math display">\[x^Tx=1\]</span></p>
+<p>问题变为约束条件下求最小值的问题，可以运用<strong>拉格朗日乘数法</strong>。令 <span class="math display">\[L(x)=x^TA^TAx-\lambda(x^Tx-1)\]</span></p>
+<p><span class="math inline">\(L(x)\)</span>最小时，<span class="math display">\[{\partial L(x)\over \partial x} = 0,\]</span> 因此 <span class="math display">\[A^TAx - \lambda x = 0\]</span></p>
+<p>因此<span class="math inline">\(\lambda\)</span>是<span class="math inline">\(A^TA\)</span>的特征值，<span class="math inline">\(x\)</span>是<span class="math inline">\(A^T A\)</span>对应<span class="math inline">\(\lambda\)</span>的一个单位特征向量，记<span class="math inline">\(x=\boldsymbol{e_\lambda}\)</span>。代入得<span class="math inline">\(L(\boldsymbol{e_\lambda})=\lambda \boldsymbol{e_\lambda}^T \boldsymbol{e_\lambda}=\lambda\)</span>。<span class="math inline">\(\lambda\)</span>最小时，<span class="math inline">\(L(x)\)</span>取得最小值。换言之，<span class="math inline">\(A^TA\)</span>的最小特征值对应的单位特征向量即是所求的解。</p>
+<p>求矩阵的特征特征向量有几种方法。注意这里的<span class="math inline">\(A^T A\)</span>是实对称矩阵，可以用<a href="https://en.wikipedia.org/wiki/Jacobi_eigenvalue_algorithm">Jacobi eigenvalue algorithm</a>求特征值。另一种常见的方法则是使用SVD分解。</p>
+<section class="level3" id="用svd分解求解最小二乘問題">
+<h3 class="anchored" data-anchor-id="用svd分解求解最小二乘問題">用SVD分解求解最小二乘问题</h3>
+<p>根据SVD分解， <span class="math display">\[A=UDV^T=
 \left[\begin{matrix}
 \boldsymbol{u_0} | \cdots | \boldsymbol{u_{p-1}}
 \end{matrix}\right]
@@ -228,22 +207,21 @@ a\\b\\c
 \vdots\\ \hline
 \boldsymbol{v_{p-1}^T}
 \end{matrix}\right]
-\]</span> 注意到<span class="math inline">\(A^TA=(UDV^T)^T(UDV^T)=VDU^TUDV^T=V\Lambda V^T\)</span> 其中，<span class="math inline">\(\Lambda\)</span>的第i行的非0元素<span class="math inline">\(\lambda_i=\sigma_i^2\)</span> 兩邊右乘<span class="math inline">\(V\)</span>得到 <span class="math display">\[(A^TA)V=V\Lambda\]</span> 即是說，<span class="math inline">\(V\)</span>的每一個列向量<span class="math inline">\(\boldsymbol{v_j}\)</span>都是<span class="math inline">\(A^TA\)</span>的特徵向量，對應的特徵值是<span class="math inline">\(\lambda_j\)</span>.</p>
+\]</span> 注意到<span class="math inline">\(A^TA=(UDV^T)^T(UDV^T)=VDU^TUDV^T=V\Lambda V^T\)</span> 其中，<span class="math inline">\(\Lambda\)</span>的第i行的非0元素<span class="math inline">\(\lambda_i=\sigma_i^2\)</span> 两边右乘<span class="math inline">\(V\)</span>得到 <span class="math display">\[(A^TA)V=V\Lambda\]</span> 即是说，<span class="math inline">\(V\)</span>的每一个列向量<span class="math inline">\(\boldsymbol{v_j}\)</span>都是<span class="math inline">\(A^TA\)</span>的特征向量，对应的特征值是<span class="math inline">\(\lambda_j\)</span>.</p>
 </section>
 </section>
-<section id="總結" class="level2">
-<h2 class="anchored" data-anchor-id="總結">總結</h2>
-<p>為瞭解決文中所述的帶平凡解的最小二乘問題，本文先引入約束條件<span class="math inline">\(x^Tx=1\)</span>，然後運用拉格朗日乘數法來求解最小值。實際上，還有其它種形式的約束條件，例如，可以約定<span class="math inline">\(b=1\)</span>，但這樣一來， 直線方程從一般式退化成斜截式，就無法表示平行於y軸的直線了。儘管有缺陷，這種形式的約束條件也還是很常用。</p>
-<p>若是採用斜截式，經過求導等數學推導步驟，一樣可以求出直線的參數。但不論採用何種約束條件，這兩種方法都是以最小化誤差的平方和為目的的，都可以叫做最小二乘法。</p>
-<p>最小二乘法不僅可以用於直線的擬合，還可以用於擬合圓、二項式、平面……等等模型。歷史上，高斯就成功用最小二乘法預測了穀神星的軌跡。</p>
+<section class="level2" id="總結">
+<h2 class="anchored" data-anchor-id="總結">总结</h2>
+<p>为了解决文中所述的带平凡解的最小二乘问题，本文先引入约束条件<span class="math inline">\(x^Tx=1\)</span>，然后运用拉格朗日乘数法来求解最小值。实际上，还有其它种形式的约束条件，例如，可以约定<span class="math inline">\(b=1\)</span>，但这样一来， 直线方程从一般式退化成斜截式，就无法表示平行于y轴的直线了。尽管有缺陷，这种形式的约束条件也还是很常用。</p>
+<p>若是采用斜截式，经过求导等数学推导步骤，一样可以求出直线的参数。但不论采用何种约束条件，这两种方法都是以最小化误差的平方和为目的的，都可以叫做最小二乘法。</p>
+<p>最小二乘法不仅可以用于直线的拟合，还可以用于拟合圆、二项式、平面……等等模型。历史上，高斯就成功用最小二乘法预测了谷神星的轨迹。</p>
 </section>
-<section id="參考資料" class="level2">
-<h2 class="anchored" data-anchor-id="參考資料">參考資料</h2>
+<section class="level2" id="參考資料">
+<h2 class="anchored" data-anchor-id="參考資料">参考资料</h2>
 <ul>
 <li><a href="http://cs-courses.mines.edu/csci508/schedule/03/SVD.pdf">SVD 分解</a></li>
 </ul>
 </section>
-
 </main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -380,9 +358,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-
-
-
 </body></html>
         </div>
         <div class="post_list">
