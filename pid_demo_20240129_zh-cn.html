@@ -254,7 +254,8 @@ var height = 640;
 var x = 0, y = 0, eyex = 0, eyey = 0;
 var carW=30;
 var angle=0;
-var v=15;va=0;//速度，角速度
+var v=15; 
+var v_angle = 0;//速度，角速度
 var eyeDistance=carW/2+2;
 var eyeSize=4;
 
@@ -264,15 +265,15 @@ function mainInit(){
     D=parseFloat(document.getElementById("input_D").value);
     v=parseFloat(document.getElementById("input_V").value);
     target=parseFloat(document.getElementById("input_target").value);
-    width = parseFloat(document.getElementById("width").value);
-    height = parseFloat(document.getElementById("height").value);
+    width = parseFloat(document.getElementById("input_width").value);
+    height = parseFloat(document.getElementById("input_height").value);
     canvas=document.getElementById("mainCanvas");
     canvas.width = Math.round(width).toString();
     canvas.height = Math.round(height).toString(); 
-    cxt=canvas.getContext("2d");
+    cxt=canvas.getContext("2d", { willReadFrequently: true });
     x=width/3;
     y=height/3-10;
-    angle=va=error_pre=ierror=0;
+    angle = v_angle = error_pre = ierror = 0;
 }
 
 function circle(x,y,r,cxt){
@@ -297,7 +298,7 @@ function drawCar(){
     circle(eyex,eyey,eyeSize,cxt);
 }
 function drive(){
-    angle+=va;
+    angle += v_angle;
     x+=v*Math.cos(angle);
     y+=v*Math.sin(angle);
     x=(x+width)%width;y=(y+height)%height;
@@ -328,7 +329,7 @@ function control(){
     var verror=value-target;//误差，越暗值越大
     ierror+=verror;
     var derror=verror-error_pre;//负数表示由暗到亮，反之由亮到暗
-    va=verror*P+ierror*I+derror*D;
+    v_angle = verror * P + ierror * I + derror * D;
     error_pre=verror;
 }
 function execute(){
@@ -370,11 +371,11 @@ function execute(){
 </tr>
 <tr class="even">
 <td>场地宽度</td>
-<td><input id="width" value="640"/></td>
+<td><input id="input_width" value="640"/></td>
 </tr>
 <tr class="odd">
 <td>场地高度</td>
-<td><input id="height" value="480"/></td>
+<td><input id="input_height" value="480"/></td>
 </tr>
 </tbody>
 </table>
@@ -389,7 +390,7 @@ function execute(){
 </canvas>
 <script type="text/javascript">
 mainInit();
-setInterval("execute()",13);
+setInterval("execute()", 13);
 </script>
 </section>
 <section class="level2" id="pid簡介">
