@@ -225,7 +225,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">目录</h2>
    
   <ul>
-  <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section"></a></li>
+  <li><a href="#pid演示程序" id="toc-pid演示程序" class="nav-link active" data-scroll-target="#pid演示程序">PID演示程序</a></li>
+  <li><a href="#pid簡介" id="toc-pid簡介" class="nav-link" data-scroll-target="#pid簡介">PID簡介</a></li>
   <li><a href="#後記" id="toc-後記" class="nav-link" data-scroll-target="#後記">後記</a></li>
   </ul>
 </nav>
@@ -255,6 +256,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
+<section id="pid演示程序" class="level2">
+<h2 class="anchored" data-anchor-id="pid演示程序">PID演示程序</h2>
 <script type="text/javascript">
 var target;
 P=-0.01;
@@ -406,8 +409,9 @@ function execute(){
 抱歉，此浏览器不支持HTML5
 </canvas>
 <script type="text/javascript"> mainInit();setInterval("execute()",13);</script>
-<section id="section" class="level2">
-<h2 class="anchored" data-anchor-id="section"></h2>
+</section>
+<section id="pid簡介" class="level2">
+<h2 class="anchored" data-anchor-id="pid簡介">PID簡介</h2>
 <p>本頁面以控制小車沿著規定藍色軌道外沿行走爲例，演示了PID控制算法的運用。上方的畫面展示了仿真環境中小車的運行過程。讀者可以修改輸入參數，按下“提交參數”按鈕，重新輸出仿真結果。</p>
 <p>仿真程序在小車的前方設置了一個虛擬的灰度傳感器。畫面的左上角顯示了它接收到的灰度信號大小。假設在初始狀態下小車位於軌道上。如果小車右轉，那麽灰度傳感器將覆蓋藍色軌道，使得灰度增大。反之，傳感器覆蓋白色地面，灰度減小。因此，只要能平滑地控制小車的轉向，使灰度值始終保持在適中的數值附近，就能使小車始終沿著軌道邊緣運動。</p>
 <p>總而言之，在這個仿真的例子中，我們直接控制的量是小車的前進角度，而觀測的量是灰度傳感器的數值。</p>
