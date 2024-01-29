@@ -248,10 +248,10 @@ var error_pre=0;
 
 var cxt;
 var canvas;
-var width;
-var height;
+var width = 480;
+var height = 640;
 
-var x,y,eyex,eyey;
+var x = 0, y = 0, eyex = 0, eyey = 0;
 var carW=30;
 var angle=0;
 var v=15;va=0;//速度，角速度
@@ -387,7 +387,10 @@ function execute(){
 <canvas height="480" id="mainCanvas" width="640">
 抱歉，此浏览器不支持HTML5
 </canvas>
-<script type="text/javascript"> mainInit();setInterval("execute()",13);</script>
+<script type="text/javascript">
+mainInit();
+setInterval("execute()",13);
+</script>
 </section>
 <section class="level2" id="pid簡介">
 <h2 class="anchored" data-anchor-id="pid簡介">PID简介</h2>
@@ -416,7 +419,7 @@ function execute(){
 <section class="level2" id="後記">
 <h2 class="anchored" data-anchor-id="後記">后记</h2>
 <p>本文最初写于2017年五月30日。当时我在一堂实验课上调PID参数，效果离预期还有一定差距就下课了。课后没有办法拿实物再做实验，于是就简单写个程序模拟下。当时比较菜（当然现在也是），所以写完程序的时候很开心。稍微冷静下来看一看，这个仿真在很多方面并不完善。 首先车辆在运动、转弯的时候都有惯性。我的仿真没有考虑这点。如果能加一个运动模型到程序里会更好； 其次，在真实的车辆/机器人上，受控制的是轮胎的转速差、车辆的转向机构，从而间接控制车辆的运动方向。受能力所限，这个仿真也没法准确模拟这些细节。</p>
-<p>即使如此，回头看这份粗糙的作品，还是能感觉到当时的趣味，足矣。今天将这篇文章重新整理一下，但也不再过分修饰了。</p>
+<p>今天将这篇文章重新整理一下，但也不去过分修饰了。回头看这份粗糙的作品，还是能感觉到当时的趣味，足矣。</p>
 </section>
 </main>
 <!-- /main column -->
