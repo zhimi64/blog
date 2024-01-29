@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
+
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  
+
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>基於PID控制器的循跡小車簡單演示</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././pid_demo_20240129.html">
+<meta name="twitter:title" content="執迷的博客 ~ 基於PID控制器的循跡小車簡單演示">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ 基於PID控制器的循跡小車簡單演示" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index.html">Blog</a></li>
+        
+         
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <article>
+        <h2 class="post_title post_detail"><a href="././pid_demo_20240129.html" rel="bookmark" title="Permalink to 基於PID控制器的循跡小車簡單演示">基於PID控制器的循跡小車簡單演示</a></h2>
+        
+        <p>
+            <span id="busuanzi_container_page_pv">
+                本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+            </span>
+        </p>
+        
+        <div class="entry-content blog-post">
+            <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>基於PID控制器的循跡小車簡單演示</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="pid_demo_files/libs/clipboard/clipboard.min.js"></script>
+<script src="pid_demo_files/libs/quarto-html/quarto.js"></script>
+<script src="pid_demo_files/libs/quarto-html/popper.min.js"></script>
+<script src="pid_demo_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="pid_demo_files/libs/quarto-html/anchor.min.js"></script>
+<link href="pid_demo_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="pid_demo_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="pid_demo_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="pid_demo_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="pid_demo_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目录</h2>
+   
+  <ul>
+  <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section"></a></li>
+  <li><a href="#後記" id="toc-後記" class="nav-link" data-scroll-target="#後記">後記</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">基於PID控制器的循跡小車簡單演示</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">发布日期</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2024年1月29日</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<script type="text/javascript">
+var target;
+P=-0.01;
+I=-0.0008;
+D=-0.00002;
+
+var ierror=0;
+var error_pre=0;
+
+var cxt;
+var canvas;
+var width;
+var height;
+
+var x,y,eyex,eyey;
+var carW=30;
+var angle=0;
+var v=15;va=0;//速度，角速度
+var eyeDistance=carW/2+2;
+var eyeSize=4;
+
+function mainInit(){
+    P=parseFloat(document.getElementById("input_P").value);
+    I=parseFloat(document.getElementById("input_I").value);
+    D=parseFloat(document.getElementById("input_D").value);
+    v=parseFloat(document.getElementById("input_V").value);
+    target=parseFloat(document.getElementById("input_target").value);
+    width = parseFloat(document.getElementById("width").value);
+    height = parseFloat(document.getElementById("height").value);
+    canvas=document.getElementById("mainCanvas");
+    canvas.width = Math.round(width).toString();
+    canvas.height = Math.round(height).toString(); 
+    cxt=canvas.getContext("2d");
+    x=width/3;
+    y=height/3-10;
+    angle=va=error_pre=ierror=0;
+}
+
+function circle(x,y,r,cxt){
+    cxt.beginPath();
+    cxt.arc(x,y,r,0,6.29,true);
+    cxt.closePath();
+    cxt.stroke();
+}
+function drawBackground(){
+    cxt.strokeStyle="blue";
+    cxt.lineWidth=10;
+    cxt.strokeRect(0,0,width,height);
+    cxt.strokeRect(width/3,height/3,width/3,height/3);
+    circle(width/3,height/2,height/6,cxt);
+    circle(width*2/3,height/2,height/6,cxt);
+    cxt.lineWidth=2;
+}
+function drawCar(){
+    cxt.lineWidth=4;
+    cxt.strokeStyle="yellowgreen";
+    circle(x,y,carW/2,cxt);
+    circle(eyex,eyey,eyeSize,cxt);
+}
+function drive(){
+    angle+=va;
+    x+=v*Math.cos(angle);
+    y+=v*Math.sin(angle);
+    x=(x+width)%width;y=(y+height)%height;
+    eyex=x+eyeDistance*Math.cos(angle);
+    eyey=y+eyeDistance*Math.sin(angle);
+    eyex=(eyex+width)%width;eyey=(eyey+height)%height;
+}
+function disp(value){
+    cxt.lineWidth=1;
+    cxt.strokeStyle="red";
+    cxt.strokeText("采集值："+value,10,40,320);
+}
+function control(){
+    var data=cxt.getImageData(
+        Math.round(eyex-eyeSize),
+        Math.round(eyey-eyeSize),
+        Math.round(eyeSize*2),
+        Math.round(eyeSize*2)
+    );
+    var value=0;
+    for(var i=0;i<data.data.length;i+=4){
+        value+=data.data[i+2];
+    }
+    value/=data.data.length;
+
+    disp(Math.round(value));
+    //console.log("l:"+data.data.length+";v:"+value);
+    var verror=value-target;//误差，越暗值越大
+    ierror+=verror;
+    var derror=verror-error_pre;//负数表示由暗到亮，反之由亮到暗
+    va=verror*P+ierror*I+derror*D;
+    error_pre=verror;
+}
+function execute(){
+    cxt.clearRect(0,0,width,height);
+    drawBackground();
+    drive();
+    control();
+    drawCar();
+}
+</script>
+<form>
+<table class="table">
+<thead>
+<tr class="header">
+<th>變量</th>
+<th>數值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>比例控制系数(<span class="math inline">\(P\)</span>)</td>
+<td><input id="input_P" value="-0.006"></td>
+</tr>
+<tr class="even">
+<td>积分控制系数(<span class="math inline">\(I\)</span>)</td>
+<td><input id="input_I" value="-0.0008"></td>
+</tr>
+<tr class="odd">
+<td>微分控制系数(<span class="math inline">\(D\)</span>)</td>
+<td><input id="input_D" value="-0.00002"></td>
+</tr>
+<tr class="even">
+<td>受控制量（灰度）</td>
+<td><input id="input_target" value="24"></td>
+</tr>
+<tr class="odd">
+<td>小车前进速度</td>
+<td><input id="input_V" value="2"></td>
+</tr>
+<tr class="even">
+<td>場地寬度</td>
+<td><input id="width" value="640"></td>
+</tr>
+<tr class="odd">
+<td>場地高度</td>
+<td><input id="height" value="480"></td>
+</tr>
+</tbody>
+</table>
+<button type="button" id="submit" onclick="mainInit()">
+提交参数
+</button>
+</form>
+<p>我已經把程序的初始參數調到一個比較舒服的狀態😉。但你可以試著挑戰下更高的車輛速度或更窄的場地高度。</p>
+<p>修改輸入參數，按下“提交參數”按鈕，下方的畫面會按新參數輸出仿真結果。</p>
+<canvas id="mainCanvas" width="640" height="480">
+抱歉，此浏览器不支持HTML5
+</canvas>
+<script type="text/javascript"> mainInit();setInterval("execute()",13);</script>
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section"></h2>
+<p>本頁面以控制小車沿著規定藍色軌道外沿行走爲例，演示了PID控制算法的運用。上方的畫面展示了仿真環境中小車的運行過程。讀者可以修改輸入參數，按下“提交參數”按鈕，重新輸出仿真結果。</p>
+<p>仿真程序在小車的前方設置了一個虛擬的灰度傳感器。畫面的左上角顯示了它接收到的灰度信號大小。假設在初始狀態下小車位於軌道上。如果小車右轉，那麽灰度傳感器將覆蓋藍色軌道，使得灰度增大。反之，傳感器覆蓋白色地面，灰度減小。因此，只要能平滑地控制小車的轉向，使灰度值始終保持在適中的數值附近，就能使小車始終沿著軌道邊緣運動。</p>
+<p>總而言之，在這個仿真的例子中，我們直接控制的量是小車的前進角度，而觀測的量是灰度傳感器的數值。</p>
+<p>仿真采用了經典的PID控制方法。僞代碼為</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">全局變量：</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"> - ierror：誤差的纍積，初始化為0；</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"> - error_pre：初始誤差，初始化為0；</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">輸入  </span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"> - value：觀測到的灰度值；</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"> - target：目標灰度值；</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"> - PID參數（P、I、D）；</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> verror <span class="op">=</span> value <span class="op">-</span> target<span class="op">;</span>  <span class="co">//  误差，越暗值越大</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>ierror <span class="op">+=</span> verror<span class="op">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> derror <span class="op">=</span> verror <span class="op">-</span> error_pre<span class="op">;</span>  <span class="co">//  數值的變化率 </span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>va <span class="op">=</span> verror <span class="op">*</span> P <span class="op">+</span> ierror <span class="op">*</span> I <span class="op">+</span> derror <span class="op">*</span> D<span class="op">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>error_pre <span class="op">=</span> verror<span class="op">;</span></span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>其中<code>P</code>參數可以説是最爲重要的，它決定了誤差大小和控制量之間的比例。<br>
+參數<code>I</code>則用於消除纍計誤差。設想這樣一種情況：車輛的方向盤歪了一點。因此當你想擺正方向的時候，車輛實際上卻在悄悄地左轉。這樣微小的轉向也許一開始看不出來，但是隨著時間的纍積，方向的偏差會越來越大。參數<code>I</code>將誤差的纍積反饋到控制量，從而抑制誤差的纍積；<br>
+參數<code>D</code>則可以用來加快控制系統的反應速度。<code>D</code>將誤差的變化率作用於控制量，使得車輛可以在感知到偏差增大的時候，提前采取措施。</p>
+</section>
+<section id="後記" class="level2">
+<h2 class="anchored" data-anchor-id="後記">後記</h2>
+<p>本文最初寫於2017年五月30日。當時我在一堂實驗課上調PID參數，效果離預期還有一定差距就下課了。課後沒有辦法拿實物再做實驗，於是就簡單寫個程序模擬下。當時比較菜（當然現在也是），所以寫完程序的時候很開心。稍微冷靜下來看一看，這個仿真在很多方面并不完善。 首先車輛在運動、轉彎的時候都有慣性。我的仿真沒有考慮這點。如果能加一個運動模型到程序裏會更好； 其次，在真實的車輛/機器人上，受控制的是輪胎的轉速差、車輛的轉向機構，從而間接控制車輛的運動方向。受能力所限，這個仿真也沒法準確模擬這些細節。</p>
+<p>即使如此，回頭看這份粗糙的作品，還是能感覺到當時的趣味，足矣。今天將這篇文章重新整理一下，但也不再過分修飾了。</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
+        </div>
+        <div class="post_list">
+            <span>By </span>
+            <a href="./">@執迷</a>
+            <span> in </span>
+            <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 自動控制原理">[ 自動控制原理 ]</a></span>
+            <span class="post_date">2024-01-29</span>
+            <div><span>Tags : </span>
+                
+                
+                <span><a href="./">#自動控制原理, </a></span>
+                
+                <span><a href="./">#PID, </a></span>
+                
+                
+            </div>
+
+            <div class="entry-social">
+                <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././pid_demo_20240129.html&text=基於PID控制器的循跡小車簡單演示&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+                <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././pid_demo_20240129.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+                <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././pid_demo_20240129.html&t=基於PID控制器的循跡小車簡單演示"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+                <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././pid_demo_20240129.html&title=基於PID控制器的循跡小車簡單演示" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+                <span class="mail"><a href="mailto:?subject=基於PID控制器的循跡小車簡單演示&amp;body=Viens découvrir un article à propos de [基於PID控制器的循跡小車簡單演示] sur le site de 執迷. ././pid_demo_20240129.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+            </div>
+        </div>
+        
+    </article>
+</section>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
+</body>
+</html>
