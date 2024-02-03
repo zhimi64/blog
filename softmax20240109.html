@@ -85,6 +85,8 @@
         
          
         
+          <li><a class="nav__link" href="././about.html">About</a></li>
+        
          
       </ul>
     </nav>
@@ -193,7 +195,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="softmax的上溢和下溢問題" class="level2">
 <h2 class="anchored" data-anchor-id="softmax的上溢和下溢問題">Softmax的上溢和下溢問題</h2>
-<p>softmax在計算機的實際運算過程中，常常遇到上溢和下溢問題。 設<span class="math inline">\(\vec z\)</span>是softmax函數的輸入。假如<span class="math inline">\(\vec z\)</span>中的數值都極小（趨於負無窮大），這時公式<a href="#eq-softmax-def">方程式&nbsp;1</a>的分母接近0，容易導致產生的數超出浮點型的上限，這被稱爲<strong>下溢</strong>；反之，若<span class="math inline">\(\vec z\)</span>中存在特別大的數，由於函數<span class="math inline">\(e^{x}\)</span>增長極快，輸出的數也很可能超出浮點型的上限，這被稱爲<strong>上溢</strong>。</p>
+<p>softmax在計算機的實際運算過程中，常常遇到上溢和下溢問題。 設<span class="math inline">\(\vec z\)</span>是softmax函數的輸入。假如<span class="math inline">\(\vec z\)</span>中的數值都極小（趨於負無窮大），這時<a href="#eq-softmax-def">公式&nbsp;1</a>的分母接近0，容易導致產生的數超出浮點型的上限，這被稱爲<strong>下溢</strong>；反之，若<span class="math inline">\(\vec z\)</span>中存在特別大的數，由於函數<span class="math inline">\(e^{x}\)</span>增長極快，輸出的數也很可能超出浮點型的上限，這被稱爲<strong>上溢</strong>。</p>
 <section id="上溢和下溢問題的應對方法" class="level3">
 <h3 class="anchored" data-anchor-id="上溢和下溢問題的應對方法">上溢和下溢問題的應對方法</h3>
 <p>softmax函数有這樣的特性：<span class="math inline">\(softmax(\vec z + y) = softmax(\vec z), \forall y \in \mathbb R\)</span>，即對輸入向量隨意加上任意一個數，輸出都不會變。</p>
@@ -203,7 +205,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="結語" class="level2">
 <h2 class="anchored" data-anchor-id="結語">結語</h2>
-<p>記得在讀碩士的最後一學期時，有一回面試一家公司。這家公司是國内小有名氣的中厰。面試時，面試官問了softmax函數的問題，我便以上面所述的内容對之。面試結束的時候，面試官笑著説，記得幾年前，我問同樣的問題，幾乎沒幾個人答得上來。但是，今年同樣的問題，居然人人都能回答上來呢。</p>
+<p>記得在讀碩士的最後一學期時，有一回面試一家公司。這家公司是國内小有名氣的中厰。面試官問了softmax函數的問題，我便以上面所述的内容對之。結束時，面試官笑著説，記得幾年前，我問同樣的問題，幾乎沒幾個人答得上來。但是，今年同樣的問題，居然人人都能回答上來呢。</p>
 <p>聽到面試官的話，我也不禁感慨。看來這幾年時間過去，深度學習/人工智能的賽道確實是越來越卷了。作爲一名準備面試的學生，這個問題在我看來確實是常識。再過幾年，它會不會成爲一般本科生，甚至中小學生的常識呢。笑。</p>
 </section>
 

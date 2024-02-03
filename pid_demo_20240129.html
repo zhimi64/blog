@@ -85,6 +85,8 @@
         
          
         
+          <li><a class="nav__link" href="././about.html">About</a></li>
+        
          
       </ul>
     </nav>
@@ -371,15 +373,15 @@ function execute(){
 </thead>
 <tbody>
 <tr class="odd">
-<td>比例控制系数(<span class="math inline">\(P\)</span>)</td>
+<td>比例控制系數(<span class="math inline">\(P\)</span>)</td>
 <td><input id="input_P" value="-0.006"></td>
 </tr>
 <tr class="even">
-<td>积分控制系数(<span class="math inline">\(I\)</span>)</td>
+<td>積分控制系數(<span class="math inline">\(I\)</span>)</td>
 <td><input id="input_I" value="-0.0008"></td>
 </tr>
 <tr class="odd">
-<td>微分控制系数(<span class="math inline">\(D\)</span>)</td>
+<td>微分控制系數(<span class="math inline">\(D\)</span>)</td>
 <td><input id="input_D" value="-0.00002"></td>
 </tr>
 <tr class="even">
@@ -387,7 +389,7 @@ function execute(){
 <td><input id="input_target" value="24"></td>
 </tr>
 <tr class="odd">
-<td>小车前进速度</td>
+<td>小車前進速度</td>
 <td><input id="input_V" value="2"></td>
 </tr>
 <tr class="even">
@@ -401,13 +403,13 @@ function execute(){
 </tbody>
 </table>
 <button type="button" id="submit" onclick="mainInit()">
-提交参数
+提交參數
 </button>
 </form>
 <p>我已經把程序的初始參數調到一個比較舒服的狀態😉。但你可以試著挑戰下更高的車輛速度或更窄的場地高度。</p>
 <p>修改輸入參數，按下“提交參數”按鈕，下方的畫面會按新參數輸出仿真結果。</p>
 <canvas id="mainCanvas" width="640" height="480">
-抱歉，此浏览器不支持HTML5
+抱歉，此瀏覽器不支持HTML5
 </canvas>
 <script type="text/javascript">
 mainInit();
@@ -440,7 +442,7 @@ setInterval("execute()", 13);
 </section>
 <section id="後記" class="level2">
 <h2 class="anchored" data-anchor-id="後記">後記</h2>
-<p>本文最初寫於2017年五月30日。當時我在一堂實驗課上調PID參數，效果離預期還有一定差距就下課了。課後沒有辦法拿實物再做實驗，於是就簡單寫個程序模擬下。當時比較菜（當然現在也是），所以寫完程序的時候很開心。稍微冷靜下來看一看，這個仿真在很多方面并不完善。 首先車輛在運動、轉彎的時候都有慣性。我的仿真沒有考慮這點。如果能加一個運動模型到程序裏會更好； 其次，在真實的車輛/機器人上，受控制的是輪胎的轉速差、車輛的轉向機構，從而間接控制車輛的運動方向。受能力所限，這個仿真也沒法準確模擬這些細節。</p>
+<p>本文最初寫於2017年五月30日。當時我在一堂實驗課上調PID參數，效果離預期還有一定差距就下課了。課後沒有辦法拿實物再做實驗，於是就簡單寫個程序模擬下。當時比較菜（當然現在也是），所以寫完程序的時候很開心。稍微冷靜下來看一看，這個仿真在很多方面並不完善。 首先車輛在運動、轉彎的時候都有慣性。我的仿真沒有考慮這點。如果能加一個運動模型到程序裏會更好； 其次，在真實的車輛/機器人上，受控制的是輪胎的轉速差、車輛的轉向機構，從而間接控制車輛的運動方向。受能力所限，這個仿真也沒法準確模擬這些細節。</p>
 <p>今天將這篇文章重新整理一下，但也不去過分修飾了。回頭看這份粗糙的作品，還是能感覺到當時的趣味，足矣。</p>
 </section>
 
