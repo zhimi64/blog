@@ -1,0 +1,1 @@
+- [桶形畸變](桶形畸變)一圖來自於[此](https://wordpress.org/openverse/image/a9279a80-f137-48dd-96ad-693c6d6e6b50)。許可詳情：[CC BY-NC-ND 2.0](https://creativecommons.org/licenses/by-nc-nd/2.0/)
