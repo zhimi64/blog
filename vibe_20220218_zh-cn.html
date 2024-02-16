@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
+
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  
+
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>前景分割任务和ViBe算法</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././vibe_20220218_zh-cn.html">
+<meta name="twitter:title" content="執迷的博客 ~ 前景分割任务和ViBe算法">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ 前景分割任务和ViBe算法" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+<!-- MathJax -->
+
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+      <p>無知使我幸福，因爲這世界還有秘密在等我探索</p>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <article>
+        <h2 class="post_title post_detail"><a href="././vibe_20220218_zh-cn.html" rel="bookmark" title="Permalink to 前景分割任务和ViBe算法">前景分割任务和ViBe算法</a></h2>
+        
+        <p>
+            <span id="busuanzi_container_page_pv">
+                本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+            </span>
+        </p>
+        
+        <div class="entry-content blog-post">
+            <body class="fullcontent">
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+<h1 class="title">前景分割任务和ViBe算法</h1>
+</div>
+<div class="quarto-title-meta">
+<div>
+<div class="quarto-title-meta-heading">发布日期</div>
+<div class="quarto-title-meta-contents">
+<p class="date">2022年2月18日</p>
+</div>
+</div>
+</div>
+</header>
+<section class="level2" id="簡介">
+<h2 class="anchored" data-anchor-id="簡介">简介</h2>
+<p>ViBe（<strong>Vi</strong>sual <strong>B</strong>ackground <strong>E</strong>xtractor）<span class="citation" data-cites="barnich_vibe_2011"><sup>[<a href="#ref-barnich_vibe_2011" role="doc-biblioref">1</a>]</sup></span> 是一种前景分割（foreground segmentation）算法。 在ViBe中，前景被定义为视频中运动的物体，背景被定义为视频中静止不动的物体。例如，在高速公路上，运动的车是前景，路面、天空、草地是背景。但假如一辆车停在应急车道上，处于静止状态，那么它就应当被视为背景。需要注意的是，所谓运动与不运动，是相对而言的。例如流动的白云，随风摇摆的草地，虽然它们是运动的，但它们应当被视为背景。</p>
+<p>这类前景分割（或者可以称为背景减除（background substraction）、运动检测（motion detection））算法在安防领域有许多应用。例如，通过对仓库监控视频的运动检测，我们可以快速从长时间的视频中找到潜在的有人出入的时间片段。前景检测算法还可以作为许多复杂任务的预处理任务，例如行人计数、交通监测等等。</p>
+<p>前景分割的一般思路是<strong>背景建模</strong>：通过比较当前帧与所建立的背景模型，判断出一块区域是属于前景还是背景。</p>
+<p>前景分割任务的常见问题：</p>
+<ol type="1">
+<li>鬼影：当一个静止物体发生运动时，不仅这个物体表面像素发生变化，它身后的背景区域的像素也发生变化。前者属于前景，但后者应该视为背景，是应当减除的。</li>
+<li>背景变化的问题：视频时间跨度长时，由于光照环境、天气、季节变换的影响，背景会发生改变。</li>
+<li>背景的运动：如前所述，草地、云朵等背景不是完全静止的，这给运动检测带来困难。</li>
+</ol>
+</section>
+<section class="level2" id="vibe算法">
+<h2 class="anchored" data-anchor-id="vibe算法">ViBe算法</h2>
+<p>ViBe的基本假设是：“一个已经在某个位置出现过的背景像素，很有可能再次出现在那附近”。例如，如果某个像素对应于绿色的草坪，那么尽管受风的影响，导致草业摇摆，但同样的颜色很有可能再次出现在那附近（当然，对于没有区分颜色能力的黑白视频，也有同样的结论）。</p>
+<section class="level3" id="分類依據">
+<h3 class="anchored" data-anchor-id="分類依據">分类依据</h3>
+<p>在这个假设条件下，ViBe将前景分割问题定义为”给定邻域像素的状态，判断当前新像素转态属于前景还是背景的二分类问题”。根据先前的假设，假如一个像素之前在邻域出现过，那么这个像素很有可能是背景。反之，如果在邻域内找不到相似像素，那么这里可能检测到一个以较快速度运动的物体。</p>
+<p>ViBe为每一个像素建立背景模型，背景模型定义为前一时刻邻域内的<span class="math inline">\(N\)</span>个背景像素：</p>
+<p><span class="math display">\[
+\mathcal{M}(x) = \left\{ v_1, v_2, \dots, v_N\right\}
+\]</span></p>
+<p>对于当前像素值<span class="math inline">\(v(x)\)</span>，分类依据是<span class="math inline">\(\#\{S_R(v(x))\cap \mathcal M(x) \} \geq \#_{min}\)</span>，其中，<span class="math inline">\(\#\)</span>表示集合中的元素个数，<span class="math inline">\(S_R(v(x))\)</span>表示颜色空间中，以<span class="math inline">\(v(x)\)</span>为中心，以<span class="math inline">\(R\)</span>为半径的一个球体。公式的意思是说，如果领域中有不少于<span class="math inline">\(\#_{min}\)</span>的像素，其到当前像素的距离小于阈值，那么这个像素是背景；反之则是前景。</p>
+</section>
+<section class="level3" id="背景模型初始化">
+<h3 class="anchored" data-anchor-id="背景模型初始化">背景模型初始化</h3>
+<p>初始化时，ViBe取第一帧图像，随机取邻域内的<span class="math inline">\(N\)</span>个像素用于填充背景模型<span class="math inline">\(\mathcal M(x)\)</span>。这里的随机采样是有放回的随机抽取，所以一个像素可以被选取多次。</p>
+<p>ViBe的初始化策略基于一个合理的假设，即领域内的像素服从于相似的分布。</p>
+<p>但是，这样的初始化策略有一个问题，即如果第一帧中存在运动物体，那么其像素会污染背景模型。好在ViBe有较强的自适应能力。随著时间流逝，得益于更新策略的设计，它的背景模型会趋于合理。</p>
+</section>
+<section class="level3" id="背景模型的更新策略">
+<h3 class="anchored" data-anchor-id="背景模型的更新策略">背景模型的更新策略</h3>
+<p>在ViBe之前，常见的背景模型的更新策略是，用当前的某个像素替换掉背景模型中最老的那个像素。这种做法有一定合理性，但它也有可能导致有用的老像素被剔除。</p>
+<p>除了剔除新旧像素的优先顺序问题外，另一个问题是，是否要用前景像素来更新背景模型。显而易见，如果要使模型具有自适应学习能力，那么前景像素应当参与到背景模型的更新中来。</p>
+<p>所以，ViBe的更新策略是保守的。即，ViBe中，不仅被分类为背景的像素参与背景模型的更新，分类为前景的像素一样有机会参与背景模型更新。</p>
+<p>如果一个像素被分类为背景，它会被用来随机替换掉背景模型中的一个元素：<strong>与以往一些”先入先出”的顺序替换方法不同，这里的替换是完全随机的</strong>。为了进一步减低运算代价和延长背景模型中每个元素的寿命，可以降低替换背景模型的频率。这个技巧在ViBe中被称为时间亚采样（time subsampling）。ViBe用一个固定概率随机地决定是否进行替换，这被称作随机亚采样（random subsampling）。</p>
+<p>反之，如果一个像素被分类为前景，它也有机会参与背景模型的更新。ViBe采用一种叫做detection support map的数据结构来统计一个像素被检测为前景的次数。如果计数达到阈值，那么虽然当前像素属于前景，它也会被加入到背景模型中。’</p>
+<p>在ViBe中，每个像素不仅负责自己的背景模型的更新，还会将自身的信息扩散到其领域的背景模型中去。每次更新当前像素的背景模型，都要从邻域中随机选择另一个点，用同样的像素去更新这个点的背景模型。</p>
+</section>
+</section>
+<section class="level2" id="調參經驗">
+<h2 class="anchored" data-anchor-id="調參經驗">调参经验</h2>
+<p>在原始论文中，由于视频分辨率比较小，故而将邻域定义为<span class="math inline">\(3\times 3\)</span>内的4邻域或8邻域。然而，今天许多监控视频都达到高分辨率，那么这样的小邻域就不够用了。有时需要改为<span class="math inline">\(11\times 11\)</span>或者<span class="math inline">\(21\times 21\)</span>才行。当然，对原始视频作降采样也是一个办法。</p>
+<p>邻域一旦调大，那相应的参数、算法也应当适当调整。比如，在用当前点更新邻域内的背景模型时，可以一次多更新几个点。detection support map的计数阈值应当减小。</p>
+</section>
+<section class="level2" id="並行化">
+<h2 class="anchored" data-anchor-id="並行化">并行化</h2>
+<p>ViBe的效率很高。但如果要实时处理高分辨率视频，并且使用较大的邻域定义，那么就要并行化算法才行。通过并行化使得不同像素上的操作分配给不同线程执行，能加快处理速度。原论文<span class="citation" data-cites="barnich_vibe_2011"><sup>[<a href="#ref-barnich_vibe_2011" role="doc-biblioref">1</a>]</sup></span>没有介绍并行化的方法。这里仅提供个人的几点思考。</p>
+<p>ViBe的并行化的困难主要体现在更新邻像素的背景模型时容易出现的访问冲突。为了简便，不妨假设每一个像素位置都由单独的线程来负责。假如像素甲要更新像素乙的背景模型，同时像素乙自己又要更新自身的背景模型，那么就发生冲突。为了避免冲突，可以考虑以下几种方案：</p>
+<p><strong>严格限制和检查各个线程的读写权限和操作顺序</strong>。例如，限制每个线程一定只能修改当前线程所负责的背景模型。同时，读取其它线程的状态，必须是在这些线程的写入操作都完成时才能进行。从这个思路考虑，难免需要修改大量算法逻辑。</p>
+<p><strong>通过线程分组来避免读写冲突</strong>。设窗口大小为W，我们知道，读写冲突仅发生在两个并行处理的像素的落在同一个<span class="math inline">\(W\times W\)</span>的窗口内时。因此，不妨按窗口大小，将像素分成若干组，使得不同组内的像素绝对不在同一个邻域内。组之间的背景模型并行更新，而组内的背景模型串行更新。在背景模型更新操作的步骤后设立一个同步点来同步各个线程的进度。这样一来，就不会有并行处理的待处理像素落在同一个窗口内而导致冲突的事情了。</p>
+</section>
+<div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">参考</h2><div class="references csl-bib-body" id="refs" role="doc-bibliography">
+<div class="csl-entry" id="ref-barnich_vibe_2011" role="doc-biblioentry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">BARNICH O, VAN DROOGENBROECK M. <a href="https://doi.org/10.1109/TIP.2010.2101613"><span>ViBe</span>: a universal background subtraction algorithm for video sequences</a>[J]. IEEE transactions on image processing: a publication of the IEEE Signal Processing Society, 2011, 20(6): 1709–1724.</div>
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+</body>
+        </div>
+        <div class="post_list">
+            <span>By </span>
+            <a href="./">@執迷</a>
+            <span> in </span>
+            <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 計算機視覺">[ 計算機視覺 ]</a></span>
+            <span class="post_date">2022-02-18</span>
+            <div><span>Tags : </span>
+                
+                
+                <span><a href="./">#計算機視覺, </a></span>
+                
+                <span><a href="./">#圖像處理, </a></span>
+                
+                <span><a href="./">#前景分割, </a></span>
+                
+                <span><a href="./">#背景分割, </a></span>
+                
+                <span><a href="./">#運動檢測, </a></span>
+                
+                <span><a href="./">#背景建模, </a></span>
+                
+                
+            </div>
+
+            <div class="entry-social">
+                <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././vibe_20220218_zh-cn.html&text=前景分割任务和ViBe算法&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+                <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././vibe_20220218_zh-cn.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+                <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././vibe_20220218_zh-cn.html&t=前景分割任务和ViBe算法"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+                <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././vibe_20220218_zh-cn.html&title=前景分割任务和ViBe算法" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+                <span class="mail"><a href="mailto:?subject=前景分割任务和ViBe算法&amp;body=Viens découvrir un article à propos de [前景分割任务和ViBe算法] sur le site de 執迷. ././vibe_20220218_zh-cn.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+            </div>
+        </div>
+        
+    </article>
+</section>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
+</body>
+</html>
