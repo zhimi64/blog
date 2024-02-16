@@ -65,6 +65,15 @@
 <meta property="og:description" content="" />
 <meta property="og:image" content="" />
 
+<!-- MathJax -->
+
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
 </head>
 
 <body>
@@ -118,96 +127,24 @@
         </p>
         
         <div class="entry-content blog-post">
-            <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh"><head>
-
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-
-<title>五度相生律和十二平均律的計算</title>
-<style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
-  vertical-align: middle;
-}
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
-</style>
-
-
-<script src="document_files/libs/clipboard/clipboard.min.js"></script>
-<script src="document_files/libs/quarto-html/quarto.js"></script>
-<script src="document_files/libs/quarto-html/popper.min.js"></script>
-<script src="document_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="document_files/libs/quarto-html/anchor.min.js"></script>
-<link href="document_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="document_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="document_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="document_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="document_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
-
-</head>
-
-<body class="fullcontent">
-
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+            <body class="fullcontent">
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
+<header class="quarto-title-block default" id="title-block-header">
 <div class="quarto-title">
 <h1 class="title">五度相生律和十二平均律的計算</h1>
 </div>
-
-
-
 <div class="quarto-title-meta">
-
-    
-    <div>
-    <div class="quarto-title-meta-heading">发布日期</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">2024年1月4日</p>
-    </div>
-  </div>
-  
-    
-  </div>
-  
-
+<div>
+<div class="quarto-title-meta-heading">发布日期</div>
+<div class="quarto-title-meta-contents">
+<p class="date">2024年1月4日</p>
+</div>
+</div>
+</div>
 </header>
-
-<script src="./script/yuelv/jsnotebook/jsnotebook.js"></script>
-<script src="./script/yuelv/audio.js"></script>
+<script src="temperament20240104\script\yuelv\jsnotebook\jsnotebook.js"></script>
+<script src="temperament20240104\script\yuelv\audio.js"></script>
 <script>
 window.onload = function() {
     jsnotebook_onload();
@@ -215,7 +152,7 @@ window.onload = function() {
 </script>
 <p>樂音體系是有限多個音級構成的集合<span class="citation" data-cites="wangjie_2019_music_and_math"><sup>[<a href="#ref-wangjie_2019_music_and_math" role="doc-biblioref">1</a>]</sup></span>。律學（temperament）要解決的問題就是確定這個集合中的各個元素。舉例來説，它決定鋼琴的88個按鍵各自要發出什麼頻率的聲音？吉他的每一根品絲要安在什麼位置？竹笛要在哪裏打孔？</p>
 <p>律學讓我們能制定樂譜，傳唱數千年前的樂曲。律學還能調整樂器之間的關係，使它們合奏的聲音保持和諧。回顧歷史可以發現，古代世界各地的人們在制定樂律方面，往往做出了相似的選擇。乍看之下，這像是一個令人驚訝的巧合。但假如我們瞭解音樂背後的數學，我們會發現這可能不是偶然。</p>
-<section id="三分損益法" class="level2">
+<section class="level2" id="三分損益法">
 <h2 class="anchored" data-anchor-id="三分損益法">三分損益法</h2>
 <p>在古代中國，《管子·地員篇》中有如下記載：</p>
 <blockquote class="blockquote">
@@ -223,7 +160,6 @@ window.onload = function() {
 </blockquote>
 <p>按照文字描述，首先確定宮音對應的數為<span class="math inline">\(3^4=81\)</span>；而後“三分而益之”得徵音，其數為<span class="math inline">\(81\times(1+\frac{1}{3})=108\)</span>；再“三分損一”得到商音，其數爲<span class="math inline">\(108\times(1-\frac{1}{3})=72\)</span>；接著“三分益一”得到羽音為<span class="math inline">\(72\times\frac{4}{3}=96\)</span>；最後再“三分損一”得到角音為<span class="math inline">\(96\times\frac{2}{3}=64\)</span>. 這就是中國古代的<strong>三分損益法</strong>。</p>
 <p>三分損益法算得的是音對應的管長或弦長，與頻率成反比。因此按照頻率從低到高排列這五音，順序是</p>
-
 <table style="border:1px solid">
 <tbody><tr>
 <td style="border:1px solid">
@@ -259,10 +195,9 @@ window.onload = function() {
 64
 </td>
 </tr>
-
 </tbody></table>
 </section>
-<section id="五度相生律" class="level2">
+<section class="level2" id="五度相生律">
 <h2 class="anchored" data-anchor-id="五度相生律">五度相生律</h2>
 <p>古希臘的畢達哥拉斯提出萬物皆數，認爲一切規律都可以用數字表達。音樂也不例外。他認爲樂音之間的和諧性來源於頻率之間的簡單比例關係。 頻率的比例關係越簡單，則音級的關係越「<strong>和諧</strong>」。在這裡，「簡單」意指頻率的關係可以用小的自然數的比例表示。</p>
 <p>畢達哥拉斯學派提出的五度相生律做法為：先確定一個基準頻率<span class="math inline">\(f\)</span>，然後以<span class="math inline">\(\frac{3}{2}\)</span>為比例累乘，生成各個音級的頻率。這個過程中，一旦生成的頻率達到<span class="math inline">\(f\)</span>的兩倍以上，就按<span class="math inline">\(\frac{1}{2}\)</span>的比例將其縮小。</p>
@@ -301,21 +236,21 @@ playNotes([
 ])
 </pre>
 </section>
-<section id="十二平均律" class="level2">
+<section class="level2" id="十二平均律">
 <h2 class="anchored" data-anchor-id="十二平均律">十二平均律</h2>
-<section id="以往方法的缺陷" class="level3">
+<section class="level3" id="以往方法的缺陷">
 <h3 class="anchored" data-anchor-id="以往方法的缺陷">以往方法的缺陷</h3>
 <p>五度相生律和三分損益法在歷史上長久以來發揮了重要的作用，但也都存在共同的問題，即使用<span class="math inline">\(\frac{1}{2}\)</span>和<span class="math inline">\(\frac{3}{2}\)</span>兩種比例，無法從基礎音級出發，生成各音級，然再次回到基礎音級。用數學公式表述，即不存在正整數<span class="math inline">\(m,n\)</span>，使得<span class="math inline">\((\frac{1}{2})^m \cdot (\frac{3}{2})^n = 1\)</span>.</p>
 <p>這一問題就導致了轉調的困難。例如，設有一套樂器從<span class="math inline">\(f_1\)</span>出發，生成了<span class="math inline">\(f_2\)</span>。現在有一首歌曲需要轉調，希望以<span class="math inline">\(f_2\)</span>作爲基礎生成各音級，我們會發現<span class="math inline">\(f_2\)</span>無法生成<span class="math inline">\(f_1\)</span>。因此舊的樂器無法完成轉調任務，我們只得重新打造一把樂器！</p>
 </section>
-<section id="平均律的提出" class="level3">
+<section class="level3" id="平均律的提出">
 <h3 class="anchored" data-anchor-id="平均律的提出">平均律的提出</h3>
 <p>爲了應對轉調的需求，我們希望各音級是“平等”的，它們之間的距離是“均勻”的。這樣，我們就可以以其中任何一個音為基準，生成其它的音。</p>
 <p>人類的聽覺對於高頻聲音不敏感。聲音的頻率指數增長時，在人聽來，他們的「距離」卻是均勻增加的。例如，設<span class="math inline">\(f\)</span>是一常數，人耳會認為 <span class="math display">\[(f, kf, k^2f, k^3f \dots)\]</span> 這樣一組聲音是「等間距」的。</p>
 <p>在十二平均律中，兩倍頻率的關係稱為<strong>八度關係</strong>，將一個頻率到其兩倍之間的範圍稱為一個<strong>八度</strong>。例如，頻率<span class="math inline">\(f\)</span>和<span class="math inline">\(2f\)</span>之間就是一個八度。將八度「十二等分」，就能得到十二平均律下的所有音級。</p>
 <p>在八度上構造一個聽覺上等間距的十二段，相當於求一個比例為<span class="math inline">\(2^{1/12}\)</span>的等比數列。最早明確提出十二平均律，並且精確計算<span class="math inline">\(2^{1/12}\)</span>的人是明朝的朱載堉。</p>
 </section>
-<section id="十二平均律代碼實現" class="level3">
+<section class="level3" id="十二平均律代碼實現">
 <h3 class="anchored" data-anchor-id="十二平均律代碼實現">十二平均律代碼實現</h3>
 記十二平均律下音級和頻率的映射函數為<code>f12()</code>，假設<code>f12(0)=440 Hz</code>，以下代碼實現了12平均律的計算，並基於十二平均律播放了一段旋律
 <pre class="jsnb_block">const f12 = this.f12 = function(index) {
@@ -331,13 +266,10 @@ playNotes([
 </pre>
 </section>
 </section>
-<section id="bibliography" class="level1 unnumbered">
-
-
+<section class="level1 unnumbered" id="bibliography">
 </section>
-
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">參考文獻</h2><div id="refs" class="references csl-bib-body" role="doc-bibliography">
-<div id="ref-wangjie_2019_music_and_math" class="csl-entry" role="doc-biblioentry">
+<div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">參考文獻</h2><div class="references csl-bib-body" id="refs" role="doc-bibliography">
+<div class="csl-entry" id="ref-wangjie_2019_music_and_math" role="doc-biblioentry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline"><a href="https://books.google.com.hk/books?id=smlMzQEACAAJ">音乐与数学</a>[M]. 北京大学出版社.</div>
 </div>
 </div></section></div></main>
@@ -476,10 +408,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-
-
-
-</body></html>
+</body>
         </div>
         <div class="post_list">
             <span>By </span>

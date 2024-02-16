@@ -65,6 +65,15 @@
 <meta property="og:description" content="" />
 <meta property="og:image" content="" />
 
+<!-- MathJax -->
+
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
 </head>
 
 <body>
@@ -118,144 +127,30 @@
         </p>
         
         <div class="entry-content blog-post">
-            <!DOCTYPE html>
-
-<html lang="zh-TW" xml:lang="zh-TW" xmlns="http://www.w3.org/1999/xhtml"><head>
-<meta charset="utf-8"/>
-<meta content="quarto-1.2.269" name="generator"/>
-<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
-<title>相機模型和相機標定</title>
-<style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
-  vertical-align: middle;
-}
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
-</style>
-<script src="document_files/libs/clipboard/clipboard.min.js"></script>
-<script src="document_files/libs/quarto-html/quarto.js"></script>
-<script src="document_files/libs/quarto-html/popper.min.js"></script>
-<script src="document_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="document_files/libs/quarto-html/anchor.min.js"></script>
-<link href="document_files/libs/quarto-html/tippy.css" rel="stylesheet"/>
-<link href="document_files/libs/quarto-html/quarto-syntax-highlighting.css" id="quarto-text-highlighting-styles" rel="stylesheet"/>
-<script src="document_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="document_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet"/>
-<link data-mode="light" href="document_files/libs/bootstrap/bootstrap.min.css" id="quarto-bootstrap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-</head>
-<body>
+            <body>
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
 <nav class="toc-active" id="TOC" role="doc-toc">
 <h2 id="toc-title">目录</h2>
 <ul>
-<li><a class="nav-link active" data-scroll-target="#什麽是相機標定" href="#什麽是相機標定" id="toc-什麽是相機標定"><span class="toc-section-number">1</span>  什麽是相機標定</a></li>
-<li><a class="nav-link" data-scroll-target="#相機坐標系和世界坐標系" href="#相機坐標系和世界坐標系" id="toc-相機坐標系和世界坐標系"><span class="toc-section-number">2</span>  相機坐標系和世界坐標系</a></li>
-<li><a class="nav-link" data-scroll-target="#針孔相機模型" href="#針孔相機模型" id="toc-針孔相機模型"><span class="toc-section-number">3</span>  針孔相機模型</a>
+<li><a class="nav-link active" data-scroll-target="#什麽是相機標定" href="#什麽是相機標定" id="toc-什麽是相機標定"><span class="toc-section-number">1</span>  什么是相机标定</a></li>
+<li><a class="nav-link" data-scroll-target="#相機坐標系和世界坐標系" href="#相機坐標系和世界坐標系" id="toc-相機坐標系和世界坐標系"><span class="toc-section-number">2</span>  相机坐标系和世界坐标系</a></li>
+<li><a class="nav-link" data-scroll-target="#針孔相機模型" href="#針孔相機模型" id="toc-針孔相機模型"><span class="toc-section-number">3</span>  针孔相机模型</a>
 <ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#透視投影" href="#透視投影" id="toc-透視投影"><span class="toc-section-number">3.1</span>  透視投影</a></li>
-<li><a class="nav-link" data-scroll-target="#鏡頭畸變" href="#鏡頭畸變" id="toc-鏡頭畸變"><span class="toc-section-number">3.2</span>  鏡頭畸變</a></li>
+<li><a class="nav-link" data-scroll-target="#透視投影" href="#透視投影" id="toc-透視投影"><span class="toc-section-number">3.1</span>  透视投影</a></li>
+<li><a class="nav-link" data-scroll-target="#鏡頭畸變" href="#鏡頭畸變" id="toc-鏡頭畸變"><span class="toc-section-number">3.2</span>  镜头畸变</a></li>
 </ul></li>
-<li><a class="nav-link" data-scroll-target="#標定" href="#標定" id="toc-標定"><span class="toc-section-number">4</span>  標定</a>
+<li><a class="nav-link" data-scroll-target="#標定" href="#標定" id="toc-標定"><span class="toc-section-number">4</span>  标定</a>
 <ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#標定工具" href="#標定工具" id="toc-標定工具"><span class="toc-section-number">4.1</span>  標定工具</a></li>
-<li><a class="nav-link" data-scroll-target="#標定流程" href="#標定流程" id="toc-標定流程"><span class="toc-section-number">4.2</span>  標定流程</a></li>
-<li><a class="nav-link" data-scroll-target="#內外參的閉式解" href="#內外參的閉式解" id="toc-內外參的閉式解"><span class="toc-section-number">4.3</span>  內外參的閉式解</a></li>
-<li><a class="nav-link" data-scroll-target="#求相機的畸變係數" href="#求相機的畸變係數" id="toc-求相機的畸變係數"><span class="toc-section-number">4.4</span>  求相機的畸變係數</a></li>
+<li><a class="nav-link" data-scroll-target="#標定工具" href="#標定工具" id="toc-標定工具"><span class="toc-section-number">4.1</span>  标定工具</a></li>
+<li><a class="nav-link" data-scroll-target="#標定流程" href="#標定流程" id="toc-標定流程"><span class="toc-section-number">4.2</span>  标定流程</a></li>
+<li><a class="nav-link" data-scroll-target="#內外參的閉式解" href="#內外參的閉式解" id="toc-內外參的閉式解"><span class="toc-section-number">4.3</span>  内外参的闭式解</a></li>
+<li><a class="nav-link" data-scroll-target="#求相機的畸變係數" href="#求相機的畸變係數" id="toc-求相機的畸變係數"><span class="toc-section-number">4.4</span>  求相机的畸变系数</a></li>
 </ul></li>
-<li><a class="nav-link" data-scroll-target="#思考題" href="#思考題" id="toc-思考題"><span class="toc-section-number">5</span>  思考題</a></li>
-<li><a class="nav-link" data-scroll-target="#標定算法的python實現" href="#標定算法的python實現" id="toc-標定算法的python實現"><span class="toc-section-number">6</span>  標定算法的Python實現</a></li>
-<li><a class="nav-link" data-scroll-target="#版權聲明" href="#版權聲明" id="toc-版權聲明"><span class="toc-section-number">7</span>  版權聲明</a></li>
-<li><a class="nav-link" data-scroll-target="#bibliography" href="#bibliography" id="toc-bibliography">參考文獻</a></li>
+<li><a class="nav-link" data-scroll-target="#思考題" href="#思考題" id="toc-思考題"><span class="toc-section-number">5</span>  思考题</a></li>
+<li><a class="nav-link" data-scroll-target="#標定算法的python實現" href="#標定算法的python實現" id="toc-標定算法的python實現"><span class="toc-section-number">6</span>  标定算法的Python实现</a></li>
+<li><a class="nav-link" data-scroll-target="#版權聲明" href="#版權聲明" id="toc-版權聲明"><span class="toc-section-number">7</span>  版权声明</a></li>
+<li><a class="nav-link" data-scroll-target="#bibliography" href="#bibliography" id="toc-bibliography">参考文献</a></li>
 </ul>
 </nav>
 </div>
@@ -1074,7 +969,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-</body></html>
+</body>
         </div>
         <div class="post_list">
             <span>By </span>

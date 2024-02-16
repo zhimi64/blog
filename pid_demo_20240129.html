@@ -65,6 +65,10 @@
 <meta property="og:description" content="" />
 <meta property="og:image" content="" />
 
+<!-- MathJax -->
+
+
+
 </head>
 
 <body>
@@ -118,149 +122,33 @@
         </p>
         
         <div class="entry-content blog-post">
-            <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh" xml:lang="zh"><head>
-
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-
-<title>基於PID控制器的循跡小車簡單演示</title>
-<style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
-  vertical-align: middle;
-}
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-</style>
-
-
-<script src="pid_demo_files/libs/clipboard/clipboard.min.js"></script>
-<script src="pid_demo_files/libs/quarto-html/quarto.js"></script>
-<script src="pid_demo_files/libs/quarto-html/popper.min.js"></script>
-<script src="pid_demo_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="pid_demo_files/libs/quarto-html/anchor.min.js"></script>
-<link href="pid_demo_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="pid_demo_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="pid_demo_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="pid_demo_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="pid_demo_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-</head>
-
-<body>
-
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-  <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">目录</h2>
-   
-  <ul>
-  <li><a href="#pid演示程序" id="toc-pid演示程序" class="nav-link active" data-scroll-target="#pid演示程序">PID演示程序</a></li>
-  <li><a href="#pid簡介" id="toc-pid簡介" class="nav-link" data-scroll-target="#pid簡介">PID簡介</a></li>
-  <li><a href="#後記" id="toc-後記" class="nav-link" data-scroll-target="#後記">後記</a></li>
-  </ul>
+            <body>
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+<nav class="toc-active" id="TOC" role="doc-toc">
+<h2 id="toc-title">目录</h2>
+<ul>
+<li><a class="nav-link active" data-scroll-target="#pid演示程序" href="#pid演示程序" id="toc-pid演示程序">PID演示程序</a></li>
+<li><a class="nav-link" data-scroll-target="#pid簡介" href="#pid簡介" id="toc-pid簡介">PID簡介</a></li>
+<li><a class="nav-link" data-scroll-target="#後記" href="#後記" id="toc-後記">後記</a></li>
+</ul>
 </nav>
 </div>
 <main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
+<header class="quarto-title-block default" id="title-block-header">
 <div class="quarto-title">
 <h1 class="title">基於PID控制器的循跡小車簡單演示</h1>
 </div>
-
-
-
 <div class="quarto-title-meta">
-
-    
-    <div>
-    <div class="quarto-title-meta-heading">发布日期</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">2024年1月29日</p>
-    </div>
-  </div>
-  
-    
-  </div>
-  
-
+<div>
+<div class="quarto-title-meta-heading">发布日期</div>
+<div class="quarto-title-meta-contents">
+<p class="date">2024年1月29日</p>
+</div>
+</div>
+</div>
 </header>
-
-<section id="pid演示程序" class="level2">
+<section class="level2" id="pid演示程序">
 <h2 class="anchored" data-anchor-id="pid演示程序">PID演示程序</h2>
 <script type="text/javascript">
 var target;
@@ -376,41 +264,41 @@ function execute(){
 <tbody>
 <tr class="odd">
 <td>比例控制系數(<span class="math inline">\(P\)</span>)</td>
-<td><input id="input_P" value="-0.006"></td>
+<td><input id="input_P" value="-0.006"/></td>
 </tr>
 <tr class="even">
 <td>積分控制系數(<span class="math inline">\(I\)</span>)</td>
-<td><input id="input_I" value="-0.0008"></td>
+<td><input id="input_I" value="-0.0008"/></td>
 </tr>
 <tr class="odd">
 <td>微分控制系數(<span class="math inline">\(D\)</span>)</td>
-<td><input id="input_D" value="-0.00002"></td>
+<td><input id="input_D" value="-0.00002"/></td>
 </tr>
 <tr class="even">
 <td>受控制量（灰度）</td>
-<td><input id="input_target" value="24"></td>
+<td><input id="input_target" value="24"/></td>
 </tr>
 <tr class="odd">
 <td>小車前進速度</td>
-<td><input id="input_V" value="2"></td>
+<td><input id="input_V" value="2"/></td>
 </tr>
 <tr class="even">
 <td>場地寬度</td>
-<td><input id="input_width" value="640"></td>
+<td><input id="input_width" value="640"/></td>
 </tr>
 <tr class="odd">
 <td>場地高度</td>
-<td><input id="input_height" value="480"></td>
+<td><input id="input_height" value="480"/></td>
 </tr>
 </tbody>
 </table>
-<button type="button" id="submit" onclick="mainInit()">
+<button id="submit" onclick="mainInit()" type="button">
 提交參數
 </button>
 </form>
 <p>我已經把程序的初始參數調到一個比較舒服的狀態😉。但你可以試著挑戰下更高的車輛速度或更窄的場地高度。</p>
 <p>修改輸入參數，按下“提交參數”按鈕，下方的畫面會按新參數輸出仿真結果。</p>
-<canvas id="mainCanvas" width="640" height="480">
+<canvas height="480" id="mainCanvas" width="640">
 抱歉，此瀏覽器不支持HTML5
 </canvas>
 <script type="text/javascript">
@@ -418,36 +306,35 @@ mainInit();
 setInterval("execute()", 13);
 </script>
 </section>
-<section id="pid簡介" class="level2">
+<section class="level2" id="pid簡介">
 <h2 class="anchored" data-anchor-id="pid簡介">PID簡介</h2>
 <p>本頁面以控制小車沿著規定藍色軌道外沿行走爲例，演示了PID控制算法的運用。上方的畫面展示了仿真環境中小車的運行過程。讀者可以修改輸入參數，按下“提交參數”按鈕，重新輸出仿真結果。</p>
 <p>仿真程序在小車的前方設置了一個虛擬的灰度傳感器。畫面的左上角顯示了它接收到的灰度信號大小。假設在初始狀態下小車位於軌道上。如果小車右轉，那麽灰度傳感器將覆蓋藍色軌道，使得灰度增大。反之，傳感器覆蓋白色地面，灰度減小。因此，只要能平滑地控制小車的轉向，使灰度值始終保持在適中的數值附近，就能使小車始終沿著軌道邊緣運動。</p>
 <p>總而言之，在這個仿真的例子中，我們直接控制的量是小車的前進角度，而觀測的量是灰度傳感器的數值。</p>
 <p>仿真采用了經典的PID控制方法。僞代碼為</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">全局變量：</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"> - ierror：誤差的纍積，初始化為0；</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"> - error_pre：初始誤差，初始化為0；</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">輸入  </span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"> - value：觀測到的灰度值；</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"> - target：目標灰度值；</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"> - PID參數（P、I、D）；</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> verror <span class="op">=</span> value <span class="op">-</span> target<span class="op">;</span>  <span class="co">//  误差，越暗值越大</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>ierror <span class="op">+=</span> verror<span class="op">;</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> derror <span class="op">=</span> verror <span class="op">-</span> error_pre<span class="op">;</span>  <span class="co">//  數值的變化率 </span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>va <span class="op">=</span> verror <span class="op">*</span> P <span class="op">+</span> ierror <span class="op">*</span> I <span class="op">+</span> derror <span class="op">*</span> D<span class="op">;</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>error_pre <span class="op">=</span> verror<span class="op">;</span></span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>其中<code>P</code>參數可以説是最爲重要的，它決定了誤差大小和控制量之間的比例。<br>
-參數<code>I</code>則用於消除纍計誤差。設想這樣一種情況：車輛的方向盤歪了一點。因此當你想擺正方向的時候，車輛實際上卻在悄悄地左轉。這樣微小的轉向也許一開始看不出來，但是隨著時間的纍積，方向的偏差會越來越大。參數<code>I</code>將誤差的纍積反饋到控制量，從而抑制誤差的纍積；<br>
+<div class="sourceCode" id="cb1"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="co">全局變量：</span></span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="co"> - ierror：誤差的纍積，初始化為0；</span></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="co"> - error_pre：初始誤差，初始化為0；</span></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="co">輸入  </span></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a><span class="co"> - value：觀測到的灰度值；</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a><span class="co"> - target：目標灰度值；</span></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a><span class="co"> - PID參數（P、I、D）；</span></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a><span class="co">*/</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a><span class="kw">var</span> verror <span class="op">=</span> value <span class="op">-</span> target<span class="op">;</span>  <span class="co">//  误差，越暗值越大</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>ierror <span class="op">+=</span> verror<span class="op">;</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a><span class="kw">var</span> derror <span class="op">=</span> verror <span class="op">-</span> error_pre<span class="op">;</span>  <span class="co">//  數值的變化率 </span></span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>va <span class="op">=</span> verror <span class="op">*</span> P <span class="op">+</span> ierror <span class="op">*</span> I <span class="op">+</span> derror <span class="op">*</span> D<span class="op">;</span></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>error_pre <span class="op">=</span> verror<span class="op">;</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<p>其中<code>P</code>參數可以説是最爲重要的，它決定了誤差大小和控制量之間的比例。<br/>
+參數<code>I</code>則用於消除纍計誤差。設想這樣一種情況：車輛的方向盤歪了一點。因此當你想擺正方向的時候，車輛實際上卻在悄悄地左轉。這樣微小的轉向也許一開始看不出來，但是隨著時間的纍積，方向的偏差會越來越大。參數<code>I</code>將誤差的纍積反饋到控制量，從而抑制誤差的纍積；<br/>
 參數<code>D</code>則可以用來加快控制系統的反應速度。<code>D</code>將誤差的變化率作用於控制量，使得車輛可以在感知到偏差增大的時候，提前采取措施。</p>
 </section>
-<section id="後記" class="level2">
+<section class="level2" id="後記">
 <h2 class="anchored" data-anchor-id="後記">後記</h2>
 <p>本文最初寫於2017年五月30日。當時我在一堂實驗課上調PID參數，效果離預期還有一定差距就下課了。課後沒有辦法拿實物再做實驗，於是就簡單寫個程序模擬下。當時比較菜（當然現在也是），所以寫完程序的時候很開心。稍微冷靜下來看一看，這個仿真在很多方面並不完善。 首先車輛在運動、轉彎的時候都有慣性。我的仿真沒有考慮這點。如果能加一個運動模型到程序裏會更好； 其次，在真實的車輛/機器人上，受控制的是輪胎的轉速差、車輛的轉向機構，從而間接控制車輛的運動方向。受能力所限，這個仿真也沒法準確模擬這些細節。</p>
 <p>今天將這篇文章重新整理一下，但也不去過分修飾了。回頭看這份粗糙的作品，還是能感覺到當時的趣味，足矣。</p>
 </section>
-
 </main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -584,10 +471,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-
-
-
-</body></html>
+</body>
         </div>
         <div class="post_list">
             <span>By </span>

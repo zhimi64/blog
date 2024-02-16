@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
+
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  
+
+  
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>導向濾波原理及其Python實現</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././guided_filter_20240202.html">
+<meta name="twitter:title" content="執迷的博客 ~ 導向濾波原理及其Python實現">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ 導向濾波原理及其Python實現" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+<!-- MathJax -->
+
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+      <p>無知使我幸福，因爲這世界還有秘密在等我探索</p>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="././about.html">About</a></li>
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <article>
+        <h2 class="post_title post_detail"><a href="././guided_filter_20240202.html" rel="bookmark" title="Permalink to 導向濾波原理及其Python實現">導向濾波原理及其Python實現</a></h2>
+        
+        <p>
+            <span id="busuanzi_container_page_pv">
+                本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+            </span>
+        </p>
+        
+        <div class="entry-content blog-post">
+            <body>
+<header id="title-block-header">
+<h1 class="title">導向濾波原理及其Python實現</h1>
+<p class="date">2024/2/2</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<h2 id="toc-title">目录</h2>
+<ul>
+<li><a href="#問題背景" id="toc-問題背景"><span class="toc-section-number">1</span>  問題背景</a></li>
+<li><a href="#雙邊濾波" id="toc-雙邊濾波"><span class="toc-section-number">2</span>  雙邊濾波</a>
+<ul>
+<li><a href="#時間複雜度" id="toc-時間複雜度"><span class="toc-section-number">2.1</span>  時間複雜度</a></li>
+<li><a href="#梯度反轉問題" id="toc-梯度反轉問題"><span class="toc-section-number">2.2</span>  梯度反轉問題</a></li>
+</ul></li>
+<li><a href="#導向濾波" id="toc-導向濾波"><span class="toc-section-number">3</span>  導向濾波</a></li>
+<li><a href="#python實現" id="toc-python實現"><span class="toc-section-number">4</span>  Python實現</a>
+<ul>
+<li><a href="#效果測試" id="toc-效果測試"><span class="toc-section-number">4.1</span>  效果測試</a></li>
+<li><a href="#時間複雜度和加速方法" id="toc-時間複雜度和加速方法"><span class="toc-section-number">4.2</span>  時間複雜度和加速方法</a></li>
+</ul></li>
+<li><a href="#理論分析" id="toc-理論分析"><span class="toc-section-number">5</span>  理論分析</a>
+<ul>
+<li><a href="#epsilon的作用" id="toc-epsilon的作用"><span class="toc-section-number">5.1</span> <span class="math inline">\(\epsilon\)</span>的作用</a></li>
+</ul></li>
+<li><a href="#參考文獻" id="toc-參考文獻"><span class="toc-section-number">6</span>  參考文獻</a></li>
+</ul>
+</nav>
+<!-- MathJax!! -->
+<!-- <script type="text/javascript">
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['$$', '$$']]
+  }
+};
+</script> -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script async="" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<p>在一個雙目立體視覺項目中，我從一位師兄那裏瞭解到了導向濾波算法（guided image filtering）<span class="citation" data-cites="he_guided_2013"><sup>[1]</sup></span>。引入這個算法來平滑雙目圖像的匹配代價后，在僅使用非常基本的立體匹配算法的前提下，輸出的深度圖質量立竿見影地有了提高。就像何凱明的ResNet、Mask R-CNN等工作一樣，他的導向濾波算法也給我留下了非常好的印象。</p>
+<p>本文記錄了我對該算法的理解，並提供了一份簡單的Python代碼實現。</p>
+<h2 class="anchored" data-number="1" id="問題背景"><span class="header-section-number">1</span> 問題背景</h2>
+<p>導向濾波算法要處理的是如何在平滑圖像的同時“保邊”的問題——既要平滑圖像，但是有不能讓原圖像中包含綫條細節的部分變模糊。不僅是立體匹配算法，人像美化、圖像去霧等應用領域都有類似的需求。在導向濾波之前，人們往往應用雙邊濾波器（bilateral filter）來應對。但是雙邊濾波器的時間複雜度不盡如人意，而且在應用於圖像細節增强時會發生“梯度反轉（gradient reversal）”問題。</p>
+<p>在介紹導向濾波之前，先給出基本定義： 記輸入圖像為<span class="math inline">\(p\)</span>，引導圖為<span class="math inline">\(I\)</span>，輸出圖像為<span class="math inline">\(q\)</span>，一個綫性平移可變濾波（linear translation-variant filter）過程可定義爲： <span id="eq-linear-translation-variant-filter"><span class="math display">\[
+q_i = \sum_j W_{ij}(I) p_j，
+\tag{1}\]</span></span> 其中，i和j是像素的索引，濾波器核<span class="math inline">\(W_{ij}\)</span>是導向圖<span class="math inline">\(I\)</span>的函數。濾波器核<span class="math inline">\(W_{ij}\)</span>與<span class="math inline">\(p\)</span>無關，故我們稱該濾波器相對於<span class="math inline">\(p\)</span>是綫性（linear）的。<span class="math inline">\(W_{ij}\)</span>與像素位置有關，即不同位置的濾波器核也不同，故稱它是平移可變（translation-variant）的。雙邊濾波和導向濾波都可以歸於此類。</p>
+<h2 class="anchored" data-number="2" id="雙邊濾波"><span class="header-section-number">2</span> 雙邊濾波</h2>
+<p>聯合雙邊濾波器（joint bilateral filter）的濾波器核<span class="math inline">\(W^{bf}\)</span>可以用如下公式表示： <span id="eq-kernel-jbf"><span class="math display">\[
+W^{bf}_{ij} = \frac{1}{K_i} \exp(-\frac{\left|\vec x_i - \vec x_j\right|^2}{\sigma_s^2}) \exp(-\frac{\left| I_i - I_j \right|^2}{\sigma_r^2}).
+\tag{2}\]</span></span></p>
+<p>其中<span class="math inline">\(\vec x\)</span>為像素位置，<span class="math inline">\(K_i\)</span>是使得<span class="math inline">\(\sum_j W_{ij}^{bf}=1\)</span>的縮放係數。<span class="math inline">\(\sigma_s,\sigma_r\)</span>是調整位置相似度和灰度/顔色相似度的參數。當<span class="math inline">\(I\)</span>=<span class="math inline">\(p\)</span>時，聯合雙邊濾波器退化為雙邊濾波器（bilateral filter）。</p>
+<p>從公式中容易看出，雙邊濾波為位置相近和像素值相近的像素賦予更高的權重。</p>
+<h3 class="anchored" data-number="2.1" id="時間複雜度"><span class="header-section-number">2.1</span> 時間複雜度</h3>
+<p>雙邊濾波的時間複雜度為<span class="math inline">\(O(Nr^2)\)</span>，其中<span class="math inline">\(r\)</span>為濾波器窗口的尺寸。在采取近似算法，犧牲圖像質量的情況下，雙邊濾波能取得<span class="math inline">\(O(N)\)</span>的時間複雜度。</p>
+<h3 class="anchored" data-number="2.2" id="梯度反轉問題"><span class="header-section-number">2.2</span> 梯度反轉問題</h3>
+<p>導向濾波原論文<span class="citation" data-cites="he_guided_2013"><sup>[1]</sup></span>指出，在應用雙邊濾波做細節增强時，雙邊濾波器會出現梯度反轉問題。這是因爲在圖像上梯度較大的區域，像素變化劇烈，像素之間相似度低，<a href="#eq-kernel-jbf">公式 2</a>中的權重都不高，導致濾波結果不穩定。</p>
+<h2 class="anchored" data-number="3" id="導向濾波"><span class="header-section-number">3</span> 導向濾波</h2>
+<p>導向濾波一方面在時間複雜度方面較雙邊濾波器有優勢，另一方面通過假設<strong>輸出圖是導向圖的綫性變換</strong>，減少了梯度反轉問題。</p>
+<p>導向濾波器的核心假設是，在以像素<span class="math inline">\(k\)</span>為中心的窗口<span class="math inline">\(\omega_k\)</span>内，輸出圖像<span class="math inline">\(q\)</span>可表示爲導向圖<span class="math inline">\(I\)</span>的綫性變換： <span id="eq-linear-trans-in-window"><span class="math display">\[
+q_i = a_k I_i + b_k , \forall i \in \omega_k,
+\tag{3}\]</span></span> 其中<span class="math inline">\((a_k, b_k)\)</span>被假設為窗口<span class="math inline">\(\omega_k\)</span>内的常量。設窗口是半徑爲<span class="math inline">\(r\)</span>的方形。在窗口内，由於<span class="math inline">\(\nabla q = a\nabla I\)</span>，所以我們可以認爲輸出圖像保留了導向圖的梯度趨勢。</p>
+<p>為求解<a href="#eq-linear-trans-in-window">公式 3</a>，可最小化如下代價函數： <span id="eq-cost-func"><span class="math display">\[
+E(a_k, b_k) = \sum_{i\in \omega_k} ((a_k I_i + b_k - p_i)^2 + \epsilon a_k^2).
+\tag{4}\]</span></span> 後續我們將看到，<span class="math inline">\(\epsilon\)</span>用於避免<span class="math inline">\(|a_k|\)</span>過大。</p>
+<p>最小化<a href="#eq-cost-func">公式 4</a>的解如下： <span id="eq-coeffs"><span class="math display">\[
+\begin{aligned}
+a_k &amp;= \frac{\frac{1}{|\omega|}\sum_{i\in \omega_k}I_ip_i - \mu_k \bar p_k}{\sigma^2_k + \epsilon}\\
+b_k &amp;= \bar p_k - a_k \mu_k.
+\end{aligned}
+\tag{5}\]</span></span> 其中，<span class="math inline">\(\mu_k\)</span>和<span class="math inline">\(\sigma_k^2\)</span>分別爲窗口<span class="math inline">\(\omega_k\)</span>内<span class="math inline">\(I\)</span>的均值和方差，<span class="math inline">\(\left|\omega\right|\)</span>是窗口<span class="math inline">\(\omega_k\)</span>内的像素數量，<span class="math inline">\(\bar p_k\)</span>是<span class="math inline">\(\omega_k\)</span>内，圖像<span class="math inline">\(p\)</span>的像素均值。</p>
+<p>至此，我們構建了在窗口<span class="math inline">\(\omega_k\)</span>内的濾波規則。但是，像素<span class="math inline">\(q_i\)</span>被包含在多個窗口中，每個窗口在<span class="math inline">\(i\)</span>位置的濾波結果都不相同。對此，導向濾波簡單地計算所有窗口的濾波結果的平均。即 <span id="eq-avg-of-windows"><span class="math display">\[
+\begin{aligned}
+q_i &amp;= \frac{1}{|\omega|} \sum_{k:i\in\omega_k}(a_kI_i+b_k) \\
+&amp;= \bar a_iI_i+\bar b_i
+\end{aligned}
+\tag{6}\]</span></span> 其中<span class="math inline">\(\bar a_i = \frac{1}{|\omega|} \sum_{k\in\omega_i} a_k\)</span>，<span class="math inline">\(\bar b_i = \frac{1}{|\omega|} \sum_{k\in \omega_i}b_k\)</span></p>
+<p>經過這個平均操作，我們無法保證<span class="math inline">\(\nabla_q\)</span>是<span class="math inline">\(\nabla_I\)</span>的綫性變換，但我們仍然假設<span class="math inline">\(\nabla_q\)</span>的梯度與<span class="math inline">\(\nabla_I\)</span>的梯度是接近的。</p>
+<h2 class="anchored" data-number="4" id="python實現"><span class="header-section-number">4</span> Python實現</h2>
+<p>以下代碼給出了導向濾波器的簡單Python實現。其計算參考<a href="#eq-coeffs">公式 5</a>, <a href="#eq-avg-of-windows">公式 6</a>。</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> cv2 <span class="im">as</span> cv </span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="kw">def</span> guided_filter(input_image, guide_image, kernel_radius, epsilon):</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a>    d <span class="op">=</span> kernel_radius <span class="op">*</span> <span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>    window_size <span class="op">=</span> d<span class="op">**</span><span class="dv">2</span> </span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>    I_mean <span class="op">=</span> cv.blur(guide_image, (d, d))</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>    I_sq_mean <span class="op">=</span> cv.blur(guide_image<span class="op">**</span><span class="dv">2</span>, (d, d))</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>    sigma_sq <span class="op">=</span> I_sq_mean <span class="op">-</span> I_mean<span class="op">**</span><span class="dv">2</span> </span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>    Ip_mean <span class="op">=</span> cv.blur(guide_image <span class="op">*</span> input_image, (d, d))</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>    p_mean <span class="op">=</span> cv.blur(input_image, (d, d))</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>    a <span class="op">=</span> (Ip_mean <span class="op">-</span> I_mean <span class="op">*</span> p_mean) <span class="op">/</span> (sigma_sq <span class="op">+</span> epsilon)</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>    b <span class="op">=</span> p_mean <span class="op">-</span> a <span class="op">*</span> I_mean </span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>    a_mean <span class="op">=</span> cv.blur(a, (d, d))</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>    b_mean <span class="op">=</span> cv.blur(b, (d, d))</span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>    q <span class="op">=</span> a_mean <span class="op">*</span> guide_image <span class="op">+</span> b_mean</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>    <span class="cf">return</span> q </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<h3 class="anchored" data-number="4.1" id="效果測試"><span class="header-section-number">4.1</span> 效果測試</h3>
+<p>本節用具體的示例展示了導向濾波的效果和特點。</p>
+<p>首先，我們讀取一張圖像，並將其轉換到合適的格式和尺寸。</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>img <span class="op">=</span> cv.imread(<span class="st">'test_img.png'</span>, cv.IMREAD_COLOR)</span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a>img <span class="op">=</span> cv.cvtColor(img, cv.COLOR_BGR2RGB).astype(np.float32) <span class="op">/</span> <span class="fl">255.</span></span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>img <span class="op">=</span> cv.resize(img, <span class="va">None</span>, fx<span class="op">=</span><span class="fl">0.5</span>, fy<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a>img_gray <span class="op">=</span> np.mean(img, axis<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a></span>
+<span id="cb2-9"><a aria-hidden="true" href="#cb2-9" tabindex="-1"></a>plt.imshow(img_gray)</span>
+<span id="cb2-10"><a aria-hidden="true" href="#cb2-10" tabindex="-1"></a>plt.title(<span class="st">'Original Image'</span>)<span class="op">;</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img height="431" src="guided_filter_20240202\figure-html\cell-3-output-1.png" width="424"/></p>
+</div>
+</div>
+<p>接著，爲原圖像加上簡單的噪聲：</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>img_gray_with_noise <span class="op">=</span> img_gray <span class="op">*</span> <span class="dv">1</span></span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>coords <span class="op">=</span> <span class="bu">tuple</span>(np.random.randint(<span class="dv">0</span>, size <span class="op">-</span> <span class="dv">1</span>, <span class="dv">500</span>) <span class="cf">for</span> size <span class="kw">in</span> img_gray.shape)</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>img_gray_with_noise[coords] <span class="op">=</span> np.random.random((<span class="bu">len</span>(coords[<span class="dv">0</span>]), ))</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>img_gray_with_noise <span class="op">=</span> np.clip(img_gray_with_noise, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a></span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>plt.imshow(img_gray_with_noise)</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>plt.title(<span class="st">'Image with Noise'</span>)</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>plt.colorbar()<span class="op">;</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img height="431" src="guided_filter_20240202\figure-html\cell-4-output-1.png" width="499"/></p>
+</div>
+</div>
+<p>在噪聲圖上應用先前寫好的導向濾波實現（以噪聲圖為導向圖），結果如下：</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>r <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>out_gray <span class="op">=</span> guided_filter(</span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>    img_gray_with_noise,</span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    img_gray_with_noise, </span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>    kernel_radius<span class="op">=</span>r, </span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>    epsilon<span class="op">=</span><span class="fl">0.01</span></span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>)</span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">3</span>))</span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>plt.subplot(<span class="dv">121</span>)</span>
+<span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a>plt.imshow(img_gray)</span>
+<span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a>plt.title(<span class="st">'Original Image'</span>)</span>
+<span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a>plt.colorbar()</span>
+<span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a>plt.subplot(<span class="dv">122</span>)</span>
+<span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>plt.imshow(img_gray_with_noise)</span>
+<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>plt.title(<span class="st">'Image with Noise'</span>)</span>
+<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>plt.colorbar()</span>
+<span id="cb4-18"><a aria-hidden="true" href="#cb4-18" tabindex="-1"></a>plt.show()</span>
+<span id="cb4-19"><a aria-hidden="true" href="#cb4-19" tabindex="-1"></a></span>
+<span id="cb4-20"><a aria-hidden="true" href="#cb4-20" tabindex="-1"></a>plt.imshow(out_gray)</span>
+<span id="cb4-21"><a aria-hidden="true" href="#cb4-21" tabindex="-1"></a>plt.title(<span class="st">'After Filtering'</span>)</span>
+<span id="cb4-22"><a aria-hidden="true" href="#cb4-22" tabindex="-1"></a>plt.colorbar()</span>
+<span id="cb4-23"><a aria-hidden="true" href="#cb4-23" tabindex="-1"></a>plt.show()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img height="283" src="guided_filter_20240202\figure-html\cell-5-output-1.png" width="698"/></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img height="431" src="guided_filter_20240202\figure-html\cell-5-output-2.png" width="499"/></p>
+</div>
+</div>
+<p>從濾波結果中可以看到，圖像中角色面部大部分的噪點都被成功的平滑了。美中不足的是，綫條附近的噪點仍然被保留下來。這是因爲導向濾波是一個<strong>保邊</strong>的濾波器。如果遇到圖像的邊緣，那麽這個地方的平滑效果就會降低。</p>
+<h3 class="anchored" data-number="4.2" id="時間複雜度和加速方法"><span class="header-section-number">4.2</span> 時間複雜度和加速方法</h3>
+<p>與聯合雙邊濾波相比，導向濾波的優勢之一使其簡單的實現方式和其較低的時間複雜度。下面將討論如何高效的實現導向濾波算法。</p>
+<p>從上面提供的代碼實現可以看出，導向濾波是固定若干步均值濾波構成的。那麽問題就變成如何高效地完成均值濾波。</p>
+<p><strong>積分法</strong><br/>
+一個非常有名，應用廣汎的計算均值濾波的方法是積分法。設輸入圖像<span class="math inline">\(p\)</span>的形狀是大小為<span class="math inline">\(h\times w\)</span>的矩形，我們可以<span class="math inline">\(O(N)=O(h\times w)\)</span>的時間複雜度得到其積分圖<span class="math inline">\(F\)</span>，大小爲<span class="math inline">\((h+1)\times(w+1)\)</span>。對於<span class="math inline">\(F\)</span>上的任意像素<span class="math inline">\((i, j)\)</span>， <span class="math display">\[F(i, j) = \sum_{x &lt; i, y &lt; j} p(i, j),\]</span> 那麽矩形區域<span class="math inline">\(x_1 &lt;= x &lt; x_2, y_1 &lt;= y &lt; y_2\)</span>内像素的和等於 <span class="math display">\[
+F(x_2, y_2) - F(x_2, y_1) - F(x_1, y_2) + F(x_1, y_1).
+\]</span> 於是基於積分圖便可以實現<span class="math inline">\(O(N)\)</span>時間複雜度的均值濾波。基於這個理由，我們說導向濾波的時間複雜度是<span class="math inline">\(O(N)\)</span>. 注意<span class="math inline">\(O(N)\)</span>表明該算法與窗口半徑<span class="math inline">\(r\)</span>無關，<strong>因此我們可以任意選擇<span class="math inline">\(r\)</span>的大小!</strong></p>
+<p>這裏我想插入一點個人的小看法。基於積分法的<span class="math inline">\(O(N)\)</span>時間複雜度是基於CPU實現的。實際應用中，我們常常會選擇GPU來實現均值濾波。這時候并不能認爲<span class="math inline">\(r\)</span>是一個與算法效率無關的參數。</p>
+<p><strong>圖片縮放法</strong><br/>
+另一個優化角度是從圖像分辨率出發。導向濾波的結果由輸入圖像和導向圖共同決定。在導向圖和原輸入圖的代價不一樣昂貴時，我們可以考慮采用低分辨率的圖像。例如，采用<span class="math inline">\(\frac{1}{2}\)</span>大小的輸入圖像和與原圖片尺寸相同的導向圖，這可能使我們能在節省計算量的情況下，不犧牲太多的圖像質量。</p>
+<h2 class="anchored" data-number="5" id="理論分析"><span class="header-section-number">5</span> 理論分析</h2>
+<h3 class="anchored" data-number="5.1" id="epsilon的作用"><span class="header-section-number">5.1</span> <span class="math inline">\(\epsilon\)</span>的作用</h3>
+<p>假設使用原圖作爲導向圖，即<span class="math inline">\(I=p\)</span>。若<span class="math inline">\(\epsilon = 0\)</span>，則顯然 <span class="math display">\[
+\begin{aligned}
+a_k &amp;= \frac{\frac{1}{\left|\omega\right|} \sum_{i\in\omega_k} I_i^2 - \mu_k^2}{\sigma_k^2} \\
+&amp;= \frac{\sigma_k^2}{\sigma_k^2 + \epsilon} \\
+&amp;= 1 \\
+b_k &amp;= \bar p_k - a_k \mu_k \\
+&amp;= \mu_k - \mu_k \\
+&amp;= 0
+\end{aligned}
+\]</span> 此時，輸出等於輸入。（但是實踐中<a href="#eq-coeffs">公式 5</a>中有分母<span class="math inline">\(\sigma_k^2+\epsilon\)</span>，我們需要取<span class="math inline">\(\epsilon &gt; 0\)</span>才能避免除0異常。）</p>
+<p>若<span class="math inline">\(\epsilon &gt; 0\)</span>，分兩種極端的情況討論：<br/>
+一、窗口<span class="math inline">\(\omega_k\)</span>内是平坦區域，即<span class="math inline">\(\sigma_k = 0\)</span>，此時 <span class="math display">\[
+\begin{aligned}
+a_k &amp;= \frac{\sigma_k^2}{\sigma_k^2 + \epsilon} \\
+&amp;= 0 \\
+b_k &amp;= \bar p_k - a_k \mu_k \\
+&amp;= \bar p_k
+\end{aligned}
+\]</span> 此時導向濾波退化為均值濾波。<br/>
+二、窗口<span class="math inline">\(\omega_k\)</span>内像素方差大，即<span class="math inline">\(\omega_k\rightarrow\infty\)</span>，此時 <span class="math display">\[
+\begin{aligned}
+a_k &amp;= \frac{\sigma_k^2}{\sigma_k^2 + \epsilon} \\
+&amp;\approx 1 \\
+b_k &amp;= \bar p_k - a_k \mu_k \\
+&amp;\approx 0
+\end{aligned}
+\]</span> 此時輸出約等於輸入。</p>
+<p>一般的，可以認爲導向濾波通過比較<span class="math inline">\(\epsilon\)</span>和<span class="math inline">\(\sigma_k^2\)</span>的大小調控圖像的平滑程度。如果<span class="math inline">\(\epsilon\)</span>遠大於方差<span class="math inline">\(\sigma_k^2\)</span>，那麽<span class="math inline">\(a_k\)</span>接近于0，圖像變平滑；反之若<span class="math inline">\(\epsilon\)</span>遠小於方差，那麽平滑程度便會削弱。</p>
+<h2 class="appendix anchored" data-number="6" id="參考文獻"><span class="header-section-number">6</span> 參考文獻</h2>
+<div class="references csl-bib-body" id="refs" role="doc-bibliography">
+<div class="csl-entry" id="ref-he_guided_2013" role="doc-biblioentry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">HE K, SUN J, TANG X. <a href="https://doi.org/10.1109/TPAMI.2012.213">Guided <span>Image</span> <span>Filtering</span></a>[J]. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2013, 35(6): 1397–1409.</div>
+</div>
+</div>
+<!-- ## 數學證明 {.appendix}
+[@eq-linear-translation-variant-filter]規定了綫性平移可變濾波器的基本形式。可以證明導向濾波也可轉化爲同樣的形式。此時，濾波器核為：
+$$
+W_{ij}(I) = \frac{1}{|\omega|^2} \sum_{k:(i, j)\in \omega_k} (1 + \frac{(I_i - \mu_k)(I_j - \mu_k)}{\sigma_k^2+\epsilon}),
+$$
+且該濾波器核滿足$\sum_j W_{ij}(I) = 1$，無需進一步歸一化。 -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+  tabsets.forEach(function(tabset) {
+    const tabby = new Tabby('#' + tabset.id);
+  });
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'light-border',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</body>
+        </div>
+        <div class="post_list">
+            <span>By </span>
+            <a href="./">@執迷</a>
+            <span> in </span>
+            <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 計算機視覺">[ 計算機視覺 ]</a></span>
+            <span class="post_date">2024-02-02</span>
+            <div><span>Tags : </span>
+                
+                
+                <span><a href="./">#計算機視覺, </a></span>
+                
+                <span><a href="./">#圖像處理, </a></span>
+                
+                <span><a href="./">#導向濾波, </a></span>
+                
+                <span><a href="./">#圖像濾波, </a></span>
+                
+                
+            </div>
+
+            <div class="entry-social">
+                <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././guided_filter_20240202.html&text=導向濾波原理及其Python實現&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+                <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././guided_filter_20240202.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+                <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././guided_filter_20240202.html&t=導向濾波原理及其Python實現"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+                <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././guided_filter_20240202.html&title=導向濾波原理及其Python實現" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+                <span class="mail"><a href="mailto:?subject=導向濾波原理及其Python實現&amp;body=Viens découvrir un article à propos de [導向濾波原理及其Python實現] sur le site de 執迷. ././guided_filter_20240202.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+            </div>
+        </div>
+        
+    </article>
+</section>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
+</body>
+</html>

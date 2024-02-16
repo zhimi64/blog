@@ -65,6 +65,15 @@
 <meta property="og:description" content="" />
 <meta property="og:image" content="" />
 
+<!-- MathJax -->
+
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
 </head>
 
 <body>
@@ -118,201 +127,66 @@
         </p>
         
         <div class="entry-content blog-post">
-            <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW" xml:lang="zh-TW"><head>
-
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-
-<title>相機模型和相機標定</title>
-<style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
-  vertical-align: middle;
-}
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
-</style>
-
-
-<script src="document_files/libs/clipboard/clipboard.min.js"></script>
-<script src="document_files/libs/quarto-html/quarto.js"></script>
-<script src="document_files/libs/quarto-html/popper.min.js"></script>
-<script src="document_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="document_files/libs/quarto-html/anchor.min.js"></script>
-<link href="document_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="document_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="document_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="document_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="document_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-</head>
-
-<body>
-
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-  <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">目录</h2>
-   
-  <ul>
-  <li><a href="#什麽是相機標定" id="toc-什麽是相機標定" class="nav-link active" data-scroll-target="#什麽是相機標定"><span class="toc-section-number">1</span>  什麽是相機標定</a></li>
-  <li><a href="#相機坐標系和世界坐標系" id="toc-相機坐標系和世界坐標系" class="nav-link" data-scroll-target="#相機坐標系和世界坐標系"><span class="toc-section-number">2</span>  相機坐標系和世界坐標系</a></li>
-  <li><a href="#針孔相機模型" id="toc-針孔相機模型" class="nav-link" data-scroll-target="#針孔相機模型"><span class="toc-section-number">3</span>  針孔相機模型</a>
-  <ul class="collapse">
-  <li><a href="#透視投影" id="toc-透視投影" class="nav-link" data-scroll-target="#透視投影"><span class="toc-section-number">3.1</span>  透視投影</a></li>
-  <li><a href="#鏡頭畸變" id="toc-鏡頭畸變" class="nav-link" data-scroll-target="#鏡頭畸變"><span class="toc-section-number">3.2</span>  鏡頭畸變</a></li>
-  </ul></li>
-  <li><a href="#標定" id="toc-標定" class="nav-link" data-scroll-target="#標定"><span class="toc-section-number">4</span>  標定</a>
-  <ul class="collapse">
-  <li><a href="#標定工具" id="toc-標定工具" class="nav-link" data-scroll-target="#標定工具"><span class="toc-section-number">4.1</span>  標定工具</a></li>
-  <li><a href="#標定流程" id="toc-標定流程" class="nav-link" data-scroll-target="#標定流程"><span class="toc-section-number">4.2</span>  標定流程</a></li>
-  <li><a href="#內外參的閉式解" id="toc-內外參的閉式解" class="nav-link" data-scroll-target="#內外參的閉式解"><span class="toc-section-number">4.3</span>  內外參的閉式解</a></li>
-  <li><a href="#求相機的畸變係數" id="toc-求相機的畸變係數" class="nav-link" data-scroll-target="#求相機的畸變係數"><span class="toc-section-number">4.4</span>  求相機的畸變係數</a></li>
-  </ul></li>
-  <li><a href="#思考題" id="toc-思考題" class="nav-link" data-scroll-target="#思考題"><span class="toc-section-number">5</span>  思考題</a></li>
-  <li><a href="#標定算法的python實現" id="toc-標定算法的python實現" class="nav-link" data-scroll-target="#標定算法的python實現"><span class="toc-section-number">6</span>  標定算法的Python實現</a></li>
-  <li><a href="#版權聲明" id="toc-版權聲明" class="nav-link" data-scroll-target="#版權聲明"><span class="toc-section-number">7</span>  版權聲明</a></li>
-  <li><a href="#bibliography" id="toc-bibliography" class="nav-link" data-scroll-target="#bibliography">參考文獻</a></li>
-  </ul>
+            <body>
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+<nav class="toc-active" id="TOC" role="doc-toc">
+<h2 id="toc-title">目录</h2>
+<ul>
+<li><a class="nav-link active" data-scroll-target="#什麽是相機標定" href="#什麽是相機標定" id="toc-什麽是相機標定"><span class="toc-section-number">1</span>  什麽是相機標定</a></li>
+<li><a class="nav-link" data-scroll-target="#相機坐標系和世界坐標系" href="#相機坐標系和世界坐標系" id="toc-相機坐標系和世界坐標系"><span class="toc-section-number">2</span>  相機坐標系和世界坐標系</a></li>
+<li><a class="nav-link" data-scroll-target="#針孔相機模型" href="#針孔相機模型" id="toc-針孔相機模型"><span class="toc-section-number">3</span>  針孔相機模型</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#透視投影" href="#透視投影" id="toc-透視投影"><span class="toc-section-number">3.1</span>  透視投影</a></li>
+<li><a class="nav-link" data-scroll-target="#鏡頭畸變" href="#鏡頭畸變" id="toc-鏡頭畸變"><span class="toc-section-number">3.2</span>  鏡頭畸變</a></li>
+</ul></li>
+<li><a class="nav-link" data-scroll-target="#標定" href="#標定" id="toc-標定"><span class="toc-section-number">4</span>  標定</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#標定工具" href="#標定工具" id="toc-標定工具"><span class="toc-section-number">4.1</span>  標定工具</a></li>
+<li><a class="nav-link" data-scroll-target="#標定流程" href="#標定流程" id="toc-標定流程"><span class="toc-section-number">4.2</span>  標定流程</a></li>
+<li><a class="nav-link" data-scroll-target="#內外參的閉式解" href="#內外參的閉式解" id="toc-內外參的閉式解"><span class="toc-section-number">4.3</span>  內外參的閉式解</a></li>
+<li><a class="nav-link" data-scroll-target="#求相機的畸變係數" href="#求相機的畸變係數" id="toc-求相機的畸變係數"><span class="toc-section-number">4.4</span>  求相機的畸變係數</a></li>
+</ul></li>
+<li><a class="nav-link" data-scroll-target="#思考題" href="#思考題" id="toc-思考題"><span class="toc-section-number">5</span>  思考題</a></li>
+<li><a class="nav-link" data-scroll-target="#標定算法的python實現" href="#標定算法的python實現" id="toc-標定算法的python實現"><span class="toc-section-number">6</span>  標定算法的Python實現</a></li>
+<li><a class="nav-link" data-scroll-target="#版權聲明" href="#版權聲明" id="toc-版權聲明"><span class="toc-section-number">7</span>  版權聲明</a></li>
+<li><a class="nav-link" data-scroll-target="#bibliography" href="#bibliography" id="toc-bibliography">參考文獻</a></li>
+</ul>
 </nav>
 </div>
 <main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
+<header class="quarto-title-block default" id="title-block-header">
 <div class="quarto-title">
 <h1 class="title">相機模型和相機標定</h1>
 </div>
-
-
-
 <div class="quarto-title-meta">
-
-    
-    <div>
-    <div class="quarto-title-meta-heading">发布日期</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">2022年2月22日</p>
-    </div>
-  </div>
-  
-    
-  </div>
-  
-
+<div>
+<div class="quarto-title-meta-heading">发布日期</div>
+<div class="quarto-title-meta-contents">
+<p class="date">2022年2月22日</p>
+</div>
+</div>
+</div>
 </header>
-
-<section id="什麽是相機標定" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="什麽是相機標定"><span class="header-section-number">1</span> 什麽是相機標定</h2>
+<section class="level2" data-number="1" id="什麽是相機標定">
+<h2 class="anchored" data-anchor-id="什麽是相機標定" data-number="1"><span class="header-section-number">1</span> 什麽是相機標定</h2>
 <p><strong>相機標定是求解相機內外參的過程</strong>。 常見的<strong>内參</strong>包括相機的焦距、感光單元的間距、鏡頭畸變係數等。<strong>外參</strong>是相機相對於參考坐標系或者另一傳感器的位姿。</p>
 <p>雙目視覺、增強現實、立體匹配、單目3D目標檢測……許多任務都需要使用準確的相機內外參。只有內外參準確，我們才能得到的精準的測量和計算結果。然而，相機成像是一個複雜的過程：光從物體表面出發，進入相機，經過鏡頭和光圈，然後落在感光芯片的某處。物體的形狀、物體的方位、焦距、光圈數、感光芯片的大小、感光單元的分佈間距……有許多參數會對最終的成像產生影響。</p>
 <p>內外參常常是無法直接精確測得的。我們無法直接用尺子測量鏡頭到感光芯片的距離，更無法用普通工具測量芯片上感光單元之間的間距（這是微米級別的尺寸），而鏡頭的畸變模型還帶來更多更複雜的因素。要如何精確地得出這些數值呢？</p>
 <p>首先，我們要建立相機的數學模型。 本文介紹常見的針孔相機模型。它用小孔成像來近似相機的成像過程。理解針孔相機模型，有助於學習其它相機模型，例如魚眼相機模型和線陣相機模型。</p>
 <p>相機模型建立後，我們用相機拍攝特定標定物，根據標定物的參數及成像效果，可以間接推斷出相機的各項參數。</p>
 </section>
-<section id="相機坐標系和世界坐標系" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="相機坐標系和世界坐標系"><span class="header-section-number">2</span> 相機坐標系和世界坐標系</h2>
-<div id="fig-cam_coord_system" class="quarto-figure quarto-figure-center anchored">
+<section class="level2" data-number="2" id="相機坐標系和世界坐標系">
+<h2 class="anchored" data-anchor-id="相機坐標系和世界坐標系" data-number="2"><span class="header-section-number">2</span> 相機坐標系和世界坐標系</h2>
+<div class="quarto-figure quarto-figure-center anchored" id="fig-cam_coord_system">
 <figure class="figure">
 <figure class="figure">
-<img src="calibration_20220222\imgs\cam_model\coord_system.png" title="相机坐标系" class="img-fluid figure-img">
+<img class="img-fluid figure-img" src="calibration_20220222\imgs\cam_model\coord_system.png" title="相机坐标系"/>
 </figure>
-<p></p><figcaption class="figure-caption">图&nbsp;1: 相机坐标系.png</figcaption><p></p>
+<p></p><figcaption class="figure-caption">图 1: 相机坐标系.png</figcaption><p></p>
 </figure>
 </div>
-<p>常見的<strong>相機坐標系</strong>如<a href="#fig-cam_coord_system">圖&nbsp;1</a>所示。相機鏡頭朝前時，x軸朝右，y軸朝下，z軸朝前。</p>
+<p>常見的<strong>相機坐標系</strong>如<a href="#fig-cam_coord_system">圖 1</a>所示。相機鏡頭朝前時，x軸朝右，y軸朝下，z軸朝前。</p>
 <p>當然，你也可以採用不一樣的坐標系設定。坐標系的定義不同不會影響相機模型和參數標定過程的數學本質，標定的方法也是一樣的。但採取“另類”的設計有時會帶來一些不必要的麻煩。</p>
 <p>與相機坐標系相對的是<strong>参考坐標系</strong>。参考坐标系的定义根据问题的不同而不同。它可以定义在某张标定板上，也可以定义在某个传感器上。某点参考坐标系与相机坐标系上的坐标可以通过刚性变换来转换。假设<span class="math inline">\(\mathbf p_w\)</span>是世界坐标系下的坐标，<span class="math inline">\(\mathbf p_c\)</span>是相机坐标系下的坐标，那么存在选择矩阵<span class="math inline">\(\mathbf R\)</span>和平移向量<span class="math inline">\(\mathbf t\)</span>使得 <span class="math display">\[
 \mathbf p_c= \mathbf R\mathbf p_w + \mathbf t
@@ -342,40 +216,40 @@ div.csl-indent {
 </div>
 <p>總而言之，六元組<span class="math inline">\((t_x, t_y, t_z, \alpha, \beta, \gamma)\)</span>決定了參考坐標系，它們構成相機的<strong>外參</strong>。</p>
 </section>
-<section id="針孔相機模型" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="針孔相機模型"><span class="header-section-number">3</span> 針孔相機模型</h2>
-<section id="透視投影" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="透視投影"><span class="header-section-number">3.1</span> 透視投影</h3>
+<section class="level2" data-number="3" id="針孔相機模型">
+<h2 class="anchored" data-anchor-id="針孔相機模型" data-number="3"><span class="header-section-number">3</span> 針孔相機模型</h2>
+<section class="level3" data-number="3.1" id="透視投影">
+<h3 class="anchored" data-anchor-id="透視投影" data-number="3.1"><span class="header-section-number">3.1</span> 透視投影</h3>
 <p>接下來介紹針孔相機模型。</p>
-<div id="fig-pinhole_model" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-figure quarto-figure-center anchored" id="fig-pinhole_model">
 <figure class="figure">
 <figure class="figure">
-<img src="calibration_20220222\imgs\pinhole_imaging\pinhole_cam.png" title="針孔相機模型" class="img-fluid figure-img">
+<img class="img-fluid figure-img" src="calibration_20220222\imgs\pinhole_imaging\pinhole_cam.png" title="針孔相機模型"/>
 </figure>
-<p></p><figcaption class="figure-caption">图&nbsp;2: 針孔相機模型</figcaption><p></p>
+<p></p><figcaption class="figure-caption">图 2: 針孔相機模型</figcaption><p></p>
 </figure>
 </div>
-<p>我們忽略光線所具有的“波”的性質。我們僅需知道，“光是沿直線傳播的”。那麼，如<a href="#fig-pinhole_model">圖&nbsp;2</a>所示物體上發出的光只能經過小孔落在成像平面上。經過小孔，上方的光綫落在下面，下方的光綫落在上面。小孔成像所成的是倒立的實像。</p>
+<p>我們忽略光線所具有的“波”的性質。我們僅需知道，“光是沿直線傳播的”。那麼，如<a href="#fig-pinhole_model">圖 2</a>所示物體上發出的光只能經過小孔落在成像平面上。經過小孔，上方的光綫落在下面，下方的光綫落在上面。小孔成像所成的是倒立的實像。</p>
 <p>雖然小孔成像在物理上是這樣解釋的，但是，計算機從業者卻常用另外的圖示來表達這一過程。</p>
-<div id="fig-pinhole_model_simplified" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-figure quarto-figure-center anchored" id="fig-pinhole_model_simplified">
 <figure class="figure">
 <figure class="figure">
-<img src="calibration_20220222\imgs\pinhole_imaging\pinhole_cam_2.png" title="小孔成像的另一種表示法" class="img-fluid figure-img">
+<img class="img-fluid figure-img" src="calibration_20220222\imgs\pinhole_imaging\pinhole_cam_2.png" title="小孔成像的另一種表示法"/>
 </figure>
-<p></p><figcaption class="figure-caption">图&nbsp;3: 小孔成像的另一種表示法</figcaption><p></p>
+<p></p><figcaption class="figure-caption">图 3: 小孔成像的另一種表示法</figcaption><p></p>
 </figure>
 </div>
-<p>在<a href="#fig-pinhole_model_simplified">圖&nbsp;3</a>中，你可以看到對象物體和所成像都畫在小孔（又被稱爲主点）的同一側，並且直接繪製正像。你可能會問，這種事在物理上怎麽可能發生呢？</p>
+<p>在<a href="#fig-pinhole_model_simplified">圖 3</a>中，你可以看到對象物體和所成像都畫在小孔（又被稱爲主点）的同一側，並且直接繪製正像。你可能會問，這種事在物理上怎麽可能發生呢？</p>
 <p>這在物理上當然是不合理的。之所以計算機的從業者這樣繪圖，只是因爲方便。這種畫法因爲能節省作圖空間，且避免了麻煩的坐標系旋轉而十分常見。通過避免坐標旋轉，可以簡化數學運算。</p>
 <p>小孔成像的原理可以很容易用數學公式描述。假設相機坐標系中有一點<span class="math inline">\(\mathbf p_c=(x_c, y_c, z_c)^T\)</span>，這個點發出的光綫經過了小孔，那麽可以通過如下公式求得成像點的位置：</p>
 <p><span class="math display">\[ x = \frac{x_c f}{z_c},  y = \frac{y_c f}{z_c}.\]</span></p>
-<p>其中<span class="math inline">\(f\)</span>是小孔到成像平面的距離。 <a href="#fig-projection">圖&nbsp;4</a>或許有助於你理解該公式。從圖中我們可以看到，成像點總是位於<span class="math inline">\(z = f\)</span>的平面上，並且與原點<span class="math inline">\(\mathbf o\)</span>和被成像點<span class="math inline">\(\mathbf p_c\)</span>共線。因此，我們只須求出直線<span class="math inline">\(\mathbf o \mathbf p_c\)</span>與成像平面的角點，也就得到了成像點的坐標。</p>
-<div id="fig-projection" class="quarto-figure quarto-figure-center anchored">
+<p>其中<span class="math inline">\(f\)</span>是小孔到成像平面的距離。 <a href="#fig-projection">圖 4</a>或許有助於你理解該公式。從圖中我們可以看到，成像點總是位於<span class="math inline">\(z = f\)</span>的平面上，並且與原點<span class="math inline">\(\mathbf o\)</span>和被成像點<span class="math inline">\(\mathbf p_c\)</span>共線。因此，我們只須求出直線<span class="math inline">\(\mathbf o \mathbf p_c\)</span>與成像平面的角點，也就得到了成像點的坐標。</p>
+<div class="quarto-figure quarto-figure-center anchored" id="fig-projection">
 <figure class="figure">
 <figure class="figure">
-<img src="calibration_20220222\imgs\proj_transform\proj_transform.svg" title="投影变换的几何图示" class="img-fluid figure-img">
+<img class="img-fluid figure-img" src="calibration_20220222\imgs\proj_transform\proj_transform.svg" title="投影变换的几何图示"/>
 </figure>
-<p></p><figcaption class="figure-caption">图&nbsp;4: 投影变换的几何图示</figcaption><p></p>
+<p></p><figcaption class="figure-caption">图 4: 投影变换的几何图示</figcaption><p></p>
 </figure>
 </div>
 <p>在計算機視覺應用中，圖像會被離散化為以像素為單位的矩陣。要將<span class="math inline">\(x\)</span>和<span class="math inline">\(y\)</span>坐標同像素的行列對應起來，還需要在成像公式中加入縮放係數和偏移量：</p>
@@ -428,15 +302,15 @@ x_w\\ y_w\\ z_w\\ 1
 \right)
 \tag{1}\]</span></span> 其中<span class="math inline">\(r_i\)</span>是矩陣<span class="math inline">\(\mathbf R\)</span>的第i列。</p>
 </section>
-<section id="鏡頭畸變" class="level3" data-number="3.2">
-<h3 data-number="3.2" class="anchored" data-anchor-id="鏡頭畸變"><span class="header-section-number">3.2</span> 鏡頭畸變</h3>
+<section class="level3" data-number="3.2" id="鏡頭畸變">
+<h3 class="anchored" data-anchor-id="鏡頭畸變" data-number="3.2"><span class="header-section-number">3.2</span> 鏡頭畸變</h3>
 <p>對於大多數鏡頭而言，它們的畸變都可以被近似為徑向畸變。</p>
-<div id="fig-barrel_distortion" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-figure quarto-figure-center anchored" id="fig-barrel_distortion">
 <figure class="figure">
 <figure class="figure">
-<img src="calibration_20220222\imgs\barrel_distortion\img.png" title="這張圖帶有輕微的桶形畸變" class="img-fluid figure-img">
+<img class="img-fluid figure-img" src="calibration_20220222\imgs\barrel_distortion\img.png" title="這張圖帶有輕微的桶形畸變"/>
 </figure>
-<p></p><figcaption class="figure-caption">图&nbsp;5: 桶形畸變</figcaption><p></p>
+<p></p><figcaption class="figure-caption">图 5: 桶形畸變</figcaption><p></p>
 </figure>
 </div>
 <p>徑向畸變： <span class="math display">\[
@@ -459,31 +333,31 @@ u \\ v
 </div>
 </section>
 </section>
-<section id="標定" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="標定"><span class="header-section-number">4</span> 標定</h2>
+<section class="level2" data-number="4" id="標定">
+<h2 class="anchored" data-anchor-id="標定" data-number="4"><span class="header-section-number">4</span> 標定</h2>
 <p>標定就是求解相機內外參的過程。對於針孔相機模型，我們有內參數<span class="math inline">\((\kappa, f_x, f_y, c_x, c_y)\)</span>，外參數<span class="math inline">\((\alpha, \beta, \gamma, t_x, t_y, t_z)\)</span>.</p>
-<section id="標定工具" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="標定工具"><span class="header-section-number">4.1</span> 標定工具</h3>
+<section class="level3" data-number="4.1" id="標定工具">
+<h3 class="anchored" data-anchor-id="標定工具" data-number="4.1"><span class="header-section-number">4.1</span> 標定工具</h3>
 <p>我們使用張氏標定法來完成標定。需要使用標定板這一工具</p>
-<div id="fig-calibration_board" class="quarto-figure quarto-figure-center anchored">
+<div class="quarto-figure quarto-figure-center anchored" id="fig-calibration_board">
 <figure class="figure">
 <figure class="figure">
-<img src="calibration_20220222\imgs\man_with_calibration_board\img.png" title="手持3x4標定板的人" class="img-fluid figure-img">
+<img class="img-fluid figure-img" src="calibration_20220222\imgs\man_with_calibration_board\img.png" title="手持3x4標定板的人"/>
 </figure>
-<p></p><figcaption class="figure-caption">图&nbsp;6: 手持3x4標定板的人</figcaption><p></p>
+<p></p><figcaption class="figure-caption">图 6: 手持3x4標定板的人</figcaption><p></p>
 </figure>
 </div>
 <p>標定板是黑白相間的方格子，這種被稱為“棋盤格標定板”。材質有A4紙的、鋁合金的，也有玻璃制的。材質決定了標定板的精度，也影響標定精度。</p>
 <p>我們檢測的是棋盤格標定板上的角點。角點的個數最好是奇數個x偶數個。圖案最好不是旋轉對稱的。</p>
 <p>也有圓形圖案的標定板。但我更喜歡棋盤格圖案，因為<strong>圓形的投影中心不一定是圓形的中心</strong>，這會給檢測帶來麻煩。另外，角點檢測也比邊緣檢測準確，後者容易受光照影響而發生偏移。橢圓擬合的準確性依賴於邊緣檢測，因此拍照時必須控制好光照。</p>
 </section>
-<section id="標定流程" class="level3" data-number="4.2">
-<h3 data-number="4.2" class="anchored" data-anchor-id="標定流程"><span class="header-section-number">4.2</span> 標定流程</h3>
+<section class="level3" data-number="4.2" id="標定流程">
+<h3 class="anchored" data-anchor-id="標定流程" data-number="4.2"><span class="header-section-number">4.2</span> 標定流程</h3>
 <p>標定時，我們從多個方位拍攝標定板，產生若干圖像（例如15張，30張）。雖然相機的內參是固定的，但每次拍攝都產生不同的外參。</p>
 <p>拍好照片後，可以使用廣為人知、影響深遠的張氏標定法<span class="citation" data-cites="zhang_flexible_2000"><sup>[<a href="#ref-zhang_flexible_2000" role="doc-biblioref">2</a>]</sup></span>求解相機內外參。</p>
 </section>
-<section id="內外參的閉式解" class="level3" data-number="4.3">
-<h3 data-number="4.3" class="anchored" data-anchor-id="內外參的閉式解"><span class="header-section-number">4.3</span> 內外參的閉式解</h3>
+<section class="level3" data-number="4.3" id="內外參的閉式解">
+<h3 class="anchored" data-anchor-id="內外參的閉式解" data-number="4.3"><span class="header-section-number">4.3</span> 內外參的閉式解</h3>
 <p>先從簡單的情況著手——假設不存在畸變，此時問題有閉式解。</p>
 <p>我們需要做的只是求解線性變換：</p>
 <p><span class="math display">\[
@@ -535,7 +409,7 @@ B_{13} &amp; B_{23} &amp; B_{33} \\
 \mathbf h_i^T \mathbf{B} \mathbf h_j = \mathbf v_{ij}^T \mathbf b,
 \]</span> 其中 <span class="math display">\[
 \mathbf v_{ij} = (h_{i1}h_{j1}, h_{i2}h_{j2}, h_{i3}h_{j1} + h_{i1} h _{j3}, h_{i3}h_{j2} + h_{i2}h_{j3}, h_{i3}h_{j3})
-\]</span> 於是，<a href="#eq-constraint1">公式&nbsp;2</a>、<a href="#eq-constraint2">公式&nbsp;3</a>中的約束可以轉化為如下線性約束： <span class="math display">\[
+\]</span> 於是，<a href="#eq-constraint1">公式 2</a>、<a href="#eq-constraint2">公式 3</a>中的約束可以轉化為如下線性約束： <span class="math display">\[
 \left(\begin{array}{c}
 \mathbf v_{12}^T \\ (\mathbf v_{11} - \mathbf v_{12}) ^T
 \end{array}
@@ -559,8 +433,8 @@ c_x &amp;= - B_{13} \alpha^2 / \lambda
 , \mathbf r_3 = \mathbf r_1 \times \mathbf r_2, \mathbf t = \lambda \mathbf A ^{-1} \mathbf h_3\]</span> 注意，這裡求解出的旋轉矩陣可能不是單位正交矩陣，需要用SVD分解的方法將其轉變為單位正交陣。</p>
 <p>總結一下本小節的內容：假設相機沒有畸變，那麼可以先求得每張圖像對應的單應性變換矩陣<span class="math inline">\(\mathbf H\)</span>，然後，可以依次求得相機內外參。這種情況下，內外參數的解是閉式解。</p>
 </section>
-<section id="求相機的畸變係數" class="level3" data-number="4.4">
-<h3 data-number="4.4" class="anchored" data-anchor-id="求相機的畸變係數"><span class="header-section-number">4.4</span> 求相機的畸變係數</h3>
+<section class="level3" data-number="4.4" id="求相機的畸變係數">
+<h3 class="anchored" data-anchor-id="求相機的畸變係數" data-number="4.4"><span class="header-section-number">4.4</span> 求相機的畸變係數</h3>
 <p>上一節，我們求解了相機的內外參。但這種解法存在幾個問題：</p>
 <ol type="1">
 <li>我們假設相機沒有畸變；</li>
@@ -569,397 +443,394 @@ c_x &amp;= - B_{13} \alpha^2 / \lambda
 <p>所以，張氏標定法用上一節所介紹的方法求得的解作為初始解，用LM算法繼續優化該解。目標函數為： <span class="math display">\[\sum_{i} \sum_{j} \left\| m_{ij} - \phi(\mathbf P, \mathbf R_i \mathbf t_i, \mathbf M_j)\right\| ^2\]</span> 其中<span class="math inline">\(\phi\)</span>是考慮了相機畸變的非線性投影函數，解決了問題 1. 新的目標函數旨在最小化投影誤差，是具有實際物理意義的，解決了問題2.</p>
 </section>
 </section>
-<section id="思考題" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="思考題"><span class="header-section-number">5</span> 思考題</h2>
+<section class="level2" data-number="5" id="思考題">
+<h2 class="anchored" data-anchor-id="思考題" data-number="5"><span class="header-section-number">5</span> 思考題</h2>
 <p><strong>一張標定板最少應該有多少個點？至少應當拍攝多少張標定板圖像？</strong></p>
 <p>標定板的點數至少應該使得<span class="math inline">\(H\)</span>可解。而三維方陣<span class="math inline">\(H\)</span>作為單應性變換，有8個自由度。 標定板的每個點都可以提供兩行投影方程，因此如果有四個點，則理論上<span class="math inline">\(H\)</span>可解。因為<span class="math inline">\(\mathbf V\)</span>是<span class="math inline">\(2n\)</span>行的矩陣，而內參（不包括畸變係數，分別是<span class="math inline">\(f_x\)</span>、<span class="math inline">\(f_y\)</span>、<span class="math inline">\(c_x\)</span>、<span class="math inline">\(c_y\)</span>）有4個，故而理論上圖片張數<span class="math inline">\(n\geq 2\)</span>時問題可解。</p>
 <p>當然，實際上為了獲得較好的精度，我們會適當取多一些點，多幾張圖片。實踐中，如果點數、圖片數不夠多，解的精度是很差的。</p>
 </section>
-<section id="標定算法的python實現" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="標定算法的python實現"><span class="header-section-number">6</span> 標定算法的Python實現</h2>
+<section class="level2" data-number="6" id="標定算法的python實現">
+<h2 class="anchored" data-anchor-id="標定算法的python實現" data-number="6"><span class="header-section-number">6</span> 標定算法的Python實現</h2>
 <p>OpenCV庫提供了標定用的函數，可以非常方便的用Python或者C++調用。不過，不同的庫對相機模型的定義略有不同。例如，Halcon庫的相機模型就與OpenCV庫的不同。</p>
 <p>參考Halcon的資料<span class="citation" data-cites="carsten_steger_pdf_nodate"><sup>[<a href="#ref-carsten_steger_pdf_nodate" role="doc-biblioref">1</a>]</sup></span> ，我用Python實現了一份標定算法。經測試，標定結果同Halcon的標定算法所產生的結果一致。這份代碼對於理解Halcon的相機模型、標定原理可能有幫助，僅供參考。</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># -*- coding: utf-8 -*-</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2 <span class="im">as</span> cv</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>sin, cos <span class="op">=</span> np.sin, np.cos</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 旋转矩阵分解为欧拉角</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 该函数只能得到其中一种特解</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 参考：https://www.geometrictools.com/Documentation/EulerAngles.pdf</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rotate_matrix_factorize(mat):</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span>(mat.shape <span class="op">==</span> (<span class="dv">3</span>, <span class="dv">3</span>))</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    eps <span class="op">=</span> np.finfo(mat.dtype).eps</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    r00, r01, r02, r10, r11, r12, r20, r21, r22 <span class="op">=</span> mat.flatten()</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> np.<span class="bu">abs</span>(r02 <span class="op">-</span> <span class="dv">1</span>) <span class="op">&lt;</span> eps:</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 标定板正好垂直于成像平面，</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 分解方式不唯一，</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 随便返回一个特解算了</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span>, np.pi <span class="op">/</span> <span class="dv">2</span>, np.arctan2(r10, r11)</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># </span><span class="al">TODO</span><span class="co">: 把这种标定板剔除掉比较好</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> np.<span class="bu">abs</span>(r01 <span class="op">+</span> <span class="dv">1</span>) <span class="op">&lt;</span> eps:</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 如同上一种情况</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span>, <span class="op">-</span>np.pi <span class="op">/</span> <span class="dv">2</span>, np.arctan2(r10, r11)</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.arctan2(<span class="op">-</span>r12, r22), np.arcsin(r02), np.arctan2(<span class="op">-</span>r01, r00)</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 由投影变换矩阵和内参估计外参</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate_outer_params(cx, cy, fx, fy, mat_h):</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 内参矩阵</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    mat_m <span class="op">=</span> np.matrix([[fx,  <span class="dv">0</span>,  cx],</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>                       [<span class="dv">0</span>,   fy, cy],</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>                       [<span class="dv">0</span>,   <span class="dv">0</span>,  <span class="dv">1</span>]])</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    lamb <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> np.linalg.norm(np.matmul(mat_m.I, mat_h[:, <span class="dv">0</span>]))</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 旋转矩阵</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    r1 <span class="op">=</span> lamb <span class="op">*</span> np.matmul(mat_m.I, mat_h[:, <span class="dv">0</span>])</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    r2 <span class="op">=</span> lamb <span class="op">*</span> np.matmul(mat_m.I, mat_h[:, <span class="dv">1</span>])</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    r3 <span class="op">=</span> np.cross(r1, r2)</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    mat_r <span class="op">=</span> np.array([r1, r2, r3]).reshape((<span class="dv">3</span>, <span class="dv">3</span>)).T</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 旋转矩阵要强制转化为正交的</span></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    u, s, vh <span class="op">=</span> np.linalg.svd(mat_r)</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    mat_r <span class="op">=</span> np.matmul(np.matmul(u, np.eye(<span class="dv">3</span>, <span class="dv">3</span>)), vh)</span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 从旋转矩阵取旋转角度</span></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    alpha, beta, gamma <span class="op">=</span> rotate_matrix_factorize(mat_r)</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 位移向量</span></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> np.array(lamb <span class="op">*</span> np.matmul(mat_m.I, mat_h[:, <span class="dv">2</span>].reshape(<span class="dv">3</span>, <span class="dv">1</span>)))</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> alpha, beta, gamma, t</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict1(points, cx, cy, sx, sy, f, kappa, outer_params):</span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>    scene_num <span class="op">=</span> outer_params.shape[<span class="dv">0</span>]</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    pt_num <span class="op">=</span> points.shape[<span class="dv">0</span>]</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span>(outer_params.shape <span class="op">==</span> (scene_num, <span class="dv">6</span>))</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span>(points.shape <span class="op">==</span> (pt_num, <span class="dv">2</span>))</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    points_transpose <span class="op">=</span> points.T  <span class="co"># shape: (2, pt_num)</span></span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    points_camera <span class="op">=</span> np.empty((<span class="dv">3</span>, pt_num <span class="op">*</span> scene_num))</span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 变换到相机坐标系</span></span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(scene_num):</span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>        alpha, beta, gamma, tx, ty, tz <span class="op">=</span> outer_params[i]</span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 绕z轴旋转。</span></span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>        points_rotate_z <span class="op">=</span> np.matmul([</span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>            [np.cos(gamma), <span class="op">-</span>np.sin(gamma)],</span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>            [np.sin(gamma), np.cos(gamma)]</span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>        ],</span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>            points_transpose)</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span>(points_rotate_z.shape <span class="op">==</span> (<span class="dv">2</span>, pt_num))</span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 绕y轴旋转</span></span>
-<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>        points_rotate_y <span class="op">=</span> np.matmul([</span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>            [np.cos(beta), <span class="dv">0</span>],</span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>            [<span class="dv">0</span>, <span class="dv">1</span>],</span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>            [<span class="op">-</span>np.sin(beta), <span class="dv">0</span>]</span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>        ],</span>
-<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>            points_rotate_z)</span>
-<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span>(points_rotate_y.shape <span class="op">==</span> (<span class="dv">3</span>, pt_num))</span>
-<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 绕x轴旋转</span></span>
-<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>        points_rotate_x <span class="op">=</span> np.matmul([</span>
-<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>            [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
-<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>            [<span class="dv">0</span>, np.cos(alpha), <span class="op">-</span>np.sin(alpha)],</span>
-<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>            [<span class="dv">0</span>, np.sin(alpha), np.cos(alpha)]</span>
-<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>        ], points_rotate_y)</span>
-<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 平移到相机坐标系</span></span>
-<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>        points_camera[:, i <span class="op">*</span> pt_num: (i <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num] <span class="op">=</span> points_rotate_x <span class="op">+</span> [[tx], [ty], [tz]]</span>
-<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 投影到成像平面</span></span>
-<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>    points_image_plane <span class="op">=</span> points_camera[:<span class="dv">2</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :] <span class="op">*</span> f</span>
-<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span>(points_image_plane.shape <span class="op">==</span> (<span class="dv">2</span>, pt_num <span class="op">*</span> scene_num))</span>
-<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 畸变</span></span>
-<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>    r2 <span class="op">=</span> np.<span class="bu">sum</span>(np.power(points_image_plane, <span class="dv">2</span>), axis<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span>(r2.shape <span class="op">==</span> (pt_num <span class="op">*</span> scene_num,))</span>
-<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>    ratio <span class="op">=</span> <span class="dv">2</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> <span class="dv">4</span> <span class="op">*</span> kappa <span class="op">*</span> r2))</span>
-<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>    points_distort <span class="op">=</span> ratio <span class="op">*</span> points_image_plane</span>
-<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span>(points_distort.shape <span class="op">==</span> (<span class="dv">2</span>, pt_num <span class="op">*</span> scene_num))</span>
-<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>    r2d <span class="op">=</span> np.<span class="bu">sum</span>(np.power(points_distort, <span class="dv">2</span>), axis<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span>(r2d.shape <span class="op">==</span> (pt_num <span class="op">*</span> scene_num,))</span>
-<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 到图像坐标系</span></span>
-<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>    points_image <span class="op">=</span> [[<span class="dv">1</span> <span class="op">/</span> sx], [<span class="dv">1</span> <span class="op">/</span> sy]] <span class="op">*</span> points_distort <span class="op">+</span> [[cx], [cy]]</span>
-<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span>(points_image.shape <span class="op">==</span> (<span class="dv">2</span>, pt_num <span class="op">*</span> scene_num))</span>
-<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 雅可比矩阵，左起5列对应内参cx, cy, sx, f, kappa，往右每6列对应一组外参</span></span>
-<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 上半部分对应标定点的横坐标，下半部分对应纵坐标</span></span>
-<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>    jac <span class="op">=</span> np.empty((<span class="dv">2</span> <span class="op">*</span> pt_num <span class="op">*</span> scene_num, <span class="dv">5</span> <span class="op">+</span> scene_num <span class="op">*</span> <span class="dv">6</span>))</span>
-<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 横坐标对cx的偏导数</span></span>
-<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>    jac[:pt_num <span class="op">*</span> scene_num, <span class="dv">0</span>] <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 纵坐标对cx的偏导数</span></span>
-<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a>    jac[pt_num <span class="op">*</span> scene_num:, <span class="dv">0</span>] <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 对cy的偏导数</span></span>
-<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>    jac[:pt_num <span class="op">*</span> scene_num, <span class="dv">1</span>] <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>    jac[pt_num <span class="op">*</span> scene_num:, <span class="dv">1</span>] <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 对sx的偏导数</span></span>
-<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a>    jac[:pt_num <span class="op">*</span> scene_num, <span class="dv">2</span>] <span class="op">=</span> <span class="op">-</span>points_distort[<span class="dv">0</span>, :] <span class="op">/</span> sx <span class="op">**</span> <span class="dv">2</span></span>
-<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a>    jac[pt_num <span class="op">*</span> scene_num:, <span class="dv">2</span>] <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 对f求偏导数</span></span>
-<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a>    d_ud_u <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> kappa <span class="op">*</span> points_distort[<span class="dv">0</span>, :] <span class="op">**</span> <span class="dv">2</span> <span class="op">/</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> <span class="dv">4</span> <span class="op">*</span> kappa <span class="op">*</span> r2) <span class="op">+</span> ratio</span>
-<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>    d_ud_v <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> kappa <span class="op">*</span> points_image_plane[<span class="dv">0</span>, :] <span class="op">*</span> points_distort[<span class="dv">1</span>, :] <span class="op">**</span> <span class="dv">2</span> <span class="op">/</span> points_image_plane[<span class="dv">1</span>, :] <span class="op">/</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> <span class="dv">4</span> <span class="op">*</span> kappa <span class="op">*</span> r2)</span>
-<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>    d_vd_u <span class="op">=</span> d_ud_v</span>
-<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a>    d_vd_v <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> kappa <span class="op">*</span> points_distort[<span class="dv">1</span>, :] <span class="op">**</span> <span class="dv">2</span> <span class="op">/</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> <span class="dv">4</span> <span class="op">*</span> kappa <span class="op">*</span> r2) <span class="op">+</span> ratio</span>
-<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>    jac[:pt_num <span class="op">*</span> scene_num, <span class="dv">3</span>] <span class="op">=</span> (<span class="dv">1</span> <span class="op">/</span> sx <span class="op">*</span> (d_ud_u <span class="op">*</span> points_camera[<span class="dv">0</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :]</span>
-<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>                                            <span class="op">+</span> d_ud_v <span class="op">*</span> points_camera[<span class="dv">1</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :])).flatten()</span>
-<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>    jac[pt_num <span class="op">*</span> scene_num:, <span class="dv">3</span>] <span class="op">=</span> (<span class="dv">1</span> <span class="op">/</span> sy <span class="op">*</span> (d_vd_u <span class="op">*</span> points_camera[<span class="dv">0</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :]</span>
-<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>                                            <span class="op">+</span> d_vd_v <span class="op">*</span> points_camera[<span class="dv">1</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :])).flatten()</span>
-<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 对kappa的偏导数</span></span>
-<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a>    jac[:pt_num <span class="op">*</span> scene_num, <span class="dv">4</span>] <span class="op">=</span> (<span class="dv">1</span> <span class="op">/</span> sx <span class="op">*</span> points_image_plane[<span class="dv">0</span>] <span class="op">/</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> <span class="dv">4</span> <span class="op">*</span> kappa <span class="op">*</span> r2) <span class="op">*</span> r2d).flatten()</span>
-<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a>    jac[pt_num <span class="op">*</span> scene_num:, <span class="dv">4</span>] <span class="op">=</span> (<span class="dv">1</span> <span class="op">/</span> sy <span class="op">*</span> points_image_plane[<span class="dv">1</span>] <span class="op">/</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> <span class="dv">4</span> <span class="op">*</span> kappa <span class="op">*</span> r2) <span class="op">*</span> r2d).flatten()</span>
-<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 对外参求偏导数</span></span>
-<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>    <span class="co"># shape: (pt_num * scene_num,)</span></span>
-<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>    d_c_xc <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> sx <span class="op">*</span> d_ud_u <span class="op">*</span> f <span class="op">/</span> points_camera[<span class="dv">2</span>, :]</span>
-<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>    d_c_yc <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> sx <span class="op">*</span> d_ud_v <span class="op">*</span> f <span class="op">/</span> points_camera[<span class="dv">2</span>, :]</span>
-<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a>    d_c_zc <span class="op">=</span> <span class="op">-</span><span class="dv">1</span> <span class="op">/</span> sx <span class="op">*</span> (d_ud_u <span class="op">*</span> f <span class="op">*</span> points_camera[<span class="dv">0</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :] <span class="op">**</span> <span class="dv">2</span></span>
-<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>                        <span class="op">+</span> d_ud_v <span class="op">*</span> f <span class="op">*</span> points_camera[<span class="dv">1</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :] <span class="op">**</span> <span class="dv">2</span>)</span>
-<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>    d_r_xc <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> sy <span class="op">*</span> d_vd_u <span class="op">*</span> f <span class="op">/</span> points_camera[<span class="dv">2</span>, :]</span>
-<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a>    d_r_yc <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> sy <span class="op">*</span> d_vd_v <span class="op">*</span> f <span class="op">/</span> points_camera[<span class="dv">2</span>, :]</span>
-<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>    d_r_zc <span class="op">=</span> <span class="op">-</span><span class="dv">1</span> <span class="op">/</span> sy <span class="op">*</span> (d_vd_u <span class="op">*</span> f <span class="op">*</span> points_camera[<span class="dv">0</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :] <span class="op">**</span> <span class="dv">2</span></span>
-<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>                        <span class="op">+</span> d_vd_v <span class="op">*</span> f <span class="op">*</span> points_camera[<span class="dv">1</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :] <span class="op">**</span> <span class="dv">2</span>)</span>
-<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> scene <span class="kw">in</span> <span class="bu">range</span>(scene_num):</span>
-<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>        d_c_xc_slice <span class="op">=</span> d_c_xc[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num]</span>
-<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a>        d_c_yc_slice <span class="op">=</span> d_c_yc[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num]</span>
-<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a>        d_c_zc_slice <span class="op">=</span> d_c_zc[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num]</span>
-<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a>        d_r_xc_slice <span class="op">=</span> d_r_xc[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num]</span>
-<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>        d_r_yc_slice <span class="op">=</span> d_r_yc[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num]</span>
-<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a>        d_r_zc_slice <span class="op">=</span> d_r_zc[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num]</span>
-<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>        jac_slice1 <span class="op">=</span> jac[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num, :]</span>
-<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>        jac_slice2 <span class="op">=</span> jac[(scene_num <span class="op">+</span> scene) <span class="op">*</span> pt_num:(scene_num <span class="op">+</span> scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num, :]</span>
-<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>        alpha, beta, gamma, _, _, _ <span class="op">=</span> outer_params[scene]</span>
-<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>        <span class="co">#  xc = [cos(beta) * cos(gamma) * x - cos(beta) * sin(gamma) * y],</span></span>
-<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>        <span class="co">#  yc = [x * (cos(alpha) * sin(gamma) + cos(gamma) * sin(alpha) * sin(beta))</span></span>
-<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>        <span class="co">#      + y * (cos(alpha) * cos(gamma) - sin(alpha) * sin(beta) * sin(gamma))],</span></span>
-<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>        <span class="co">#  zc = [x * (-cos(alpha) * cos(gamma) * sin(beta) + sin(alpha) * sin(gamma))</span></span>
-<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>        <span class="co">#      + y * (cos(alpha) * sin(beta) * sin(gamma) + cos(gamma) * sin(alpha))]</span></span>
-<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>        d_xc_alpha <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>        d_xc_beta <span class="op">=</span> <span class="op">-</span>sin(beta) <span class="op">*</span> cos(gamma) <span class="op">*</span> points_transpose[<span class="dv">0</span>, :] <span class="op">\</span></span>
-<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>            <span class="op">+</span> sin(beta) <span class="op">*</span> sin(gamma) <span class="op">*</span> points_transpose[<span class="dv">1</span>, :]</span>
-<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>        d_xc_gamma <span class="op">=</span> <span class="op">-</span>cos(beta) <span class="op">*</span> sin(gamma) <span class="op">*</span> points_transpose[<span class="dv">0</span>, :] <span class="op">\</span></span>
-<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>            <span class="op">-</span> cos(beta) <span class="op">*</span> cos(gamma) <span class="op">*</span> points_transpose[<span class="dv">1</span>, :]</span>
-<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>        d_yc_alpha <span class="op">=</span> points_transpose[<span class="dv">0</span>, :] <span class="op">*</span> (<span class="op">-</span>sin(alpha) <span class="op">*</span> sin(gamma) <span class="op">+</span> cos(gamma) <span class="op">*</span> cos(alpha) <span class="op">*</span> sin(beta)) <span class="op">\</span></span>
-<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>            <span class="op">+</span> points_transpose[<span class="dv">1</span>, :] <span class="op">*</span> (<span class="op">-</span>sin(alpha) <span class="op">*</span> cos(gamma) <span class="op">-</span> cos(alpha) <span class="op">*</span> sin(beta) <span class="op">*</span> sin(gamma))</span>
-<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>        d_yc_beta <span class="op">=</span> points_transpose[<span class="dv">0</span>, :] <span class="op">*</span> cos(gamma) <span class="op">*</span> sin(alpha) <span class="op">*</span> cos(beta) <span class="op">\</span></span>
-<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a>            <span class="op">-</span> points_transpose[<span class="dv">1</span>, :] <span class="op">*</span> sin(alpha) <span class="op">*</span> cos(beta) <span class="op">*</span> sin(gamma)</span>
-<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>        d_yc_gamma <span class="op">=</span> points_transpose[<span class="dv">0</span>, :] <span class="op">*</span> (cos(alpha) <span class="op">*</span> cos(gamma) <span class="op">-</span> sin(gamma) <span class="op">*</span> sin(alpha) <span class="op">*</span> sin(beta)) <span class="op">\</span></span>
-<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>            <span class="op">+</span> points_transpose[<span class="dv">1</span>, :] <span class="op">*</span> (<span class="op">-</span>cos(alpha) <span class="op">*</span> sin(gamma) <span class="op">-</span> sin(alpha) <span class="op">*</span> sin(beta) <span class="op">*</span> cos(gamma))</span>
-<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>        d_zc_alpha <span class="op">=</span> points_transpose[<span class="dv">0</span>, :] <span class="op">*</span> (sin(alpha) <span class="op">*</span> cos(gamma) <span class="op">*</span> sin(beta) <span class="op">+</span> cos(alpha) <span class="op">*</span> sin(gamma)) <span class="op">\</span></span>
-<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>            <span class="op">+</span> points_transpose[<span class="dv">1</span>, :] <span class="op">*</span> (<span class="op">-</span>sin(alpha) <span class="op">*</span> sin(beta) <span class="op">*</span> sin(gamma) <span class="op">+</span> cos(gamma) <span class="op">*</span> cos(alpha))</span>
-<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>        d_zc_beta <span class="op">=</span> points_transpose[<span class="dv">0</span>, :] <span class="op">*</span> <span class="op">-</span>cos(alpha) <span class="op">*</span> cos(gamma) <span class="op">*</span> cos(beta) <span class="op">\</span></span>
-<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>            <span class="op">+</span> points_transpose[<span class="dv">1</span>, :] <span class="op">*</span> cos(alpha) <span class="op">*</span> cos(beta) <span class="op">*</span> sin(gamma)</span>
-<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>        d_zc_gamma <span class="op">=</span> points_transpose[<span class="dv">0</span>, :] <span class="op">*</span> (cos(alpha) <span class="op">*</span> sin(gamma) <span class="op">*</span> sin(beta) <span class="op">+</span> sin(alpha) <span class="op">*</span> cos(gamma)) <span class="op">\</span></span>
-<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>            <span class="op">+</span> points_transpose[<span class="dv">1</span>, :] <span class="op">*</span> (cos(alpha) <span class="op">*</span> sin(beta) <span class="op">*</span> cos(gamma) <span class="op">-</span> sin(gamma) <span class="op">*</span> sin(alpha))</span>
-<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a>        <span class="co"># alpha</span></span>
-<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a>        jac_slice1[:, <span class="dv">5</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_c_xc_slice <span class="op">*</span> d_xc_alpha <span class="op">+</span> d_c_yc_slice <span class="op">*</span> d_yc_alpha <span class="op">+</span> d_c_zc_slice <span class="op">*</span> d_zc_alpha</span>
-<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>        jac_slice2[:, <span class="dv">5</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_r_xc_slice <span class="op">*</span> d_xc_alpha <span class="op">+</span> d_r_yc_slice <span class="op">*</span> d_yc_alpha <span class="op">+</span> d_r_zc_slice <span class="op">*</span> d_zc_alpha</span>
-<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>        <span class="co"># beta</span></span>
-<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>        jac_slice1[:, <span class="dv">6</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_c_xc_slice <span class="op">*</span> d_xc_beta <span class="op">+</span> d_c_yc_slice <span class="op">*</span> d_yc_beta <span class="op">+</span> d_c_zc_slice <span class="op">*</span> d_zc_beta</span>
-<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>        jac_slice2[:, <span class="dv">6</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_r_xc_slice <span class="op">*</span> d_xc_beta <span class="op">+</span> d_r_yc_slice <span class="op">*</span> d_yc_beta <span class="op">+</span> d_r_zc_slice <span class="op">*</span> d_zc_beta</span>
-<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>        <span class="co"># gamma</span></span>
-<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>        jac_slice1[:, <span class="dv">7</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_c_xc_slice <span class="op">*</span> d_xc_gamma <span class="op">+</span> d_c_yc_slice <span class="op">*</span> d_yc_gamma <span class="op">+</span> d_c_zc_slice <span class="op">*</span> d_zc_gamma</span>
-<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>        jac_slice2[:, <span class="dv">7</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_r_xc_slice <span class="op">*</span> d_xc_gamma <span class="op">+</span> d_r_yc_slice <span class="op">*</span> d_yc_gamma <span class="op">+</span> d_r_zc_slice <span class="op">*</span> d_zc_gamma</span>
-<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>        <span class="co"># tx</span></span>
-<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>        jac_slice1[:, <span class="dv">8</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_c_xc_slice</span>
-<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>        jac_slice2[:, <span class="dv">8</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_r_xc_slice</span>
-<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>        <span class="co"># ty</span></span>
-<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>        jac_slice1[:, <span class="dv">9</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_c_yc_slice</span>
-<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>        jac_slice2[:, <span class="dv">9</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_r_yc_slice</span>
-<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>        <span class="co"># tz</span></span>
-<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>        jac_slice1[:, <span class="dv">10</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_c_zc_slice</span>
-<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>        jac_slice2[:, <span class="dv">10</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_r_zc_slice</span>
-<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> points_image, jac</span>
-<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calibrate(grids, params):</span>
-<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>    pattern_size <span class="op">=</span> params[<span class="st">'pattern size'</span>]</span>
-<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a>    cell_width <span class="op">=</span> params[<span class="st">'cell width'</span>]</span>
-<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a>    image_count <span class="op">=</span> grids.shape[<span class="dv">0</span>]</span>
-<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 随机显示一张标定板检测结果</span></span>
-<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a>    <span class="co"># import random</span></span>
-<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a>    <span class="co"># show_grid(pattern_size, imgs, grids, random.randint(0, len(imgs) - 1))</span></span>
-<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 计算世界坐标系中的标定板坐标</span></span>
-<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a>    grid_x <span class="op">=</span> (np.arange(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>]) <span class="op">%</span> pattern_size[<span class="dv">0</span>]) <span class="op">*</span> cell_width</span>
-<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>    grid_y <span class="op">=</span> np.asarray(np.arange(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>]) <span class="op">/</span> pattern_size[<span class="dv">0</span>], np.<span class="bu">int</span>) <span class="op">*</span> cell_width</span>
-<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a>    grid_world <span class="op">=</span> np.empty((pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>], <span class="dv">2</span>))</span>
-<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a>    grid_world[:, <span class="dv">0</span>] <span class="op">=</span> grid_x</span>
-<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a>    grid_world[:, <span class="dv">1</span>] <span class="op">=</span> grid_y</span>
-<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 提取内参初始值</span></span>
-<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a>    obj_points <span class="op">=</span> np.float32(np.tile(np.hstack((grid_world, np.zeros((grid_world.shape[<span class="dv">0</span>], <span class="dv">1</span>)))), (image_count, <span class="dv">1</span>)))<span class="op">\</span></span>
-<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>        .reshape(image_count, pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>], <span class="dv">3</span>)</span>
-<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>    camera_matrix <span class="op">=</span> np.array(cv.initCameraMatrix2D(</span>
-<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>        obj_points,</span>
-<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>        np.float32(grids),</span>
-<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>        (<span class="dv">1280</span>, <span class="dv">1024</span>)</span>
-<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a>    ))</span>
-<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>    fx, _, cx, _, fy, cy, _, _, _ <span class="op">=</span> camera_matrix.flatten()</span>
-<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a>    sy <span class="op">=</span> <span class="fl">4.8e-3</span></span>
-<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a>    f <span class="op">=</span> fy <span class="op">*</span> sy</span>
-<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>    sx <span class="op">=</span> f <span class="op">/</span> fx</span>
-<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>    kappa <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>    outer_params <span class="op">=</span> np.empty((image_count, <span class="dv">6</span>))</span>
-<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(image_count):</span>
-<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>        mat_h, _ <span class="op">=</span> cv.findHomography(obj_points[i], grids[i])</span>
-<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>        alpha, beta, gamma, t <span class="op">=</span> estimate_outer_params(cx, cy, f <span class="op">/</span> sx, f <span class="op">/</span> sy, mat_h)</span>
-<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>        outer_params[i, :] <span class="op">=</span> [alpha, beta, gamma, t[<span class="dv">0</span>], t[<span class="dv">1</span>], t[<span class="dv">2</span>]]</span>
-<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a>    lamb <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a>    g1 <span class="op">=</span> <span class="fl">0.1</span></span>
-<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a>    g2 <span class="op">=</span> <span class="fl">1.1</span></span>
-<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>    i1 <span class="op">=</span> <span class="fl">1e-1</span></span>
-<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>    i2 <span class="op">=</span> <span class="fl">0.99</span></span>
-<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>    mat_i <span class="op">=</span> np.eye(<span class="dv">5</span> <span class="op">+</span> <span class="dv">6</span> <span class="op">*</span> image_count)</span>
-<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>):</span>
-<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a>        points_predict, jac <span class="op">=</span> predict1(grid_world, cx, cy, sx, sy, f, kappa, outer_params)</span>
-<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span>(points_predict.shape <span class="op">==</span> (<span class="dv">2</span>, pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>] <span class="op">*</span> image_count))</span>
-<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a>        delta <span class="op">=</span> points_predict <span class="op">-</span> grids.reshape(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>] <span class="op">*</span> image_count, <span class="dv">2</span>).T</span>
-<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span>(delta.shape <span class="op">==</span> (<span class="dv">2</span>, pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>] <span class="op">*</span> image_count))</span>
-<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a>        error <span class="op">=</span> np.mean(np.<span class="bu">sum</span>(delta <span class="op">**</span> <span class="dv">2</span>, axis<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'平均误差：'</span>, np.sqrt(error))</span>
-<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 更新内外参</span></span>
-<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a>        mat_a <span class="op">=</span> np.matmul(jac.T, jac)</span>
-<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a>        step <span class="op">=</span> <span class="op">-</span>np.matmul(np.mat(mat_a <span class="op">+</span> lamb <span class="op">*</span> mat_i).I,</span>
-<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a>                          np.matmul(jac.T, delta.reshape(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>] <span class="op">*</span> image_count <span class="op">*</span> <span class="dv">2</span>, <span class="dv">1</span>)))</span>
-<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span>(step.size <span class="op">==</span> <span class="dv">5</span> <span class="op">+</span> <span class="dv">6</span> <span class="op">*</span> outer_params.shape[<span class="dv">0</span>])</span>
-<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a>        step <span class="op">=</span> np.array(step).flatten()</span>
-<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a>        cx, cy, sx, f, kappa <span class="op">=</span> np.array([cx, cy, sx, f, kappa]) <span class="op">+</span> step[:<span class="dv">5</span>]</span>
-<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a>        outer_params <span class="op">+=</span> step[<span class="dv">5</span>:].reshape(outer_params.shape[<span class="dv">0</span>], <span class="dv">6</span>)</span>
-<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 更新LM算法的参数</span></span>
-<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a>        points_predict2, _ <span class="op">=</span> predict1(grid_world, cx, cy, sx, sy, f, kappa, outer_params)</span>
-<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a>        delta2 <span class="op">=</span> points_predict2 <span class="op">-</span> grids.reshape(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>] <span class="op">*</span> image_count, <span class="dv">2</span>).T</span>
-<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a>        error2 <span class="op">=</span> np.mean(np.<span class="bu">sum</span>(delta2 <span class="op">**</span> <span class="dv">2</span>, axis<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a>        points_predict3 <span class="op">=</span> points_predict <span class="op">+</span> np.matmul(jac, step.reshape(<span class="dv">5</span> <span class="op">+</span> <span class="dv">6</span> <span class="op">*</span> image_count, <span class="dv">1</span>)) <span class="op">\</span></span>
-<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a>            .reshape(<span class="dv">2</span>, pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">0</span>] <span class="op">*</span> image_count)</span>
-<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a>        delta3 <span class="op">=</span> points_predict3 <span class="op">-</span> grids.reshape(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>] <span class="op">*</span> image_count, <span class="dv">2</span>).T</span>
-<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a>        error3 <span class="op">=</span> np.mean(np.<span class="bu">sum</span>(delta3 <span class="op">**</span> <span class="dv">2</span>, axis<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a>        p <span class="op">=</span> (error <span class="op">-</span> error2) <span class="op">/</span> (error <span class="op">-</span> error3)</span>
-<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a>        lamb <span class="op">=</span> g2 <span class="op">*</span> lamb <span class="cf">if</span> p <span class="op">&lt;</span> i1 <span class="cf">else</span> <span class="op">\</span></span>
-<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a>            lamb <span class="cf">if</span> i1 <span class="op">&lt;=</span> p <span class="op">&lt;</span> i2 <span class="cf">else</span><span class="op">\</span></span>
-<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a>            g1 <span class="op">*</span> lamb</span>
-<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(</span>
-<span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a>        <span class="st">'''用LM法优化得到：</span></span>
-<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a><span class="st">            cx: </span><span class="sc">%f</span><span class="st"> px;</span></span>
-<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a><span class="st">            cy: </span><span class="sc">%f</span><span class="st"> px;</span></span>
-<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a><span class="st">            sx: </span><span class="sc">%f</span><span class="st"> um;</span></span>
-<span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a><span class="st">            sy: </span><span class="sc">%f</span><span class="st"> um;</span></span>
-<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a><span class="st">            f: </span><span class="sc">%f</span><span class="st"> mm;</span></span>
-<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a><span class="st">            kappa: </span><span class="sc">%f</span><span class="st"> 1/m^2;</span></span>
-<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a><span class="st">        '''</span> <span class="op">%</span> (cx, cy, sx <span class="op">*</span> <span class="fl">1e3</span>, sy <span class="op">*</span> <span class="fl">1e3</span>, f, kappa <span class="op">*</span> <span class="fl">1e6</span>)</span>
-<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
-<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 初始参数</span></span>
-<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 实际距离全部以毫米为单位</span></span>
-<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a>    params <span class="op">=</span> {</span>
-<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a>        <span class="st">'pattern size'</span>: (<span class="dv">7</span>, <span class="dv">7</span>),  <span class="co"># 标记圆的个数</span></span>
-<span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a>        <span class="st">'cell width'</span>: <span class="dv">25</span>,  <span class="co"># 标记点间距</span></span>
-<span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a>        <span class="st">'sx'</span>: <span class="fl">4.8e-3</span>,</span>
-<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a>        <span class="st">"sy"</span>: <span class="fl">4.8e-3</span></span>
-<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a>    pattern_size <span class="op">=</span> params[<span class="st">'pattern size'</span>]</span>
-<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 列出文件夹下的所有图片</span></span>
-<span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a>    directory <span class="op">=</span> <span class="st">'./test_images_1'</span></span>
-<span id="cb1-306"><a href="#cb1-306" aria-hidden="true" tabindex="-1"></a>    files <span class="op">=</span> []</span>
-<span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a>    <span class="im">import</span> sys</span>
-<span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a>    <span class="im">import</span> os</span>
-<span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> os.listdir(directory):</span>
-<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a>        path <span class="op">=</span> os.path.join(directory, <span class="bu">file</span>)</span>
-<span id="cb1-312"><a href="#cb1-312" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> os.path.isfile(path) <span class="kw">and</span> path.endswith(<span class="st">'.bmp'</span>):</span>
-<span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a>            files.append(path)</span>
-<span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(files) <span class="op">&lt;</span> <span class="dv">2</span>:</span>
-<span id="cb1-315"><a href="#cb1-315" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"至少需要两份标定文件！"</span>, sys.stderr)</span>
-<span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a>        <span class="co"># exit(128)</span></span>
-<span id="cb1-317"><a href="#cb1-317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-318"><a href="#cb1-318" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 读取图片</span></span>
-<span id="cb1-319"><a href="#cb1-319" aria-hidden="true" tabindex="-1"></a>    imgs <span class="op">=</span> []</span>
-<span id="cb1-320"><a href="#cb1-320" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> files:</span>
-<span id="cb1-321"><a href="#cb1-321" aria-hidden="true" tabindex="-1"></a>        imgs.append(cv.imread(<span class="bu">file</span>, cv.IMREAD_GRAYSCALE))</span>
-<span id="cb1-322"><a href="#cb1-322" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-323"><a href="#cb1-323" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 检测圆点</span></span>
-<span id="cb1-324"><a href="#cb1-324" aria-hidden="true" tabindex="-1"></a>    grids <span class="op">=</span> np.zeros((<span class="bu">len</span>(imgs), params[<span class="st">'pattern size'</span>][<span class="dv">0</span>] <span class="op">*</span> params[<span class="st">'pattern size'</span>][<span class="dv">1</span>], <span class="dv">2</span>))</span>
-<span id="cb1-325"><a href="#cb1-325" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-326"><a href="#cb1-326" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 有兩種方法可以讀取坐標：</span></span>
-<span id="cb1-327"><a href="#cb1-327" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. 直接從halcon的識別結果中讀取坐標（halcon的檢測結果更準）；</span></span>
-<span id="cb1-328"><a href="#cb1-328" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. 或者調用opencv的檢測算法讀取坐標。</span></span>
-<span id="cb1-329"><a href="#cb1-329" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 注釋掉你不用的那個方法。</span></span>
-<span id="cb1-330"><a href="#cb1-330" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-331"><a href="#cb1-331" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''</span></span>
-<span id="cb1-332"><a href="#cb1-332" aria-hidden="true" tabindex="-1"></a><span class="co">    # 直接取halcon识别结果</span></span>
-<span id="cb1-333"><a href="#cb1-333" aria-hidden="true" tabindex="-1"></a><span class="co">    for i, file in enumerate(files):</span></span>
-<span id="cb1-334"><a href="#cb1-334" aria-hidden="true" tabindex="-1"></a><span class="co">        with open(file + '.d', 'r') as file_halcon_result:</span></span>
-<span id="cb1-335"><a href="#cb1-335" aria-hidden="true" tabindex="-1"></a><span class="co">            lines = file_halcon_result.readlines()</span></span>
-<span id="cb1-336"><a href="#cb1-336" aria-hidden="true" tabindex="-1"></a><span class="co">            for j, line in enumerate(lines):</span></span>
-<span id="cb1-337"><a href="#cb1-337" aria-hidden="true" tabindex="-1"></a><span class="co">                coord = line.strip().split(' ')</span></span>
-<span id="cb1-338"><a href="#cb1-338" aria-hidden="true" tabindex="-1"></a><span class="co">                if len(coord) != 2:</span></span>
-<span id="cb1-339"><a href="#cb1-339" aria-hidden="true" tabindex="-1"></a><span class="co">                    continue</span></span>
-<span id="cb1-340"><a href="#cb1-340" aria-hidden="true" tabindex="-1"></a><span class="co">                grids[i, j, 0] = float(coord[0])</span></span>
-<span id="cb1-341"><a href="#cb1-341" aria-hidden="true" tabindex="-1"></a><span class="co">                grids[i, j, 1] = float(coord[1])</span></span>
-<span id="cb1-342"><a href="#cb1-342" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
-<span id="cb1-343"><a href="#cb1-343" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-344"><a href="#cb1-344" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 从图片提取圆点</span></span>
-<span id="cb1-345"><a href="#cb1-345" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, img <span class="kw">in</span> <span class="bu">enumerate</span>(imgs):</span>
-<span id="cb1-346"><a href="#cb1-346" aria-hidden="true" tabindex="-1"></a>        success, centers <span class="op">=</span> cv.findCirclesGrid(img, pattern_size)</span>
-<span id="cb1-347"><a href="#cb1-347" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> success:</span>
-<span id="cb1-348"><a href="#cb1-348" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> {</span>
-<span id="cb1-349"><a href="#cb1-349" aria-hidden="true" tabindex="-1"></a>                <span class="st">'success'</span>: <span class="va">False</span>,</span>
-<span id="cb1-350"><a href="#cb1-350" aria-hidden="true" tabindex="-1"></a>                <span class="st">'msg'</span>: <span class="st">'标定板无法识别'</span>,</span>
-<span id="cb1-351"><a href="#cb1-351" aria-hidden="true" tabindex="-1"></a>                <span class="st">'error code 1'</span>: <span class="dv">123</span>,</span>
-<span id="cb1-352"><a href="#cb1-352" aria-hidden="true" tabindex="-1"></a>                <span class="st">'error code 2'</span>: i</span>
-<span id="cb1-353"><a href="#cb1-353" aria-hidden="true" tabindex="-1"></a>            }</span>
-<span id="cb1-354"><a href="#cb1-354" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span>(centers.shape <span class="op">==</span> (pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>], <span class="dv">1</span>, <span class="dv">2</span>))</span>
-<span id="cb1-355"><a href="#cb1-355" aria-hidden="true" tabindex="-1"></a>        grids[i, :, :] <span class="op">=</span> centers.reshape(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>], <span class="dv">2</span>)</span>
-<span id="cb1-356"><a href="#cb1-356" aria-hidden="true" tabindex="-1"></a>    calibrate(grids, params)</span>
-<span id="cb1-357"><a href="#cb1-357" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-358"><a href="#cb1-358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-359"><a href="#cb1-359" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">'__main__'</span>:</span>
-<span id="cb1-360"><a href="#cb1-360" aria-hidden="true" tabindex="-1"></a>    main()</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="co"># -*- coding: utf-8 -*-</span></span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="im">import</span> cv2 <span class="im">as</span> cv</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>sin, cos <span class="op">=</span> np.sin, np.cos</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a><span class="co"># 旋转矩阵分解为欧拉角</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a><span class="co"># 该函数只能得到其中一种特解</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a><span class="co"># 参考：https://www.geometrictools.com/Documentation/EulerAngles.pdf</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a><span class="kw">def</span> rotate_matrix_factorize(mat):</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>    <span class="cf">assert</span>(mat.shape <span class="op">==</span> (<span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>    eps <span class="op">=</span> np.finfo(mat.dtype).eps</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>    r00, r01, r02, r10, r11, r12, r20, r21, r22 <span class="op">=</span> mat.flatten()</span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>    <span class="cf">if</span> np.<span class="bu">abs</span>(r02 <span class="op">-</span> <span class="dv">1</span>) <span class="op">&lt;</span> eps:</span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>        <span class="co"># 标定板正好垂直于成像平面，</span></span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>        <span class="co"># 分解方式不唯一，</span></span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>        <span class="co"># 随便返回一个特解算了</span></span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span>, np.pi <span class="op">/</span> <span class="dv">2</span>, np.arctan2(r10, r11)</span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>        <span class="co"># </span><span class="al">TODO</span><span class="co">: 把这种标定板剔除掉比较好</span></span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>    <span class="cf">elif</span> np.<span class="bu">abs</span>(r01 <span class="op">+</span> <span class="dv">1</span>) <span class="op">&lt;</span> eps:</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>        <span class="co"># 如同上一种情况</span></span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span>, <span class="op">-</span>np.pi <span class="op">/</span> <span class="dv">2</span>, np.arctan2(r10, r11)</span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a>        <span class="cf">return</span> np.arctan2(<span class="op">-</span>r12, r22), np.arcsin(r02), np.arctan2(<span class="op">-</span>r01, r00)</span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a></span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a></span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a><span class="co"># 由投影变换矩阵和内参估计外参</span></span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a><span class="kw">def</span> estimate_outer_params(cx, cy, fx, fy, mat_h):</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a>    <span class="co"># 内参矩阵</span></span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>    mat_m <span class="op">=</span> np.matrix([[fx,  <span class="dv">0</span>,  cx],</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>                       [<span class="dv">0</span>,   fy, cy],</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a>                       [<span class="dv">0</span>,   <span class="dv">0</span>,  <span class="dv">1</span>]])</span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>    lamb <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> np.linalg.norm(np.matmul(mat_m.I, mat_h[:, <span class="dv">0</span>]))</span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a>    <span class="co"># 旋转矩阵</span></span>
+<span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a>    r1 <span class="op">=</span> lamb <span class="op">*</span> np.matmul(mat_m.I, mat_h[:, <span class="dv">0</span>])</span>
+<span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a>    r2 <span class="op">=</span> lamb <span class="op">*</span> np.matmul(mat_m.I, mat_h[:, <span class="dv">1</span>])</span>
+<span id="cb1-39"><a aria-hidden="true" href="#cb1-39" tabindex="-1"></a>    r3 <span class="op">=</span> np.cross(r1, r2)</span>
+<span id="cb1-40"><a aria-hidden="true" href="#cb1-40" tabindex="-1"></a>    mat_r <span class="op">=</span> np.array([r1, r2, r3]).reshape((<span class="dv">3</span>, <span class="dv">3</span>)).T</span>
+<span id="cb1-41"><a aria-hidden="true" href="#cb1-41" tabindex="-1"></a>    <span class="co"># 旋转矩阵要强制转化为正交的</span></span>
+<span id="cb1-42"><a aria-hidden="true" href="#cb1-42" tabindex="-1"></a>    u, s, vh <span class="op">=</span> np.linalg.svd(mat_r)</span>
+<span id="cb1-43"><a aria-hidden="true" href="#cb1-43" tabindex="-1"></a>    mat_r <span class="op">=</span> np.matmul(np.matmul(u, np.eye(<span class="dv">3</span>, <span class="dv">3</span>)), vh)</span>
+<span id="cb1-44"><a aria-hidden="true" href="#cb1-44" tabindex="-1"></a>    <span class="co"># 从旋转矩阵取旋转角度</span></span>
+<span id="cb1-45"><a aria-hidden="true" href="#cb1-45" tabindex="-1"></a>    alpha, beta, gamma <span class="op">=</span> rotate_matrix_factorize(mat_r)</span>
+<span id="cb1-46"><a aria-hidden="true" href="#cb1-46" tabindex="-1"></a>    <span class="co"># 位移向量</span></span>
+<span id="cb1-47"><a aria-hidden="true" href="#cb1-47" tabindex="-1"></a>    t <span class="op">=</span> np.array(lamb <span class="op">*</span> np.matmul(mat_m.I, mat_h[:, <span class="dv">2</span>].reshape(<span class="dv">3</span>, <span class="dv">1</span>)))</span>
+<span id="cb1-48"><a aria-hidden="true" href="#cb1-48" tabindex="-1"></a>    <span class="cf">return</span> alpha, beta, gamma, t</span>
+<span id="cb1-49"><a aria-hidden="true" href="#cb1-49" tabindex="-1"></a></span>
+<span id="cb1-50"><a aria-hidden="true" href="#cb1-50" tabindex="-1"></a></span>
+<span id="cb1-51"><a aria-hidden="true" href="#cb1-51" tabindex="-1"></a><span class="kw">def</span> predict1(points, cx, cy, sx, sy, f, kappa, outer_params):</span>
+<span id="cb1-52"><a aria-hidden="true" href="#cb1-52" tabindex="-1"></a>    scene_num <span class="op">=</span> outer_params.shape[<span class="dv">0</span>]</span>
+<span id="cb1-53"><a aria-hidden="true" href="#cb1-53" tabindex="-1"></a>    pt_num <span class="op">=</span> points.shape[<span class="dv">0</span>]</span>
+<span id="cb1-54"><a aria-hidden="true" href="#cb1-54" tabindex="-1"></a>    <span class="cf">assert</span>(outer_params.shape <span class="op">==</span> (scene_num, <span class="dv">6</span>))</span>
+<span id="cb1-55"><a aria-hidden="true" href="#cb1-55" tabindex="-1"></a>    <span class="cf">assert</span>(points.shape <span class="op">==</span> (pt_num, <span class="dv">2</span>))</span>
+<span id="cb1-56"><a aria-hidden="true" href="#cb1-56" tabindex="-1"></a>    points_transpose <span class="op">=</span> points.T  <span class="co"># shape: (2, pt_num)</span></span>
+<span id="cb1-57"><a aria-hidden="true" href="#cb1-57" tabindex="-1"></a>    points_camera <span class="op">=</span> np.empty((<span class="dv">3</span>, pt_num <span class="op">*</span> scene_num))</span>
+<span id="cb1-58"><a aria-hidden="true" href="#cb1-58" tabindex="-1"></a></span>
+<span id="cb1-59"><a aria-hidden="true" href="#cb1-59" tabindex="-1"></a>    <span class="co"># 变换到相机坐标系</span></span>
+<span id="cb1-60"><a aria-hidden="true" href="#cb1-60" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(scene_num):</span>
+<span id="cb1-61"><a aria-hidden="true" href="#cb1-61" tabindex="-1"></a>        alpha, beta, gamma, tx, ty, tz <span class="op">=</span> outer_params[i]</span>
+<span id="cb1-62"><a aria-hidden="true" href="#cb1-62" tabindex="-1"></a></span>
+<span id="cb1-63"><a aria-hidden="true" href="#cb1-63" tabindex="-1"></a>        <span class="co"># 绕z轴旋转。</span></span>
+<span id="cb1-64"><a aria-hidden="true" href="#cb1-64" tabindex="-1"></a>        points_rotate_z <span class="op">=</span> np.matmul([</span>
+<span id="cb1-65"><a aria-hidden="true" href="#cb1-65" tabindex="-1"></a>            [np.cos(gamma), <span class="op">-</span>np.sin(gamma)],</span>
+<span id="cb1-66"><a aria-hidden="true" href="#cb1-66" tabindex="-1"></a>            [np.sin(gamma), np.cos(gamma)]</span>
+<span id="cb1-67"><a aria-hidden="true" href="#cb1-67" tabindex="-1"></a>        ],</span>
+<span id="cb1-68"><a aria-hidden="true" href="#cb1-68" tabindex="-1"></a>            points_transpose)</span>
+<span id="cb1-69"><a aria-hidden="true" href="#cb1-69" tabindex="-1"></a>        <span class="cf">assert</span>(points_rotate_z.shape <span class="op">==</span> (<span class="dv">2</span>, pt_num))</span>
+<span id="cb1-70"><a aria-hidden="true" href="#cb1-70" tabindex="-1"></a></span>
+<span id="cb1-71"><a aria-hidden="true" href="#cb1-71" tabindex="-1"></a>        <span class="co"># 绕y轴旋转</span></span>
+<span id="cb1-72"><a aria-hidden="true" href="#cb1-72" tabindex="-1"></a>        points_rotate_y <span class="op">=</span> np.matmul([</span>
+<span id="cb1-73"><a aria-hidden="true" href="#cb1-73" tabindex="-1"></a>            [np.cos(beta), <span class="dv">0</span>],</span>
+<span id="cb1-74"><a aria-hidden="true" href="#cb1-74" tabindex="-1"></a>            [<span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb1-75"><a aria-hidden="true" href="#cb1-75" tabindex="-1"></a>            [<span class="op">-</span>np.sin(beta), <span class="dv">0</span>]</span>
+<span id="cb1-76"><a aria-hidden="true" href="#cb1-76" tabindex="-1"></a>        ],</span>
+<span id="cb1-77"><a aria-hidden="true" href="#cb1-77" tabindex="-1"></a>            points_rotate_z)</span>
+<span id="cb1-78"><a aria-hidden="true" href="#cb1-78" tabindex="-1"></a>        <span class="cf">assert</span>(points_rotate_y.shape <span class="op">==</span> (<span class="dv">3</span>, pt_num))</span>
+<span id="cb1-79"><a aria-hidden="true" href="#cb1-79" tabindex="-1"></a></span>
+<span id="cb1-80"><a aria-hidden="true" href="#cb1-80" tabindex="-1"></a>        <span class="co"># 绕x轴旋转</span></span>
+<span id="cb1-81"><a aria-hidden="true" href="#cb1-81" tabindex="-1"></a>        points_rotate_x <span class="op">=</span> np.matmul([</span>
+<span id="cb1-82"><a aria-hidden="true" href="#cb1-82" tabindex="-1"></a>            [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
+<span id="cb1-83"><a aria-hidden="true" href="#cb1-83" tabindex="-1"></a>            [<span class="dv">0</span>, np.cos(alpha), <span class="op">-</span>np.sin(alpha)],</span>
+<span id="cb1-84"><a aria-hidden="true" href="#cb1-84" tabindex="-1"></a>            [<span class="dv">0</span>, np.sin(alpha), np.cos(alpha)]</span>
+<span id="cb1-85"><a aria-hidden="true" href="#cb1-85" tabindex="-1"></a>        ], points_rotate_y)</span>
+<span id="cb1-86"><a aria-hidden="true" href="#cb1-86" tabindex="-1"></a></span>
+<span id="cb1-87"><a aria-hidden="true" href="#cb1-87" tabindex="-1"></a>        <span class="co"># 平移到相机坐标系</span></span>
+<span id="cb1-88"><a aria-hidden="true" href="#cb1-88" tabindex="-1"></a>        points_camera[:, i <span class="op">*</span> pt_num: (i <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num] <span class="op">=</span> points_rotate_x <span class="op">+</span> [[tx], [ty], [tz]]</span>
+<span id="cb1-89"><a aria-hidden="true" href="#cb1-89" tabindex="-1"></a></span>
+<span id="cb1-90"><a aria-hidden="true" href="#cb1-90" tabindex="-1"></a>    <span class="co"># 投影到成像平面</span></span>
+<span id="cb1-91"><a aria-hidden="true" href="#cb1-91" tabindex="-1"></a>    points_image_plane <span class="op">=</span> points_camera[:<span class="dv">2</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :] <span class="op">*</span> f</span>
+<span id="cb1-92"><a aria-hidden="true" href="#cb1-92" tabindex="-1"></a>    <span class="cf">assert</span>(points_image_plane.shape <span class="op">==</span> (<span class="dv">2</span>, pt_num <span class="op">*</span> scene_num))</span>
+<span id="cb1-93"><a aria-hidden="true" href="#cb1-93" tabindex="-1"></a></span>
+<span id="cb1-94"><a aria-hidden="true" href="#cb1-94" tabindex="-1"></a>    <span class="co"># 畸变</span></span>
+<span id="cb1-95"><a aria-hidden="true" href="#cb1-95" tabindex="-1"></a>    r2 <span class="op">=</span> np.<span class="bu">sum</span>(np.power(points_image_plane, <span class="dv">2</span>), axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb1-96"><a aria-hidden="true" href="#cb1-96" tabindex="-1"></a>    <span class="cf">assert</span>(r2.shape <span class="op">==</span> (pt_num <span class="op">*</span> scene_num,))</span>
+<span id="cb1-97"><a aria-hidden="true" href="#cb1-97" tabindex="-1"></a>    ratio <span class="op">=</span> <span class="dv">2</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> <span class="dv">4</span> <span class="op">*</span> kappa <span class="op">*</span> r2))</span>
+<span id="cb1-98"><a aria-hidden="true" href="#cb1-98" tabindex="-1"></a>    points_distort <span class="op">=</span> ratio <span class="op">*</span> points_image_plane</span>
+<span id="cb1-99"><a aria-hidden="true" href="#cb1-99" tabindex="-1"></a>    <span class="cf">assert</span>(points_distort.shape <span class="op">==</span> (<span class="dv">2</span>, pt_num <span class="op">*</span> scene_num))</span>
+<span id="cb1-100"><a aria-hidden="true" href="#cb1-100" tabindex="-1"></a>    r2d <span class="op">=</span> np.<span class="bu">sum</span>(np.power(points_distort, <span class="dv">2</span>), axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb1-101"><a aria-hidden="true" href="#cb1-101" tabindex="-1"></a>    <span class="cf">assert</span>(r2d.shape <span class="op">==</span> (pt_num <span class="op">*</span> scene_num,))</span>
+<span id="cb1-102"><a aria-hidden="true" href="#cb1-102" tabindex="-1"></a></span>
+<span id="cb1-103"><a aria-hidden="true" href="#cb1-103" tabindex="-1"></a>    <span class="co"># 到图像坐标系</span></span>
+<span id="cb1-104"><a aria-hidden="true" href="#cb1-104" tabindex="-1"></a>    points_image <span class="op">=</span> [[<span class="dv">1</span> <span class="op">/</span> sx], [<span class="dv">1</span> <span class="op">/</span> sy]] <span class="op">*</span> points_distort <span class="op">+</span> [[cx], [cy]]</span>
+<span id="cb1-105"><a aria-hidden="true" href="#cb1-105" tabindex="-1"></a>    <span class="cf">assert</span>(points_image.shape <span class="op">==</span> (<span class="dv">2</span>, pt_num <span class="op">*</span> scene_num))</span>
+<span id="cb1-106"><a aria-hidden="true" href="#cb1-106" tabindex="-1"></a></span>
+<span id="cb1-107"><a aria-hidden="true" href="#cb1-107" tabindex="-1"></a>    <span class="co"># 雅可比矩阵，左起5列对应内参cx, cy, sx, f, kappa，往右每6列对应一组外参</span></span>
+<span id="cb1-108"><a aria-hidden="true" href="#cb1-108" tabindex="-1"></a>    <span class="co"># 上半部分对应标定点的横坐标，下半部分对应纵坐标</span></span>
+<span id="cb1-109"><a aria-hidden="true" href="#cb1-109" tabindex="-1"></a>    jac <span class="op">=</span> np.empty((<span class="dv">2</span> <span class="op">*</span> pt_num <span class="op">*</span> scene_num, <span class="dv">5</span> <span class="op">+</span> scene_num <span class="op">*</span> <span class="dv">6</span>))</span>
+<span id="cb1-110"><a aria-hidden="true" href="#cb1-110" tabindex="-1"></a></span>
+<span id="cb1-111"><a aria-hidden="true" href="#cb1-111" tabindex="-1"></a>    <span class="co"># 横坐标对cx的偏导数</span></span>
+<span id="cb1-112"><a aria-hidden="true" href="#cb1-112" tabindex="-1"></a>    jac[:pt_num <span class="op">*</span> scene_num, <span class="dv">0</span>] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb1-113"><a aria-hidden="true" href="#cb1-113" tabindex="-1"></a>    <span class="co"># 纵坐标对cx的偏导数</span></span>
+<span id="cb1-114"><a aria-hidden="true" href="#cb1-114" tabindex="-1"></a>    jac[pt_num <span class="op">*</span> scene_num:, <span class="dv">0</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb1-115"><a aria-hidden="true" href="#cb1-115" tabindex="-1"></a></span>
+<span id="cb1-116"><a aria-hidden="true" href="#cb1-116" tabindex="-1"></a></span>
+<span id="cb1-117"><a aria-hidden="true" href="#cb1-117" tabindex="-1"></a>    <span class="co"># 对cy的偏导数</span></span>
+<span id="cb1-118"><a aria-hidden="true" href="#cb1-118" tabindex="-1"></a>    jac[:pt_num <span class="op">*</span> scene_num, <span class="dv">1</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb1-119"><a aria-hidden="true" href="#cb1-119" tabindex="-1"></a>    jac[pt_num <span class="op">*</span> scene_num:, <span class="dv">1</span>] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb1-120"><a aria-hidden="true" href="#cb1-120" tabindex="-1"></a></span>
+<span id="cb1-121"><a aria-hidden="true" href="#cb1-121" tabindex="-1"></a>    <span class="co"># 对sx的偏导数</span></span>
+<span id="cb1-122"><a aria-hidden="true" href="#cb1-122" tabindex="-1"></a>    jac[:pt_num <span class="op">*</span> scene_num, <span class="dv">2</span>] <span class="op">=</span> <span class="op">-</span>points_distort[<span class="dv">0</span>, :] <span class="op">/</span> sx <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb1-123"><a aria-hidden="true" href="#cb1-123" tabindex="-1"></a>    jac[pt_num <span class="op">*</span> scene_num:, <span class="dv">2</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb1-124"><a aria-hidden="true" href="#cb1-124" tabindex="-1"></a></span>
+<span id="cb1-125"><a aria-hidden="true" href="#cb1-125" tabindex="-1"></a>    <span class="co"># 对f求偏导数</span></span>
+<span id="cb1-126"><a aria-hidden="true" href="#cb1-126" tabindex="-1"></a>    d_ud_u <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> kappa <span class="op">*</span> points_distort[<span class="dv">0</span>, :] <span class="op">**</span> <span class="dv">2</span> <span class="op">/</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> <span class="dv">4</span> <span class="op">*</span> kappa <span class="op">*</span> r2) <span class="op">+</span> ratio</span>
+<span id="cb1-127"><a aria-hidden="true" href="#cb1-127" tabindex="-1"></a>    d_ud_v <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> kappa <span class="op">*</span> points_image_plane[<span class="dv">0</span>, :] <span class="op">*</span> points_distort[<span class="dv">1</span>, :] <span class="op">**</span> <span class="dv">2</span> <span class="op">/</span> points_image_plane[<span class="dv">1</span>, :] <span class="op">/</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> <span class="dv">4</span> <span class="op">*</span> kappa <span class="op">*</span> r2)</span>
+<span id="cb1-128"><a aria-hidden="true" href="#cb1-128" tabindex="-1"></a>    d_vd_u <span class="op">=</span> d_ud_v</span>
+<span id="cb1-129"><a aria-hidden="true" href="#cb1-129" tabindex="-1"></a>    d_vd_v <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> kappa <span class="op">*</span> points_distort[<span class="dv">1</span>, :] <span class="op">**</span> <span class="dv">2</span> <span class="op">/</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> <span class="dv">4</span> <span class="op">*</span> kappa <span class="op">*</span> r2) <span class="op">+</span> ratio</span>
+<span id="cb1-130"><a aria-hidden="true" href="#cb1-130" tabindex="-1"></a></span>
+<span id="cb1-131"><a aria-hidden="true" href="#cb1-131" tabindex="-1"></a>    jac[:pt_num <span class="op">*</span> scene_num, <span class="dv">3</span>] <span class="op">=</span> (<span class="dv">1</span> <span class="op">/</span> sx <span class="op">*</span> (d_ud_u <span class="op">*</span> points_camera[<span class="dv">0</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :]</span>
+<span id="cb1-132"><a aria-hidden="true" href="#cb1-132" tabindex="-1"></a>                                            <span class="op">+</span> d_ud_v <span class="op">*</span> points_camera[<span class="dv">1</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :])).flatten()</span>
+<span id="cb1-133"><a aria-hidden="true" href="#cb1-133" tabindex="-1"></a>    jac[pt_num <span class="op">*</span> scene_num:, <span class="dv">3</span>] <span class="op">=</span> (<span class="dv">1</span> <span class="op">/</span> sy <span class="op">*</span> (d_vd_u <span class="op">*</span> points_camera[<span class="dv">0</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :]</span>
+<span id="cb1-134"><a aria-hidden="true" href="#cb1-134" tabindex="-1"></a>                                            <span class="op">+</span> d_vd_v <span class="op">*</span> points_camera[<span class="dv">1</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :])).flatten()</span>
+<span id="cb1-135"><a aria-hidden="true" href="#cb1-135" tabindex="-1"></a></span>
+<span id="cb1-136"><a aria-hidden="true" href="#cb1-136" tabindex="-1"></a>    <span class="co"># 对kappa的偏导数</span></span>
+<span id="cb1-137"><a aria-hidden="true" href="#cb1-137" tabindex="-1"></a>    jac[:pt_num <span class="op">*</span> scene_num, <span class="dv">4</span>] <span class="op">=</span> (<span class="dv">1</span> <span class="op">/</span> sx <span class="op">*</span> points_image_plane[<span class="dv">0</span>] <span class="op">/</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> <span class="dv">4</span> <span class="op">*</span> kappa <span class="op">*</span> r2) <span class="op">*</span> r2d).flatten()</span>
+<span id="cb1-138"><a aria-hidden="true" href="#cb1-138" tabindex="-1"></a>    jac[pt_num <span class="op">*</span> scene_num:, <span class="dv">4</span>] <span class="op">=</span> (<span class="dv">1</span> <span class="op">/</span> sy <span class="op">*</span> points_image_plane[<span class="dv">1</span>] <span class="op">/</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> <span class="dv">4</span> <span class="op">*</span> kappa <span class="op">*</span> r2) <span class="op">*</span> r2d).flatten()</span>
+<span id="cb1-139"><a aria-hidden="true" href="#cb1-139" tabindex="-1"></a></span>
+<span id="cb1-140"><a aria-hidden="true" href="#cb1-140" tabindex="-1"></a>    <span class="co"># 对外参求偏导数</span></span>
+<span id="cb1-141"><a aria-hidden="true" href="#cb1-141" tabindex="-1"></a>    <span class="co"># shape: (pt_num * scene_num,)</span></span>
+<span id="cb1-142"><a aria-hidden="true" href="#cb1-142" tabindex="-1"></a>    d_c_xc <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> sx <span class="op">*</span> d_ud_u <span class="op">*</span> f <span class="op">/</span> points_camera[<span class="dv">2</span>, :]</span>
+<span id="cb1-143"><a aria-hidden="true" href="#cb1-143" tabindex="-1"></a>    d_c_yc <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> sx <span class="op">*</span> d_ud_v <span class="op">*</span> f <span class="op">/</span> points_camera[<span class="dv">2</span>, :]</span>
+<span id="cb1-144"><a aria-hidden="true" href="#cb1-144" tabindex="-1"></a>    d_c_zc <span class="op">=</span> <span class="op">-</span><span class="dv">1</span> <span class="op">/</span> sx <span class="op">*</span> (d_ud_u <span class="op">*</span> f <span class="op">*</span> points_camera[<span class="dv">0</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :] <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb1-145"><a aria-hidden="true" href="#cb1-145" tabindex="-1"></a>                        <span class="op">+</span> d_ud_v <span class="op">*</span> f <span class="op">*</span> points_camera[<span class="dv">1</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :] <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb1-146"><a aria-hidden="true" href="#cb1-146" tabindex="-1"></a>    d_r_xc <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> sy <span class="op">*</span> d_vd_u <span class="op">*</span> f <span class="op">/</span> points_camera[<span class="dv">2</span>, :]</span>
+<span id="cb1-147"><a aria-hidden="true" href="#cb1-147" tabindex="-1"></a>    d_r_yc <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> sy <span class="op">*</span> d_vd_v <span class="op">*</span> f <span class="op">/</span> points_camera[<span class="dv">2</span>, :]</span>
+<span id="cb1-148"><a aria-hidden="true" href="#cb1-148" tabindex="-1"></a>    d_r_zc <span class="op">=</span> <span class="op">-</span><span class="dv">1</span> <span class="op">/</span> sy <span class="op">*</span> (d_vd_u <span class="op">*</span> f <span class="op">*</span> points_camera[<span class="dv">0</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :] <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb1-149"><a aria-hidden="true" href="#cb1-149" tabindex="-1"></a>                        <span class="op">+</span> d_vd_v <span class="op">*</span> f <span class="op">*</span> points_camera[<span class="dv">1</span>, :] <span class="op">/</span> points_camera[<span class="dv">2</span>, :] <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb1-150"><a aria-hidden="true" href="#cb1-150" tabindex="-1"></a>    <span class="cf">for</span> scene <span class="kw">in</span> <span class="bu">range</span>(scene_num):</span>
+<span id="cb1-151"><a aria-hidden="true" href="#cb1-151" tabindex="-1"></a>        d_c_xc_slice <span class="op">=</span> d_c_xc[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num]</span>
+<span id="cb1-152"><a aria-hidden="true" href="#cb1-152" tabindex="-1"></a>        d_c_yc_slice <span class="op">=</span> d_c_yc[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num]</span>
+<span id="cb1-153"><a aria-hidden="true" href="#cb1-153" tabindex="-1"></a>        d_c_zc_slice <span class="op">=</span> d_c_zc[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num]</span>
+<span id="cb1-154"><a aria-hidden="true" href="#cb1-154" tabindex="-1"></a>        d_r_xc_slice <span class="op">=</span> d_r_xc[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num]</span>
+<span id="cb1-155"><a aria-hidden="true" href="#cb1-155" tabindex="-1"></a>        d_r_yc_slice <span class="op">=</span> d_r_yc[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num]</span>
+<span id="cb1-156"><a aria-hidden="true" href="#cb1-156" tabindex="-1"></a>        d_r_zc_slice <span class="op">=</span> d_r_zc[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num]</span>
+<span id="cb1-157"><a aria-hidden="true" href="#cb1-157" tabindex="-1"></a>        jac_slice1 <span class="op">=</span> jac[scene <span class="op">*</span> pt_num:(scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num, :]</span>
+<span id="cb1-158"><a aria-hidden="true" href="#cb1-158" tabindex="-1"></a>        jac_slice2 <span class="op">=</span> jac[(scene_num <span class="op">+</span> scene) <span class="op">*</span> pt_num:(scene_num <span class="op">+</span> scene <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> pt_num, :]</span>
+<span id="cb1-159"><a aria-hidden="true" href="#cb1-159" tabindex="-1"></a>        alpha, beta, gamma, _, _, _ <span class="op">=</span> outer_params[scene]</span>
+<span id="cb1-160"><a aria-hidden="true" href="#cb1-160" tabindex="-1"></a></span>
+<span id="cb1-161"><a aria-hidden="true" href="#cb1-161" tabindex="-1"></a>        <span class="co">#  xc = [cos(beta) * cos(gamma) * x - cos(beta) * sin(gamma) * y],</span></span>
+<span id="cb1-162"><a aria-hidden="true" href="#cb1-162" tabindex="-1"></a>        <span class="co">#  yc = [x * (cos(alpha) * sin(gamma) + cos(gamma) * sin(alpha) * sin(beta))</span></span>
+<span id="cb1-163"><a aria-hidden="true" href="#cb1-163" tabindex="-1"></a>        <span class="co">#      + y * (cos(alpha) * cos(gamma) - sin(alpha) * sin(beta) * sin(gamma))],</span></span>
+<span id="cb1-164"><a aria-hidden="true" href="#cb1-164" tabindex="-1"></a>        <span class="co">#  zc = [x * (-cos(alpha) * cos(gamma) * sin(beta) + sin(alpha) * sin(gamma))</span></span>
+<span id="cb1-165"><a aria-hidden="true" href="#cb1-165" tabindex="-1"></a>        <span class="co">#      + y * (cos(alpha) * sin(beta) * sin(gamma) + cos(gamma) * sin(alpha))]</span></span>
+<span id="cb1-166"><a aria-hidden="true" href="#cb1-166" tabindex="-1"></a></span>
+<span id="cb1-167"><a aria-hidden="true" href="#cb1-167" tabindex="-1"></a>        d_xc_alpha <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb1-168"><a aria-hidden="true" href="#cb1-168" tabindex="-1"></a>        d_xc_beta <span class="op">=</span> <span class="op">-</span>sin(beta) <span class="op">*</span> cos(gamma) <span class="op">*</span> points_transpose[<span class="dv">0</span>, :] <span class="op">\</span></span>
+<span id="cb1-169"><a aria-hidden="true" href="#cb1-169" tabindex="-1"></a>            <span class="op">+</span> sin(beta) <span class="op">*</span> sin(gamma) <span class="op">*</span> points_transpose[<span class="dv">1</span>, :]</span>
+<span id="cb1-170"><a aria-hidden="true" href="#cb1-170" tabindex="-1"></a>        d_xc_gamma <span class="op">=</span> <span class="op">-</span>cos(beta) <span class="op">*</span> sin(gamma) <span class="op">*</span> points_transpose[<span class="dv">0</span>, :] <span class="op">\</span></span>
+<span id="cb1-171"><a aria-hidden="true" href="#cb1-171" tabindex="-1"></a>            <span class="op">-</span> cos(beta) <span class="op">*</span> cos(gamma) <span class="op">*</span> points_transpose[<span class="dv">1</span>, :]</span>
+<span id="cb1-172"><a aria-hidden="true" href="#cb1-172" tabindex="-1"></a>        d_yc_alpha <span class="op">=</span> points_transpose[<span class="dv">0</span>, :] <span class="op">*</span> (<span class="op">-</span>sin(alpha) <span class="op">*</span> sin(gamma) <span class="op">+</span> cos(gamma) <span class="op">*</span> cos(alpha) <span class="op">*</span> sin(beta)) <span class="op">\</span></span>
+<span id="cb1-173"><a aria-hidden="true" href="#cb1-173" tabindex="-1"></a>            <span class="op">+</span> points_transpose[<span class="dv">1</span>, :] <span class="op">*</span> (<span class="op">-</span>sin(alpha) <span class="op">*</span> cos(gamma) <span class="op">-</span> cos(alpha) <span class="op">*</span> sin(beta) <span class="op">*</span> sin(gamma))</span>
+<span id="cb1-174"><a aria-hidden="true" href="#cb1-174" tabindex="-1"></a>        d_yc_beta <span class="op">=</span> points_transpose[<span class="dv">0</span>, :] <span class="op">*</span> cos(gamma) <span class="op">*</span> sin(alpha) <span class="op">*</span> cos(beta) <span class="op">\</span></span>
+<span id="cb1-175"><a aria-hidden="true" href="#cb1-175" tabindex="-1"></a>            <span class="op">-</span> points_transpose[<span class="dv">1</span>, :] <span class="op">*</span> sin(alpha) <span class="op">*</span> cos(beta) <span class="op">*</span> sin(gamma)</span>
+<span id="cb1-176"><a aria-hidden="true" href="#cb1-176" tabindex="-1"></a>        d_yc_gamma <span class="op">=</span> points_transpose[<span class="dv">0</span>, :] <span class="op">*</span> (cos(alpha) <span class="op">*</span> cos(gamma) <span class="op">-</span> sin(gamma) <span class="op">*</span> sin(alpha) <span class="op">*</span> sin(beta)) <span class="op">\</span></span>
+<span id="cb1-177"><a aria-hidden="true" href="#cb1-177" tabindex="-1"></a>            <span class="op">+</span> points_transpose[<span class="dv">1</span>, :] <span class="op">*</span> (<span class="op">-</span>cos(alpha) <span class="op">*</span> sin(gamma) <span class="op">-</span> sin(alpha) <span class="op">*</span> sin(beta) <span class="op">*</span> cos(gamma))</span>
+<span id="cb1-178"><a aria-hidden="true" href="#cb1-178" tabindex="-1"></a>        d_zc_alpha <span class="op">=</span> points_transpose[<span class="dv">0</span>, :] <span class="op">*</span> (sin(alpha) <span class="op">*</span> cos(gamma) <span class="op">*</span> sin(beta) <span class="op">+</span> cos(alpha) <span class="op">*</span> sin(gamma)) <span class="op">\</span></span>
+<span id="cb1-179"><a aria-hidden="true" href="#cb1-179" tabindex="-1"></a>            <span class="op">+</span> points_transpose[<span class="dv">1</span>, :] <span class="op">*</span> (<span class="op">-</span>sin(alpha) <span class="op">*</span> sin(beta) <span class="op">*</span> sin(gamma) <span class="op">+</span> cos(gamma) <span class="op">*</span> cos(alpha))</span>
+<span id="cb1-180"><a aria-hidden="true" href="#cb1-180" tabindex="-1"></a>        d_zc_beta <span class="op">=</span> points_transpose[<span class="dv">0</span>, :] <span class="op">*</span> <span class="op">-</span>cos(alpha) <span class="op">*</span> cos(gamma) <span class="op">*</span> cos(beta) <span class="op">\</span></span>
+<span id="cb1-181"><a aria-hidden="true" href="#cb1-181" tabindex="-1"></a>            <span class="op">+</span> points_transpose[<span class="dv">1</span>, :] <span class="op">*</span> cos(alpha) <span class="op">*</span> cos(beta) <span class="op">*</span> sin(gamma)</span>
+<span id="cb1-182"><a aria-hidden="true" href="#cb1-182" tabindex="-1"></a>        d_zc_gamma <span class="op">=</span> points_transpose[<span class="dv">0</span>, :] <span class="op">*</span> (cos(alpha) <span class="op">*</span> sin(gamma) <span class="op">*</span> sin(beta) <span class="op">+</span> sin(alpha) <span class="op">*</span> cos(gamma)) <span class="op">\</span></span>
+<span id="cb1-183"><a aria-hidden="true" href="#cb1-183" tabindex="-1"></a>            <span class="op">+</span> points_transpose[<span class="dv">1</span>, :] <span class="op">*</span> (cos(alpha) <span class="op">*</span> sin(beta) <span class="op">*</span> cos(gamma) <span class="op">-</span> sin(gamma) <span class="op">*</span> sin(alpha))</span>
+<span id="cb1-184"><a aria-hidden="true" href="#cb1-184" tabindex="-1"></a>        <span class="co"># alpha</span></span>
+<span id="cb1-185"><a aria-hidden="true" href="#cb1-185" tabindex="-1"></a>        jac_slice1[:, <span class="dv">5</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_c_xc_slice <span class="op">*</span> d_xc_alpha <span class="op">+</span> d_c_yc_slice <span class="op">*</span> d_yc_alpha <span class="op">+</span> d_c_zc_slice <span class="op">*</span> d_zc_alpha</span>
+<span id="cb1-186"><a aria-hidden="true" href="#cb1-186" tabindex="-1"></a>        jac_slice2[:, <span class="dv">5</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_r_xc_slice <span class="op">*</span> d_xc_alpha <span class="op">+</span> d_r_yc_slice <span class="op">*</span> d_yc_alpha <span class="op">+</span> d_r_zc_slice <span class="op">*</span> d_zc_alpha</span>
+<span id="cb1-187"><a aria-hidden="true" href="#cb1-187" tabindex="-1"></a></span>
+<span id="cb1-188"><a aria-hidden="true" href="#cb1-188" tabindex="-1"></a>        <span class="co"># beta</span></span>
+<span id="cb1-189"><a aria-hidden="true" href="#cb1-189" tabindex="-1"></a>        jac_slice1[:, <span class="dv">6</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_c_xc_slice <span class="op">*</span> d_xc_beta <span class="op">+</span> d_c_yc_slice <span class="op">*</span> d_yc_beta <span class="op">+</span> d_c_zc_slice <span class="op">*</span> d_zc_beta</span>
+<span id="cb1-190"><a aria-hidden="true" href="#cb1-190" tabindex="-1"></a>        jac_slice2[:, <span class="dv">6</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_r_xc_slice <span class="op">*</span> d_xc_beta <span class="op">+</span> d_r_yc_slice <span class="op">*</span> d_yc_beta <span class="op">+</span> d_r_zc_slice <span class="op">*</span> d_zc_beta</span>
+<span id="cb1-191"><a aria-hidden="true" href="#cb1-191" tabindex="-1"></a></span>
+<span id="cb1-192"><a aria-hidden="true" href="#cb1-192" tabindex="-1"></a>        <span class="co"># gamma</span></span>
+<span id="cb1-193"><a aria-hidden="true" href="#cb1-193" tabindex="-1"></a>        jac_slice1[:, <span class="dv">7</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_c_xc_slice <span class="op">*</span> d_xc_gamma <span class="op">+</span> d_c_yc_slice <span class="op">*</span> d_yc_gamma <span class="op">+</span> d_c_zc_slice <span class="op">*</span> d_zc_gamma</span>
+<span id="cb1-194"><a aria-hidden="true" href="#cb1-194" tabindex="-1"></a>        jac_slice2[:, <span class="dv">7</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_r_xc_slice <span class="op">*</span> d_xc_gamma <span class="op">+</span> d_r_yc_slice <span class="op">*</span> d_yc_gamma <span class="op">+</span> d_r_zc_slice <span class="op">*</span> d_zc_gamma</span>
+<span id="cb1-195"><a aria-hidden="true" href="#cb1-195" tabindex="-1"></a></span>
+<span id="cb1-196"><a aria-hidden="true" href="#cb1-196" tabindex="-1"></a>        <span class="co"># tx</span></span>
+<span id="cb1-197"><a aria-hidden="true" href="#cb1-197" tabindex="-1"></a>        jac_slice1[:, <span class="dv">8</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_c_xc_slice</span>
+<span id="cb1-198"><a aria-hidden="true" href="#cb1-198" tabindex="-1"></a>        jac_slice2[:, <span class="dv">8</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_r_xc_slice</span>
+<span id="cb1-199"><a aria-hidden="true" href="#cb1-199" tabindex="-1"></a></span>
+<span id="cb1-200"><a aria-hidden="true" href="#cb1-200" tabindex="-1"></a>        <span class="co"># ty</span></span>
+<span id="cb1-201"><a aria-hidden="true" href="#cb1-201" tabindex="-1"></a>        jac_slice1[:, <span class="dv">9</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_c_yc_slice</span>
+<span id="cb1-202"><a aria-hidden="true" href="#cb1-202" tabindex="-1"></a>        jac_slice2[:, <span class="dv">9</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_r_yc_slice</span>
+<span id="cb1-203"><a aria-hidden="true" href="#cb1-203" tabindex="-1"></a></span>
+<span id="cb1-204"><a aria-hidden="true" href="#cb1-204" tabindex="-1"></a>        <span class="co"># tz</span></span>
+<span id="cb1-205"><a aria-hidden="true" href="#cb1-205" tabindex="-1"></a>        jac_slice1[:, <span class="dv">10</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_c_zc_slice</span>
+<span id="cb1-206"><a aria-hidden="true" href="#cb1-206" tabindex="-1"></a>        jac_slice2[:, <span class="dv">10</span> <span class="op">+</span> scene <span class="op">*</span> <span class="dv">6</span>] <span class="op">=</span> d_r_zc_slice</span>
+<span id="cb1-207"><a aria-hidden="true" href="#cb1-207" tabindex="-1"></a>    <span class="cf">return</span> points_image, jac</span>
+<span id="cb1-208"><a aria-hidden="true" href="#cb1-208" tabindex="-1"></a></span>
+<span id="cb1-209"><a aria-hidden="true" href="#cb1-209" tabindex="-1"></a></span>
+<span id="cb1-210"><a aria-hidden="true" href="#cb1-210" tabindex="-1"></a><span class="kw">def</span> calibrate(grids, params):</span>
+<span id="cb1-211"><a aria-hidden="true" href="#cb1-211" tabindex="-1"></a>    pattern_size <span class="op">=</span> params[<span class="st">'pattern size'</span>]</span>
+<span id="cb1-212"><a aria-hidden="true" href="#cb1-212" tabindex="-1"></a>    cell_width <span class="op">=</span> params[<span class="st">'cell width'</span>]</span>
+<span id="cb1-213"><a aria-hidden="true" href="#cb1-213" tabindex="-1"></a>    image_count <span class="op">=</span> grids.shape[<span class="dv">0</span>]</span>
+<span id="cb1-214"><a aria-hidden="true" href="#cb1-214" tabindex="-1"></a></span>
+<span id="cb1-215"><a aria-hidden="true" href="#cb1-215" tabindex="-1"></a>    <span class="co"># 随机显示一张标定板检测结果</span></span>
+<span id="cb1-216"><a aria-hidden="true" href="#cb1-216" tabindex="-1"></a>    <span class="co"># import random</span></span>
+<span id="cb1-217"><a aria-hidden="true" href="#cb1-217" tabindex="-1"></a>    <span class="co"># show_grid(pattern_size, imgs, grids, random.randint(0, len(imgs) - 1))</span></span>
+<span id="cb1-218"><a aria-hidden="true" href="#cb1-218" tabindex="-1"></a></span>
+<span id="cb1-219"><a aria-hidden="true" href="#cb1-219" tabindex="-1"></a>    <span class="co"># 计算世界坐标系中的标定板坐标</span></span>
+<span id="cb1-220"><a aria-hidden="true" href="#cb1-220" tabindex="-1"></a>    grid_x <span class="op">=</span> (np.arange(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>]) <span class="op">%</span> pattern_size[<span class="dv">0</span>]) <span class="op">*</span> cell_width</span>
+<span id="cb1-221"><a aria-hidden="true" href="#cb1-221" tabindex="-1"></a>    grid_y <span class="op">=</span> np.asarray(np.arange(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>]) <span class="op">/</span> pattern_size[<span class="dv">0</span>], np.<span class="bu">int</span>) <span class="op">*</span> cell_width</span>
+<span id="cb1-222"><a aria-hidden="true" href="#cb1-222" tabindex="-1"></a>    grid_world <span class="op">=</span> np.empty((pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>], <span class="dv">2</span>))</span>
+<span id="cb1-223"><a aria-hidden="true" href="#cb1-223" tabindex="-1"></a>    grid_world[:, <span class="dv">0</span>] <span class="op">=</span> grid_x</span>
+<span id="cb1-224"><a aria-hidden="true" href="#cb1-224" tabindex="-1"></a>    grid_world[:, <span class="dv">1</span>] <span class="op">=</span> grid_y</span>
+<span id="cb1-225"><a aria-hidden="true" href="#cb1-225" tabindex="-1"></a></span>
+<span id="cb1-226"><a aria-hidden="true" href="#cb1-226" tabindex="-1"></a>    <span class="co"># 提取内参初始值</span></span>
+<span id="cb1-227"><a aria-hidden="true" href="#cb1-227" tabindex="-1"></a>    obj_points <span class="op">=</span> np.float32(np.tile(np.hstack((grid_world, np.zeros((grid_world.shape[<span class="dv">0</span>], <span class="dv">1</span>)))), (image_count, <span class="dv">1</span>)))<span class="op">\</span></span>
+<span id="cb1-228"><a aria-hidden="true" href="#cb1-228" tabindex="-1"></a>        .reshape(image_count, pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>], <span class="dv">3</span>)</span>
+<span id="cb1-229"><a aria-hidden="true" href="#cb1-229" tabindex="-1"></a>    camera_matrix <span class="op">=</span> np.array(cv.initCameraMatrix2D(</span>
+<span id="cb1-230"><a aria-hidden="true" href="#cb1-230" tabindex="-1"></a>        obj_points,</span>
+<span id="cb1-231"><a aria-hidden="true" href="#cb1-231" tabindex="-1"></a>        np.float32(grids),</span>
+<span id="cb1-232"><a aria-hidden="true" href="#cb1-232" tabindex="-1"></a>        (<span class="dv">1280</span>, <span class="dv">1024</span>)</span>
+<span id="cb1-233"><a aria-hidden="true" href="#cb1-233" tabindex="-1"></a>    ))</span>
+<span id="cb1-234"><a aria-hidden="true" href="#cb1-234" tabindex="-1"></a>    fx, _, cx, _, fy, cy, _, _, _ <span class="op">=</span> camera_matrix.flatten()</span>
+<span id="cb1-235"><a aria-hidden="true" href="#cb1-235" tabindex="-1"></a>    sy <span class="op">=</span> <span class="fl">4.8e-3</span></span>
+<span id="cb1-236"><a aria-hidden="true" href="#cb1-236" tabindex="-1"></a>    f <span class="op">=</span> fy <span class="op">*</span> sy</span>
+<span id="cb1-237"><a aria-hidden="true" href="#cb1-237" tabindex="-1"></a>    sx <span class="op">=</span> f <span class="op">/</span> fx</span>
+<span id="cb1-238"><a aria-hidden="true" href="#cb1-238" tabindex="-1"></a>    kappa <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb1-239"><a aria-hidden="true" href="#cb1-239" tabindex="-1"></a>    outer_params <span class="op">=</span> np.empty((image_count, <span class="dv">6</span>))</span>
+<span id="cb1-240"><a aria-hidden="true" href="#cb1-240" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(image_count):</span>
+<span id="cb1-241"><a aria-hidden="true" href="#cb1-241" tabindex="-1"></a>        mat_h, _ <span class="op">=</span> cv.findHomography(obj_points[i], grids[i])</span>
+<span id="cb1-242"><a aria-hidden="true" href="#cb1-242" tabindex="-1"></a>        alpha, beta, gamma, t <span class="op">=</span> estimate_outer_params(cx, cy, f <span class="op">/</span> sx, f <span class="op">/</span> sy, mat_h)</span>
+<span id="cb1-243"><a aria-hidden="true" href="#cb1-243" tabindex="-1"></a>        outer_params[i, :] <span class="op">=</span> [alpha, beta, gamma, t[<span class="dv">0</span>], t[<span class="dv">1</span>], t[<span class="dv">2</span>]]</span>
+<span id="cb1-244"><a aria-hidden="true" href="#cb1-244" tabindex="-1"></a></span>
+<span id="cb1-245"><a aria-hidden="true" href="#cb1-245" tabindex="-1"></a>    lamb <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb1-246"><a aria-hidden="true" href="#cb1-246" tabindex="-1"></a>    g1 <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb1-247"><a aria-hidden="true" href="#cb1-247" tabindex="-1"></a>    g2 <span class="op">=</span> <span class="fl">1.1</span></span>
+<span id="cb1-248"><a aria-hidden="true" href="#cb1-248" tabindex="-1"></a>    i1 <span class="op">=</span> <span class="fl">1e-1</span></span>
+<span id="cb1-249"><a aria-hidden="true" href="#cb1-249" tabindex="-1"></a>    i2 <span class="op">=</span> <span class="fl">0.99</span></span>
+<span id="cb1-250"><a aria-hidden="true" href="#cb1-250" tabindex="-1"></a>    mat_i <span class="op">=</span> np.eye(<span class="dv">5</span> <span class="op">+</span> <span class="dv">6</span> <span class="op">*</span> image_count)</span>
+<span id="cb1-251"><a aria-hidden="true" href="#cb1-251" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>):</span>
+<span id="cb1-252"><a aria-hidden="true" href="#cb1-252" tabindex="-1"></a>        points_predict, jac <span class="op">=</span> predict1(grid_world, cx, cy, sx, sy, f, kappa, outer_params)</span>
+<span id="cb1-253"><a aria-hidden="true" href="#cb1-253" tabindex="-1"></a>        <span class="cf">assert</span>(points_predict.shape <span class="op">==</span> (<span class="dv">2</span>, pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>] <span class="op">*</span> image_count))</span>
+<span id="cb1-254"><a aria-hidden="true" href="#cb1-254" tabindex="-1"></a>        delta <span class="op">=</span> points_predict <span class="op">-</span> grids.reshape(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>] <span class="op">*</span> image_count, <span class="dv">2</span>).T</span>
+<span id="cb1-255"><a aria-hidden="true" href="#cb1-255" tabindex="-1"></a>        <span class="cf">assert</span>(delta.shape <span class="op">==</span> (<span class="dv">2</span>, pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>] <span class="op">*</span> image_count))</span>
+<span id="cb1-256"><a aria-hidden="true" href="#cb1-256" tabindex="-1"></a>        error <span class="op">=</span> np.mean(np.<span class="bu">sum</span>(delta <span class="op">**</span> <span class="dv">2</span>, axis<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb1-257"><a aria-hidden="true" href="#cb1-257" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'平均误差：'</span>, np.sqrt(error))</span>
+<span id="cb1-258"><a aria-hidden="true" href="#cb1-258" tabindex="-1"></a></span>
+<span id="cb1-259"><a aria-hidden="true" href="#cb1-259" tabindex="-1"></a>        <span class="co"># 更新内外参</span></span>
+<span id="cb1-260"><a aria-hidden="true" href="#cb1-260" tabindex="-1"></a>        mat_a <span class="op">=</span> np.matmul(jac.T, jac)</span>
+<span id="cb1-261"><a aria-hidden="true" href="#cb1-261" tabindex="-1"></a>        step <span class="op">=</span> <span class="op">-</span>np.matmul(np.mat(mat_a <span class="op">+</span> lamb <span class="op">*</span> mat_i).I,</span>
+<span id="cb1-262"><a aria-hidden="true" href="#cb1-262" tabindex="-1"></a>                          np.matmul(jac.T, delta.reshape(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>] <span class="op">*</span> image_count <span class="op">*</span> <span class="dv">2</span>, <span class="dv">1</span>)))</span>
+<span id="cb1-263"><a aria-hidden="true" href="#cb1-263" tabindex="-1"></a>        <span class="cf">assert</span>(step.size <span class="op">==</span> <span class="dv">5</span> <span class="op">+</span> <span class="dv">6</span> <span class="op">*</span> outer_params.shape[<span class="dv">0</span>])</span>
+<span id="cb1-264"><a aria-hidden="true" href="#cb1-264" tabindex="-1"></a>        step <span class="op">=</span> np.array(step).flatten()</span>
+<span id="cb1-265"><a aria-hidden="true" href="#cb1-265" tabindex="-1"></a>        cx, cy, sx, f, kappa <span class="op">=</span> np.array([cx, cy, sx, f, kappa]) <span class="op">+</span> step[:<span class="dv">5</span>]</span>
+<span id="cb1-266"><a aria-hidden="true" href="#cb1-266" tabindex="-1"></a>        outer_params <span class="op">+=</span> step[<span class="dv">5</span>:].reshape(outer_params.shape[<span class="dv">0</span>], <span class="dv">6</span>)</span>
+<span id="cb1-267"><a aria-hidden="true" href="#cb1-267" tabindex="-1"></a></span>
+<span id="cb1-268"><a aria-hidden="true" href="#cb1-268" tabindex="-1"></a>        <span class="co"># 更新LM算法的参数</span></span>
+<span id="cb1-269"><a aria-hidden="true" href="#cb1-269" tabindex="-1"></a>        points_predict2, _ <span class="op">=</span> predict1(grid_world, cx, cy, sx, sy, f, kappa, outer_params)</span>
+<span id="cb1-270"><a aria-hidden="true" href="#cb1-270" tabindex="-1"></a>        delta2 <span class="op">=</span> points_predict2 <span class="op">-</span> grids.reshape(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>] <span class="op">*</span> image_count, <span class="dv">2</span>).T</span>
+<span id="cb1-271"><a aria-hidden="true" href="#cb1-271" tabindex="-1"></a>        error2 <span class="op">=</span> np.mean(np.<span class="bu">sum</span>(delta2 <span class="op">**</span> <span class="dv">2</span>, axis<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb1-272"><a aria-hidden="true" href="#cb1-272" tabindex="-1"></a>        points_predict3 <span class="op">=</span> points_predict <span class="op">+</span> np.matmul(jac, step.reshape(<span class="dv">5</span> <span class="op">+</span> <span class="dv">6</span> <span class="op">*</span> image_count, <span class="dv">1</span>)) <span class="op">\</span></span>
+<span id="cb1-273"><a aria-hidden="true" href="#cb1-273" tabindex="-1"></a>            .reshape(<span class="dv">2</span>, pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">0</span>] <span class="op">*</span> image_count)</span>
+<span id="cb1-274"><a aria-hidden="true" href="#cb1-274" tabindex="-1"></a>        delta3 <span class="op">=</span> points_predict3 <span class="op">-</span> grids.reshape(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>] <span class="op">*</span> image_count, <span class="dv">2</span>).T</span>
+<span id="cb1-275"><a aria-hidden="true" href="#cb1-275" tabindex="-1"></a>        error3 <span class="op">=</span> np.mean(np.<span class="bu">sum</span>(delta3 <span class="op">**</span> <span class="dv">2</span>, axis<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb1-276"><a aria-hidden="true" href="#cb1-276" tabindex="-1"></a>        p <span class="op">=</span> (error <span class="op">-</span> error2) <span class="op">/</span> (error <span class="op">-</span> error3)</span>
+<span id="cb1-277"><a aria-hidden="true" href="#cb1-277" tabindex="-1"></a>        lamb <span class="op">=</span> g2 <span class="op">*</span> lamb <span class="cf">if</span> p <span class="op">&lt;</span> i1 <span class="cf">else</span> <span class="op">\</span></span>
+<span id="cb1-278"><a aria-hidden="true" href="#cb1-278" tabindex="-1"></a>            lamb <span class="cf">if</span> i1 <span class="op">&lt;=</span> p <span class="op">&lt;</span> i2 <span class="cf">else</span><span class="op">\</span></span>
+<span id="cb1-279"><a aria-hidden="true" href="#cb1-279" tabindex="-1"></a>            g1 <span class="op">*</span> lamb</span>
+<span id="cb1-280"><a aria-hidden="true" href="#cb1-280" tabindex="-1"></a></span>
+<span id="cb1-281"><a aria-hidden="true" href="#cb1-281" tabindex="-1"></a>    <span class="bu">print</span>(</span>
+<span id="cb1-282"><a aria-hidden="true" href="#cb1-282" tabindex="-1"></a>        <span class="st">'''用LM法优化得到：</span></span>
+<span id="cb1-283"><a aria-hidden="true" href="#cb1-283" tabindex="-1"></a><span class="st">            cx: </span><span class="sc">%f</span><span class="st"> px;</span></span>
+<span id="cb1-284"><a aria-hidden="true" href="#cb1-284" tabindex="-1"></a><span class="st">            cy: </span><span class="sc">%f</span><span class="st"> px;</span></span>
+<span id="cb1-285"><a aria-hidden="true" href="#cb1-285" tabindex="-1"></a><span class="st">            sx: </span><span class="sc">%f</span><span class="st"> um;</span></span>
+<span id="cb1-286"><a aria-hidden="true" href="#cb1-286" tabindex="-1"></a><span class="st">            sy: </span><span class="sc">%f</span><span class="st"> um;</span></span>
+<span id="cb1-287"><a aria-hidden="true" href="#cb1-287" tabindex="-1"></a><span class="st">            f: </span><span class="sc">%f</span><span class="st"> mm;</span></span>
+<span id="cb1-288"><a aria-hidden="true" href="#cb1-288" tabindex="-1"></a><span class="st">            kappa: </span><span class="sc">%f</span><span class="st"> 1/m^2;</span></span>
+<span id="cb1-289"><a aria-hidden="true" href="#cb1-289" tabindex="-1"></a><span class="st">        '''</span> <span class="op">%</span> (cx, cy, sx <span class="op">*</span> <span class="fl">1e3</span>, sy <span class="op">*</span> <span class="fl">1e3</span>, f, kappa <span class="op">*</span> <span class="fl">1e6</span>)</span>
+<span id="cb1-290"><a aria-hidden="true" href="#cb1-290" tabindex="-1"></a>    )</span>
+<span id="cb1-291"><a aria-hidden="true" href="#cb1-291" tabindex="-1"></a></span>
+<span id="cb1-292"><a aria-hidden="true" href="#cb1-292" tabindex="-1"></a></span>
+<span id="cb1-293"><a aria-hidden="true" href="#cb1-293" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb1-294"><a aria-hidden="true" href="#cb1-294" tabindex="-1"></a>    <span class="co"># 初始参数</span></span>
+<span id="cb1-295"><a aria-hidden="true" href="#cb1-295" tabindex="-1"></a>    <span class="co"># 实际距离全部以毫米为单位</span></span>
+<span id="cb1-296"><a aria-hidden="true" href="#cb1-296" tabindex="-1"></a>    params <span class="op">=</span> {</span>
+<span id="cb1-297"><a aria-hidden="true" href="#cb1-297" tabindex="-1"></a>        <span class="st">'pattern size'</span>: (<span class="dv">7</span>, <span class="dv">7</span>),  <span class="co"># 标记圆的个数</span></span>
+<span id="cb1-298"><a aria-hidden="true" href="#cb1-298" tabindex="-1"></a>        <span class="st">'cell width'</span>: <span class="dv">25</span>,  <span class="co"># 标记点间距</span></span>
+<span id="cb1-299"><a aria-hidden="true" href="#cb1-299" tabindex="-1"></a>        <span class="st">'sx'</span>: <span class="fl">4.8e-3</span>,</span>
+<span id="cb1-300"><a aria-hidden="true" href="#cb1-300" tabindex="-1"></a>        <span class="st">"sy"</span>: <span class="fl">4.8e-3</span></span>
+<span id="cb1-301"><a aria-hidden="true" href="#cb1-301" tabindex="-1"></a>    }</span>
+<span id="cb1-302"><a aria-hidden="true" href="#cb1-302" tabindex="-1"></a>    pattern_size <span class="op">=</span> params[<span class="st">'pattern size'</span>]</span>
+<span id="cb1-303"><a aria-hidden="true" href="#cb1-303" tabindex="-1"></a></span>
+<span id="cb1-304"><a aria-hidden="true" href="#cb1-304" tabindex="-1"></a>    <span class="co"># 列出文件夹下的所有图片</span></span>
+<span id="cb1-305"><a aria-hidden="true" href="#cb1-305" tabindex="-1"></a>    directory <span class="op">=</span> <span class="st">'./test_images_1'</span></span>
+<span id="cb1-306"><a aria-hidden="true" href="#cb1-306" tabindex="-1"></a>    files <span class="op">=</span> []</span>
+<span id="cb1-307"><a aria-hidden="true" href="#cb1-307" tabindex="-1"></a></span>
+<span id="cb1-308"><a aria-hidden="true" href="#cb1-308" tabindex="-1"></a>    <span class="im">import</span> sys</span>
+<span id="cb1-309"><a aria-hidden="true" href="#cb1-309" tabindex="-1"></a>    <span class="im">import</span> os</span>
+<span id="cb1-310"><a aria-hidden="true" href="#cb1-310" tabindex="-1"></a>    <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> os.listdir(directory):</span>
+<span id="cb1-311"><a aria-hidden="true" href="#cb1-311" tabindex="-1"></a>        path <span class="op">=</span> os.path.join(directory, <span class="bu">file</span>)</span>
+<span id="cb1-312"><a aria-hidden="true" href="#cb1-312" tabindex="-1"></a>        <span class="cf">if</span> os.path.isfile(path) <span class="kw">and</span> path.endswith(<span class="st">'.bmp'</span>):</span>
+<span id="cb1-313"><a aria-hidden="true" href="#cb1-313" tabindex="-1"></a>            files.append(path)</span>
+<span id="cb1-314"><a aria-hidden="true" href="#cb1-314" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(files) <span class="op">&lt;</span> <span class="dv">2</span>:</span>
+<span id="cb1-315"><a aria-hidden="true" href="#cb1-315" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"至少需要两份标定文件！"</span>, sys.stderr)</span>
+<span id="cb1-316"><a aria-hidden="true" href="#cb1-316" tabindex="-1"></a>        <span class="co"># exit(128)</span></span>
+<span id="cb1-317"><a aria-hidden="true" href="#cb1-317" tabindex="-1"></a></span>
+<span id="cb1-318"><a aria-hidden="true" href="#cb1-318" tabindex="-1"></a>    <span class="co"># 读取图片</span></span>
+<span id="cb1-319"><a aria-hidden="true" href="#cb1-319" tabindex="-1"></a>    imgs <span class="op">=</span> []</span>
+<span id="cb1-320"><a aria-hidden="true" href="#cb1-320" tabindex="-1"></a>    <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> files:</span>
+<span id="cb1-321"><a aria-hidden="true" href="#cb1-321" tabindex="-1"></a>        imgs.append(cv.imread(<span class="bu">file</span>, cv.IMREAD_GRAYSCALE))</span>
+<span id="cb1-322"><a aria-hidden="true" href="#cb1-322" tabindex="-1"></a></span>
+<span id="cb1-323"><a aria-hidden="true" href="#cb1-323" tabindex="-1"></a>    <span class="co"># 检测圆点</span></span>
+<span id="cb1-324"><a aria-hidden="true" href="#cb1-324" tabindex="-1"></a>    grids <span class="op">=</span> np.zeros((<span class="bu">len</span>(imgs), params[<span class="st">'pattern size'</span>][<span class="dv">0</span>] <span class="op">*</span> params[<span class="st">'pattern size'</span>][<span class="dv">1</span>], <span class="dv">2</span>))</span>
+<span id="cb1-325"><a aria-hidden="true" href="#cb1-325" tabindex="-1"></a></span>
+<span id="cb1-326"><a aria-hidden="true" href="#cb1-326" tabindex="-1"></a>    <span class="co"># 有兩種方法可以讀取坐標：</span></span>
+<span id="cb1-327"><a aria-hidden="true" href="#cb1-327" tabindex="-1"></a>    <span class="co"># 1. 直接從halcon的識別結果中讀取坐標（halcon的檢測結果更準）；</span></span>
+<span id="cb1-328"><a aria-hidden="true" href="#cb1-328" tabindex="-1"></a>    <span class="co"># 2. 或者調用opencv的檢測算法讀取坐標。</span></span>
+<span id="cb1-329"><a aria-hidden="true" href="#cb1-329" tabindex="-1"></a>    <span class="co"># 注釋掉你不用的那個方法。</span></span>
+<span id="cb1-330"><a aria-hidden="true" href="#cb1-330" tabindex="-1"></a></span>
+<span id="cb1-331"><a aria-hidden="true" href="#cb1-331" tabindex="-1"></a>    <span class="co">'''</span></span>
+<span id="cb1-332"><a aria-hidden="true" href="#cb1-332" tabindex="-1"></a><span class="co">    # 直接取halcon识别结果</span></span>
+<span id="cb1-333"><a aria-hidden="true" href="#cb1-333" tabindex="-1"></a><span class="co">    for i, file in enumerate(files):</span></span>
+<span id="cb1-334"><a aria-hidden="true" href="#cb1-334" tabindex="-1"></a><span class="co">        with open(file + '.d', 'r') as file_halcon_result:</span></span>
+<span id="cb1-335"><a aria-hidden="true" href="#cb1-335" tabindex="-1"></a><span class="co">            lines = file_halcon_result.readlines()</span></span>
+<span id="cb1-336"><a aria-hidden="true" href="#cb1-336" tabindex="-1"></a><span class="co">            for j, line in enumerate(lines):</span></span>
+<span id="cb1-337"><a aria-hidden="true" href="#cb1-337" tabindex="-1"></a><span class="co">                coord = line.strip().split(' ')</span></span>
+<span id="cb1-338"><a aria-hidden="true" href="#cb1-338" tabindex="-1"></a><span class="co">                if len(coord) != 2:</span></span>
+<span id="cb1-339"><a aria-hidden="true" href="#cb1-339" tabindex="-1"></a><span class="co">                    continue</span></span>
+<span id="cb1-340"><a aria-hidden="true" href="#cb1-340" tabindex="-1"></a><span class="co">                grids[i, j, 0] = float(coord[0])</span></span>
+<span id="cb1-341"><a aria-hidden="true" href="#cb1-341" tabindex="-1"></a><span class="co">                grids[i, j, 1] = float(coord[1])</span></span>
+<span id="cb1-342"><a aria-hidden="true" href="#cb1-342" tabindex="-1"></a><span class="co">    '''</span></span>
+<span id="cb1-343"><a aria-hidden="true" href="#cb1-343" tabindex="-1"></a></span>
+<span id="cb1-344"><a aria-hidden="true" href="#cb1-344" tabindex="-1"></a>    <span class="co"># 从图片提取圆点</span></span>
+<span id="cb1-345"><a aria-hidden="true" href="#cb1-345" tabindex="-1"></a>    <span class="cf">for</span> i, img <span class="kw">in</span> <span class="bu">enumerate</span>(imgs):</span>
+<span id="cb1-346"><a aria-hidden="true" href="#cb1-346" tabindex="-1"></a>        success, centers <span class="op">=</span> cv.findCirclesGrid(img, pattern_size)</span>
+<span id="cb1-347"><a aria-hidden="true" href="#cb1-347" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> success:</span>
+<span id="cb1-348"><a aria-hidden="true" href="#cb1-348" tabindex="-1"></a>            <span class="cf">return</span> {</span>
+<span id="cb1-349"><a aria-hidden="true" href="#cb1-349" tabindex="-1"></a>                <span class="st">'success'</span>: <span class="va">False</span>,</span>
+<span id="cb1-350"><a aria-hidden="true" href="#cb1-350" tabindex="-1"></a>                <span class="st">'msg'</span>: <span class="st">'标定板无法识别'</span>,</span>
+<span id="cb1-351"><a aria-hidden="true" href="#cb1-351" tabindex="-1"></a>                <span class="st">'error code 1'</span>: <span class="dv">123</span>,</span>
+<span id="cb1-352"><a aria-hidden="true" href="#cb1-352" tabindex="-1"></a>                <span class="st">'error code 2'</span>: i</span>
+<span id="cb1-353"><a aria-hidden="true" href="#cb1-353" tabindex="-1"></a>            }</span>
+<span id="cb1-354"><a aria-hidden="true" href="#cb1-354" tabindex="-1"></a>        <span class="cf">assert</span>(centers.shape <span class="op">==</span> (pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>], <span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb1-355"><a aria-hidden="true" href="#cb1-355" tabindex="-1"></a>        grids[i, :, :] <span class="op">=</span> centers.reshape(pattern_size[<span class="dv">0</span>] <span class="op">*</span> pattern_size[<span class="dv">1</span>], <span class="dv">2</span>)</span>
+<span id="cb1-356"><a aria-hidden="true" href="#cb1-356" tabindex="-1"></a>    calibrate(grids, params)</span>
+<span id="cb1-357"><a aria-hidden="true" href="#cb1-357" tabindex="-1"></a></span>
+<span id="cb1-358"><a aria-hidden="true" href="#cb1-358" tabindex="-1"></a></span>
+<span id="cb1-359"><a aria-hidden="true" href="#cb1-359" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">'__main__'</span>:</span>
+<span id="cb1-360"><a aria-hidden="true" href="#cb1-360" tabindex="-1"></a>    main()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </section>
-<section id="版權聲明" class="level2" data-number="7">
-<h2 data-number="7" class="anchored" data-anchor-id="版權聲明"><span class="header-section-number">7</span> 版權聲明</h2>
+<section class="level2" data-number="7" id="版權聲明">
+<h2 class="anchored" data-anchor-id="版權聲明" data-number="7"><span class="header-section-number">7</span> 版權聲明</h2>
 <p>圖像：</p>
 <ul>
-<li><a href="#fig-cam_coord_system">圖&nbsp;1</a> 基於<a href="https://wordpress.org/openverse/image/0e1d381b-fa16-4478-953b-beca85a5d967">此圖</a>修改而來。原圖許可證：<a href="https://creativecommons.org/licenses/by/2.0/?ref=openverse&amp;atype=rich">CC BY 2.0</a>。</li>
-<li><a href="#fig-pinhole_model">圖&nbsp;2</a> 和 <a href="#fig-pinhole_model_simplified">圖&nbsp;3</a> 基於<a href="https://www.svgrepo.com/svg/39292/candle">此圖</a>修改而來。原圖許可證：<a href="https://www.svgrepo.com/page/licensing">CC0 License</a>。</li>
-<li><a href="#fig-barrel_distortion">圖&nbsp;5</a> 來自於<a href="https://wordpress.org/openverse/image/a9279a80-f137-48dd-96ad-693c6d6e6b50">此</a>。許可詳情：<a href="https://creativecommons.org/licenses/by-nc-nd/2.0/">CC BY-NC-ND 2.0</a></li>
-<li><a href="#fig-calibration_board">圖&nbsp;6</a> 的來源與許可詳情見<a href="https://wordpress.org/openverse/image/7643d624-15b3-47c5-ae7b-b2e99ed6ce5c">此</a>。</li>
+<li><a href="#fig-cam_coord_system">圖 1</a> 基於<a href="https://wordpress.org/openverse/image/0e1d381b-fa16-4478-953b-beca85a5d967">此圖</a>修改而來。原圖許可證：<a href="https://creativecommons.org/licenses/by/2.0/?ref=openverse&amp;atype=rich">CC BY 2.0</a>。</li>
+<li><a href="#fig-pinhole_model">圖 2</a> 和 <a href="#fig-pinhole_model_simplified">圖 3</a> 基於<a href="https://www.svgrepo.com/svg/39292/candle">此圖</a>修改而來。原圖許可證：<a href="https://www.svgrepo.com/page/licensing">CC0 License</a>。</li>
+<li><a href="#fig-barrel_distortion">圖 5</a> 來自於<a href="https://wordpress.org/openverse/image/a9279a80-f137-48dd-96ad-693c6d6e6b50">此</a>。許可詳情：<a href="https://creativecommons.org/licenses/by-nc-nd/2.0/">CC BY-NC-ND 2.0</a></li>
+<li><a href="#fig-calibration_board">圖 6</a> 的來源與許可詳情見<a href="https://wordpress.org/openverse/image/7643d624-15b3-47c5-ae7b-b2e99ed6ce5c">此</a>。</li>
 </ul>
 </section>
-<section id="bibliography" class="level1 unnumbered">
-
-
+<section class="level1 unnumbered" id="bibliography">
 </section>
-
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">參考文獻</h2><div id="refs" class="references csl-bib-body" role="doc-bibliography">
-<div id="ref-carsten_steger_pdf_nodate" class="csl-entry" role="doc-biblioentry">
+<div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">參考文獻</h2><div class="references csl-bib-body" id="refs" role="doc-bibliography">
+<div class="csl-entry" id="ref-carsten_steger_pdf_nodate" role="doc-biblioentry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">CARSTEN STEGER, MARKUS ULRICH, CHRISTIAN WIEDEMANN. 机器视觉算法与应用[M]. 杨少荣, 译, 吴迪靖, 译, 段德山, 译. 清华大学出版社.</div>
 </div>
-<div id="ref-zhang_flexible_2000" class="csl-entry" role="doc-biblioentry">
+<div class="csl-entry" id="ref-zhang_flexible_2000" role="doc-biblioentry">
 <div class="csl-left-margin">[2] </div><div class="csl-right-inline">ZHANG Z. <a href="https://doi.org/10.1109/34.888718">A flexible new technique for camera calibration</a>[J]. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2000, 22(11): 1330–1334.</div>
 </div>
 </div></section></div></main>
@@ -1098,10 +969,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-
-
-
-</body></html>
+</body>
         </div>
         <div class="post_list">
             <span>By </span>

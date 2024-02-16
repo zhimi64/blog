@@ -65,6 +65,15 @@
 <meta property="og:description" content="" />
 <meta property="og:image" content="" />
 
+<!-- MathJax -->
+
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
 </head>
 
 <body>
@@ -118,39 +127,7 @@
         </p>
         
         <div class="entry-content blog-post">
-            <!DOCTYPE html>
-
-<html lang="zh" xml:lang="zh" xmlns="http://www.w3.org/1999/xhtml"><head>
-<meta charset="utf-8"/>
-<meta content="quarto-1.2.269" name="generator"/>
-<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
-<title>最小二乘法求解直線擬合問題</title>
-<style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
-  vertical-align: middle;
-}
-</style>
-<script src="最小二乘法求解直線擬合問題_files/libs/clipboard/clipboard.min.js"></script>
-<script src="最小二乘法求解直線擬合問題_files/libs/quarto-html/quarto.js"></script>
-<script src="最小二乘法求解直線擬合問題_files/libs/quarto-html/popper.min.js"></script>
-<script src="最小二乘法求解直線擬合問題_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="最小二乘法求解直線擬合問題_files/libs/quarto-html/anchor.min.js"></script>
-<link href="最小二乘法求解直線擬合問題_files/libs/quarto-html/tippy.css" rel="stylesheet"/>
-<link href="最小二乘法求解直線擬合問題_files/libs/quarto-html/quarto-syntax-highlighting.css" id="quarto-text-highlighting-styles" rel="stylesheet"/>
-<script src="最小二乘法求解直線擬合問題_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="最小二乘法求解直線擬合問題_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet"/>
-<link data-mode="light" href="最小二乘法求解直線擬合問題_files/libs/bootstrap/bootstrap.min.css" id="quarto-bootstrap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
-</head>
-<body class="fullcontent">
+            <body class="fullcontent">
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <main class="content" id="quarto-document-content">
 <header class="quarto-title-block default" id="title-block-header">
@@ -172,14 +149,15 @@ ul.task-list li input[type="checkbox"] {
 \def \argmax#1{\underset{#1}{\operatorname{argmax}}}
 \]</span></p>
 </div>
-<p>1801年1月1日，意大利天文学家Giuseppe Piazzi发现了谷神星。在连续观测了几十天后，谷神星湮没在太阳的眩光之中。为了再度发行它，24岁的高斯凭借现在被称为<strong>最小二乘法</strong>的方法，预测了谷神星的轨道。1801年12月31日，天文学家在高斯预测的轨道附近再度找回了谷神星。这就是最小二乘法在历史上首次登场的故事。</p>
-<p>最小二乘（least squares）的含义是最小化误差的平方和（该术语受到日文影响。其中的“二乘”即为“平方”）。以最小二乘为目标的优化方法叫做<strong>最小二乘法</strong>。其中有线性解的方法叫做<strong>线性最小二乘法</strong>。</p>
-<p>给定一系列观测点和假定的模型，通过设定最小二乘这一目标，我们能确定模型的参数。 下面的小程序给出了一个例子。通过鼠标点击，可以在方框中添加二维点。如果方框中有两个以上的点，程序就会应用线性最小二乘法，找到使误差平方和最小的直线。下文将会详细介绍程序的计算原理。</p>
+<p>1801年1月1日，意大利天文学家Giuseppe Piazzi发现了谷神星。在连续观测了几十天后，谷神星湮没在太阳的眩光之中。为了再次找到它，24岁的高斯凭借现在被称为<strong>最小二乘法</strong>的方法，预测了谷神星的轨道。1801年12月31日，天文学家在高斯预测的轨道附近再度找回了谷神星。这就是最小二乘法在历史上首次登场的故事。</p>
+<p>最小二乘（least squares）的含义是最小化误差的平方和（该术语受到日文影响。其中的“二乘”即为“平方”）。给定一系列样本点，以最小二乘为目标，求模型参数的优化方法叫做<strong>最小二乘法</strong>。其中有线性解的方法叫做<strong>线性最小二乘法</strong>。</p>
+<p>下面的小程序给出了一个例子。你可以通过鼠标点击在方框中添加二维点。如果方框中有两个以上的点，程序就会应用线性最小二乘法，找到使误差平方和最小的直线。这个例子中，样本点是我们手动添加的二维坐标，模型参数是直线的系数。下文将会详细介绍程序的计算原理。</p>
 <object data="./least_squares_20220104/snippet.html" height="300pt" width="100%">
 浏览器不支持！！
 </object>
 <section class="level2" id="直綫擬合問題">
 <h2 class="anchored" data-anchor-id="直綫擬合問題">直线拟合问题</h2>
+<p>上面展示的是一个求解直线拟合问题的程序。我们先形式化地描述这个问题，然后给出数学求解步骤。</p>
 <p><strong>问题：</strong>已知二维平面上的有一系列点 <span class="math inline">\((x_k, y_k)\)</span>，<span class="math inline">\(k=1,2,3,\cdots\)</span>要求用最小二乘法拟合直线。</p>
 <p><strong>解:</strong> 设直线方程为<span class="math inline">\(ax+by+c=0\)</span>，则有 <span class="math display">\[\left(\begin{matrix}
 x_1 &amp; y_1 &amp; 1\\
@@ -363,7 +341,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-</body></html>
+</body>
         </div>
         <div class="post_list">
             <span>By </span>

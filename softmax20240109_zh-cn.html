@@ -65,6 +65,15 @@
 <meta property="og:description" content="" />
 <meta property="og:image" content="" />
 
+<!-- MathJax -->
+
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
 </head>
 
 <body>
@@ -118,39 +127,7 @@
         </p>
         
         <div class="entry-content blog-post">
-            <!DOCTYPE html>
-
-<html lang="zh" xml:lang="zh" xmlns="http://www.w3.org/1999/xhtml"><head>
-<meta charset="utf-8"/>
-<meta content="quarto-1.2.269" name="generator"/>
-<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
-<title>Softmax函數的性質</title>
-<style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
-  vertical-align: middle;
-}
-</style>
-<script src="softmax函數_files/libs/clipboard/clipboard.min.js"></script>
-<script src="softmax函數_files/libs/quarto-html/quarto.js"></script>
-<script src="softmax函數_files/libs/quarto-html/popper.min.js"></script>
-<script src="softmax函數_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="softmax函數_files/libs/quarto-html/anchor.min.js"></script>
-<link href="softmax函數_files/libs/quarto-html/tippy.css" rel="stylesheet"/>
-<link href="softmax函數_files/libs/quarto-html/quarto-syntax-highlighting.css" id="quarto-text-highlighting-styles" rel="stylesheet"/>
-<script src="softmax函數_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="softmax函數_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet"/>
-<link data-mode="light" href="softmax函數_files/libs/bootstrap/bootstrap.min.css" id="quarto-bootstrap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
-</head>
-<body class="fullcontent">
+            <body class="fullcontent">
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <main class="content" id="quarto-document-content">
 <header class="quarto-title-block default" id="title-block-header">
@@ -166,6 +143,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </header>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script async="" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <p>Softmax是深度学习模型中常用的一种函数，常常用在分类模型的最后一层。向量经过softmax函数后，其总和等于1，因此能够作为分类模型的输出，用来逼近一个真实的概率分布。</p>
 <section class="level2" id="數學定義">
 <h2 class="anchored" data-anchor-id="數學定義">数学定义</h2>
@@ -325,7 +304,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-</body></html>
+</body>
         </div>
         <div class="post_list">
             <span>By </span>
