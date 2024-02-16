@@ -127,25 +127,13 @@
         </p>
         
         <div class="entry-content blog-post">
-            <body class="fullcontent">
-<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
-<main class="content" id="quarto-document-content">
-<header class="quarto-title-block default" id="title-block-header">
-<div class="quarto-title">
+            <body>
+<header id="title-block-header">
 <h1 class="title">前景分割任務和ViBe算法</h1>
-</div>
-<div class="quarto-title-meta">
-<div>
-<div class="quarto-title-meta-heading">发布日期</div>
-<div class="quarto-title-meta-contents">
-<p class="date">2022年2月18日</p>
-</div>
-</div>
-</div>
+<p class="date">2022/2/18</p>
 </header>
-<section class="level2" id="簡介">
-<h2 class="anchored" data-anchor-id="簡介">簡介</h2>
-<p>ViBe（<strong>Vi</strong>sual <strong>B</strong>ackground <strong>E</strong>xtractor）<span class="citation" data-cites="barnich_vibe_2011"><sup>[<a href="#ref-barnich_vibe_2011" role="doc-biblioref">1</a>]</sup></span> 是一种前景分割（foreground segmentation）算法。 在ViBe中，前景被定義為視頻中運動的物體，背景被定義為視頻中靜止不動的物體。例如，在高速公路上，運動的車是前景，路面、天空、草地是背景。但假如一輛車停在應急車道上，處於靜止狀態，那麼它就應當被視為背景。需要注意的是，所謂運動與不運動，是相對而言的。例如流動的白雲，隨風搖擺的草地，雖然它們是運動的，但它們應當被視為背景。</p>
+<h2 class="anchored" id="簡介">簡介</h2>
+<p>ViBe（<strong>Vi</strong>sual <strong>B</strong>ackground <strong>E</strong>xtractor）<span class="citation" data-cites="barnich_vibe_2011"><sup>[1]</sup></span> 是一种前景分割（foreground segmentation）算法。 在ViBe中，前景被定義為視頻中運動的物體，背景被定義為視頻中靜止不動的物體。例如，在高速公路上，運動的車是前景，路面、天空、草地是背景。但假如一輛車停在應急車道上，處於靜止狀態，那麼它就應當被視為背景。需要注意的是，所謂運動與不運動，是相對而言的。例如流動的白雲，隨風搖擺的草地，雖然它們是運動的，但它們應當被視為背景。</p>
 <p>這類前景分割（或者可以稱為背景減除（background substraction）、運動檢測（motion detection））算法在安防領域有許多應用。例如，通過對倉庫監控視頻的運動檢測，我們可以快速從長時間的視頻中找到潛在的有人出入的時間片段。前景檢測算法還可以作為許多複雜任務的預處理任務，例如行人計數、交通監測等等。</p>
 <p>前景分割的一般思路是<strong>背景建模</strong>：通過比較當前幀與所建立的背景模型，判斷出一塊區域是屬於前景還是背景。</p>
 <p>前景分割任務的常見問題：</p>
@@ -154,53 +142,39 @@
 <li>背景變化的問題：視頻時間跨度長時，由於光照環境、天氣、季節變換的影響，背景會發生改變。</li>
 <li>背景的運動：如前所述，草地、雲朵等背景不是完全靜止的，這給運動檢測帶來困難。</li>
 </ol>
-</section>
-<section class="level2" id="vibe算法">
-<h2 class="anchored" data-anchor-id="vibe算法">ViBe算法</h2>
+<h2 class="anchored" id="vibe算法">ViBe算法</h2>
 <p>ViBe的基本假設是：“一個已經在某個位置出現過的背景像素，很有可能再次出現在那附近”。例如，如果某個像素對應於綠色的草坪，那麼儘管受風的影響，導致草業搖擺，但同樣的顏色很有可能再次出現在那附近（當然，對於沒有區分顏色能力的黑白視頻，也有同樣的結論）。</p>
-<section class="level3" id="分類依據">
-<h3 class="anchored" data-anchor-id="分類依據">分類依據</h3>
+<h3 class="anchored" id="分類依據">分類依據</h3>
 <p>在這個假設條件下，ViBe將前景分割問題定義為”給定鄰域像素的狀態，判斷當前新像素轉態屬於前景還是背景的二分類問題”。根據先前的假設，假如一個像素之前在鄰域出現過，那麼這個像素很有可能是背景。反之，如果在鄰域內找不到相似像素，那麼這裡可能檢測到一個以較快速度運動的物體。</p>
 <p>ViBe為每一個像素建立背景模型，背景模型定義為前一時刻鄰域內的<span class="math inline">\(N\)</span>個背景像素：</p>
 <p><span class="math display">\[
 \mathcal{M}(x) = \left\{ v_1, v_2, \dots, v_N\right\}
 \]</span></p>
 <p>對於當前像素值<span class="math inline">\(v(x)\)</span>，分類依據是<span class="math inline">\(\#\{S_R(v(x))\cap \mathcal M(x) \} \geq \#_{min}\)</span>，其中，<span class="math inline">\(\#\)</span>表示集合中的元素個數，<span class="math inline">\(S_R(v(x))\)</span>表示顏色空間中，以<span class="math inline">\(v(x)\)</span>為中心，以<span class="math inline">\(R\)</span>為半徑的一個球體。公式的意思是說，如果領域中有不少於<span class="math inline">\(\#_{min}\)</span>的像素，其到當前像素的距離小於閾值，那麼這個像素是背景；反之則是前景。</p>
-</section>
-<section class="level3" id="背景模型初始化">
-<h3 class="anchored" data-anchor-id="背景模型初始化">背景模型初始化</h3>
+<h3 class="anchored" id="背景模型初始化">背景模型初始化</h3>
 <p>初始化時，ViBe取第一幀圖像，隨機取鄰域內的<span class="math inline">\(N\)</span>個像素用於填充背景模型<span class="math inline">\(\mathcal M(x)\)</span>。這裡的隨機採樣是有放回的隨機抽取，所以一個像素可以被選取多次。</p>
 <p>ViBe的初始化策略基於一個合理的假設，即領域內的像素服從於相似的分佈。</p>
 <p>但是，這樣的初始化策略有一個問題，即如果第一幀中存在運動物體，那麼其像素會污染背景模型。好在ViBe有較強的自適應能力。隨著時間流逝，得益於更新策略的設計，它的背景模型會趨於合理。</p>
-</section>
-<section class="level3" id="背景模型的更新策略">
-<h3 class="anchored" data-anchor-id="背景模型的更新策略">背景模型的更新策略</h3>
+<h3 class="anchored" id="背景模型的更新策略">背景模型的更新策略</h3>
 <p>在ViBe之前，常見的背景模型的更新策略是，用當前的某個像素替換掉背景模型中最老的那個像素。這種做法有一定合理性，但它也有可能導致有用的老像素被剔除。</p>
 <p>除了剔除新舊像素的優先順序問題外，另一個問題是，是否要用前景像素來更新背景模型。顯而易見，如果要使模型具有自適應學習能力，那麼前景像素應當參與到背景模型的更新中來。</p>
 <p>所以，ViBe的更新策略是保守的。即，ViBe中，不僅被分類為背景的像素參與背景模型的更新，分類為前景的像素一樣有機會參與背景模型更新。</p>
 <p>如果一個像素被分類為背景，它會被用來隨機替換掉背景模型中的一個元素：<strong>與以往一些”先入先出”的順序替換方法不同，這裡的替換是完全隨機的</strong>。為了進一步減低運算代價和延長背景模型中每個元素的壽命，可以降低替換背景模型的頻率。這個技巧在ViBe中被稱為時間亞採樣（time subsampling）。ViBe用一個固定概率隨機地決定是否進行替換，這被稱作隨機亞採樣（random subsampling）。</p>
 <p>反之，如果一個像素被分類為前景，它也有機會參與背景模型的更新。ViBe採用一種叫做detection support map的數據結構來統計一個像素被檢測為前景的次數。如果計數達到閾值，那麼雖然當前像素屬於前景，它也會被加入到背景模型中。’</p>
 <p>在ViBe中，每個像素不僅負責自己的背景模型的更新，還會將自身的信息擴散到其領域的背景模型中去。每次更新當前像素的背景模型，都要從鄰域中隨機選擇另一個點，用同樣的像素去更新這個點的背景模型。</p>
-</section>
-</section>
-<section class="level2" id="調參經驗">
-<h2 class="anchored" data-anchor-id="調參經驗">調參經驗</h2>
+<h2 class="anchored" id="調參經驗">調參經驗</h2>
 <p>在原始論文中，由於視頻分辨率比較小，故而將鄰域定義為<span class="math inline">\(3\times 3\)</span>內的4鄰域或8鄰域。然而，今天許多監控視頻都達到高分辨率，那麼這樣的小鄰域就不夠用了。有時需要改為<span class="math inline">\(11\times 11\)</span>或者<span class="math inline">\(21\times 21\)</span>才行。當然，對原始視頻作降採樣也是一個辦法。</p>
 <p>鄰域一旦調大，那相應的參數、算法也應當適當調整。比如，在用當前點更新鄰域內的背景模型時，可以一次多更新幾個點。detection support map的計數閾值應當減小。</p>
-</section>
-<section class="level2" id="並行化">
-<h2 class="anchored" data-anchor-id="並行化">並行化</h2>
-<p>ViBe的效率很高。但如果要實時處理高分辨率視頻，並且使用較大的鄰域定義，那麼就要並行化算法才行。通過並行化使得不同像素上的操作分配給不同線程執行，能加快處理速度。原論文<span class="citation" data-cites="barnich_vibe_2011"><sup>[<a href="#ref-barnich_vibe_2011" role="doc-biblioref">1</a>]</sup></span>沒有介紹並行化的方法。這裡僅提供個人的幾點思考。</p>
+<h2 class="anchored" id="並行化">並行化</h2>
+<p>ViBe的效率很高。但如果要實時處理高分辨率視頻，並且使用較大的鄰域定義，那麼就要並行化算法才行。通過並行化使得不同像素上的操作分配給不同線程執行，能加快處理速度。原論文<span class="citation" data-cites="barnich_vibe_2011"><sup>[1]</sup></span>沒有介紹並行化的方法。這裡僅提供個人的幾點思考。</p>
 <p>ViBe的並行化的困難主要體現在更新鄰像素的背景模型時容易出現的訪問衝突。為了簡便，不妨假設每一個像素位置都由單獨的線程來負責。假如像素甲要更新像素乙的背景模型，同時像素乙自己又要更新自身的背景模型，那麼就發生衝突。為了避免衝突，可以考慮以下幾種方案：</p>
 <p><strong>嚴格限制和檢查各個線程的讀寫權限和操作順序</strong>。例如，限制每個線程一定只能修改當前線程所負責的背景模型。同時，讀取其它線程的狀態，必須是在這些線程的寫入操作都完成時才能進行。從這個思路考慮，難免需要修改大量算法邏輯。</p>
 <p><strong>通過線程分組來避免讀寫衝突</strong>。設窗口大小為W，我們知道，讀寫衝突僅發生在兩個並行處理的像素的落在同一個<span class="math inline">\(W\times W\)</span>的窗口內時。因此，不妨按窗口大小，將像素分成若干組，使得不同組內的像素絕對不在同一個鄰域內。組之間的背景模型並行更新，而組內的背景模型串行更新。在背景模型更新操作的步驟後設立一個同步點來同步各個線程的進度。這樣一來，就不會有並行處理的待處理像素落在同一個窗口內而導致衝突的事情了。</p>
-</section>
-<div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">参考</h2><div class="references csl-bib-body" id="refs" role="doc-bibliography">
+<div class="references csl-bib-body" id="refs" role="doc-bibliography">
 <div class="csl-entry" id="ref-barnich_vibe_2011" role="doc-biblioentry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">BARNICH O, VAN DROOGENBROECK M. <a href="https://doi.org/10.1109/TIP.2010.2101613"><span>ViBe</span>: a universal background subtraction algorithm for video sequences</a>[J]. IEEE transactions on image processing: a publication of the IEEE Signal Processing Society, 2011, 20(6): 1709–1724.</div>
 </div>
-</div></section></div></main>
-<!-- /main column -->
+</div>
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -221,6 +195,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+  tabsets.forEach(function(tabset) {
+    const tabby = new Tabby('#' + tabset.id);
+  });
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -278,7 +256,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       },
       interactive: true,
       interactiveBorder: 10,
-      theme: 'quarto',
+      theme: 'light-border',
       placement: 'bottom-start'
     };
     window.tippy(el, config); 
@@ -334,7 +312,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-</div> <!-- /content -->
 </body>
         </div>
         <div class="post_list">
