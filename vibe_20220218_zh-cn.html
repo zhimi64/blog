@@ -18,20 +18,27 @@
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="./_vercel/insights/script.js"></script>
   
 
   
-  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
   
   
+
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
+
 
   <meta charset="utf-8">
   <!-- Site Meta Data -->
   <title>前景分割任务和ViBe算法</title>
+  
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
+  <meta name="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
   <meta name="author" content="執迷">
 
   <link rel="shortcut icon" href="">
@@ -39,7 +46,7 @@
   <!-- schema.org -->
   <meta itemprop="name" content="執迷的博客">
   <meta itemprop="image" content="">
-  <meta itemprop="description" content="">
+  <meta itemprop="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
 
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   <!-- Style Meta Data -->
@@ -82,7 +89,7 @@
     <!--<center><a href="."><img id="avatar" src=""></a></center>-->
     <h1>執迷的博客</h1>
     
-      <p>無知使我幸福，因爲這世界還有秘密在等我探索</p>
+      <p>做一個有趣的人！</p>
     
     <br>
 
@@ -128,12 +135,40 @@
         
         <div class="entry-content blog-post">
             <body>
-<header id="title-block-header">
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+<nav class="toc-active" id="TOC" role="doc-toc">
+<h2 id="toc-title">目录</h2>
+<ul>
+<li><a class="nav-link active" data-scroll-target="#簡介" href="#簡介" id="toc-簡介"><span class="toc-section-number">1</span>  简介</a></li>
+<li><a class="nav-link" data-scroll-target="#vibe算法" href="#vibe算法" id="toc-vibe算法"><span class="toc-section-number">2</span>  ViBe算法</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#分類依據" href="#分類依據" id="toc-分類依據"><span class="toc-section-number">2.1</span>  分类依据</a></li>
+<li><a class="nav-link" data-scroll-target="#背景模型初始化" href="#背景模型初始化" id="toc-背景模型初始化"><span class="toc-section-number">2.2</span>  背景模型初始化</a></li>
+<li><a class="nav-link" data-scroll-target="#背景模型的更新策略" href="#背景模型的更新策略" id="toc-背景模型的更新策略"><span class="toc-section-number">2.3</span>  背景模型的更新策略</a></li>
+</ul></li>
+<li><a class="nav-link" data-scroll-target="#調參經驗" href="#調參經驗" id="toc-調參經驗"><span class="toc-section-number">3</span>  调参经验</a></li>
+<li><a class="nav-link" data-scroll-target="#並行化" href="#並行化" id="toc-並行化"><span class="toc-section-number">4</span>  并行化</a></li>
+</ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
 <h1 class="title">前景分割任务和ViBe算法</h1>
-<p class="date">2022/2/18</p>
+</div>
+<div class="quarto-title-meta">
+<div>
+<div class="quarto-title-meta-heading">发布日期</div>
+<div class="quarto-title-meta-contents">
+<p class="date">2022年2月18日</p>
+</div>
+</div>
+</div>
 </header>
-<h2 class="anchored" id="簡介">简介</h2>
-<p>ViBe（<strong>Vi</strong>sual <strong>B</strong>ackground <strong>E</strong>xtractor）<span class="citation" data-cites="barnich_vibe_2011"><sup>[1]</sup></span> 是一种前景分割（foreground segmentation）算法。 在ViBe中，前景被定义为视频中运动的物体，背景被定义为视频中静止不动的物体。例如，在高速公路上，运动的车是前景，路面、天空、草地是背景。但假如一辆车停在应急车道上，处于静止状态，那么它就应当被视为背景。需要注意的是，所谓运动与不运动，是相对而言的。例如流动的白云，随风摇摆的草地，虽然它们是运动的，但它们应当被视为背景。</p>
+<section class="level2" data-number="1" id="簡介">
+<h2 class="anchored" data-anchor-id="簡介" data-number="1"><span class="header-section-number">1</span> 简介</h2>
+<p>ViBe（<strong>Vi</strong>sual <strong>B</strong>ackground <strong>E</strong>xtractor）<span class="citation" data-cites="barnich_vibe_2011"><sup>[<a href="#ref-barnich_vibe_2011" role="doc-biblioref">1</a>]</sup></span> 是一种前景分割（foreground segmentation）算法。 在ViBe中，前景被定义为视频中运动的物体，背景被定义为视频中静止不动的物体。例如，在高速公路上，运动的车是前景，路面、天空、草地是背景。但假如一辆车停在应急车道上，处于静止状态，那么它就应当被视为背景。需要注意的是，所谓运动与不运动，是相对而言的。例如流动的白云，随风摇摆的草地，虽然它们是运动的，但它们应当被视为背景。</p>
 <p>这类前景分割（或者可以称为背景减除（background substraction）、运动检测（motion detection））算法在安防领域有许多应用。例如，通过对仓库监控视频的运动检测，我们可以快速从长时间的视频中找到潜在的有人出入的时间片段。前景检测算法还可以作为许多复杂任务的预处理任务，例如行人计数、交通监测等等。</p>
 <p>前景分割的一般思路是<strong>背景建模</strong>：通过比较当前帧与所建立的背景模型，判断出一块区域是属于前景还是背景。</p>
 <p>前景分割任务的常见问题：</p>
@@ -142,39 +177,112 @@
 <li>背景变化的问题：视频时间跨度长时，由于光照环境、天气、季节变换的影响，背景会发生改变。</li>
 <li>背景的运动：如前所述，草地、云朵等背景不是完全静止的，这给运动检测带来困难。</li>
 </ol>
-<h2 class="anchored" id="vibe算法">ViBe算法</h2>
+</section>
+<section class="level2" data-number="2" id="vibe算法">
+<h2 class="anchored" data-anchor-id="vibe算法" data-number="2"><span class="header-section-number">2</span> ViBe算法</h2>
 <p>ViBe的基本假设是：“一个已经在某个位置出现过的背景像素，很有可能再次出现在那附近”。例如，如果某个像素对应于绿色的草坪，那么尽管受风的影响，导致草业摇摆，但同样的颜色很有可能再次出现在那附近（当然，对于没有区分颜色能力的黑白视频，也有同样的结论）。</p>
-<h3 class="anchored" id="分類依據">分类依据</h3>
+<section class="level3" data-number="2.1" id="分類依據">
+<h3 class="anchored" data-anchor-id="分類依據" data-number="2.1"><span class="header-section-number">2.1</span> 分类依据</h3>
 <p>在这个假设条件下，ViBe将前景分割问题定义为”给定邻域像素的状态，判断当前新像素转态属于前景还是背景的二分类问题”。根据先前的假设，假如一个像素之前在邻域出现过，那么这个像素很有可能是背景。反之，如果在邻域内找不到相似像素，那么这里可能检测到一个以较快速度运动的物体。</p>
 <p>ViBe为每一个像素建立背景模型，背景模型定义为前一时刻邻域内的<span class="math inline">\(N\)</span>个背景像素：</p>
 <p><span class="math display">\[
 \mathcal{M}(x) = \left\{ v_1, v_2, \dots, v_N\right\}
 \]</span></p>
-<p>对于当前像素值<span class="math inline">\(v(x)\)</span>，分类依据是<span class="math inline">\(\#\{S_R(v(x))\cap \mathcal M(x) \} \geq \#_{min}\)</span>，其中，<span class="math inline">\(\#\)</span>表示集合中的元素个数，<span class="math inline">\(S_R(v(x))\)</span>表示颜色空间中，以<span class="math inline">\(v(x)\)</span>为中心，以<span class="math inline">\(R\)</span>为半径的一个球体。公式的意思是说，如果领域中有不少于<span class="math inline">\(\#_{min}\)</span>的像素，其到当前像素的距离小于阈值，那么这个像素是背景；反之则是前景。</p>
-<h3 class="anchored" id="背景模型初始化">背景模型初始化</h3>
+<p>对于当前像素值<span class="math inline">\(v(x)\)</span>，分类依据是<span class="math inline">\(\#\{S_R(v(x))\cap \mathcal M(x) \} \geq \#_{min}\)</span>，其中，<span class="math inline">\(\#\)</span>表示集合中的元素个数，<span class="math inline">\(S_R(v(x))\)</span>表示颜色空间中，以<span class="math inline">\(v(x)\)</span>为中心，以<span class="math inline">\(R\)</span>为半径的一个球体。公式的意思是说，如果邻域中有不少于<span class="math inline">\(\#_{min}\)</span>的像素，其到当前像素的距离小于阈值，那么这个像素是背景；反之则是前景。</p>
+</section>
+<section class="level3" data-number="2.2" id="背景模型初始化">
+<h3 class="anchored" data-anchor-id="背景模型初始化" data-number="2.2"><span class="header-section-number">2.2</span> 背景模型初始化</h3>
 <p>初始化时，ViBe取第一帧图像，随机取邻域内的<span class="math inline">\(N\)</span>个像素用于填充背景模型<span class="math inline">\(\mathcal M(x)\)</span>。这里的随机采样是有放回的随机抽取，所以一个像素可以被选取多次。</p>
-<p>ViBe的初始化策略基于一个合理的假设，即领域内的像素服从于相似的分布。</p>
+<p>ViBe的初始化策略基于一个合理的假设，即邻域内的像素服从于相似的分布。</p>
 <p>但是，这样的初始化策略有一个问题，即如果第一帧中存在运动物体，那么其像素会污染背景模型。好在ViBe有较强的自适应能力。随著时间流逝，得益于更新策略的设计，它的背景模型会趋于合理。</p>
-<h3 class="anchored" id="背景模型的更新策略">背景模型的更新策略</h3>
+</section>
+<section class="level3" data-number="2.3" id="背景模型的更新策略">
+<h3 class="anchored" data-anchor-id="背景模型的更新策略" data-number="2.3"><span class="header-section-number">2.3</span> 背景模型的更新策略</h3>
 <p>在ViBe之前，常见的背景模型的更新策略是，用当前的某个像素替换掉背景模型中最老的那个像素。这种做法有一定合理性，但它也有可能导致有用的老像素被剔除。</p>
 <p>除了剔除新旧像素的优先顺序问题外，另一个问题是，是否要用前景像素来更新背景模型。显而易见，如果要使模型具有自适应学习能力，那么前景像素应当参与到背景模型的更新中来。</p>
 <p>所以，ViBe的更新策略是保守的。即，ViBe中，不仅被分类为背景的像素参与背景模型的更新，分类为前景的像素一样有机会参与背景模型更新。</p>
 <p>如果一个像素被分类为背景，它会被用来随机替换掉背景模型中的一个元素：<strong>与以往一些”先入先出”的顺序替换方法不同，这里的替换是完全随机的</strong>。为了进一步减低运算代价和延长背景模型中每个元素的寿命，可以降低替换背景模型的频率。这个技巧在ViBe中被称为时间亚采样（time subsampling）。ViBe用一个固定概率随机地决定是否进行替换，这被称作随机亚采样（random subsampling）。</p>
 <p>反之，如果一个像素被分类为前景，它也有机会参与背景模型的更新。ViBe采用一种叫做detection support map的数据结构来统计一个像素被检测为前景的次数。如果计数达到阈值，那么虽然当前像素属于前景，它也会被加入到背景模型中。’</p>
-<p>在ViBe中，每个像素不仅负责自己的背景模型的更新，还会将自身的信息扩散到其领域的背景模型中去。每次更新当前像素的背景模型，都要从邻域中随机选择另一个点，用同样的像素去更新这个点的背景模型。</p>
-<h2 class="anchored" id="調參經驗">调参经验</h2>
+<p>在ViBe中，每个像素不仅负责自己的背景模型的更新，还会将自身的信息扩散到其邻域的背景模型中去。每次更新当前像素的背景模型，都要从邻域中随机选择另一个点，用同样的像素去更新这个点的背景模型。</p>
+</section>
+</section>
+<section class="level2" data-number="3" id="調參經驗">
+<h2 class="anchored" data-anchor-id="調參經驗" data-number="3"><span class="header-section-number">3</span> 调参经验</h2>
 <p>在原始论文中，由于视频分辨率比较小，故而将邻域定义为<span class="math inline">\(3\times 3\)</span>内的4邻域或8邻域。然而，今天许多监控视频都达到高分辨率，那么这样的小邻域就不够用了。有时需要改为<span class="math inline">\(11\times 11\)</span>或者<span class="math inline">\(21\times 21\)</span>才行。当然，对原始视频作降采样也是一个办法。</p>
 <p>邻域一旦调大，那相应的参数、算法也应当适当调整。比如，在用当前点更新邻域内的背景模型时，可以一次多更新几个点。detection support map的计数阈值应当减小。</p>
-<h2 class="anchored" id="並行化">并行化</h2>
-<p>ViBe的效率很高。但如果要实时处理高分辨率视频，并且使用较大的邻域定义，那么就要并行化算法才行。通过并行化使得不同像素上的操作分配给不同线程执行，能加快处理速度。原论文<span class="citation" data-cites="barnich_vibe_2011"><sup>[1]</sup></span>没有介绍并行化的方法。这里仅提供个人的几点思考。</p>
+</section>
+<section class="level2" data-number="4" id="並行化">
+<h2 class="anchored" data-anchor-id="並行化" data-number="4"><span class="header-section-number">4</span> 并行化</h2>
+<p>ViBe的效率很高。但如果要实时处理高分辨率视频，并且使用较大的邻域定义，那么就要并行化算法才行。通过并行化使得不同像素上的操作分配给不同线程执行，能加快处理速度。原论文<span class="citation" data-cites="barnich_vibe_2011"><sup>[<a href="#ref-barnich_vibe_2011" role="doc-biblioref">1</a>]</sup></span>没有介绍并行化的方法。这里仅提供个人的几点思考。</p>
 <p>ViBe的并行化的困难主要体现在更新邻像素的背景模型时容易出现的访问冲突。为了简便，不妨假设每一个像素位置都由单独的线程来负责。假如像素甲要更新像素乙的背景模型，同时像素乙自己又要更新自身的背景模型，那么就发生冲突。为了避免冲突，可以考虑以下几种方案：</p>
 <p><strong>严格限制和检查各个线程的读写权限和操作顺序</strong>。例如，限制每个线程一定只能修改当前线程所负责的背景模型。同时，读取其它线程的状态，必须是在这些线程的写入操作都完成时才能进行。从这个思路考虑，难免需要修改大量算法逻辑。</p>
 <p><strong>通过线程分组来避免读写冲突</strong>。设窗口大小为W，我们知道，读写冲突仅发生在两个并行处理的像素的落在同一个<span class="math inline">\(W\times W\)</span>的窗口内时。因此，不妨按窗口大小，将像素分成若干组，使得不同组内的像素绝对不在同一个邻域内。组之间的背景模型并行更新，而组内的背景模型串行更新。在背景模型更新操作的步骤后设立一个同步点来同步各个线程的进度。这样一来，就不会有并行处理的待处理像素落在同一个窗口内而导致冲突的事情了。</p>
-<div class="references csl-bib-body" id="refs" role="doc-bibliography">
+<!-- 
+## Python實現 {.appendix}
+
+
+import cv2 as cv 
+import numpy as np 
+import numba 
+from numba.experimental import jitclass 
+from numba import int32, float32, float64
+import matplotlib.pyplot as plt 
+
+offsets_x = np.array([-1, 0, 1, -1, 0, 1, -1, 0, 1])
+offsets_y = np.array([-1, -1, -1, 0, 0, 0, 1, 1, 1])
+
+class ViBe(object):
+    def __init__(self, rows, cols, num_samples=32): 
+        self.num_samples = num_samples
+        self.samples = np.empty((rows, cols, num_samples))
+
+    def first_frame(self, frame):
+        rows = self.rows 
+        cols = self.cols 
+        num_samples = self.num_samples
+
+        # 從鄰域中隨機挑選樣本
+        yy, xx = np.meshgrid(
+            np.arange(rows),
+            np.arange(cols),
+        )
+        rand = np.random.randint(0, 9, (rows, cols, num_samples))
+        ox = offsets_x[rand]
+        oy = offsets_y[rand]
+        yy += oy 
+        xx += ox 
+        np.clip(yy, 0, rows)
+        np.clip(xx, 0, cols)
+        indices = yy * cols + xx 
+        frame_flatten = frame.reshape((rows * cols, -1))
+        self.samples = np.take_along_axis(frame_flatten, indices, axis=0)
+
+        plt.imshow(xx)
+        plt.colorbar()
+        plt.show()
+        plt.imshow(yy)
+        plt.colorbar()
+        plt.show()
+
+@numba.njit()
+def vibe_init(self:ViBe, rows, cols):
+    num_samples = vibe.num_samples
+    vibe.samples = np.zeros(rows, cols, num_samples)
+    vibe.mask = np.zeros((rows, cols))
+
+
+rows = 512
+cols = 378
+vibe = ViBe(rows, cols)
+    
+``` -->
+</section>
+<div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">参考</h2><div class="references csl-bib-body" id="refs" role="doc-bibliography">
 <div class="csl-entry" id="ref-barnich_vibe_2011" role="doc-biblioentry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">BARNICH O, VAN DROOGENBROECK M. <a href="https://doi.org/10.1109/TIP.2010.2101613"><span>ViBe</span>: a universal background subtraction algorithm for video sequences</a>[J]. IEEE transactions on image processing: a publication of the IEEE Signal Processing Society, 2011, 20(6): 1709–1724.</div>
 </div>
-</div>
+</div></section></div></main>
+<!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -195,10 +303,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
-  const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
-  tabsets.forEach(function(tabset) {
-    const tabby = new Tabby('#' + tabset.id);
-  });
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -256,7 +360,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       },
       interactive: true,
       interactiveBorder: 10,
-      theme: 'light-border',
+      theme: 'quarto',
       placement: 'bottom-start'
     };
     window.tippy(el, config); 
@@ -312,6 +416,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+</div> <!-- /content -->
 </body>
         </div>
         <div class="post_list">
@@ -335,6 +440,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
                 
                 <span><a href="./">#背景建模, </a></span>
                 
+                <span><a href="./">#ViBe, </a></span>
+                
                 
             </div>
 
@@ -352,7 +459,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         </div>
         
     </article>
+
 </section>
+
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
 
   </article>
 

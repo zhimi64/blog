@@ -18,20 +18,27 @@
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="./_vercel/insights/script.js"></script>
   
 
   
-  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
   
   
+
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
+
 
   <meta charset="utf-8">
   <!-- Site Meta Data -->
   <title>最小二乘法求解直线拟合问题</title>
+  
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
+  <meta name="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
   <meta name="author" content="執迷">
 
   <link rel="shortcut icon" href="">
@@ -39,7 +46,7 @@
   <!-- schema.org -->
   <meta itemprop="name" content="執迷的博客">
   <meta itemprop="image" content="">
-  <meta itemprop="description" content="">
+  <meta itemprop="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
 
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   <!-- Style Meta Data -->
@@ -82,7 +89,7 @@
     <!--<center><a href="."><img id="avatar" src=""></a></center>-->
     <h1>執迷的博客</h1>
     
-      <p>無知使我幸福，因爲這世界還有秘密在等我探索</p>
+      <p>做一個有趣的人！</p>
     
     <br>
 
@@ -371,7 +378,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         </div>
         
     </article>
+
 </section>
+
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
 
   </article>
 

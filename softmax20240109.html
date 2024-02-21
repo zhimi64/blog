@@ -18,20 +18,27 @@
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="./_vercel/insights/script.js"></script>
   
 
   
-  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
   
   
+
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
+
 
   <meta charset="utf-8">
   <!-- Site Meta Data -->
   <title>Softmax函數的性質</title>
+  
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
+  <meta name="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
   <meta name="author" content="執迷">
 
   <link rel="shortcut icon" href="">
@@ -39,7 +46,7 @@
   <!-- schema.org -->
   <meta itemprop="name" content="執迷的博客">
   <meta itemprop="image" content="">
-  <meta itemprop="description" content="">
+  <meta itemprop="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
 
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   <!-- Style Meta Data -->
@@ -82,7 +89,7 @@
     <!--<center><a href="."><img id="avatar" src=""></a></center>-->
     <h1>執迷的博客</h1>
     
-      <p>無知使我幸福，因爲這世界還有秘密在等我探索</p>
+      <p>做一個有趣的人！</p>
     
     <br>
 
@@ -127,8 +134,21 @@
         </p>
         
         <div class="entry-content blog-post">
-            <body class="fullcontent">
+            <body>
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+<nav class="toc-active" id="TOC" role="doc-toc">
+<h2 id="toc-title">目录</h2>
+<ul>
+<li><a class="nav-link active" data-scroll-target="#數學定義" href="#數學定義" id="toc-數學定義"><span class="toc-section-number">1</span>  數學定義</a></li>
+<li><a class="nav-link" data-scroll-target="#softmax的上溢和下溢問題" href="#softmax的上溢和下溢問題" id="toc-softmax的上溢和下溢問題"><span class="toc-section-number">2</span>  Softmax的上溢和下溢問題</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#上溢和下溢問題的應對方法" href="#上溢和下溢問題的應對方法" id="toc-上溢和下溢問題的應對方法"><span class="toc-section-number">2.1</span>  上溢和下溢問題的應對方法</a></li>
+</ul></li>
+<li><a class="nav-link" data-scroll-target="#結語" href="#結語" id="toc-結語"><span class="toc-section-number">3</span>  結語</a></li>
+</ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 <header class="quarto-title-block default" id="title-block-header">
 <div class="quarto-title">
@@ -143,28 +163,93 @@
 </div>
 </div>
 </header>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script async="" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <p>Softmax是深度學習模型中常用的一種函數，常常用在分類模型的最後一層。向量經過softmax函數後，其總和等於1，因此能夠作爲分類模型的輸出，用來逼近一個真實的概率分佈。</p>
-<section class="level2" id="數學定義">
-<h2 class="anchored" data-anchor-id="數學定義">數學定義</h2>
+<section class="level2" data-number="1" id="數學定義">
+<h2 class="anchored" data-anchor-id="數學定義" data-number="1"><span class="header-section-number">1</span> 數學定義</h2>
 <p>softmax函數的定義為： <span id="eq-softmax-def"><span class="math display">\[
 \sigma(\vec z)_i = \frac{e^{z_i}}{\sum_j e^{z_j}},
-\qquad(1)\]</span></span> 其中，<span class="math inline">\(\vec z\)</span>為輸入向量。用自然語言來表述，softmax的計算方式就是先以自然常數<span class="math inline">\(e\)</span>為底，以輸入向量中的各個數為指數，求冪，得到新向量。再對新向量作歸一化，使其和為<span class="math inline">\(1\)</span>.</p>
-<p>經過softmax函數處理，輸出向量中各個數均大於等於0，且總和為1.</p>
+\qquad(1)\]</span></span> 其中，<span class="math inline">\(\vec z\)</span>為輸入向量。</p>
+<p>下面的代碼展示了softmax函數的一種簡單的實現方式。</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> torch </span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="kw">def</span> my_softmax(z, dim):</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a>    <span class="co"># z.shape == bn, n</span></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>    z <span class="op">=</span> torch.exp(z)</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>    z <span class="op">=</span> z <span class="op">/</span> torch.<span class="bu">sum</span>(z, dim<span class="op">=</span>dim)</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>    <span class="cf">return</span> z </span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>tensor_test <span class="op">=</span> torch.rand(<span class="dv">10</span>, <span class="dv">100</span>)</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>diff <span class="op">=</span> (my_softmax(tensor_test, <span class="dv">0</span>) <span class="op">-</span> torch.softmax(tensor_test, <span class="dv">0</span>)).<span class="bu">abs</span>().mean().item()</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a><span class="cf">assert</span> diff <span class="op">&lt;</span> <span class="fl">1e-6</span>, diff</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Difference: '</span>, diff)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Difference:  4.5113264235396855e-09</code></pre>
+</div>
+</div>
 </section>
-<section class="level2" id="softmax的上溢和下溢問題">
-<h2 class="anchored" data-anchor-id="softmax的上溢和下溢問題">Softmax的上溢和下溢問題</h2>
-<p>softmax在計算機的實際運算過程中，常常遇到上溢和下溢問題。 設<span class="math inline">\(\vec z\)</span>是softmax函數的輸入。假如<span class="math inline">\(\vec z\)</span>中的數值都極小（趨於負無窮大），這時<a href="#eq-softmax-def">公式 1</a>的分母接近0，容易導致產生的數超出浮點型的上限，這被稱爲<strong>下溢</strong>；反之，若<span class="math inline">\(\vec z\)</span>中存在特別大的數，由於函數<span class="math inline">\(e^{x}\)</span>增長極快，輸出的數也很可能超出浮點型的上限，這被稱爲<strong>上溢</strong>。</p>
-<section class="level3" id="上溢和下溢問題的應對方法">
-<h3 class="anchored" data-anchor-id="上溢和下溢問題的應對方法">上溢和下溢問題的應對方法</h3>
+<section class="level2" data-number="2" id="softmax的上溢和下溢問題">
+<h2 class="anchored" data-anchor-id="softmax的上溢和下溢問題" data-number="2"><span class="header-section-number">2</span> Softmax的上溢和下溢問題</h2>
+<p>softmax在計算機的實際運算過程中，容易遇到上溢和下溢問題。 設<span class="math inline">\(\vec z\)</span>是softmax函數的輸入。假如<span class="math inline">\(\vec z\)</span>中的數值都極小（趨於負無窮大），這時<a href="#eq-softmax-def">公式 1</a>的分母接近0，容易導致產生的數超出浮點型的上限，這被稱爲<strong>下溢</strong>；反之，若<span class="math inline">\(\vec z\)</span>中存在特別大的數，由於函數<span class="math inline">\(e^{x}\)</span>增長極快，輸出的數也很可能超出浮點型的上限，這被稱爲<strong>上溢</strong>。</p>
+<p>下面的代碼展示了softmax的計算中出現上溢出和下溢出的情形。</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>out <span class="op">=</span> my_softmax(tensor_test <span class="op">+</span> <span class="fl">1e5</span>, <span class="dv">0</span>)</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a><span class="cf">if</span> torch.<span class="bu">any</span>(torch.isnan(out)):</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'檢測到上溢！'</span>)</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>out <span class="op">=</span> my_softmax(tensor_test <span class="op">-</span> <span class="fl">1e5</span>, <span class="dv">0</span>)</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a><span class="cf">if</span> torch.<span class="bu">any</span>(torch.isnan(out)):</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'檢測到下溢！'</span>)</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a></span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>out <span class="op">=</span> torch.softmax(tensor_test <span class="op">+</span> <span class="fl">1e5</span>, <span class="dv">0</span>)</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>out2 <span class="op">=</span> torch.softmax(tensor_test <span class="op">-</span> <span class="fl">1e5</span>, <span class="dv">0</span>)</span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> (</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>    torch.<span class="bu">any</span>(torch.isnan(out)) <span class="kw">or</span> </span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>    torch.<span class="bu">any</span>(torch.isnan(out2))</span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>):</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'torch.softmax函數沒有出現上溢下溢問題。'</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>檢測到上溢！
+檢測到下溢！
+torch.softmax函數沒有出現上溢下溢問題。</code></pre>
+</div>
+</div>
+<p>儘管我們實現的簡單的softmax函數會發生上溢和下溢，但torch的softmax函數沒有出現問題。torch是如何做到的呢？</p>
+<section class="level3" data-number="2.1" id="上溢和下溢問題的應對方法">
+<h3 class="anchored" data-anchor-id="上溢和下溢問題的應對方法" data-number="2.1"><span class="header-section-number">2.1</span> 上溢和下溢問題的應對方法</h3>
 <p>softmax函数有這樣的特性：<span class="math inline">\(softmax(\vec z + y) = softmax(\vec z), \forall y \in \mathbb R\)</span>，即對輸入向量隨意加上任意一個數，輸出都不會變。</p>
 <p>選取<span class="math inline">\(y=-z_k\)</span>，其中<span class="math inline">\(k=\max_j(z_j)\)</span>，可以解决这一问题。这时，<span class="math inline">\(\forall j, e^{z_j +y}\)</span>在<span class="math inline">\(j=k\)</span>时取得最大值，最大值为1，于是不存在上溢。同时，由于分母必然大于等于1，因此也不存在下溢。</p>
-<p>順便，在使用pytorch内置的softmax函數時，不必擔心上溢下溢的問題，pytorch已經爲我們處理好了。盡管如此，瞭解這一問題和應對方法仍然有助於幫助我們理解計算機在數值計算中常常遇到的各類難題，觸類旁通。</p>
+<p>改進後的softmax函數如下：</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="kw">def</span> my_softmax_2(z, dim):</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>    <span class="co"># z.shape == bn, n</span></span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>    <span class="co"># 減去最大值</span></span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>    z <span class="op">-=</span> z.<span class="bu">max</span>(dim<span class="op">=</span>dim)[<span class="dv">0</span>]</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a></span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>    z <span class="op">=</span> torch.exp(z)</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>    z <span class="op">=</span> z <span class="op">/</span> torch.<span class="bu">sum</span>(z, dim<span class="op">=</span>dim)</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>    <span class="cf">return</span> z </span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a></span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>out <span class="op">=</span> my_softmax_2(tensor_test <span class="op">+</span> <span class="fl">1e5</span>, <span class="dv">0</span>)</span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a><span class="cf">if</span> torch.<span class="bu">any</span>(torch.isnan(out)):</span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'檢測到上溢！'</span>)</span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a></span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a>out <span class="op">=</span> my_softmax_2(tensor_test <span class="op">-</span> <span class="fl">1e5</span>, <span class="dv">0</span>)</span>
+<span id="cb5-16"><a aria-hidden="true" href="#cb5-16" tabindex="-1"></a><span class="cf">if</span> torch.<span class="bu">any</span>(torch.isnan(out)):</span>
+<span id="cb5-17"><a aria-hidden="true" href="#cb5-17" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'檢測到下溢！'</span>)</span>
+<span id="cb5-18"><a aria-hidden="true" href="#cb5-18" tabindex="-1"></a></span>
+<span id="cb5-19"><a aria-hidden="true" href="#cb5-19" tabindex="-1"></a>diff <span class="op">=</span> (my_softmax_2(tensor_test, <span class="dv">0</span>) <span class="op">-</span> torch.softmax(tensor_test, <span class="dv">0</span>)).<span class="bu">abs</span>().mean().item()</span>
+<span id="cb5-20"><a aria-hidden="true" href="#cb5-20" tabindex="-1"></a><span class="cf">assert</span> diff <span class="op">&lt;</span> <span class="fl">1e-6</span>, diff</span>
+<span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Difference: '</span>, diff)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Difference:  4.056841085287033e-09</code></pre>
+</div>
+</div>
 </section>
 </section>
-<section class="level2" id="結語">
-<h2 class="anchored" data-anchor-id="結語">結語</h2>
+<section class="level2" data-number="3" id="結語">
+<h2 class="anchored" data-anchor-id="結語" data-number="3"><span class="header-section-number">3</span> 結語</h2>
 <p>記得在讀碩士的最後一學期時，有一回面試一家公司。這家公司是國内小有名氣的中厰。面試官問了softmax函數的問題，我便以上面所述的内容對之。結束時，面試官笑著説，記得幾年前，我問同樣的問題，幾乎沒幾個人答得上來。但是，今年同樣的問題，居然人人都能回答上來呢。</p>
 <p>聽到面試官的話，我也不禁感慨。看來這幾年時間過去，深度學習/人工智能的賽道確實是越來越卷了。作爲一名準備面試的學生，這個問題在我看來確實是常識。再過幾年，它會不會成爲一般本科生，甚至中小學生的常識呢。笑。</p>
 </section>
@@ -334,7 +419,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         </div>
         
     </article>
+
 </section>
+
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
 
   </article>
 

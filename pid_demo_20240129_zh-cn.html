@@ -18,20 +18,27 @@
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="./_vercel/insights/script.js"></script>
   
 
   
-  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
   
   
+
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
+
 
   <meta charset="utf-8">
   <!-- Site Meta Data -->
   <title>基于PID控制器的循迹小车简单演示</title>
+  
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
+  <meta name="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
   <meta name="author" content="執迷">
 
   <link rel="shortcut icon" href="">
@@ -39,7 +46,7 @@
   <!-- schema.org -->
   <meta itemprop="name" content="執迷的博客">
   <meta itemprop="image" content="">
-  <meta itemprop="description" content="">
+  <meta itemprop="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
 
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   <!-- Style Meta Data -->
@@ -77,7 +84,7 @@
     <!--<center><a href="."><img id="avatar" src=""></a></center>-->
     <h1>執迷的博客</h1>
     
-      <p>無知使我幸福，因爲這世界還有秘密在等我探索</p>
+      <p>做一個有趣的人！</p>
     
     <br>
 
@@ -332,7 +339,7 @@ setInterval("execute()", 13);
 </section>
 <section class="level2" id="後記">
 <h2 class="anchored" data-anchor-id="後記">后记</h2>
-<p>本文最初写于2017年五月30日。当时我在一堂实验课上调PID参数，效果离预期还有一定差距就下课了。课后没有办法拿实物再做实验，于是就简单写个程序模拟下。当时比较菜（当然现在也是），所以写完程序的时候很开心。稍微冷静下来看一看，这个仿真在很多方面并不完善。 首先车辆在运动、转弯的时候都有惯性。我的仿真没有考虑这点。如果能加一个运动模型到程序里会更好； 其次，在真实的车辆/机器人上，受控制的是轮胎的转速差、车辆的转向机构，从而间接控制车辆的运动方向。受能力所限，这个仿真也没法准确模拟这些细节。</p>
+<p>本文最初写于2017年五月30日，那时我还是学生。我在一堂实验课上调著PID参数，效果离预期还有一定差距就下课了。课后没有办法拿实物再做实验，于是就简单写个程序模拟下。当时比较菜（当然现在也是），所以写完程序的时候很开心。稍微冷静下来看一看，这个仿真在很多方面并不完善。 首先车辆在运动、转弯的时候都有惯性。我的仿真没有考虑这点。如果能加一个运动模型到程序里会更好； 其次，在真实的车辆/机器人上，受控制的是轮胎的转速差、车辆的转向机构，从而间接控制车辆的运动方向。受能力所限，这个仿真也没法准确模拟这些细节。</p>
 <p>今天将这篇文章重新整理一下，但也不去过分修饰了。回头看这份粗糙的作品，还是能感觉到当时的趣味，足矣。</p>
 </section>
 </main>
@@ -503,7 +510,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         </div>
         
     </article>
+
 </section>
+
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
 
   </article>
 
