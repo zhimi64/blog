@@ -124,17 +124,16 @@
   <article>
     
 <section id="content">
-    <article>
-        <h2 class="post_title post_detail"><a href="././calibration_20220222.html" rel="bookmark" title="Permalink to 相機模型和相機標定">相機模型和相機標定</a></h2>
-        
-        <p>
-            <span id="busuanzi_container_page_pv">
-                本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
-            </span>
-        </p>
-        
-        <div class="entry-content blog-post">
-            <body>
+    <h2 class="post_title post_detail"><a href="././calibration_20220222.html" rel="bookmark" title="Permalink to 相機模型和相機標定">相機模型和相機標定</a></h2>
+    
+    <p>
+        <span id="busuanzi_container_page_pv">
+            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+        </span>
+    </p>
+    
+    <div class="entry-content blog-post">
+        <div>
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
 <nav class="toc-active" id="TOC" role="doc-toc">
@@ -155,16 +154,19 @@
 <li><a class="nav-link" data-scroll-target="#求相機的畸變係數" href="#求相機的畸變係數" id="toc-求相機的畸變係數"><span class="toc-section-number">4.4</span>  求相機的畸變係數</a></li>
 </ul></li>
 <li><a class="nav-link" data-scroll-target="#思考題" href="#思考題" id="toc-思考題"><span class="toc-section-number">5</span>  思考題</a></li>
-<li><a class="nav-link" data-scroll-target="#標定算法的python實現" href="#標定算法的python實現" id="toc-標定算法的python實現"><span class="toc-section-number">6</span>  標定算法的Python實現</a></li>
-<li><a class="nav-link" data-scroll-target="#版權聲明" href="#版權聲明" id="toc-版權聲明"><span class="toc-section-number">7</span>  版權聲明</a></li>
-<li><a class="nav-link" data-scroll-target="#bibliography" href="#bibliography" id="toc-bibliography">參考文獻</a></li>
+<li><a class="nav-link" data-scroll-target="#參考文獻" href="#參考文獻" id="toc-參考文獻"><span class="toc-section-number">6</span>  參考文獻</a></li>
+<li><a class="nav-link" data-scroll-target="#附錄" href="#附錄" id="toc-附錄"><span class="toc-section-number">7</span>  附錄</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#標定算法的python實現" href="#標定算法的python實現" id="toc-標定算法的python實現"><span class="toc-section-number">7.1</span>  標定算法的Python實現</a></li>
+<li><a class="nav-link" data-scroll-target="#版權信息" href="#版權信息" id="toc-版權信息"><span class="toc-section-number">7.2</span>  版權信息</a></li>
+</ul></li>
 </ul>
 </nav>
 </div>
 <main class="content" id="quarto-document-content">
 <header class="quarto-title-block default" id="title-block-header">
 <div class="quarto-title">
-<h1 class="title">相機模型和相機標定</h1>
+
 </div>
 <div class="quarto-title-meta">
 <div>
@@ -177,8 +179,8 @@
 </header>
 <section class="level2" data-number="1" id="什麽是相機標定">
 <h2 class="anchored" data-anchor-id="什麽是相機標定" data-number="1"><span class="header-section-number">1</span> 什麽是相機標定</h2>
-<p><strong>相機標定是求解相機內外參的過程</strong>。 常見的<strong>内參</strong>包括相機的焦距、感光單元的間距、鏡頭畸變係數等。<strong>外參</strong>是相機相對於參考坐標系或者另一傳感器的位姿。</p>
-<p>雙目視覺、增強現實、立體匹配、單目3D目標檢測……許多任務都需要使用準確的相機內外參。只有內外參準確，我們才能得到的精準的測量和計算結果。然而，相機成像是一個複雜的過程：光從物體表面出發，進入相機，經過鏡頭和光圈，然後落在感光芯片的某處。物體的形狀、物體的方位、焦距、光圈數、感光芯片的大小、感光單元的分佈間距……有許多參數會對最終的成像產生影響。</p>
+<p>影響相機成像過程的因素有很多。一束光先是從光源出發，落在物體表面。而後它又經過物體表面的反射，進入相機，穿過鏡頭和光圈，最後落在感光芯片上。這個過程中，物體的形狀、方位、焦距、光圈數、感光芯片的大小、感光單元的分佈間距……許許多多參數會對最終的成像產生影響。</p>
+<p><strong>相機標定是求解相機參數的過程</strong>。相機的參數又分為內參和外參。 <strong>内參</strong>包括相機的焦距、感光單元的間距、鏡頭畸變係數等。<strong>外參</strong>是相機相對於其它外部事物的位姿。一旦外參和内參是確定的，那我們就能確切地知道外部世界的某一個點發出的光綫會落在圖像的哪個位置。因此，許多任務，例如雙目視覺、增強現實、立體匹配、單目3D目標檢測……都需要使用準確的相機內外參。</p>
 <p>內外參常常是無法直接精確測得的。我們無法直接用尺子測量鏡頭到感光芯片的距離，更無法用普通工具測量芯片上感光單元之間的間距（這是微米級別的尺寸），而鏡頭的畸變模型還帶來更多更複雜的因素。要如何精確地得出這些數值呢？</p>
 <p>首先，我們要建立相機的數學模型。 本文介紹常見的針孔相機模型。它用小孔成像來近似相機的成像過程。理解針孔相機模型，有助於學習其它相機模型，例如魚眼相機模型和線陣相機模型。</p>
 <p>相機模型建立後，我們用相機拍攝特定標定物，根據標定物的參數及成像效果，可以間接推斷出相機的各項參數。</p>
@@ -195,7 +197,7 @@
 </div>
 <p>常見的<strong>相機坐標系</strong>如<a href="#fig-cam_coord_system">圖 1</a>所示。相機鏡頭朝前時，x軸朝右，y軸朝下，z軸朝前。</p>
 <p>當然，你也可以採用不一樣的坐標系設定。坐標系的定義不同不會影響相機模型和參數標定過程的數學本質，標定的方法也是一樣的。但採取“另類”的設計有時會帶來一些不必要的麻煩。</p>
-<p>與相機坐標系相對的是<strong>参考坐標系</strong>。参考坐标系的定义根据问题的不同而不同。它可以定义在某张标定板上，也可以定义在某个传感器上。某点参考坐标系与相机坐标系上的坐标可以通过刚性变换来转换。假设<span class="math inline">\(\mathbf p_w\)</span>是世界坐标系下的坐标，<span class="math inline">\(\mathbf p_c\)</span>是相机坐标系下的坐标，那么存在选择矩阵<span class="math inline">\(\mathbf R\)</span>和平移向量<span class="math inline">\(\mathbf t\)</span>使得 <span class="math display">\[
+<p>與相機坐標系相對的是<strong>世界坐標系</strong>。世界坐标系的定义根据问题的不同而不同。它可以定义在某张标定板上，也可以定义在某个传感器上。某点世界坐标系与相机坐标系上的坐标可以通过刚性变换来转换。假设<span class="math inline">\(\mathbf p_w\)</span>是世界坐标系下的坐标，<span class="math inline">\(\mathbf p_c\)</span>是相机坐标系下的坐标，那么存在选择矩阵<span class="math inline">\(\mathbf R\)</span>和平移向量<span class="math inline">\(\mathbf t\)</span>使得 <span class="math display">\[
 \mathbf p_c= \mathbf R\mathbf p_w + \mathbf t
 \]</span></p>
 <p>这里的向量<span class="math inline">\(\mathbf t=(t_x, t_y, t_z)^T\)</span>。旋转矩阵<span class="math inline">\(\mathbf R\)</span>是三行三列的方阵。</p>
@@ -267,7 +269,8 @@ c = \frac{x_c f}{z_c s_x} + c_x,  r = \frac{y_c f}{z_c s_y} + c_y.
 <p>令<span class="math inline">\(f_x = f / s_x\)</span>，以及<span class="math inline">\(f_y = f / s_y\)</span>，則有</p>
 <p><span class="math display">\[ c = \frac{x_c f_x}{z_c} + c_x,  r = \frac{y_c f_y}{z_c} + c_y.\]</span></p>
 <p>對於市面上的相機，一般都有<span class="math inline">\(s_x=s_y\)</span>，於是<span class="math inline">\(f_x = f_y\)</span>。一種<span class="math inline">\(s_x\neq s_y\)</span>的特殊情況（見文獻<span class="citation" data-cites="carsten_steger_pdf_nodate"><sup>[<a href="#ref-carsten_steger_pdf_nodate" role="doc-biblioref">1</a>]</sup></span> 71頁的2.3.1節），是採集卡的時鐘頻率與攝像機時鐘頻率不一致從而導致像素橫縱比率改變。這種情形比較少見。</p>
-<p>既然一般有<span class="math inline">\(f_x=f_y\)</span>，許多文章將<span class="math inline">\(f_x\)</span>和<span class="math inline">\(f_y\)</span>記爲<span class="math inline">\(f\)</span>。注意這種定義下的<span class="math inline">\(f\)</span>不代表成像平面到主点的距離。</p>
+<!-- （既然一般有$f_x=f_y$，許多文章將$f_x$和$f_y$記爲$f$。） -->
+<!-- 注意這種定義下的$f$不代表成像平面到主点的距離。 -->
 <p>這兩個公式可以轉寫為方便的矩陣乘法的形式： <span class="math display">\[
 (c',r', z_c)^T =
 \left(
@@ -342,7 +345,7 @@ u \\ v
 </section>
 <section class="level2" data-number="4" id="標定">
 <h2 class="anchored" data-anchor-id="標定" data-number="4"><span class="header-section-number">4</span> 標定</h2>
-<p>標定就是求解相機內外參的過程。對於針孔相機模型，我們有內參數<span class="math inline">\((\kappa, f_x, f_y, c_x, c_y)\)</span>，外參數<span class="math inline">\((\alpha, \beta, \gamma, t_x, t_y, t_z)\)</span>.</p>
+<p>標定就是求解相機內外參的過程。對於針孔相機模型，我們有內參數<span class="math inline">\((\kappa, f_x, f_y, c_x, c_y)\)</span>，外參數<span class="math inline">\((\alpha, \beta, \gamma, t_x, t_y, t_z)\)</span>. 標定時我們需要拍攝多張標定板的圖像。雖然相機的內參是固定的，但每次拍攝，標定板的位置都不一樣，所以<strong>每次拍攝都產生一組待解的外參</strong>。總的待解參數的量是<span class="math inline">\(\text{內參數量}+\text{外參數量}\times\text{圖片數量}\)</span>.</p>
 <section class="level3" data-number="4.1" id="標定工具">
 <h3 class="anchored" data-anchor-id="標定工具" data-number="4.1"><span class="header-section-number">4.1</span> 標定工具</h3>
 <p>我們使用張氏標定法來完成標定。需要使用標定板這一工具</p>
@@ -354,13 +357,13 @@ u \\ v
 <p></p><figcaption class="figure-caption">图 6: 手持3x4標定板的人</figcaption><p></p>
 </figure>
 </div>
-<p>標定板是黑白相間的方格子，這種被稱為“棋盤格標定板”。材質有A4紙的、鋁合金的，也有玻璃制的。材質決定了標定板的精度，也影響標定精度。</p>
+<p>標定板是黑白相間的方格子，這種被稱為“棋盤格標定板”。材質有A4紙的、鋁合金的，也有玻璃制的。材質決定了標定板的精度，也影響標定精度。如果你的應用場景對標定精度的要求很高，你可能需要選擇一種昂貴的材料，而不是簡單地用A4紙打印一張標定板。</p>
 <p>我們檢測的是棋盤格標定板上的角點。角點的個數最好是奇數個x偶數個。圖案最好不是旋轉對稱的。</p>
 <p>也有圓形圖案的標定板。但我更喜歡棋盤格圖案，因為<strong>圓形的投影中心不一定是圓形的中心</strong>，這會給檢測帶來麻煩。另外，角點檢測也比邊緣檢測準確，後者容易受光照影響而發生偏移。橢圓擬合的準確性依賴於邊緣檢測，因此拍照時必須控制好光照。</p>
 </section>
 <section class="level3" data-number="4.2" id="標定流程">
 <h3 class="anchored" data-anchor-id="標定流程" data-number="4.2"><span class="header-section-number">4.2</span> 標定流程</h3>
-<p>標定時，我們從多個方位拍攝標定板，產生若干圖像（例如15張，30張）。雖然相機的內參是固定的，但每次拍攝都產生不同的外參。</p>
+<p>標定時，我們從多個方位拍攝標定板，產生若干圖像（例如15張，30張）。</p>
 <p>拍好照片後，可以使用廣為人知、影響深遠的張氏標定法<span class="citation" data-cites="zhang_flexible_2000"><sup>[<a href="#ref-zhang_flexible_2000" role="doc-biblioref">2</a>]</sup></span>求解相機內外參。</p>
 </section>
 <section class="level3" data-number="4.3" id="內外參的閉式解">
@@ -456,10 +459,20 @@ c_x &amp;= - B_{13} \alpha^2 / \lambda
 <p>標定板的點數至少應該使得<span class="math inline">\(H\)</span>可解。而三維方陣<span class="math inline">\(H\)</span>作為單應性變換，有8個自由度。 標定板的每個點都可以提供兩行投影方程，因此如果有四個點，則理論上<span class="math inline">\(H\)</span>可解。因為<span class="math inline">\(\mathbf V\)</span>是<span class="math inline">\(2n\)</span>行的矩陣，而內參（不包括畸變係數，分別是<span class="math inline">\(f_x\)</span>、<span class="math inline">\(f_y\)</span>、<span class="math inline">\(c_x\)</span>、<span class="math inline">\(c_y\)</span>）有4個，故而理論上圖片張數<span class="math inline">\(n\geq 2\)</span>時問題可解。</p>
 <p>當然，實際上為了獲得較好的精度，我們會適當取多一些點，多幾張圖片。實踐中，如果點數、圖片數不夠多，解的精度是很差的。</p>
 </section>
-<section class="level2" data-number="6" id="標定算法的python實現">
-<h2 class="anchored" data-anchor-id="標定算法的python實現" data-number="6"><span class="header-section-number">6</span> 標定算法的Python實現</h2>
-<p>OpenCV庫提供了標定用的函數，可以非常方便的用Python或者C++調用。不過，不同的庫對相機模型的定義略有不同。例如，Halcon庫的相機模型就與OpenCV庫的不同。</p>
-<p>參考Halcon的資料<span class="citation" data-cites="carsten_steger_pdf_nodate"><sup>[<a href="#ref-carsten_steger_pdf_nodate" role="doc-biblioref">1</a>]</sup></span> ，我用Python實現了一份標定算法。經測試，標定結果同Halcon的標定算法所產生的結果一致。這份代碼對於理解Halcon的相機模型、標定原理可能有幫助，僅供參考。</p>
+<div class="default" id="quarto-appendix"><section class="level2 appendix" data-number="6" id="參考文獻"><h2 class="quarto-appendix-heading"><span class="header-section-number">6</span> 參考文獻</h2><div class="quarto-appendix-contents">
+<div class="references csl-bib-body" id="refs" role="doc-bibliography">
+<div class="csl-entry" id="ref-carsten_steger_pdf_nodate" role="doc-biblioentry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">CARSTEN STEGER, MARKUS ULRICH, CHRISTIAN WIEDEMANN. 机器视觉算法与应用[M]. 杨少荣, 译, 吴迪靖, 译, 段德山, 译. 清华大学出版社.</div>
+</div>
+<div class="csl-entry" id="ref-zhang_flexible_2000" role="doc-biblioentry">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">ZHANG Z. <a href="https://doi.org/10.1109/34.888718">A flexible new technique for camera calibration</a>[J]. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2000, 22(11): 1330–1334.</div>
+</div>
+</div>
+</div></section><section class="level2 appendix" data-number="7" id="附錄"><h2 class="quarto-appendix-heading"><span class="header-section-number">7</span> 附錄</h2><div class="quarto-appendix-contents">
+<section class="level3" data-number="7.1" id="標定算法的python實現">
+<h3 class="anchored" data-anchor-id="標定算法的python實現" data-number="7.1"><span class="header-section-number">7.1</span> 標定算法的Python實現</h3>
+<p>OpenCV/Halcon等庫提供了標定用的函數，可以非常方便的用Python或者C++調用。儘管如此，不同的程序庫使用的相機模型有略微的差別。只有真正了解相機模型，理解每一個參數，才能正確地使用它們。</p>
+<p>參考Halcon的資料<span class="citation" data-cites="carsten_steger_pdf_nodate"><sup>[<a href="#ref-carsten_steger_pdf_nodate" role="doc-biblioref">1</a>]</sup></span> ，我用Python實現了一份標定算法。經測試，標定結果同Halcon的標定算法所產生的結果一致（誤差小於0.01）。這份代碼對於理解Halcon的相機模型、標定原理可能有幫助，僅供參考。</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="co"># -*- coding: utf-8 -*-</span></span>
 <span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a></span>
 <span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -821,8 +834,8 @@ c_x &amp;= - B_{13} \alpha^2 / \lambda
 <span id="cb1-359"><a aria-hidden="true" href="#cb1-359" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">'__main__'</span>:</span>
 <span id="cb1-360"><a aria-hidden="true" href="#cb1-360" tabindex="-1"></a>    main()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </section>
-<section class="level2" data-number="7" id="版權聲明">
-<h2 class="anchored" data-anchor-id="版權聲明" data-number="7"><span class="header-section-number">7</span> 版權聲明</h2>
+<section class="level3" data-number="7.2" id="版權信息">
+<h3 class="anchored" data-anchor-id="版權信息" data-number="7.2"><span class="header-section-number">7.2</span> 版權信息</h3>
 <p>圖像：</p>
 <ul>
 <li><a href="#fig-cam_coord_system">圖 1</a> 基於<a href="https://wordpress.org/openverse/image/0e1d381b-fa16-4478-953b-beca85a5d967">此圖</a>修改而來。原圖許可證：<a href="https://creativecommons.org/licenses/by/2.0/?ref=openverse&amp;atype=rich">CC BY 2.0</a>。</li>
@@ -831,15 +844,6 @@ c_x &amp;= - B_{13} \alpha^2 / \lambda
 <li><a href="#fig-calibration_board">圖 6</a> 的來源與許可詳情見<a href="https://wordpress.org/openverse/image/7643d624-15b3-47c5-ae7b-b2e99ed6ce5c">此</a>。</li>
 </ul>
 </section>
-<section class="level1 unnumbered" id="bibliography">
-</section>
-<div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">參考文獻</h2><div class="references csl-bib-body" id="refs" role="doc-bibliography">
-<div class="csl-entry" id="ref-carsten_steger_pdf_nodate" role="doc-biblioentry">
-<div class="csl-left-margin">[1] </div><div class="csl-right-inline">CARSTEN STEGER, MARKUS ULRICH, CHRISTIAN WIEDEMANN. 机器视觉算法与应用[M]. 杨少荣, 译, 吴迪靖, 译, 段德山, 译. 清华大学出版社.</div>
-</div>
-<div class="csl-entry" id="ref-zhang_flexible_2000" role="doc-biblioentry">
-<div class="csl-left-margin">[2] </div><div class="csl-right-inline">ZHANG Z. <a href="https://doi.org/10.1109/34.888718">A flexible new technique for camera calibration</a>[J]. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2000, 22(11): 1330–1334.</div>
-</div>
 </div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -976,38 +980,37 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-</body>
+</div>
+    </div>
+    <div class="post_list">
+        <span>By </span>
+        <a href="./">@執迷</a>
+        <span> in </span>
+        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 計算機視覺">[ 計算機視覺 ]</a></span>
+        <span class="post_date">2022-02-22</span>
+        <div><span>Tags : </span>
+            
+            
+            <span><a href="./">#相機標定, </a></span>
+            
+            <span><a href="./">#相機模型, </a></span>
+            
+            
         </div>
-        <div class="post_list">
-            <span>By </span>
-            <a href="./">@執迷</a>
-            <span> in </span>
-            <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 計算機視覺">[ 計算機視覺 ]</a></span>
-            <span class="post_date">2022-02-22</span>
-            <div><span>Tags : </span>
-                
-                
-                <span><a href="./">#相機標定, </a></span>
-                
-                <span><a href="./">#相機模型, </a></span>
-                
-                
-            </div>
 
-            <div class="entry-social">
-                <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././calibration_20220222.html&text=相機模型和相機標定&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+        <div class="entry-social">
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././calibration_20220222.html&text=相機模型和相機標定&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
 
-                <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././calibration_20220222.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././calibration_20220222.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
 
-                <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././calibration_20220222.html&t=相機模型和相機標定"><img src="./theme/images/icons/facebook-s.png"></a></span>
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././calibration_20220222.html&t=相機模型和相機標定"><img src="./theme/images/icons/facebook-s.png"></a></span>
 
-                <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././calibration_20220222.html&title=相機模型和相機標定" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././calibration_20220222.html&title=相機模型和相機標定" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
 
-                <span class="mail"><a href="mailto:?subject=相機模型和相機標定&amp;body=Viens découvrir un article à propos de [相機模型和相機標定] sur le site de 執迷. ././calibration_20220222.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
-            </div>
+            <span class="mail"><a href="mailto:?subject=相機模型和相機標定&amp;body=Viens découvrir un article à propos de [相機模型和相機標定] sur le site de 執迷. ././calibration_20220222.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
         </div>
-        
-    </article>
+    </div>
+    
 
 </section>
 

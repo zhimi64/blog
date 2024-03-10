@@ -124,17 +124,16 @@
   <article>
     
 <section id="content">
-    <article>
-        <h2 class="post_title post_detail"><a href="././softmax20240109.html" rel="bookmark" title="Permalink to Softmax函數的性質">Softmax函數的性質</a></h2>
-        
-        <p>
-            <span id="busuanzi_container_page_pv">
-                本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
-            </span>
-        </p>
-        
-        <div class="entry-content blog-post">
-            <body>
+    <h2 class="post_title post_detail"><a href="././softmax20240109.html" rel="bookmark" title="Permalink to Softmax函數的性質">Softmax函數的性質</a></h2>
+    
+    <p>
+        <span id="busuanzi_container_page_pv">
+            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+        </span>
+    </p>
+    
+    <div class="entry-content blog-post">
+        <div>
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
 <nav class="toc-active" id="TOC" role="doc-toc">
@@ -145,14 +144,15 @@
 <ul class="collapse">
 <li><a class="nav-link" data-scroll-target="#上溢和下溢問題的應對方法" href="#上溢和下溢問題的應對方法" id="toc-上溢和下溢問題的應對方法"><span class="toc-section-number">2.1</span>  上溢和下溢問題的應對方法</a></li>
 </ul></li>
-<li><a class="nav-link" data-scroll-target="#結語" href="#結語" id="toc-結語"><span class="toc-section-number">3</span>  結語</a></li>
+<li><a class="nav-link" data-scroll-target="#softmax函數求導" href="#softmax函數求導" id="toc-softmax函數求導"><span class="toc-section-number">3</span>  Softmax函數求導</a></li>
+<li><a class="nav-link" data-scroll-target="#結語" href="#結語" id="toc-結語"><span class="toc-section-number">4</span>  結語</a></li>
 </ul>
 </nav>
 </div>
 <main class="content" id="quarto-document-content">
 <header class="quarto-title-block default" id="title-block-header">
 <div class="quarto-title">
-<h1 class="title">Softmax函數的性質</h1>
+
 </div>
 <div class="quarto-title-meta">
 <div>
@@ -170,7 +170,7 @@
 \sigma(\vec z)_i = \frac{e^{z_i}}{\sum_j e^{z_j}},
 \qquad(1)\]</span></span> 其中，<span class="math inline">\(\vec z\)</span>為輸入向量。</p>
 <p>下面的代碼展示了softmax函數的一種簡單的實現方式。</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> torch </span>
 <span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a></span>
 <span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="kw">def</span> my_softmax(z, dim):</span>
@@ -184,7 +184,7 @@
 <span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a><span class="cf">assert</span> diff <span class="op">&lt;</span> <span class="fl">1e-6</span>, diff</span>
 <span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Difference: '</span>, diff)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Difference:  4.5113264235396855e-09</code></pre>
+<pre><code>Difference:  6.139278418970662e-09</code></pre>
 </div>
 </div>
 </section>
@@ -192,7 +192,7 @@
 <h2 class="anchored" data-anchor-id="softmax的上溢和下溢問題" data-number="2"><span class="header-section-number">2</span> Softmax的上溢和下溢問題</h2>
 <p>softmax在計算機的實際運算過程中，容易遇到上溢和下溢問題。 設<span class="math inline">\(\vec z\)</span>是softmax函數的輸入。假如<span class="math inline">\(\vec z\)</span>中的數值都極小（趨於負無窮大），這時<a href="#eq-softmax-def">公式 1</a>的分母接近0，容易導致產生的數超出浮點型的上限，這被稱爲<strong>下溢</strong>；反之，若<span class="math inline">\(\vec z\)</span>中存在特別大的數，由於函數<span class="math inline">\(e^{x}\)</span>增長極快，輸出的數也很可能超出浮點型的上限，這被稱爲<strong>上溢</strong>。</p>
 <p>下面的代碼展示了softmax的計算中出現上溢出和下溢出的情形。</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>out <span class="op">=</span> my_softmax(tensor_test <span class="op">+</span> <span class="fl">1e5</span>, <span class="dv">0</span>)</span>
 <span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a><span class="cf">if</span> torch.<span class="bu">any</span>(torch.isnan(out)):</span>
 <span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'檢測到上溢！'</span>)</span>
@@ -220,7 +220,7 @@ torch.softmax函數沒有出現上溢下溢問題。</code></pre>
 <p>softmax函数有這樣的特性：<span class="math inline">\(softmax(\vec z + y) = softmax(\vec z), \forall y \in \mathbb R\)</span>，即對輸入向量隨意加上任意一個數，輸出都不會變。</p>
 <p>選取<span class="math inline">\(y=-z_k\)</span>，其中<span class="math inline">\(k=\max_j(z_j)\)</span>，可以解决这一问题。这时，<span class="math inline">\(\forall j, e^{z_j +y}\)</span>在<span class="math inline">\(j=k\)</span>时取得最大值，最大值为1，于是不存在上溢。同时，由于分母必然大于等于1，因此也不存在下溢。</p>
 <p>改進後的softmax函數如下：</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="kw">def</span> my_softmax_2(z, dim):</span>
 <span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>    <span class="co"># z.shape == bn, n</span></span>
 <span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a></span>
@@ -243,13 +243,38 @@ torch.softmax函數沒有出現上溢下溢問題。</code></pre>
 <span id="cb5-20"><a aria-hidden="true" href="#cb5-20" tabindex="-1"></a><span class="cf">assert</span> diff <span class="op">&lt;</span> <span class="fl">1e-6</span>, diff</span>
 <span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Difference: '</span>, diff)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Difference:  4.056841085287033e-09</code></pre>
+<pre><code>Difference:  7.376074750986561e-10</code></pre>
 </div>
 </div>
 </section>
 </section>
-<section class="level2" data-number="3" id="結語">
-<h2 class="anchored" data-anchor-id="結語" data-number="3"><span class="header-section-number">3</span> 結語</h2>
+<section class="level2" data-number="3" id="softmax函數求導">
+<h2 class="anchored" data-anchor-id="softmax函數求導" data-number="3"><span class="header-section-number">3</span> Softmax函數求導</h2>
+<p>softmax是一個將向量映射為向量的函數。求其輸出對輸入的導數得到一個雅克比矩陣。為了方便，記<span class="math inline">\(s_i:=\sigma(\vec z)_i\)</span>. 計算該雅克比矩陣要分兩種情況討論。一是<span class="math inline">\(\frac{\partial s_i}{\partial z_i}\)</span>（雅克比矩陣的對角線），二是<span class="math inline">\(\frac{\partial s_i}{\partial z_k}, i\neq k\)</span>的情況。</p>
+<p>第一種情況的導數計算如下： <span class="math display">\[
+\begin{aligned}
+s_i &amp;= \frac{e^{z_i}}{\sum_j e^{z_j}} = \frac{1}{\sum_{j, j\neq i} e^{z_j - z_i} + 1}\\
+\frac{\partial s_i}{\partial z_i} &amp;= \frac{e^{z_i}\sum_j e^{z_j}}{(\sum_j e^{z_j})^2} - \frac{e^{z_i} e^{z_i}}{(\sum_j e^{z_j})^2} \\
+&amp;= s_i - s_i^2 \\
+&amp;= s_i(1 - s_i),
+\end{aligned}
+\]</span> 第二種情況的導數<span class="math inline">\(\frac{\partial s_i}{z_k} (i \neq k)\)</span>計算如下： <span class="math display">\[
+\begin{aligned}
+\frac{\partial s_i}{\partial z_k} &amp;= -\frac{e^{z_i} e^{z_k}}{(\sum_j e^{z_j})^2} \\
+&amp;= -s_i s_k
+\end{aligned}
+\]</span> 因此對softmax函數求導，其雅可比矩陣為： <span class="math display">\[
+\begin{pmatrix}
+s_1(1-s_1) &amp; -s_1 s_2   &amp; -s_1 s_3 &amp; \cdots &amp; -s_1 s_n \\
+-s_2 s_1   &amp; s_2(1-s_2) &amp; -s_2 s_3 &amp; \cdots &amp; -s_2 s_n \\
+\vdots     &amp; \vdots     &amp; \vdots   &amp; \ddots &amp; \vdots \\
+-s_n s_1   &amp; -s_n s_2   &amp; -s_n s_3 &amp; \cdots &amp; s_n (1 - s_n) \\
+\end{pmatrix}
+\]</span></p>
+<p>觀察該矩陣，我們可以發現在兩種情況下，矩陣的將會接近0矩陣。一是 當softmax函數的輸出為one hot時（即<span class="math inline">\(\exists s_i = 1\)</span>且<span class="math inline">\(\forall j \neq i, s_j=0\)</span>），得到的雅克比矩陣為<span class="math inline">\(0\)</span>矩陣；另一種情況是softmax的輸出維度較多，且個維度的值都較為均等的情況，此時<span class="math inline">\(s_1\approx s_2 \approx s_3 \cdots \approx s_n \approx 0\)</span>。訓練中，這兩種情況將導致梯度消失，可能影響訓練，因此是我們要提前了解的。</p>
+</section>
+<section class="level2" data-number="4" id="結語">
+<h2 class="anchored" data-anchor-id="結語" data-number="4"><span class="header-section-number">4</span> 結語</h2>
 <p>記得在讀碩士的最後一學期時，有一回面試一家公司。這家公司是國内小有名氣的中厰。面試官問了softmax函數的問題，我便以上面所述的内容對之。結束時，面試官笑著説，記得幾年前，我問同樣的問題，幾乎沒幾個人答得上來。但是，今年同樣的問題，居然人人都能回答上來呢。</p>
 <p>聽到面試官的話，我也不禁感慨。看來這幾年時間過去，深度學習/人工智能的賽道確實是越來越卷了。作爲一名準備面試的學生，這個問題在我看來確實是常識。再過幾年，它會不會成爲一般本科生，甚至中小學生的常識呢。笑。</p>
 </section>
@@ -389,36 +414,35 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-</body>
+</div>
+    </div>
+    <div class="post_list">
+        <span>By </span>
+        <a href="./">@執迷</a>
+        <span> in </span>
+        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 深度學習">[ 深度學習 ]</a></span>
+        <span class="post_date">2024-01-09</span>
+        <div><span>Tags : </span>
+            
+            
+            <span><a href="./">#深度學習, </a></span>
+            
+            
         </div>
-        <div class="post_list">
-            <span>By </span>
-            <a href="./">@執迷</a>
-            <span> in </span>
-            <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 深度學習">[ 深度學習 ]</a></span>
-            <span class="post_date">2024-01-09</span>
-            <div><span>Tags : </span>
-                
-                
-                <span><a href="./">#深度學習, </a></span>
-                
-                
-            </div>
 
-            <div class="entry-social">
-                <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././softmax20240109.html&text=Softmax函數的性質&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+        <div class="entry-social">
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././softmax20240109.html&text=Softmax函數的性質&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
 
-                <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././softmax20240109.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././softmax20240109.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
 
-                <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././softmax20240109.html&t=Softmax函數的性質"><img src="./theme/images/icons/facebook-s.png"></a></span>
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././softmax20240109.html&t=Softmax函數的性質"><img src="./theme/images/icons/facebook-s.png"></a></span>
 
-                <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././softmax20240109.html&title=Softmax函數的性質" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././softmax20240109.html&title=Softmax函數的性質" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
 
-                <span class="mail"><a href="mailto:?subject=Softmax函數的性質&amp;body=Viens découvrir un article à propos de [Softmax函數的性質] sur le site de 執迷. ././softmax20240109.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
-            </div>
+            <span class="mail"><a href="mailto:?subject=Softmax函數的性質&amp;body=Viens découvrir un article à propos de [Softmax函數的性質] sur le site de 執迷. ././softmax20240109.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
         </div>
-        
-    </article>
+    </div>
+    
 
 </section>
 
