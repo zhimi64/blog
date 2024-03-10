@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
+
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="./_vercel/insights/script.js"></script>
+  
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
+
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
+
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>手写Multi-Head Attention：从公式到代码实现</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././multi_head_20240311_zh-cn.html">
+<meta name="twitter:title" content="執迷的博客 ~ 手写Multi-Head Attention：从公式到代码实现">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ 手写Multi-Head Attention：从公式到代码实现" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+<!-- MathJax -->
+
+
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+      <p>做一個有趣的人！</p>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <h2 class="post_title post_detail"><a href="././multi_head_20240311_zh-cn.html" rel="bookmark" title="Permalink to 手写Multi-Head Attention：从公式到代码实现">手写Multi-Head Attention：从公式到代码实现</a></h2>
+    
+    <p>
+        <span id="busuanzi_container_page_pv">
+            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+        </span>
+    </p>
+    
+    <div class="entry-content blog-post">
+        <div>
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+<nav class="toc-active" id="TOC" role="doc-toc">
+<h2 id="toc-title">目录</h2>
+<ul>
+<li><a class="nav-link active" data-scroll-target="#scaled-dot-product-attention" href="#scaled-dot-product-attention" id="toc-scaled-dot-product-attention"><span class="toc-section-number">1</span>  Scaled Dot-product Attention</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#attention的縮放係數" href="#attention的縮放係數" id="toc-attention的縮放係數"><span class="toc-section-number">1.1</span>  Attention的缩放系数</a></li>
+<li><a class="nav-link" data-scroll-target="#代碼實現" href="#代碼實現" id="toc-代碼實現"><span class="toc-section-number">1.2</span>  代码实现</a></li>
+</ul></li>
+<li><a class="nav-link" data-scroll-target="#multi-head-attention" href="#multi-head-attention" id="toc-multi-head-attention"><span class="toc-section-number">2</span>  Multi-head Attention</a></li>
+<li><a class="nav-link" data-scroll-target="#總結" href="#總結" id="toc-總結"><span class="toc-section-number">3</span>  总结</a></li>
+</ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+
+</div>
+<div class="quarto-title-meta">
+</div>
+</header>
+<p>自从“Attention is All You need”<span class="citation" data-cites="vaswani_attention_2017"><sup>[<a href="#ref-vaswani_attention_2017" role="doc-biblioref">1</a>]</sup></span>这篇文章发布之后，注意力机制开始广为人知。虽然一开始注意力机制被应用于自然语言处理领域，但人们很快发现它也能够用于处理图像、点云等数据结构，并且取得非常好的效果。</p>
+<p>本文介绍如何用pytorch实现文章<span class="citation" data-cites="vaswani_attention_2017"><sup>[<a href="#ref-vaswani_attention_2017" role="doc-biblioref">1</a>]</sup></span>提出的multi-head attention（MHA）。MHA是scaled dot-product attention的改进，（本文简称其为SHA，single-head attention）。让我们先从SHA开始。</p>
+<section class="level2" data-number="1" id="scaled-dot-product-attention">
+<h2 class="anchored" data-anchor-id="scaled-dot-product-attention" data-number="1"><span class="header-section-number">1</span> Scaled Dot-product Attention</h2>
+<p>SHA的计算公式如下： <span id="eq-sha"><span class="math display">\[
+\text{Attention}(Q, K, V) = \text{Softmax}(\frac{QK^T}{\sqrt{d_k}})V
+\tag{1}\]</span></span> 其中，<span class="math inline">\(Q\)</span>、<span class="math inline">\(K\)</span>和<span class="math inline">\(V\)</span>分别为输入的query、key和value向量。<span class="math inline">\(Q\)</span>的尺寸为<span class="math inline">\(L\times E_q\)</span>，<span class="math inline">\(K\)</span>的尺寸为<span class="math inline">\(S\times E_q\)</span>，<span class="math inline">\(V\)</span>的尺寸为<span class="math inline">\(S\times E_v\)</span>。</p>
+<p><a href="#eq-sha">公式 1</a>中，<span class="math inline">\(QK^T\)</span>的计算可以理解为求query向量和key向量间的“匹配程度”，使得SHA能够根据匹配程度从value中取得相关的数据。Softmax函数在这里起到归一化的作用，使得SHA的计算结果可以视为V的加权平均。</p>
+<p>注意力机制是一个有趣的设计。RNN（Recurrent Neural Networks）结构面临著长程记忆困难的问题；类似的，CNN（Convolutional Neural Networks）中也存在远距离像素感知困难的问题。SHA的特点是，为每一对query和key都作计算，而不考虑其时间或空间上的位置差距。</p>
+<p>在我个人看来，注意力机制就好像构造了一个“完全二部图”。这个二部图由<span class="math inline">\(A\)</span>和<span class="math inline">\(B\)</span>两个顶点集合组成，其中<span class="math inline">\(A\)</span>集合代表query，<span class="math inline">\(B\)</span>集合代表key和value。<span class="math inline">\(A\)</span>和<span class="math inline">\(B\)</span>之间的结点两两之间都有一条边，边的权重由query和key的“匹配程度”决定。类似SHA，全连接层或卷积层也可以表示为二部图，只不过其边的权重是通过训练得到的，固定的值，而在注意力机制中，边的权重是动态的，根据query和key计算得到的。</p>
+<section class="level3" data-number="1.1" id="attention的縮放係數">
+<h3 class="anchored" data-anchor-id="attention的縮放係數" data-number="1.1"><span class="header-section-number">1.1</span> Attention的缩放系数</h3>
+<p>从<a href="#eq-sha">公式 1</a>可以看到，在执行Softmax函数前，SHA使用系数<span class="math inline">\(\frac{1}{\sqrt{d_k}}\)</span>对输入作了缩放。<strong>为什么是<span class="math inline">\(\sqrt{d_k}\)</span>，而不是其它系数呢？</strong>本节主要摘录<a href="https://spaces.ac.cn/archives/9812">苏剑林的系列文章</a>中的结论，对这个问题作简要的讨论。</p>
+<p>Softmax是一个将向量映射为向量的函数。首先，我们注意到Softmax输入向量的方差对于其输出向量的分布有重要影响。</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> torch </span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F </span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>length <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>samples <span class="op">=</span> []</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>n_samples <span class="op">=</span> <span class="dv">32</span> </span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_samples): </span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>    m <span class="op">=</span> i <span class="op">/</span> n_samples <span class="op">*</span> <span class="dv">10</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>    x <span class="op">=</span> np.random.randn(length) <span class="op">*</span> m </span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>    y <span class="op">=</span> np.array(torch.softmax(torch.tensor(x), dim<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>    samples.append((<span class="bu">sorted</span>(y), np.var(x)))</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>samples.sort(key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>])  <span class="co"># 按方差排序</span></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>fig <span class="op">=</span> plt.figure()</span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>cax <span class="op">=</span> ax.matshow(np.array([s <span class="cf">for</span> s, i <span class="kw">in</span> samples]).transpose())</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>ax.set_xticklabels([<span class="ss">f'</span><span class="sc">{</span>i<span class="sc">:.2f}</span><span class="ss">'</span> <span class="cf">for</span> s, i <span class="kw">in</span> samples])</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>fig.colorbar(cax)<span class="op">;</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center anchored" id="fig-softmax-output">
+<figure class="figure">
+<p><img class="figure-img" height="415" src="multi_head_20240311\figure-html\fig-softmax-output-output-1.png" width="485"/></p>
+<p></p><figcaption class="figure-caption">图 1: Softmax输入向量的方差对输出向量的影响。横轴表示输入向量的方差。图像的每一列表示Softmax对应该方差时输出的向量。为便于观察，向量都经过排序。</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>由<a href="#fig-softmax-output">图 1</a>可见，Softmax函数的输入向量方差越小，则输出越接近<span class="math inline">\(\vec 0\)</span>；反之，Softmax的输出越接近one-hot编码，即只有一个元素是1，其它元素都接近0. 然而，这两种极端情况都容易引发梯度消失问题（这在我的<a href="./softmax20240109_zh-cn.html">《Softmax函数的性质》</a>一文中已经给出了推导）。</p>
+<p>这里我用一段代码演示Softmax函数的梯度消失问题：</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>length <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>samples <span class="op">=</span> []</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>scales <span class="op">=</span> [<span class="dv">2</span><span class="op">**</span>(i <span class="op">/</span> <span class="dv">3</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>)]</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>xs <span class="op">=</span> []</span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a>ys <span class="op">=</span> []</span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1000</span>): </span>
+<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a>    m <span class="op">=</span> np.random.choice(scales)</span>
+<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a>    x <span class="op">=</span> torch.tensor(np.random.randn(length) <span class="op">*</span> m, requires_grad<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-9"><a aria-hidden="true" href="#cb2-9" tabindex="-1"></a>    y <span class="op">=</span> torch.softmax(x, dim<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-10"><a aria-hidden="true" href="#cb2-10" tabindex="-1"></a>    xs.append(y.<span class="bu">max</span>().item())</span>
+<span id="cb2-11"><a aria-hidden="true" href="#cb2-11" tabindex="-1"></a>    label <span class="op">=</span> torch.rand(y.shape)</span>
+<span id="cb2-12"><a aria-hidden="true" href="#cb2-12" tabindex="-1"></a>    loss <span class="op">=</span> torch.<span class="bu">abs</span>(label <span class="op">-</span> y).mean()</span>
+<span id="cb2-13"><a aria-hidden="true" href="#cb2-13" tabindex="-1"></a>    loss.backward()</span>
+<span id="cb2-14"><a aria-hidden="true" href="#cb2-14" tabindex="-1"></a>    ys.append(x.grad.<span class="bu">abs</span>().<span class="bu">max</span>().item())</span>
+<span id="cb2-15"><a aria-hidden="true" href="#cb2-15" tabindex="-1"></a>plt.scatter(xs, ys)</span>
+<span id="cb2-16"><a aria-hidden="true" href="#cb2-16" tabindex="-1"></a>plt.xlabel(<span class="st">'Softmax输出的最大值'</span>)</span>
+<span id="cb2-17"><a aria-hidden="true" href="#cb2-17" tabindex="-1"></a>plt.ylabel(<span class="st">'梯度绝对值的最大值'</span>)</span>
+<span id="cb2-18"><a aria-hidden="true" href="#cb2-18" tabindex="-1"></a>plt.show()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center anchored" id="fig-softmax-grad">
+<figure class="figure">
+<p><img class="figure-img" height="427" src="multi_head_20240311\figure-html\fig-softmax-grad-output-1.png" width="607"/></p>
+<p></p><figcaption class="figure-caption">图 2: 图像的横轴为Softmax的输出最大值。当该数值接近最小值的时候，表示输出向量接近均匀分布。而当该数值接近1的时候，表明输出向量接近one-hot向量；纵轴是经过损失的反向传播后，梯度绝对值的最大值。</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>从<a href="#fig-softmax-grad">图 2</a>可以看到，当Softmax的输入接近<span class="math inline">\(0\)</span>向量或者one-hot向量的时候，都容易发生梯度消失现象，此时梯度的绝对值接近<span class="math inline">\(0\)</span>.</p>
+<p>综上所述，为尽量避免Softmax的梯度消失，控制其输入向量的方差就变得很重要。假设<span class="math inline">\(\vec q\)</span>和<span class="math inline">\(\vec k\)</span>都是<span class="math inline">\(0\)</span>均值的，二者相互独立，方差分别为<span class="math inline">\(v_q\)</span>和<span class="math inline">\(v_k\)</span>，不难证明它们的内积<span class="math inline">\(\vec q^T \vec k\)</span>的数学期望为<span class="math inline">\(0\)</span>： <span class="math display">\[
+\begin{align*}
+\mathbb{E}(\vec q^T \vec k) &amp;= \mathbb{E}\left(\sum_i q_i k_i\right) \\
+&amp;= \sum_i \mathbb{E}(q_i k_i) \\
+&amp;= \sum_i \mathbb{E}(q_i) \mathbb{E}(k_i) \\
+&amp;= \sum_i 0 \cdot 0 \\
+&amp;= 0.
+\end{align*}
+\]</span> 那此时<span class="math inline">\(\vec q^T \vec k\)</span>方差为： <span class="math display">\[
+\begin{align*}
+\text{Var}(\vec q^T \vec k) &amp;= \text{Var}\left(\sum_i (q_i k_i)\right) \\
+&amp;= d_k \sum_i Var(q_i k_i) \\
+&amp;= d_k \sum_i (\mathbb E(q_i^2 k_i^2) - (\mathbb E(q_i k_i))^2)\\
+&amp;= d_k \sum_i (\mathbb E(q_i^2)\mathbb E(k_i^2) - (\mathbb E(q_i)
+\mathbb E(k_i))^2)\\
+&amp;= d_k \sum_i (\mathbb E(q_i^2)\mathbb E(k_i^2) )\\
+&amp;= d_k \sum_i \left( Var(q_i) Var(k_i) \right) \\
+&amp;= d_k v_q v_k
+\end{align*}
+\]</span> 于是<span class="math inline">\({\rm Var} (\vec q^T \vec k/\sqrt{d_k})=v_q v_k\)</span>。 因此，假设输入的query和value是均值为<span class="math inline">\(0\)</span>，方差为<span class="math inline">\(1\)</span>的，那么经过<span class="math inline">\(1/\sqrt{d_k}\)</span>的缩放处理，就能保持softmax的输入也是均值为<span class="math inline">\(0\)</span>，方差为<span class="math inline">\(1\)</span>的，从而避免引发梯度消失问题。</p>
+<!-- ```{python}
+import numpy as np
+def test(var, length=1024, d_k=64):
+    q = np.random.randn(length, d_k) * np.sqrt(var)
+    k = np.random.randn(length, d_k) * np.sqrt(var)
+    qk = (q * k).sum(-1)
+    var_qk = np.std(qk)**2 
+    print('{:.2f};{:.2f};{:.2f}'.format(var, var_qk, var**2 * d_k))
+
+test(1); test(2); test(4); test(8)
+test(16); test(32); test(64); test(128)
+``` -->
+</section>
+<section class="level3" data-number="1.2" id="代碼實現">
+<h3 class="anchored" data-anchor-id="代碼實現" data-number="1.2"><span class="header-section-number">1.2</span> 代码实现</h3>
+<p>下列代码实现了scaled dot-product attention：</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn  </span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a></span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a><span class="kw">def</span> my_scaled_dot_product_attention(q, k, v, mask<span class="op">=</span><span class="va">None</span>):    </span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>    embed_dim <span class="op">=</span> q.shape[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>    attn_weights <span class="op">=</span> torch.einsum(<span class="st">'nle,nse-&gt;nls'</span>, q, k)</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>    attn_weights <span class="op">/=</span> np.sqrt(embed_dim)</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>    <span class="cf">if</span> mask <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>: attn_weights <span class="op">+=</span> mask </span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>    attn_weights <span class="op">=</span> torch.softmax(attn_weights, dim<span class="op">=-</span><span class="dv">1</span>) </span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a></span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>    ret <span class="op">=</span> torch.einsum(<span class="st">'nls,nse-&gt;nle'</span>, attn_weights, v)</span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>    <span class="cf">return</span> ret, attn_weights</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a></span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a></span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">1</span> </span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a>length <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">4</span> </span>
+<span id="cb3-20"><a aria-hidden="true" href="#cb3-20" tabindex="-1"></a>q <span class="op">=</span> torch.rand((batch_size, length, embed_dim))</span>
+<span id="cb3-21"><a aria-hidden="true" href="#cb3-21" tabindex="-1"></a>k <span class="op">=</span> torch.rand((batch_size, length, embed_dim))</span>
+<span id="cb3-22"><a aria-hidden="true" href="#cb3-22" tabindex="-1"></a>v <span class="op">=</span> torch.rand((batch_size, length, embed_dim))</span>
+<span id="cb3-23"><a aria-hidden="true" href="#cb3-23" tabindex="-1"></a>ret, attn_weights <span class="op">=</span> my_scaled_dot_product_attention(q, k, v)</span>
+<span id="cb3-24"><a aria-hidden="true" href="#cb3-24" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention操作返回结果：'</span>, ret)</span>
+<span id="cb3-25"><a aria-hidden="true" href="#cb3-25" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention矩阵为：'</span>, attn_weights)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>attention操作返回结果： tensor([[[0.7236, 0.2083, 0.4570, 0.3898],
+         [0.7231, 0.2084, 0.4518, 0.3838]]])
+attention矩阵为： tensor([[[0.5239, 0.4761],
+         [0.5314, 0.4686]]])</code></pre>
+</div>
+</div>
+<p>实现好scaled dot product attention后，可以检查一下返回的attention矩阵，各列之和是否为1. 如果不为1，说明实现有问题。</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="bu">print</span>(attn_weights.<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a><span class="cf">assert</span> torch.<span class="bu">all</span>(attn_weights.<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span> <span class="op">&lt;</span> <span class="fl">1e-6</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([[1.0000, 1.0000]])</code></pre>
+</div>
+</div>
+<p>在准备好scaled dot product attention的基础上，我们便可以著手实现multi-head attention了。</p>
+</section>
+</section>
+<section class="level2" data-number="2" id="multi-head-attention">
+<h2 class="anchored" data-anchor-id="multi-head-attention" data-number="2"><span class="header-section-number">2</span> Multi-head Attention</h2>
+<p>根据原论文描述，MHA的实现为： <span class="math display">\[\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O \]</span> 其中<span class="math inline">\(\text{head}_i = \text{Attention}(QW^Q_i , KW^K_i ,VW^V_i)\)</span>. 据此可知，MHA操作为： 1. 将query、key和value拆分成若干个head，对这些head分别作线性变换； 2. 对每个head分别执行scaled dot-product attention； 3. 将所有head的attention的结果合并，经过一层线性变换后返回。</p>
+<p>通过在多个head上执行attention，MHA允许模型在不同的子空间收集不同位置的信息，增加了attention机制的表达能力。</p>
+<p>代码实现如下：</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="kw">class</span> MyMultiheadAttention(nn.Module):</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>        embed_dim,</span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a>        num_heads,</span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a>    ):</span>
+<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a>        <span class="va">self</span>.embed_dim <span class="op">=</span> embed_dim </span>
+<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a>        <span class="va">self</span>.num_heads <span class="op">=</span> num_heads </span>
+<span id="cb7-10"><a aria-hidden="true" href="#cb7-10" tabindex="-1"></a>        <span class="va">self</span>.in_proj_weight <span class="op">=</span> nn.Parameter(</span>
+<span id="cb7-11"><a aria-hidden="true" href="#cb7-11" tabindex="-1"></a>            torch.rand((<span class="dv">3</span> <span class="op">*</span> embed_dim, embed_dim))</span>
+<span id="cb7-12"><a aria-hidden="true" href="#cb7-12" tabindex="-1"></a>        )</span>
+<span id="cb7-13"><a aria-hidden="true" href="#cb7-13" tabindex="-1"></a>        <span class="va">self</span>.in_proj_bias <span class="op">=</span> nn.Parameter(</span>
+<span id="cb7-14"><a aria-hidden="true" href="#cb7-14" tabindex="-1"></a>            torch.rand((<span class="dv">3</span> <span class="op">*</span> embed_dim))</span>
+<span id="cb7-15"><a aria-hidden="true" href="#cb7-15" tabindex="-1"></a>        )</span>
+<span id="cb7-16"><a aria-hidden="true" href="#cb7-16" tabindex="-1"></a>        <span class="va">self</span>.out_proj <span class="op">=</span> nn.Linear(embed_dim, embed_dim)</span>
+<span id="cb7-17"><a aria-hidden="true" href="#cb7-17" tabindex="-1"></a></span>
+<span id="cb7-18"><a aria-hidden="true" href="#cb7-18" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, query, key, value, attn_mask<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb7-19"><a aria-hidden="true" href="#cb7-19" tabindex="-1"></a>        L, N, q_dim <span class="op">=</span> query.shape</span>
+<span id="cb7-20"><a aria-hidden="true" href="#cb7-20" tabindex="-1"></a>        S, N, k_dim <span class="op">=</span> key.shape</span>
+<span id="cb7-21"><a aria-hidden="true" href="#cb7-21" tabindex="-1"></a>        S, N, v_dim <span class="op">=</span> value.shape</span>
+<span id="cb7-22"><a aria-hidden="true" href="#cb7-22" tabindex="-1"></a>        </span>
+<span id="cb7-23"><a aria-hidden="true" href="#cb7-23" tabindex="-1"></a>        <span class="cf">assert</span> <span class="va">self</span>.embed_dim <span class="op">%</span> <span class="va">self</span>.num_heads <span class="op">==</span> <span class="dv">0</span></span>
+<span id="cb7-24"><a aria-hidden="true" href="#cb7-24" tabindex="-1"></a>        weight_query, weight_key, weight_value <span class="op">=</span> <span class="va">self</span>.in_proj_weight.chunk(<span class="dv">3</span>)</span>
+<span id="cb7-25"><a aria-hidden="true" href="#cb7-25" tabindex="-1"></a>        bias_query, bias_key, bias_value <span class="op">=</span> <span class="va">self</span>.in_proj_bias.chunk(<span class="dv">3</span>)</span>
+<span id="cb7-26"><a aria-hidden="true" href="#cb7-26" tabindex="-1"></a></span>
+<span id="cb7-27"><a aria-hidden="true" href="#cb7-27" tabindex="-1"></a>        query <span class="op">=</span> F.linear(query, weight_query, bias_query)</span>
+<span id="cb7-28"><a aria-hidden="true" href="#cb7-28" tabindex="-1"></a>        key <span class="op">=</span> F.linear(key, weight_key, bias_key)</span>
+<span id="cb7-29"><a aria-hidden="true" href="#cb7-29" tabindex="-1"></a>        value <span class="op">=</span> F.linear(value, weight_value, bias_value)</span>
+<span id="cb7-30"><a aria-hidden="true" href="#cb7-30" tabindex="-1"></a></span>
+<span id="cb7-31"><a aria-hidden="true" href="#cb7-31" tabindex="-1"></a>        <span class="co"># L, N, E -&gt; N*n_heads, L, E/n_heads</span></span>
+<span id="cb7-32"><a aria-hidden="true" href="#cb7-32" tabindex="-1"></a>        query <span class="op">=</span> query.view(L, N <span class="op">*</span> <span class="va">self</span>.num_heads, <span class="op">-</span><span class="dv">1</span>).permute(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb7-33"><a aria-hidden="true" href="#cb7-33" tabindex="-1"></a>        key <span class="op">=</span> key.view(S, N <span class="op">*</span> <span class="va">self</span>.num_heads, <span class="op">-</span><span class="dv">1</span>).permute(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb7-34"><a aria-hidden="true" href="#cb7-34" tabindex="-1"></a>        value <span class="op">=</span> value.view(S, N <span class="op">*</span> <span class="va">self</span>.num_heads, <span class="op">-</span><span class="dv">1</span>).permute(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb7-35"><a aria-hidden="true" href="#cb7-35" tabindex="-1"></a></span>
+<span id="cb7-36"><a aria-hidden="true" href="#cb7-36" tabindex="-1"></a>        out, attn_weights <span class="op">=</span> my_scaled_dot_product_attention(query, key, value, mask<span class="op">=</span>attn_mask)</span>
+<span id="cb7-37"><a aria-hidden="true" href="#cb7-37" tabindex="-1"></a>        out <span class="op">=</span> out.permute(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>).reshape(L, N, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb7-38"><a aria-hidden="true" href="#cb7-38" tabindex="-1"></a>        attn_weights <span class="op">=</span> attn_weights.reshape(N, <span class="op">-</span><span class="dv">1</span>, L, S).mean(<span class="dv">1</span>)</span>
+<span id="cb7-39"><a aria-hidden="true" href="#cb7-39" tabindex="-1"></a></span>
+<span id="cb7-40"><a aria-hidden="true" href="#cb7-40" tabindex="-1"></a>        out <span class="op">=</span> <span class="va">self</span>.out_proj(out)</span>
+<span id="cb7-41"><a aria-hidden="true" href="#cb7-41" tabindex="-1"></a>        <span class="cf">return</span> out, attn_weights</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>首先，我们先比较一下本文实现的multi-head attention和torch官方的实现的参数设置。我们将会看到所有参数名称和参数尺寸都是一致的。这表明我们实现的multi-head attention与torch的官方实现有良好的兼容性。</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">16</span></span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>num_heads <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>torch_mha <span class="op">=</span> nn.MultiheadAttention(embed_dim, num_heads)</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a><span class="cf">for</span> n, p <span class="kw">in</span> torch_mha.named_parameters():</span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a>    <span class="bu">print</span>(n, p.shape)</span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a><span class="bu">print</span>(<span class="st">''</span>)</span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a>my_mha <span class="op">=</span> MyMultiheadAttention(embed_dim, num_heads)</span>
+<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a><span class="cf">for</span> n, p <span class="kw">in</span> my_mha.named_parameters():</span>
+<span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a>    <span class="bu">print</span>(n, p.shape)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>in_proj_weight torch.Size([48, 16])
+in_proj_bias torch.Size([48])
+out_proj.weight torch.Size([16, 16])
+out_proj.bias torch.Size([16])
+
+in_proj_weight torch.Size([48, 16])
+in_proj_bias torch.Size([48])
+out_proj.weight torch.Size([16, 16])
+out_proj.bias torch.Size([16])</code></pre>
+</div>
+</div>
+<p>接下来，我们检查我们实现的MHA和torch版本MHA的输出是否完全一致。在进行比较之前，我们先进行参数的复制，保持两个模块的参数完全相同。</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a>my_mha_parameters <span class="op">=</span> <span class="bu">dict</span>(my_mha.named_parameters())</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a><span class="cf">for</span> n, p <span class="kw">in</span> torch_mha.named_parameters():</span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>    my_mha_parameters[n].data.copy_(p)</span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>    <span class="cf">assert</span> torch.<span class="bu">all</span>(p <span class="op">==</span> my_mha_parameters[n])</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>下列代码对函数的输出进行检查：</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>query <span class="op">=</span> torch.rand((length, batch_size, embed_dim))</span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>key <span class="op">=</span> torch.rand((length, batch_size, embed_dim)) </span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>value <span class="op">=</span> torch.rand((length, batch_size, embed_dim))</span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a><span class="co"># prepare mask </span></span>
+<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a>attn_bias <span class="op">=</span> torch.zeros(length, length, dtype<span class="op">=</span>query.dtype)</span>
+<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a>temp_mask <span class="op">=</span> torch.ones(length, length, dtype<span class="op">=</span>torch.<span class="bu">bool</span>).tril(diagonal<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a>attn_bias.masked_fill_(temp_mask.logical_not(), <span class="bu">float</span>(<span class="st">"-inf"</span>))</span>
+<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>attn_bias.to(query.dtype)</span>
+<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a></span>
+<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a>ret, attn_weights <span class="op">=</span> my_mha(query, key, value, attn_mask<span class="op">=</span>attn_bias)</span>
+<span id="cb11-12"><a aria-hidden="true" href="#cb11-12" tabindex="-1"></a>ret2, attn_weights2 <span class="op">=</span> torch_mha(query, key, value, need_weights<span class="op">=</span><span class="va">True</span>, attn_mask<span class="op">=</span>attn_bias)</span>
+<span id="cb11-13"><a aria-hidden="true" href="#cb11-13" tabindex="-1"></a>error <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(ret <span class="op">-</span> ret2)).item()</span>
+<span id="cb11-14"><a aria-hidden="true" href="#cb11-14" tabindex="-1"></a>error2 <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(attn_weights <span class="op">-</span> attn_weights2)).item()</span>
+<span id="cb11-15"><a aria-hidden="true" href="#cb11-15" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Difference: </span><span class="sc">{</span>error<span class="sc">:.4f}</span><span class="ss">, </span><span class="sc">{</span>error2<span class="sc">:.4f}</span><span class="ss">'</span>)</span>
+<span id="cb11-16"><a aria-hidden="true" href="#cb11-16" tabindex="-1"></a></span>
+<span id="cb11-17"><a aria-hidden="true" href="#cb11-17" tabindex="-1"></a><span class="cf">assert</span> error <span class="op">&lt;</span> <span class="fl">1e-6</span> <span class="kw">and</span> error2 <span class="op">&lt;</span> <span class="fl">1e-6</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Difference: 0.0000, 0.0000</code></pre>
+</div>
+</div>
+<p>检查结果表明我们实现的multi-head attention输出与torch官方实现的完全一致，验证了代码的正确性。</p>
+</section>
+<section class="level2" data-number="3" id="總結">
+<h2 class="anchored" data-anchor-id="總結" data-number="3"><span class="header-section-number">3</span> 总结</h2>
+<ul>
+<li><a href="https://pytorch.org/docs/2.2/generated/torch.nn.functional.scaled_dot_product_attention.html#torch.nn.functional.scaled_dot_product_attention">torch官方的scaled dot-product attention文档</a>中简要介绍了一种scaled dot-product attention的python实现方式。</li>
+</ul>
+</section>
+<div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">参考</h2><div class="references csl-bib-body" id="refs" role="doc-bibliography">
+<div class="csl-entry" id="ref-vaswani_attention_2017" role="doc-biblioentry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">VASWANI A, SHAZEER N, PARMAR N, 等. <a href="http://arxiv.org/abs/1706.03762">Attention <span>Is</span> <span>All</span> <span>You</span> <span>Need</span></a>[J]. arXiv:1706.03762 [cs], 2017.</div>
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+</div>
+    </div>
+    <div class="post_list">
+        <span>By </span>
+        <a href="./">@執迷</a>
+        <span> in </span>
+        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 深度學習">[ 深度學習 ]</a></span>
+        <span class="post_date">2024-03-11</span>
+        <div><span>Tags : </span>
+            
+            
+            <span><a href="./">#深度學習, </a></span>
+            
+            <span><a href="./">#自然語言處理, </a></span>
+            
+            <span><a href="./">#注意力機制, </a></span>
+            
+            <span><a href="./">#多頭注意力, </a></span>
+            
+            
+        </div>
+
+        <div class="entry-social">
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././multi_head_20240311_zh-cn.html&text=手写Multi-Head Attention：从公式到代码实现&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././multi_head_20240311_zh-cn.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././multi_head_20240311_zh-cn.html&t=手写Multi-Head Attention：从公式到代码实现"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././multi_head_20240311_zh-cn.html&title=手写Multi-Head Attention：从公式到代码实现" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+            <span class="mail"><a href="mailto:?subject=手写Multi-Head Attention：从公式到代码实现&amp;body=Viens découvrir un article à propos de [手写Multi-Head Attention：从公式到代码实现] sur le site de 執迷. ././multi_head_20240311_zh-cn.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+        </div>
+    </div>
+    
+
+</section>
+
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
+</body>
+</html>
