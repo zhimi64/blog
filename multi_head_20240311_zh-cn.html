@@ -155,6 +155,12 @@
 
 </div>
 <div class="quarto-title-meta">
+<div>
+<div class="quarto-title-meta-heading">发布日期</div>
+<div class="quarto-title-meta-contents">
+<p class="date">2024年3月11日</p>
+</div>
+</div>
 </div>
 </header>
 <p>自从“Attention is All You need”<span class="citation" data-cites="vaswani_attention_2017"><sup>[<a href="#ref-vaswani_attention_2017" role="doc-biblioref">1</a>]</sup></span>这篇文章发布之后，注意力机制开始广为人知。虽然一开始注意力机制被应用于自然语言处理领域，但人们很快发现它也能够用于处理图像、点云等数据结构，并且取得非常好的效果。</p>
@@ -295,10 +301,10 @@ test(16); test(32); test(64); test(128)
 <span id="cb3-24"><a aria-hidden="true" href="#cb3-24" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention操作返回结果：'</span>, ret)</span>
 <span id="cb3-25"><a aria-hidden="true" href="#cb3-25" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention矩阵为：'</span>, attn_weights)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>attention操作返回结果： tensor([[[0.7236, 0.2083, 0.4570, 0.3898],
-         [0.7231, 0.2084, 0.4518, 0.3838]]])
-attention矩阵为： tensor([[[0.5239, 0.4761],
-         [0.5314, 0.4686]]])</code></pre>
+<pre><code>attention操作返回结果： tensor([[[0.3354, 0.3093, 0.3587, 0.8972],
+         [0.3452, 0.3067, 0.3686, 0.8989]]])
+attention矩阵为： tensor([[[0.4990, 0.5010],
+         [0.4623, 0.5377]]])</code></pre>
 </div>
 </div>
 <p>实现好scaled dot product attention后，可以检查一下返回的attention矩阵，各列之和是否为1. 如果不为1，说明实现有问题。</p>
@@ -306,7 +312,7 @@ attention矩阵为： tensor([[[0.5239, 0.4761],
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="bu">print</span>(attn_weights.<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>))</span>
 <span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a><span class="cf">assert</span> torch.<span class="bu">all</span>(attn_weights.<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span> <span class="op">&lt;</span> <span class="fl">1e-6</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>tensor([[1.0000, 1.0000]])</code></pre>
+<pre><code>tensor([[1., 1.]])</code></pre>
 </div>
 </div>
 <p>在准备好scaled dot product attention的基础上，我们便可以著手实现multi-head attention了。</p>
@@ -360,7 +366,7 @@ attention矩阵为： tensor([[[0.5239, 0.4761],
 <span id="cb7-40"><a aria-hidden="true" href="#cb7-40" tabindex="-1"></a>        out <span class="op">=</span> <span class="va">self</span>.out_proj(out)</span>
 <span id="cb7-41"><a aria-hidden="true" href="#cb7-41" tabindex="-1"></a>        <span class="cf">return</span> out, attn_weights</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </div>
-<p>首先，我们先比较一下本文实现的multi-head attention和torch官方的实现的参数设置。我们将会看到所有参数名称和参数尺寸都是一致的。这表明我们实现的multi-head attention与torch的官方实现有良好的兼容性。</p>
+<p>首先，我们先比较一下本文实现的multi-head attention和torch官方的实现的参数设置。我们将会看到所有参数名称和参数尺寸都是一致的。这表明我们的multi-head attention与torch的官方实现兼容。</p>
 <div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">2</span></span>
 <span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">16</span></span>
@@ -413,6 +419,9 @@ out_proj.bias torch.Size([16])</code></pre>
 <span id="cb11-17"><a aria-hidden="true" href="#cb11-17" tabindex="-1"></a><span class="cf">assert</span> error <span class="op">&lt;</span> <span class="fl">1e-6</span> <span class="kw">and</span> error2 <span class="op">&lt;</span> <span class="fl">1e-6</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Difference: 0.0000, 0.0000</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code></code></pre>
 </div>
 </div>
 <p>检查结果表明我们实现的multi-head attention输出与torch官方实现的完全一致，验证了代码的正确性。</p>
