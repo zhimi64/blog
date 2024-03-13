@@ -238,7 +238,12 @@
 </div>
 </div>
 <p>从<a href="#fig-softmax-grad">图 2</a>可以看到，当Softmax的输入接近<span class="math inline">\(0\)</span>向量或者one-hot向量的时候，都容易发生梯度消失现象，此时梯度的绝对值接近<span class="math inline">\(0\)</span>.</p>
-<p>综上所述，为尽量避免Softmax的梯度消失，控制其输入向量的方差就变得很重要。假设<span class="math inline">\(\vec q\)</span>和<span class="math inline">\(\vec k\)</span>都是<span class="math inline">\(0\)</span>均值的，二者相互独立，方差分别为<span class="math inline">\(v_q\)</span>和<span class="math inline">\(v_k\)</span>，不难证明它们的内积<span class="math inline">\(\vec q^T \vec k\)</span>的数学期望为<span class="math inline">\(0\)</span>： <span class="math display">\[
+综上所述，为尽量避免Softmax的梯度消失，控制其输入向量的方差就变得很重要。假设<span class="math inline">\(\vec q\)</span>和<span class="math inline">\(\vec k\)</span>都是<span class="math inline">\(0\)</span>均值的，二者相互独立，方差分别为<span class="math inline">\(v_q\)</span>和<span class="math inline">\(v_k\)</span>，不难证明它们的内积<span class="math inline">\(\vec q^T \vec k\)</span>的数学期望为<span class="math inline">\(0\)</span>。
+<details>
+<summary>
+展开证明
+</summary>
+<span class="math display">\[
 \begin{align*}
 \mathbb{E}(\vec q^T \vec k) &amp;= \mathbb{E}\left(\sum_i q_i k_i\right) \\
 &amp;= \sum_i \mathbb{E}(q_i k_i) \\
@@ -246,18 +251,30 @@
 &amp;= \sum_i 0 \cdot 0 \\
 &amp;= 0.
 \end{align*}
-\]</span> 那此时<span class="math inline">\(\vec q^T \vec k\)</span>方差为： <span class="math display">\[
+\]</span>
+</details>
+此时<span class="math inline">\(\vec q^T \vec k\)</span>的方差为<span class="math inline">\(d_k v_q v_k\)</span>。
+<details>
+<summary>
+展开证明
+</summary>
+<span class="math display">\[
 \begin{align*}
-\text{Var}(\vec q^T \vec k) &amp;= \text{Var}\left(\sum_i (q_i k_i)\right) \\
-&amp;= d_k \sum_i Var(q_i k_i) \\
-&amp;= d_k \sum_i (\mathbb E(q_i^2 k_i^2) - (\mathbb E(q_i k_i))^2)\\
-&amp;= d_k \sum_i (\mathbb E(q_i^2)\mathbb E(k_i^2) - (\mathbb E(q_i)
+\text{Var}(\vec q^T \vec k) &amp;= \text{Var}\left(\sum_{i=1}^{d_k} (q_i k_i)\right) \\
+\end{align*}
+\]</span> 假设<span class="math inline">\(\vec q^T \vec k\)</span>的任意两个维度都是独立同分布的，那么 <span class="math display">\[
+\begin{align*} \\
+\text{Var}(\vec q^T \vec k) &amp;= d_k Var(q_i k_i) \\
+&amp;= d_k (\mathbb E(q_i^2 k_i^2) - (\mathbb E(q_i k_i))^2)\\
+&amp;= d_k (\mathbb E(q_i^2)\mathbb E(k_i^2) - (\mathbb E(q_i)
 \mathbb E(k_i))^2)\\
-&amp;= d_k \sum_i (\mathbb E(q_i^2)\mathbb E(k_i^2) )\\
-&amp;= d_k \sum_i \left( Var(q_i) Var(k_i) \right) \\
+&amp;= d_k (\mathbb E(q_i^2)\mathbb E(k_i^2) )\\
+&amp;= d_k \left( Var(q_i) Var(k_i) \right) \\
 &amp;= d_k v_q v_k
 \end{align*}
-\]</span> 于是<span class="math inline">\({\rm Var} (\vec q^T \vec k/\sqrt{d_k})=v_q v_k\)</span>。 因此，假设输入的query和value是均值为<span class="math inline">\(0\)</span>，方差为<span class="math inline">\(1\)</span>的，那么经过<span class="math inline">\(1/\sqrt{d_k}\)</span>的缩放处理，就能保持softmax的输入也是均值为<span class="math inline">\(0\)</span>，方差为<span class="math inline">\(1\)</span>的，从而避免引发梯度消失问题。</p>
+\]</span> 于是<span class="math inline">\({\rm Var} (\vec q^T \vec k/\sqrt{d_k})=v_q v_k\)</span>。
+</details>
+<p>因此，假设输入的query和value是均值为<span class="math inline">\(0\)</span>，方差为<span class="math inline">\(1\)</span>的，那么经过<span class="math inline">\(1/\sqrt{d_k}\)</span>的缩放处理，就能保持softmax的输入也是均值为<span class="math inline">\(0\)</span>，方差为<span class="math inline">\(1\)</span>的，从而避免引发梯度消失问题。</p>
 <!-- ```{python}
 import numpy as np
 def test(var, length=1024, d_k=64):
@@ -301,10 +318,10 @@ test(16); test(32); test(64); test(128)
 <span id="cb3-24"><a aria-hidden="true" href="#cb3-24" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention操作返回结果：'</span>, ret)</span>
 <span id="cb3-25"><a aria-hidden="true" href="#cb3-25" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention矩阵为：'</span>, attn_weights)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>attention操作返回结果： tensor([[[0.3354, 0.3093, 0.3587, 0.8972],
-         [0.3452, 0.3067, 0.3686, 0.8989]]])
-attention矩阵为： tensor([[[0.4990, 0.5010],
-         [0.4623, 0.5377]]])</code></pre>
+<pre><code>attention操作返回结果： tensor([[[0.8274, 0.7497, 0.4828, 0.6442],
+         [0.8245, 0.7462, 0.4846, 0.6472]]])
+attention矩阵为： tensor([[[0.5174, 0.4826],
+         [0.5065, 0.4935]]])</code></pre>
 </div>
 </div>
 <p>实现好scaled dot product attention后，可以检查一下返回的attention矩阵，各列之和是否为1. 如果不为1，说明实现有问题。</p>
@@ -419,9 +436,6 @@ out_proj.bias torch.Size([16])</code></pre>
 <span id="cb11-17"><a aria-hidden="true" href="#cb11-17" tabindex="-1"></a><span class="cf">assert</span> error <span class="op">&lt;</span> <span class="fl">1e-6</span> <span class="kw">and</span> error2 <span class="op">&lt;</span> <span class="fl">1e-6</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Difference: 0.0000, 0.0000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code></code></pre>
 </div>
 </div>
 <p>检查结果表明我们实现的multi-head attention输出与torch官方实现的完全一致，验证了代码的正确性。</p>
