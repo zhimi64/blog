@@ -207,27 +207,33 @@
 </div>
 </div>
 </div>
-<p>由<a href="#fig-softmax-output">圖 1</a>可見，Softmax函數的輸入向量方差越小，則輸出越接近<span class="math inline">\(\vec 0\)</span>；反之，Softmax的輸出越接近one-hot編碼，即只有一個元素是1，其它元素都接近0. 然而，這兩種極端情況都容易引發梯度消失問題（這在我的<a href="./softmax20240109_zh-cn.html">《Softmax函數的性質》</a>一文中已經給出了推導）。</p>
-<p>這裡我用一段代碼演示Softmax函數的梯度消失問題：</p>
+<p>由<a href="#fig-softmax-output">圖 1</a>可見，Softmax函數的輸入向量方差越小，則輸出越接近<span class="math inline">\(\vec 0\)</span>；反之，Softmax的輸出越接近one-hot編碼，即只有一個元素是1，其它元素都接近0. 然而，這兩種極端情況都容易引發梯度消失問題。（這在我的<a href="./softmax20240109_zh-cn.html">《Softmax函數的性質》</a>一文中已經給出了推導。）</p>
+<p>為了避免梯度消失，我們既不希望Softmax的輸出接近<span class="math inline">\(\vec 0\)</span>，也不希望其成為one-hot編碼。下面的程序通過直觀的方式演示了其中的原因：</p>
 <div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>length <span class="op">=</span> <span class="dv">128</span></span>
-<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>samples <span class="op">=</span> []</span>
-<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>scales <span class="op">=</span> [<span class="dv">2</span><span class="op">**</span>(i <span class="op">/</span> <span class="dv">3</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>)]</span>
-<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>xs <span class="op">=</span> []</span>
-<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a>ys <span class="op">=</span> []</span>
-<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1000</span>): </span>
-<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a>    m <span class="op">=</span> np.random.choice(scales)</span>
-<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a>    x <span class="op">=</span> torch.tensor(np.random.randn(length) <span class="op">*</span> m, requires_grad<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb2-9"><a aria-hidden="true" href="#cb2-9" tabindex="-1"></a>    y <span class="op">=</span> torch.softmax(x, dim<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb2-10"><a aria-hidden="true" href="#cb2-10" tabindex="-1"></a>    xs.append(y.<span class="bu">max</span>().item())</span>
-<span id="cb2-11"><a aria-hidden="true" href="#cb2-11" tabindex="-1"></a>    label <span class="op">=</span> torch.rand(y.shape)</span>
-<span id="cb2-12"><a aria-hidden="true" href="#cb2-12" tabindex="-1"></a>    loss <span class="op">=</span> torch.<span class="bu">abs</span>(label <span class="op">-</span> y).mean()</span>
-<span id="cb2-13"><a aria-hidden="true" href="#cb2-13" tabindex="-1"></a>    loss.backward()</span>
-<span id="cb2-14"><a aria-hidden="true" href="#cb2-14" tabindex="-1"></a>    ys.append(x.grad.<span class="bu">abs</span>().<span class="bu">max</span>().item())</span>
-<span id="cb2-15"><a aria-hidden="true" href="#cb2-15" tabindex="-1"></a>plt.scatter(xs, ys)</span>
-<span id="cb2-16"><a aria-hidden="true" href="#cb2-16" tabindex="-1"></a>plt.xlabel(<span class="st">'Softmax輸出的最大值'</span>)</span>
-<span id="cb2-17"><a aria-hidden="true" href="#cb2-17" tabindex="-1"></a>plt.ylabel(<span class="st">'梯度絕對值的最大值'</span>)</span>
-<span id="cb2-18"><a aria-hidden="true" href="#cb2-18" tabindex="-1"></a>plt.show()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="co"># 向量的長度</span></span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>length <span class="op">=</span> <span class="dv">128</span>  </span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a><span class="co"># 縮放係數，影響輸入向量的方差大小</span></span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>scales <span class="op">=</span> [<span class="dv">2</span><span class="op">**</span>(i <span class="op">/</span> <span class="dv">3</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>)]</span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a>xs <span class="op">=</span> []</span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>ys <span class="op">=</span> []</span>
+<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1000</span>): </span>
+<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a>    <span class="co"># 隨機選擇一個縮放係數</span></span>
+<span id="cb2-9"><a aria-hidden="true" href="#cb2-9" tabindex="-1"></a>    m <span class="op">=</span> np.random.choice(scales)</span>
+<span id="cb2-10"><a aria-hidden="true" href="#cb2-10" tabindex="-1"></a>    <span class="co"># 隨機初始化Softmax的輸入，並縮放 </span></span>
+<span id="cb2-11"><a aria-hidden="true" href="#cb2-11" tabindex="-1"></a>    x <span class="op">=</span> torch.tensor(np.random.randn(length) <span class="op">*</span> m, requires_grad<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-12"><a aria-hidden="true" href="#cb2-12" tabindex="-1"></a>    <span class="co"># 執行Softmax函數</span></span>
+<span id="cb2-13"><a aria-hidden="true" href="#cb2-13" tabindex="-1"></a>    y <span class="op">=</span> torch.softmax(x, dim<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-14"><a aria-hidden="true" href="#cb2-14" tabindex="-1"></a>    <span class="co"># 橫軸為max(y)</span></span>
+<span id="cb2-15"><a aria-hidden="true" href="#cb2-15" tabindex="-1"></a>    xs.append(y.<span class="bu">max</span>().item())</span>
+<span id="cb2-16"><a aria-hidden="true" href="#cb2-16" tabindex="-1"></a>    label <span class="op">=</span> torch.rand(y.shape)</span>
+<span id="cb2-17"><a aria-hidden="true" href="#cb2-17" tabindex="-1"></a>    loss <span class="op">=</span> torch.<span class="bu">abs</span>(label <span class="op">-</span> y).mean()</span>
+<span id="cb2-18"><a aria-hidden="true" href="#cb2-18" tabindex="-1"></a>    loss.backward()</span>
+<span id="cb2-19"><a aria-hidden="true" href="#cb2-19" tabindex="-1"></a>    <span class="co"># 縱軸為梯度絕對值的最大值</span></span>
+<span id="cb2-20"><a aria-hidden="true" href="#cb2-20" tabindex="-1"></a>    ys.append(x.grad.<span class="bu">abs</span>().<span class="bu">max</span>().item())</span>
+<span id="cb2-21"><a aria-hidden="true" href="#cb2-21" tabindex="-1"></a>plt.scatter(xs, ys)</span>
+<span id="cb2-22"><a aria-hidden="true" href="#cb2-22" tabindex="-1"></a>plt.xlabel(<span class="st">'Softmax輸出的最大值'</span>)</span>
+<span id="cb2-23"><a aria-hidden="true" href="#cb2-23" tabindex="-1"></a>plt.ylabel(<span class="st">'梯度絕對值的最大值'</span>)</span>
+<span id="cb2-24"><a aria-hidden="true" href="#cb2-24" tabindex="-1"></a>plt.show()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center anchored" id="fig-softmax-grad">
 <figure class="figure">
@@ -238,7 +244,7 @@
 </div>
 </div>
 <p>從<a href="#fig-softmax-grad">圖 2</a>可以看到，當Softmax的輸入接近<span class="math inline">\(0\)</span>向量或者one-hot向量的時候，都容易發生梯度消失現象，此時梯度的絕對值接近<span class="math inline">\(0\)</span>.</p>
-綜上所述，為盡量避免Softmax的梯度消失，控制其輸入向量的方差就變得很重要。假設<span class="math inline">\(\vec q\)</span>和<span class="math inline">\(\vec k\)</span>都是<span class="math inline">\(0\)</span>均值的，二者相互獨立，方差分別為<span class="math inline">\(v_q\)</span>和<span class="math inline">\(v_k\)</span>，不難證明它們的內積<span class="math inline">\(\vec q^T \vec k\)</span>的數學期望為<span class="math inline">\(0\)</span>。
+綜上所述，為盡量避免Softmax的梯度消失，<strong>控制輸入向量的方差很重要</strong>。假設<span class="math inline">\(\vec q\)</span>和<span class="math inline">\(\vec k\)</span>都是<span class="math inline">\(0\)</span>均值的，二者相互獨立，方差分別為<span class="math inline">\(v_q\)</span>和<span class="math inline">\(v_k\)</span>，不難證明它們的內積<span class="math inline">\(\vec q^T \vec k\)</span>的數學期望為<span class="math inline">\(0\)</span>。
 <details>
 <summary>
 展開證明
@@ -253,7 +259,7 @@
 \end{align*}
 \]</span>
 </details>
-此時<span class="math inline">\(\vec q^T \vec k\)</span>的方差為<span class="math inline">\(d_k v_q v_k\)</span>。
+<span class="math inline">\(\vec q^T \vec k\)</span>的方差為<span class="math inline">\(d_k v_q v_k\)</span>。
 <details>
 <summary>
 展開證明
@@ -274,7 +280,7 @@
 \end{align*}
 \]</span> 於是<span class="math inline">\({\rm Var} (\vec q^T \vec k/\sqrt{d_k})=v_q v_k\)</span>。
 </details>
-<p>因此，假設輸入的query和value是均值為<span class="math inline">\(0\)</span>，方差為<span class="math inline">\(1\)</span>的，那麼經過<span class="math inline">\(1/\sqrt{d_k}\)</span>的縮放處理，就能保持softmax的輸入也是均值為<span class="math inline">\(0\)</span>，方差為<span class="math inline">\(1\)</span>的，從而避免引發梯度消失問題。</p>
+<p>因此，假設輸入的query和value是標準正態分佈（均值為<span class="math inline">\(0\)</span>，方差為<span class="math inline">\(1\)</span>），那麼經過<span class="math inline">\(1/\sqrt{d_k}\)</span>的縮放處理，就能保持softmax的輸入也是標準正態分佈，避免方差過小或過大。</p>
 <!-- ```{python}
 import numpy as np
 def test(var, length=1024, d_k=64):
@@ -290,6 +296,7 @@ test(16); test(32); test(64); test(128)
 </section>
 <section class="level3" data-number="1.2" id="代碼實現">
 <h3 class="anchored" data-anchor-id="代碼實現" data-number="1.2"><span class="header-section-number">1.2</span> 代碼實現</h3>
+<p>在充分理解清楚SHA的計算公式的前提下，用pytorch實現它就不困難。需要注意的是公式中沒有體現attention mask。attention mask在訓練中用於阻止模型在預測某一步的token時觀察到未來的token，這對訓練聊天機器人、機器翻譯模型是等生成式模型是必要的。</p>
 <p>下列代碼實現了scaled dot-product attention：</p>
 <div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="im">import</span> torch</span>
@@ -305,29 +312,31 @@ test(16); test(32); test(64); test(128)
 <span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>    attn_weights <span class="op">=</span> torch.softmax(attn_weights, dim<span class="op">=-</span><span class="dv">1</span>) </span>
 <span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a></span>
 <span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>    ret <span class="op">=</span> torch.einsum(<span class="st">'nls,nse-&gt;nle'</span>, attn_weights, v)</span>
-<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>    <span class="cf">return</span> ret, attn_weights</span>
-<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a></span>
-<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a></span>
-<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">1</span> </span>
-<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a>length <span class="op">=</span> <span class="dv">2</span></span>
-<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">4</span> </span>
-<span id="cb3-20"><a aria-hidden="true" href="#cb3-20" tabindex="-1"></a>q <span class="op">=</span> torch.rand((batch_size, length, embed_dim))</span>
-<span id="cb3-21"><a aria-hidden="true" href="#cb3-21" tabindex="-1"></a>k <span class="op">=</span> torch.rand((batch_size, length, embed_dim))</span>
-<span id="cb3-22"><a aria-hidden="true" href="#cb3-22" tabindex="-1"></a>v <span class="op">=</span> torch.rand((batch_size, length, embed_dim))</span>
-<span id="cb3-23"><a aria-hidden="true" href="#cb3-23" tabindex="-1"></a>ret, attn_weights <span class="op">=</span> my_scaled_dot_product_attention(q, k, v)</span>
-<span id="cb3-24"><a aria-hidden="true" href="#cb3-24" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention操作返回結果：'</span>, ret)</span>
-<span id="cb3-25"><a aria-hidden="true" href="#cb3-25" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention矩陣為：'</span>, attn_weights)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>attention操作返回結果： tensor([[[0.8274, 0.7497, 0.4828, 0.6442],
-         [0.8245, 0.7462, 0.4846, 0.6472]]])
-attention矩陣為： tensor([[[0.5174, 0.4826],
-         [0.5065, 0.4935]]])</code></pre>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>    <span class="cf">return</span> ret, attn_weights</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<p>實現好scaled dot product attention後，可以檢查一下返回的attention矩陣，各列之和是否為1. 如果不為1，說明實現有問題。</p>
+<p>讓我們看看實現的<code>my_scaled_dot_product_attention</code>函數能不能正常運行：</p>
 <div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="bu">print</span>(attn_weights.<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>))</span>
-<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a><span class="cf">assert</span> torch.<span class="bu">all</span>(attn_weights.<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span> <span class="op">&lt;</span> <span class="fl">1e-6</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">1</span> </span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>length <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">4</span> </span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>q <span class="op">=</span> torch.rand((batch_size, length, embed_dim))</span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>k <span class="op">=</span> torch.rand((batch_size, length, embed_dim))</span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>v <span class="op">=</span> torch.rand((batch_size, length, embed_dim))</span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>mask <span class="op">=</span> torch.rand((length, length))</span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a>ret, attn_weights <span class="op">=</span> my_scaled_dot_product_attention(q, k, v, mask)</span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention操作返回結果：'</span>, ret)</span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention矩陣為：'</span>, attn_weights)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>attention操作返回結果： tensor([[[0.4272, 0.4486, 0.5352, 0.1839],
+         [0.4111, 0.4235, 0.5275, 0.1826]]])
+attention矩陣為： tensor([[[0.5208, 0.4792],
+         [0.5562, 0.4438]]])</code></pre>
+</div>
+</div>
+<p>一個檢查實現正確性的小技巧是，觀察返回attention矩陣的各列之和是否為1. 如果不為1，說明實現有問題。</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="bu">print</span>(attn_weights.<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a><span class="cf">assert</span> torch.<span class="bu">all</span>(attn_weights.<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span> <span class="op">&lt;</span> <span class="fl">1e-6</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>tensor([[1., 1.]])</code></pre>
 </div>
@@ -337,65 +346,70 @@ attention矩陣為： tensor([[[0.5174, 0.4826],
 </section>
 <section class="level2" data-number="2" id="multi-head-attention">
 <h2 class="anchored" data-anchor-id="multi-head-attention" data-number="2"><span class="header-section-number">2</span> Multi-head Attention</h2>
-<p>根據原論文描述，MHA的實現為： <span class="math display">\[\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O \]</span> 其中<span class="math inline">\(\text{head}_i = \text{Attention}(QW^Q_i , KW^K_i ,VW^V_i)\)</span>. 據此可知，MHA操作為： 1. 將query、key和value拆分成若干個head，對這些head分別作線性變換； 2. 對每個head分別執行scaled dot-product attention； 3. 將所有head的attention的結果合併，經過一層線性變換後返回。</p>
+<p>根據原論文描述，MHA的實現為： <span class="math display">\[\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O \]</span> 其中<span class="math inline">\(\text{head}_i = \text{Attention}(QW^Q_i , KW^K_i ,VW^V_i)\)</span>. 據此可知，MHA操作為：</p>
+<ol type="1">
+<li>將query、key和value拆分成若干個head，對這些head分別作線性變換；</li>
+<li>對每個head分別執行scaled dot-product attention；</li>
+<li>將所有head的attention的結果合併，經過一層線性變換後返回。</li>
+</ol>
 <p>通過在多個head上執行attention，MHA允許模型在不同的子空間收集不同位置的信息，增加了attention機制的表達能力。</p>
 <p>代碼實現如下：</p>
-<div class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="kw">class</span> MyMultiheadAttention(nn.Module):</span>
-<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
-<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>        <span class="va">self</span>,</span>
-<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>        embed_dim,</span>
-<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a>        num_heads,</span>
-<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a>    ):</span>
-<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
-<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a>        <span class="va">self</span>.embed_dim <span class="op">=</span> embed_dim </span>
-<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a>        <span class="va">self</span>.num_heads <span class="op">=</span> num_heads </span>
-<span id="cb7-10"><a aria-hidden="true" href="#cb7-10" tabindex="-1"></a>        <span class="va">self</span>.in_proj_weight <span class="op">=</span> nn.Parameter(</span>
-<span id="cb7-11"><a aria-hidden="true" href="#cb7-11" tabindex="-1"></a>            torch.rand((<span class="dv">3</span> <span class="op">*</span> embed_dim, embed_dim))</span>
-<span id="cb7-12"><a aria-hidden="true" href="#cb7-12" tabindex="-1"></a>        )</span>
-<span id="cb7-13"><a aria-hidden="true" href="#cb7-13" tabindex="-1"></a>        <span class="va">self</span>.in_proj_bias <span class="op">=</span> nn.Parameter(</span>
-<span id="cb7-14"><a aria-hidden="true" href="#cb7-14" tabindex="-1"></a>            torch.rand((<span class="dv">3</span> <span class="op">*</span> embed_dim))</span>
-<span id="cb7-15"><a aria-hidden="true" href="#cb7-15" tabindex="-1"></a>        )</span>
-<span id="cb7-16"><a aria-hidden="true" href="#cb7-16" tabindex="-1"></a>        <span class="va">self</span>.out_proj <span class="op">=</span> nn.Linear(embed_dim, embed_dim)</span>
-<span id="cb7-17"><a aria-hidden="true" href="#cb7-17" tabindex="-1"></a></span>
-<span id="cb7-18"><a aria-hidden="true" href="#cb7-18" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, query, key, value, attn_mask<span class="op">=</span><span class="va">None</span>):</span>
-<span id="cb7-19"><a aria-hidden="true" href="#cb7-19" tabindex="-1"></a>        L, N, q_dim <span class="op">=</span> query.shape</span>
-<span id="cb7-20"><a aria-hidden="true" href="#cb7-20" tabindex="-1"></a>        S, N, k_dim <span class="op">=</span> key.shape</span>
-<span id="cb7-21"><a aria-hidden="true" href="#cb7-21" tabindex="-1"></a>        S, N, v_dim <span class="op">=</span> value.shape</span>
-<span id="cb7-22"><a aria-hidden="true" href="#cb7-22" tabindex="-1"></a>        </span>
-<span id="cb7-23"><a aria-hidden="true" href="#cb7-23" tabindex="-1"></a>        <span class="cf">assert</span> <span class="va">self</span>.embed_dim <span class="op">%</span> <span class="va">self</span>.num_heads <span class="op">==</span> <span class="dv">0</span></span>
-<span id="cb7-24"><a aria-hidden="true" href="#cb7-24" tabindex="-1"></a>        weight_query, weight_key, weight_value <span class="op">=</span> <span class="va">self</span>.in_proj_weight.chunk(<span class="dv">3</span>)</span>
-<span id="cb7-25"><a aria-hidden="true" href="#cb7-25" tabindex="-1"></a>        bias_query, bias_key, bias_value <span class="op">=</span> <span class="va">self</span>.in_proj_bias.chunk(<span class="dv">3</span>)</span>
-<span id="cb7-26"><a aria-hidden="true" href="#cb7-26" tabindex="-1"></a></span>
-<span id="cb7-27"><a aria-hidden="true" href="#cb7-27" tabindex="-1"></a>        query <span class="op">=</span> F.linear(query, weight_query, bias_query)</span>
-<span id="cb7-28"><a aria-hidden="true" href="#cb7-28" tabindex="-1"></a>        key <span class="op">=</span> F.linear(key, weight_key, bias_key)</span>
-<span id="cb7-29"><a aria-hidden="true" href="#cb7-29" tabindex="-1"></a>        value <span class="op">=</span> F.linear(value, weight_value, bias_value)</span>
-<span id="cb7-30"><a aria-hidden="true" href="#cb7-30" tabindex="-1"></a></span>
-<span id="cb7-31"><a aria-hidden="true" href="#cb7-31" tabindex="-1"></a>        <span class="co"># L, N, E -&gt; N*n_heads, L, E/n_heads</span></span>
-<span id="cb7-32"><a aria-hidden="true" href="#cb7-32" tabindex="-1"></a>        query <span class="op">=</span> query.view(L, N <span class="op">*</span> <span class="va">self</span>.num_heads, <span class="op">-</span><span class="dv">1</span>).permute(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>)</span>
-<span id="cb7-33"><a aria-hidden="true" href="#cb7-33" tabindex="-1"></a>        key <span class="op">=</span> key.view(S, N <span class="op">*</span> <span class="va">self</span>.num_heads, <span class="op">-</span><span class="dv">1</span>).permute(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>)</span>
-<span id="cb7-34"><a aria-hidden="true" href="#cb7-34" tabindex="-1"></a>        value <span class="op">=</span> value.view(S, N <span class="op">*</span> <span class="va">self</span>.num_heads, <span class="op">-</span><span class="dv">1</span>).permute(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>)</span>
-<span id="cb7-35"><a aria-hidden="true" href="#cb7-35" tabindex="-1"></a></span>
-<span id="cb7-36"><a aria-hidden="true" href="#cb7-36" tabindex="-1"></a>        out, attn_weights <span class="op">=</span> my_scaled_dot_product_attention(query, key, value, mask<span class="op">=</span>attn_mask)</span>
-<span id="cb7-37"><a aria-hidden="true" href="#cb7-37" tabindex="-1"></a>        out <span class="op">=</span> out.permute(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>).reshape(L, N, <span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb7-38"><a aria-hidden="true" href="#cb7-38" tabindex="-1"></a>        attn_weights <span class="op">=</span> attn_weights.reshape(N, <span class="op">-</span><span class="dv">1</span>, L, S).mean(<span class="dv">1</span>)</span>
-<span id="cb7-39"><a aria-hidden="true" href="#cb7-39" tabindex="-1"></a></span>
-<span id="cb7-40"><a aria-hidden="true" href="#cb7-40" tabindex="-1"></a>        out <span class="op">=</span> <span class="va">self</span>.out_proj(out)</span>
-<span id="cb7-41"><a aria-hidden="true" href="#cb7-41" tabindex="-1"></a>        <span class="cf">return</span> out, attn_weights</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="kw">class</span> MyMultiheadAttention(nn.Module):</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>        embed_dim,</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a>        num_heads,</span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a>    ):</span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a>        <span class="va">self</span>.embed_dim <span class="op">=</span> embed_dim </span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a>        <span class="va">self</span>.num_heads <span class="op">=</span> num_heads </span>
+<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a>        <span class="va">self</span>.in_proj_weight <span class="op">=</span> nn.Parameter(</span>
+<span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a>            torch.rand((<span class="dv">3</span> <span class="op">*</span> embed_dim, embed_dim))</span>
+<span id="cb8-12"><a aria-hidden="true" href="#cb8-12" tabindex="-1"></a>        )</span>
+<span id="cb8-13"><a aria-hidden="true" href="#cb8-13" tabindex="-1"></a>        <span class="va">self</span>.in_proj_bias <span class="op">=</span> nn.Parameter(</span>
+<span id="cb8-14"><a aria-hidden="true" href="#cb8-14" tabindex="-1"></a>            torch.rand((<span class="dv">3</span> <span class="op">*</span> embed_dim))</span>
+<span id="cb8-15"><a aria-hidden="true" href="#cb8-15" tabindex="-1"></a>        )</span>
+<span id="cb8-16"><a aria-hidden="true" href="#cb8-16" tabindex="-1"></a>        <span class="va">self</span>.out_proj <span class="op">=</span> nn.Linear(embed_dim, embed_dim)</span>
+<span id="cb8-17"><a aria-hidden="true" href="#cb8-17" tabindex="-1"></a></span>
+<span id="cb8-18"><a aria-hidden="true" href="#cb8-18" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, query, key, value, attn_mask<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb8-19"><a aria-hidden="true" href="#cb8-19" tabindex="-1"></a>        L, N, q_dim <span class="op">=</span> query.shape</span>
+<span id="cb8-20"><a aria-hidden="true" href="#cb8-20" tabindex="-1"></a>        S, N, k_dim <span class="op">=</span> key.shape</span>
+<span id="cb8-21"><a aria-hidden="true" href="#cb8-21" tabindex="-1"></a>        S, N, v_dim <span class="op">=</span> value.shape</span>
+<span id="cb8-22"><a aria-hidden="true" href="#cb8-22" tabindex="-1"></a>        </span>
+<span id="cb8-23"><a aria-hidden="true" href="#cb8-23" tabindex="-1"></a>        <span class="cf">assert</span> <span class="va">self</span>.embed_dim <span class="op">%</span> <span class="va">self</span>.num_heads <span class="op">==</span> <span class="dv">0</span></span>
+<span id="cb8-24"><a aria-hidden="true" href="#cb8-24" tabindex="-1"></a>        weight_query, weight_key, weight_value <span class="op">=</span> <span class="va">self</span>.in_proj_weight.chunk(<span class="dv">3</span>)</span>
+<span id="cb8-25"><a aria-hidden="true" href="#cb8-25" tabindex="-1"></a>        bias_query, bias_key, bias_value <span class="op">=</span> <span class="va">self</span>.in_proj_bias.chunk(<span class="dv">3</span>)</span>
+<span id="cb8-26"><a aria-hidden="true" href="#cb8-26" tabindex="-1"></a></span>
+<span id="cb8-27"><a aria-hidden="true" href="#cb8-27" tabindex="-1"></a>        query <span class="op">=</span> F.linear(query, weight_query, bias_query)</span>
+<span id="cb8-28"><a aria-hidden="true" href="#cb8-28" tabindex="-1"></a>        key <span class="op">=</span> F.linear(key, weight_key, bias_key)</span>
+<span id="cb8-29"><a aria-hidden="true" href="#cb8-29" tabindex="-1"></a>        value <span class="op">=</span> F.linear(value, weight_value, bias_value)</span>
+<span id="cb8-30"><a aria-hidden="true" href="#cb8-30" tabindex="-1"></a></span>
+<span id="cb8-31"><a aria-hidden="true" href="#cb8-31" tabindex="-1"></a>        <span class="co"># L, N, E -&gt; N*n_heads, L, E/n_heads</span></span>
+<span id="cb8-32"><a aria-hidden="true" href="#cb8-32" tabindex="-1"></a>        query <span class="op">=</span> query.view(L, N <span class="op">*</span> <span class="va">self</span>.num_heads, <span class="op">-</span><span class="dv">1</span>).permute(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb8-33"><a aria-hidden="true" href="#cb8-33" tabindex="-1"></a>        key <span class="op">=</span> key.view(S, N <span class="op">*</span> <span class="va">self</span>.num_heads, <span class="op">-</span><span class="dv">1</span>).permute(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb8-34"><a aria-hidden="true" href="#cb8-34" tabindex="-1"></a>        value <span class="op">=</span> value.view(S, N <span class="op">*</span> <span class="va">self</span>.num_heads, <span class="op">-</span><span class="dv">1</span>).permute(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb8-35"><a aria-hidden="true" href="#cb8-35" tabindex="-1"></a></span>
+<span id="cb8-36"><a aria-hidden="true" href="#cb8-36" tabindex="-1"></a>        out, attn_weights <span class="op">=</span> my_scaled_dot_product_attention(query, key, value, mask<span class="op">=</span>attn_mask)</span>
+<span id="cb8-37"><a aria-hidden="true" href="#cb8-37" tabindex="-1"></a>        out <span class="op">=</span> out.permute(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>).reshape(L, N, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb8-38"><a aria-hidden="true" href="#cb8-38" tabindex="-1"></a>        attn_weights <span class="op">=</span> attn_weights.reshape(N, <span class="op">-</span><span class="dv">1</span>, L, S).mean(<span class="dv">1</span>)</span>
+<span id="cb8-39"><a aria-hidden="true" href="#cb8-39" tabindex="-1"></a></span>
+<span id="cb8-40"><a aria-hidden="true" href="#cb8-40" tabindex="-1"></a>        out <span class="op">=</span> <span class="va">self</span>.out_proj(out)</span>
+<span id="cb8-41"><a aria-hidden="true" href="#cb8-41" tabindex="-1"></a>        <span class="cf">return</span> out, attn_weights</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </div>
 <p>首先，我們先比較一下本文實現的multi-head attention和torch官方的實現的參數設置。我們將會看到所有參數名稱和參數尺寸都是一致的。這表明我們的multi-head attention與torch的官方實現兼容。</p>
-<div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">2</span></span>
-<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">16</span></span>
-<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>num_heads <span class="op">=</span> <span class="dv">4</span></span>
-<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>torch_mha <span class="op">=</span> nn.MultiheadAttention(embed_dim, num_heads)</span>
-<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a><span class="cf">for</span> n, p <span class="kw">in</span> torch_mha.named_parameters():</span>
-<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a>    <span class="bu">print</span>(n, p.shape)</span>
-<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a><span class="bu">print</span>(<span class="st">''</span>)</span>
-<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a></span>
-<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a>my_mha <span class="op">=</span> MyMultiheadAttention(embed_dim, num_heads)</span>
-<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a><span class="cf">for</span> n, p <span class="kw">in</span> my_mha.named_parameters():</span>
-<span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a>    <span class="bu">print</span>(n, p.shape)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">16</span></span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>num_heads <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a>torch_mha <span class="op">=</span> nn.MultiheadAttention(embed_dim, num_heads)</span>
+<span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a><span class="cf">for</span> n, p <span class="kw">in</span> torch_mha.named_parameters():</span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a>    <span class="bu">print</span>(n, p.shape)</span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a><span class="bu">print</span>(<span class="st">''</span>)</span>
+<span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a></span>
+<span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a>my_mha <span class="op">=</span> MyMultiheadAttention(embed_dim, num_heads)</span>
+<span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a><span class="cf">for</span> n, p <span class="kw">in</span> my_mha.named_parameters():</span>
+<span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a>    <span class="bu">print</span>(n, p.shape)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>in_proj_weight torch.Size([48, 16])
 in_proj_bias torch.Size([48])
@@ -409,31 +423,31 @@ out_proj.bias torch.Size([16])</code></pre>
 </div>
 </div>
 <p>接下來，我們檢查我們實現的MHA和torch版本MHA的輸出是否完全一致。在進行比較之前，我們先進行參數的複製，保持兩個模塊的參數完全相同。</p>
-<div class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a>my_mha_parameters <span class="op">=</span> <span class="bu">dict</span>(my_mha.named_parameters())</span>
-<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a><span class="cf">for</span> n, p <span class="kw">in</span> torch_mha.named_parameters():</span>
-<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>    my_mha_parameters[n].data.copy_(p)</span>
-<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>    <span class="cf">assert</span> torch.<span class="bu">all</span>(p <span class="op">==</span> my_mha_parameters[n])</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>my_mha_parameters <span class="op">=</span> <span class="bu">dict</span>(my_mha.named_parameters())</span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a><span class="cf">for</span> n, p <span class="kw">in</span> torch_mha.named_parameters():</span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>    my_mha_parameters[n].data.copy_(p)</span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>    <span class="cf">assert</span> torch.<span class="bu">all</span>(p <span class="op">==</span> my_mha_parameters[n])</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </div>
 <p>下列代碼對函數的輸出進行檢查：</p>
-<div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>query <span class="op">=</span> torch.rand((length, batch_size, embed_dim))</span>
-<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>key <span class="op">=</span> torch.rand((length, batch_size, embed_dim)) </span>
-<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>value <span class="op">=</span> torch.rand((length, batch_size, embed_dim))</span>
-<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a></span>
-<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a><span class="co"># prepare mask </span></span>
-<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a>attn_bias <span class="op">=</span> torch.zeros(length, length, dtype<span class="op">=</span>query.dtype)</span>
-<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a>temp_mask <span class="op">=</span> torch.ones(length, length, dtype<span class="op">=</span>torch.<span class="bu">bool</span>).tril(diagonal<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a>attn_bias.masked_fill_(temp_mask.logical_not(), <span class="bu">float</span>(<span class="st">"-inf"</span>))</span>
-<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>attn_bias.to(query.dtype)</span>
-<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a></span>
-<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a>ret, attn_weights <span class="op">=</span> my_mha(query, key, value, attn_mask<span class="op">=</span>attn_bias)</span>
-<span id="cb11-12"><a aria-hidden="true" href="#cb11-12" tabindex="-1"></a>ret2, attn_weights2 <span class="op">=</span> torch_mha(query, key, value, need_weights<span class="op">=</span><span class="va">True</span>, attn_mask<span class="op">=</span>attn_bias)</span>
-<span id="cb11-13"><a aria-hidden="true" href="#cb11-13" tabindex="-1"></a>error <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(ret <span class="op">-</span> ret2)).item()</span>
-<span id="cb11-14"><a aria-hidden="true" href="#cb11-14" tabindex="-1"></a>error2 <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(attn_weights <span class="op">-</span> attn_weights2)).item()</span>
-<span id="cb11-15"><a aria-hidden="true" href="#cb11-15" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Difference: </span><span class="sc">{</span>error<span class="sc">:.4f}</span><span class="ss">, </span><span class="sc">{</span>error2<span class="sc">:.4f}</span><span class="ss">'</span>)</span>
-<span id="cb11-16"><a aria-hidden="true" href="#cb11-16" tabindex="-1"></a></span>
-<span id="cb11-17"><a aria-hidden="true" href="#cb11-17" tabindex="-1"></a><span class="cf">assert</span> error <span class="op">&lt;</span> <span class="fl">1e-6</span> <span class="kw">and</span> error2 <span class="op">&lt;</span> <span class="fl">1e-6</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>query <span class="op">=</span> torch.rand((length, batch_size, embed_dim))</span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a>key <span class="op">=</span> torch.rand((length, batch_size, embed_dim)) </span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a>value <span class="op">=</span> torch.rand((length, batch_size, embed_dim))</span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a></span>
+<span id="cb12-5"><a aria-hidden="true" href="#cb12-5" tabindex="-1"></a><span class="co"># prepare mask </span></span>
+<span id="cb12-6"><a aria-hidden="true" href="#cb12-6" tabindex="-1"></a>attn_bias <span class="op">=</span> torch.zeros(length, length, dtype<span class="op">=</span>query.dtype)</span>
+<span id="cb12-7"><a aria-hidden="true" href="#cb12-7" tabindex="-1"></a>temp_mask <span class="op">=</span> torch.ones(length, length, dtype<span class="op">=</span>torch.<span class="bu">bool</span>).tril(diagonal<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb12-8"><a aria-hidden="true" href="#cb12-8" tabindex="-1"></a>attn_bias.masked_fill_(temp_mask.logical_not(), <span class="bu">float</span>(<span class="st">"-inf"</span>))</span>
+<span id="cb12-9"><a aria-hidden="true" href="#cb12-9" tabindex="-1"></a>attn_bias.to(query.dtype)</span>
+<span id="cb12-10"><a aria-hidden="true" href="#cb12-10" tabindex="-1"></a></span>
+<span id="cb12-11"><a aria-hidden="true" href="#cb12-11" tabindex="-1"></a>ret, attn_weights <span class="op">=</span> my_mha(query, key, value, attn_mask<span class="op">=</span>attn_bias)</span>
+<span id="cb12-12"><a aria-hidden="true" href="#cb12-12" tabindex="-1"></a>ret2, attn_weights2 <span class="op">=</span> torch_mha(query, key, value, need_weights<span class="op">=</span><span class="va">True</span>, attn_mask<span class="op">=</span>attn_bias)</span>
+<span id="cb12-13"><a aria-hidden="true" href="#cb12-13" tabindex="-1"></a>error <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(ret <span class="op">-</span> ret2)).item()</span>
+<span id="cb12-14"><a aria-hidden="true" href="#cb12-14" tabindex="-1"></a>error2 <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(attn_weights <span class="op">-</span> attn_weights2)).item()</span>
+<span id="cb12-15"><a aria-hidden="true" href="#cb12-15" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Difference: </span><span class="sc">{</span>error<span class="sc">:.4f}</span><span class="ss">, </span><span class="sc">{</span>error2<span class="sc">:.4f}</span><span class="ss">'</span>)</span>
+<span id="cb12-16"><a aria-hidden="true" href="#cb12-16" tabindex="-1"></a></span>
+<span id="cb12-17"><a aria-hidden="true" href="#cb12-17" tabindex="-1"></a><span class="cf">assert</span> error <span class="op">&lt;</span> <span class="fl">1e-6</span> <span class="kw">and</span> error2 <span class="op">&lt;</span> <span class="fl">1e-6</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Difference: 0.0000, 0.0000</code></pre>
 </div>
@@ -442,6 +456,7 @@ out_proj.bias torch.Size([16])</code></pre>
 </section>
 <section class="level2" data-number="3" id="總結">
 <h2 class="anchored" data-anchor-id="總結" data-number="3"><span class="header-section-number">3</span> 總結</h2>
+<p>推薦閱讀：</p>
 <ul>
 <li><a href="https://pytorch.org/docs/2.2/generated/torch.nn.functional.scaled_dot_product_attention.html#torch.nn.functional.scaled_dot_product_attention">torch官方的scaled dot-product attention文檔</a>中簡要介紹了一種scaled dot-product attention的python實現方式。</li>
 </ul>
