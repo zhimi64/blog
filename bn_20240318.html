@@ -140,7 +140,11 @@
 <h2 id="toc-title">目录</h2>
 <ul>
 <li><a class="nav-link active" data-scroll-target="#簡介" href="#簡介" id="toc-簡介"><span class="toc-section-number">1</span>  簡介</a></li>
-<li><a class="nav-link" data-scroll-target="#實現方法" href="#實現方法" id="toc-實現方法"><span class="toc-section-number">2</span>  實現方法</a></li>
+<li><a class="nav-link" data-scroll-target="#實現方法" href="#實現方法" id="toc-實現方法"><span class="toc-section-number">2</span>  實現方法</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#batch-size" href="#batch-size" id="toc-batch-size"><span class="toc-section-number">2.1</span>  Batch size</a></li>
+<li><a class="nav-link" data-scroll-target="#測試和訓練階段的行為不一致" href="#測試和訓練階段的行為不一致" id="toc-測試和訓練階段的行為不一致"><span class="toc-section-number">2.2</span>  測試和訓練階段的行為不一致</a></li>
+</ul></li>
 <li><a class="nav-link" data-scroll-target="#代碼實現" href="#代碼實現" id="toc-代碼實現"><span class="toc-section-number">3</span>  代碼實現</a></li>
 <li><a class="nav-link" data-scroll-target="#正確地使用bn" href="#正確地使用bn" id="toc-正確地使用bn"><span class="toc-section-number">4</span>  正確地使用BN</a>
 <ul class="collapse">
@@ -175,40 +179,46 @@
 </section>
 <section class="level2" data-number="2" id="實現方法">
 <h2 class="anchored" data-anchor-id="實現方法" data-number="2"><span class="header-section-number">2</span> 實現方法</h2>
-<p>BN使用如下公式實現輸入樣本的歸一化： <span id="eq-bn-normalization"><span class="math display">\[
+<p>BN用如下公式作輸入樣本的歸一化： <span id="eq-bn-normalization"><span class="math display">\[
 \hat x = \frac{x - E(x)}{\sqrt{Var(x) + \epsilon}},
 \tag{1}\]</span></span> 其中<span class="math inline">\(x\)</span>為BN模塊的輸入。<span class="math inline">\(E(x)\)</span>為<span class="math inline">\(x\)</span>的數學期望，<span class="math inline">\(Var(x)\)</span>為<span class="math inline">\(x\)</span>的方差，<span class="math inline">\(\epsilon\)</span>是防止除零異常的一個接近<span class="math inline">\(0\)</span>的正數。</p>
 <p>隨後，歸一化的樣本經過一層線性層得到BN的輸出： <span class="math display">\[
 y = \hat x\gamma  + \beta.
 \]</span></p>
-<p>實際訓練時的tensor是N維的。例如一組圖像的特徵<span class="math inline">\(x\)</span>一般是4維，形狀可能是<span class="math inline">\(8\times 128 \times 512 \times 512\)</span>，其中<span class="math inline">\(8\)</span>為batch size，<span class="math inline">\(128\)</span>為特徵維度，<span class="math inline">\(512\)</span>為圖像的長寬。在這個例子中，BN的歸一化針對所有長度為<span class="math inline">\(128\)</span>的特徵向量進行，其統計的<span class="math inline">\(E(x)\)</span>和<span class="math inline">\(Var(x)\)</span>是維度為<span class="math inline">\(128\)</span>的向量。</p>
-<p>在代碼實現中，<span class="math inline">\(E(x)\)</span>和<span class="math inline">\(Var(x)\)</span>通過統計一個batch內樣本的均值和方差來近似。為了獲得盡量準確的統計，batch size最好取盡量大些。如果batch size太小，那麼<span class="math inline">\(E(x)\)</span>和<span class="math inline">\(Var(x)\)</span>的估計不準確，模型的最終性能便可能下降。</p>
-<p>測試推理階段，模型往往一次接受一個數據：<span class="math inline">\(\text{batch size}=1\)</span>。因此在推理階段，BN就不能像訓練時那樣用大量數據估計<span class="math inline">\(E(x)\)</span>和<span class="math inline">\(Var(x)\)</span>. 為了應對這個問題，BN的設計者提出讓<strong>Batch Normalization在測試階段和訓練階段採取不一樣的行為</strong>。在訓練階段，BN使用Batch內統計的均值和方差，同時使用moving average方法維護均值和方差的統計量。設BN的<code>momentum</code>參數等於0.1，<span class="math inline">\(m\)</span>是moving average方法跟蹤的一個統計量，那麼其更新方法為： <span class="math display">\[
+<section class="level3" data-number="2.1" id="batch-size">
+<h3 class="anchored" data-anchor-id="batch-size" data-number="2.1"><span class="header-section-number">2.1</span> Batch size</h3>
+<p>實際訓練時，輸入的tensor是N維的。以圖像為例，一般圖像特徵<span class="math inline">\(x\)</span>是4維，形狀可能是<span class="math inline">\(b\times d\times h \times w\)</span>，其中<span class="math inline">\(b\)</span>為batch size，<span class="math inline">\(d\)</span>為特徵維度，<span class="math inline">\(h\)</span>為圖像的長寬。在這個例子中，BN對所有<span class="math inline">\(d\)</span>維的特徵向量作歸一化（共<span class="math inline">\(b\times h\times w\)</span>個向量）。</p>
+<p>為了獲得盡量準確的統計，batch size最好取盡量大些。如果batch size太小，那麼<span class="math inline">\(E(x)\)</span>和<span class="math inline">\(Var(x)\)</span>的估計不準確，模型的最終性能便可能下降。</p>
+</section>
+<section class="level3" data-number="2.2" id="測試和訓練階段的行為不一致">
+<h3 class="anchored" data-anchor-id="測試和訓練階段的行為不一致" data-number="2.2"><span class="header-section-number">2.2</span> 測試和訓練階段的行為不一致</h3>
+<p>測試推理階段，模型往往一次只接受一個數據：<span class="math inline">\(\text{batch size}=1\)</span>。BN不能像訓練時那樣在大batch size下估計<span class="math inline">\(E(x)\)</span>和<span class="math inline">\(Var(x)\)</span>. 為了應對這個問題，BN的對策是<strong>moving average</strong>。在訓練階段，BN使用Batch內統計的均值和方差作歸一化，同時使用moving average方法維護均值和方差預備測試時使用。設BN的<code>momentum</code>參數等於0.1，<span class="math inline">\(m\)</span>是moving average方法跟蹤的一個統計量，那麼其更新方法為： <span class="math display">\[
 \hat m_{t} = \hat m_{t-1} \cdot (1 - \text{momentum}) + m_t \cdot \text{momentum}.
 \]</span></p>
-<p>既然測試時我們無法構造一個大的batch來統計均值和方差，那就用事先統計的均值和方差的moving average，帶入<a href="#eq-bn-normalization">公式 1</a>中進行歸一化。</p>
+<p>測試時用事先統計的均值和方差的moving average，帶入<a href="#eq-bn-normalization">公式 1</a>中作歸一化。</p>
+</section>
 </section>
 <section class="level2" data-number="3" id="代碼實現">
 <h2 class="anchored" data-anchor-id="代碼實現" data-number="3"><span class="header-section-number">3</span> 代碼實現</h2>
-<p>在復刻BatchNorm之前，我們不妨先看看pytorch官方的<code>BatchNorm2d</code>模塊，觀察BatchNorm層要有哪些參數：</p>
+<p>在實現BatchNorm之前，我們不妨先看看pytorch官方的<code>BatchNorm2d</code>模塊，觀察BatchNorm層要有哪些參數：</p>
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> torch </span>
 <span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn </span>
 <span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a>batch, ch, h, w <span class="op">=</span> <span class="dv">2</span>, <span class="dv">32</span>, <span class="dv">128</span>, <span class="dv">128</span></span>
 <span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a>torch_batch_norm <span class="op">=</span> nn.BatchNorm2d(num_features<span class="op">=</span>ch)</span>
 <span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="cf">for</span> k, v <span class="kw">in</span> torch_batch_norm.named_parameters():</span>
-<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>    <span class="bu">print</span>(k, v.shape)</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'parameter: </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">'</span>, v.shape)</span>
 <span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a><span class="cf">for</span> k, v <span class="kw">in</span> torch_batch_norm.named_buffers():</span>
-<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>    <span class="bu">print</span>(k, v.shape)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'buffer: </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">'</span>, v.shape)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>weight torch.Size([32])
-bias torch.Size([32])
-running_mean torch.Size([32])
-running_var torch.Size([32])
-num_batches_tracked torch.Size([])</code></pre>
+<pre><code>parameter: weight torch.Size([32])
+parameter: bias torch.Size([32])
+buffer: running_mean torch.Size([32])
+buffer: running_var torch.Size([32])
+buffer: num_batches_tracked torch.Size([])</code></pre>
 </div>
 </div>
-<p>我們注意到BatchNorm的參數有兩種。一種是<em>parameter</em>（<code>weight</code>、<code>bias</code>），一種是<em>buffer</em>（<code>running_mean</code>、<code>running_var</code>、<code>num_batches_tracked</code>）。對於parameter，torch默認其參數是需要梯度反傳的；而buffer則用於存儲一些不需要梯度反傳的模型參數。與parameter一樣，在保存模型時，<code>buffer</code>參數也會存儲到<code>state_dict</code>中。</p>
+<p>注意到BatchNorm的參數有兩種。一種是<em>parameter</em>（<code>weight</code>、<code>bias</code>），一種是<em>buffer</em>（<code>running_mean</code>、<code>running_var</code>、<code>num_batches_tracked</code>）。對於parameter，torch默認其參數是需要梯度反傳的；而buffer則用於存儲一些不需要梯度反傳的模型參數。與<code>parameter</code>一樣，在保存模型時，<code>buffer</code>參數也會存儲到<code>state_dict</code>中。</p>
 <p>下面是本文提供的BN實現：</p>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="im">import</span> torch</span>
@@ -278,76 +288,65 @@ num_batches_tracked torch.Size([])</code></pre>
 <span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">'</span>.<span class="bu">format</span>(diff, diff_mean, diff_var))</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.000000;0.000000;0.000000
-0.000000;0.000000;0.000000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0.000000;0.000000;0.000000
 0.000000;0.000000;0.000000
 0.000000;0.000000;0.000000</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code></code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0.000000;0.000000;0.000000
+<pre><code>
 0.000000;0.000000;0.000000
 0.000000;0.000000;0.000000</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.000000;0.000000;0.000000</code></pre>
+<pre><code>
+0.000000;0.000000;0.000000</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.000000;0.000000;0.000000</code></pre>
+<pre><code>0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000</code></pre>
 </div>
 </div>
 <p>可以看到，輸出的所有誤差項都為0！這表明<code>MyBatchNorm</code>的實現和torch的BN相吻合。</p>
 <p>不要忘記BN在訓練時的行為和測試時的行為不同。我們需要再檢查一遍測試階段下<code>MyBatchNorm</code>的行為。</p>
 <div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="co"># .eval()開啟測試模型</span></span>
-<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>torch_batch_norm.<span class="bu">eval</span>()  </span>
-<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>my_batch_norm.<span class="bu">eval</span>()</span>
-<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
-<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a>    a <span class="op">=</span> torch.rand(batch, ch, h, w)</span>
-<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a>    ret1 <span class="op">=</span> torch_batch_norm(a)</span>
-<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a>    ret2 <span class="op">=</span> my_batch_norm(a)</span>
-<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a>    diff <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(ret1 <span class="op">-</span> ret2)).item()</span>
-<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>    </span>
-<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a>    running_mean1 <span class="op">=</span> torch_batch_norm.running_mean </span>
-<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a>    running_mean2 <span class="op">=</span> my_batch_norm.running_mean </span>
-<span id="cb11-12"><a aria-hidden="true" href="#cb11-12" tabindex="-1"></a>    diff_mean <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(running_mean1 <span class="op">-</span> running_mean2)).item()</span>
-<span id="cb11-13"><a aria-hidden="true" href="#cb11-13" tabindex="-1"></a></span>
-<span id="cb11-14"><a aria-hidden="true" href="#cb11-14" tabindex="-1"></a>    running_var1 <span class="op">=</span> torch_batch_norm.running_var </span>
-<span id="cb11-15"><a aria-hidden="true" href="#cb11-15" tabindex="-1"></a>    running_var2 <span class="op">=</span> my_batch_norm.running_var</span>
-<span id="cb11-16"><a aria-hidden="true" href="#cb11-16" tabindex="-1"></a>    diff_var <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(running_var1 <span class="op">-</span> running_var2)).item()</span>
-<span id="cb11-17"><a aria-hidden="true" href="#cb11-17" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">'</span>.<span class="bu">format</span>(diff, diff_mean, diff_var))</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="co"># .eval()開啟測試模型</span></span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a>torch_batch_norm.<span class="bu">eval</span>()  </span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>my_batch_norm.<span class="bu">eval</span>()</span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>    a <span class="op">=</span> torch.rand(batch, ch, h, w)</span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a>    ret1 <span class="op">=</span> torch_batch_norm(a)</span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a>    ret2 <span class="op">=</span> my_batch_norm(a)</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a>    diff <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(ret1 <span class="op">-</span> ret2)).item()</span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a>    </span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a>    running_mean1 <span class="op">=</span> torch_batch_norm.running_mean </span>
+<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a>    running_mean2 <span class="op">=</span> my_batch_norm.running_mean </span>
+<span id="cb10-12"><a aria-hidden="true" href="#cb10-12" tabindex="-1"></a>    diff_mean <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(running_mean1 <span class="op">-</span> running_mean2)).item()</span>
+<span id="cb10-13"><a aria-hidden="true" href="#cb10-13" tabindex="-1"></a></span>
+<span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a>    running_var1 <span class="op">=</span> torch_batch_norm.running_var </span>
+<span id="cb10-15"><a aria-hidden="true" href="#cb10-15" tabindex="-1"></a>    running_var2 <span class="op">=</span> my_batch_norm.running_var</span>
+<span id="cb10-16"><a aria-hidden="true" href="#cb10-16" tabindex="-1"></a>    diff_var <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(running_var1 <span class="op">-</span> running_var2)).item()</span>
+<span id="cb10-17"><a aria-hidden="true" href="#cb10-17" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">'</span>.<span class="bu">format</span>(diff, diff_mean, diff_var))</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.000000;0.000000;0.000000
-0.000000;0.000000;0.000000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-0.000000;0.000000;0.000000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-0.000000;0.000000;0.000000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0.000000;0.000000;0.000000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0.000000;0.000000;0.000000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000
 0.000000;0.000000;0.000000
 0.000000;0.000000;0.000000</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code></code></pre>
+<pre><code>
+0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.000000;0.000000;0.000000</code></pre>
+<pre><code>
+0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000</code></pre>
 </div>
 </div>
 <p>至此我們已經完成了全部檢查，實驗結果表明<code>MyBatchNorm</code>的實現是正確的。</p>
@@ -376,11 +375,11 @@ num_batches_tracked torch.Size([])</code></pre>
 <section class="level3" data-number="4.4" id="不要遞歸地使用bn">
 <h3 class="anchored" data-anchor-id="不要遞歸地使用bn" data-number="4.4"><span class="header-section-number">4.4</span> 不要遞歸地使用BN</h3>
 <p>最後介紹一個我踩過的，印象深刻的坑。 假如有這樣一段代碼：</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a aria-hidden="true" href="#cb20-1" tabindex="-1"></a>x2 <span class="op">=</span> batch_norm(x1)</span>
-<span id="cb20-2"><a aria-hidden="true" href="#cb20-2" tabindex="-1"></a>x3 <span class="op">=</span> batch_norm(x2)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>x2 <span class="op">=</span> batch_norm(x1)</span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>x3 <span class="op">=</span> batch_norm(x2)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <p>或</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a aria-hidden="true" href="#cb21-1" tabindex="-1"></a>x2 <span class="op">=</span> conv(x1)  <span class="co"># conv中包含BN模塊</span></span>
-<span id="cb21-2"><a aria-hidden="true" href="#cb21-2" tabindex="-1"></a>x3 <span class="op">=</span> conv(x2)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a>x2 <span class="op">=</span> conv(x1)  <span class="co"># conv中包含BN模塊</span></span>
+<span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a>x3 <span class="op">=</span> conv(x2)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <p>前面的一段代碼的問題或許容易識別，後者的問題則稍隱蔽些。你能預測到會發生什麼嗎？在這樣的代碼中，同一個BN模塊在訓練時會分別獲取<code>x2</code>和<code>x1</code>的均值和方差，然後通過moving average將它們計入<code>running_mean</code>和<code>running_var</code>。然而，由於<code>x1</code>和<code>x2</code>服從不同的分佈，因此<code>running_mean</code>和<code>running_var</code>的統計將失去意義。 問題的表現是，在訓練階段，我們會觀察到損失正常下降。測試時，我們開啟<code>eval</code>模式，模型的表現不如預期；可是如果你關閉<code>eval</code>模式，也許會發現模型又能正常工作。</p>
 <p>類似的問題也存在於特征金字塔（FPN）的實現中。如果你希望在類特征金字塔的結構中實現不同層級共享參數的話，注意卷積的參數也許能共享，但BN的參數不要共享。</p>
 </section>
@@ -388,7 +387,7 @@ num_batches_tracked torch.Size([])</code></pre>
 <section class="level2" data-number="5" id="總結">
 <h2 class="anchored" data-anchor-id="總結" data-number="5"><span class="header-section-number">5</span> 總結</h2>
 <p>本文介紹了BN的工作原理，給出了一種基於pytorch的BN模塊實現，並提供了詳細的代碼檢查。最後，本文討論了應用BN過程中容易遇到的幾種問題。</p>
-<p>在接觸深度學習的過程中，Batch Normalization是一個反復（大概得有兩三次吧）讓我踩坑的模塊，每次踩坑都得琢磨好久才能發現問題所在。現在我已經習慣性的選擇Group Normalization<span class="citation" data-cites="wu_group_2018"><sup>[<a href="#ref-wu_group_2018" role="doc-biblioref">2</a>]</sup></span>，拋棄BN了。儘管如此，BN仍然是一個經典的工作，在折騰它的過程中我也學到了不少東西。</p>
+<p>在接觸深度學習的過程中，Batch Normalization是一個讓我反復（大概得有兩三次吧）踩坑的模塊，每次踩坑都得琢磨好久才能發現問題所在。現在我已經習慣性的選擇Group Normalization<span class="citation" data-cites="wu_group_2018"><sup>[<a href="#ref-wu_group_2018" role="doc-biblioref">2</a>]</sup></span>，拋棄BN了。儘管如此，BN仍然是一個經典的工作，它背後的思想還是很值得學習研究。</p>
 </section>
 <div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">参考</h2><div class="references csl-bib-body" id="refs" role="doc-bibliography">
 <div class="csl-entry" id="ref-ioffe_batch_nodate" role="doc-biblioentry">
