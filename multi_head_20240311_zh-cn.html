@@ -38,7 +38,7 @@
   <title>手写Multi-Head Attention：从公式到代码实现</title>
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
+  <meta name="description" content="本文介紹了應用廣泛、影響深遠的注意力機制，介紹了注意力、多頭注意力的特點，詳細解釋了注意力矩陣的縮放係數，給出了對應的Python實現和完整的驗證程序。注意力機制不僅是Transformer模型的基本模塊，其在計算機視覺、3D點雲處理等方向也有應用潛力，值得我們深入理解其中的細節，思考它的優點和局限。">
   <meta name="author" content="執迷">
 
   <link rel="shortcut icon" href="favicon.ico">
@@ -46,7 +46,7 @@
   <!-- schema.org -->
   <meta itemprop="name" content="執迷的博客">
   <meta itemprop="image" content="">
-  <meta itemprop="description" content="">
+  <meta itemprop="description" content="本文介紹了應用廣泛、影響深遠的注意力機制，介紹了注意力、多頭注意力的特點，詳細解釋了注意力矩陣的縮放係數，給出了對應的Python實現和完整的驗證程序。注意力機制不僅是Transformer模型的基本模塊，其在計算機視覺、3D點雲處理等方向也有應用潛力，值得我們深入理解其中的細節，思考它的優點和局限。">
 
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   <!-- Style Meta Data -->
@@ -154,6 +154,11 @@
 <div class="quarto-title">
 
 </div>
+<div>
+<div class="description">
+    本文介绍了应用广泛、影响深远的注意力机制，介绍了注意力、多头注意力的特点，详细解释了注意力矩阵的缩放系数，给出了对应的Python实现和完整的验证程序。注意力机制不仅是Transformer模型的基本模块，其在计算机视觉、3D点云处理等方向也有应用潜力，值得我们深入理解其中的细节，思考它的优点和局限。
+  </div>
+</div>
 <div class="quarto-title-meta">
 <div>
 <div class="quarto-title-meta-heading">发布日期</div>
@@ -172,7 +177,7 @@
 \tag{1}\]</span></span> 其中，<span class="math inline">\(Q\)</span>、<span class="math inline">\(K\)</span>和<span class="math inline">\(V\)</span>分别为输入的query、key和value向量。<span class="math inline">\(Q\)</span>的尺寸为<span class="math inline">\(L\times E_q\)</span>，<span class="math inline">\(K\)</span>的尺寸为<span class="math inline">\(S\times E_q\)</span>，<span class="math inline">\(V\)</span>的尺寸为<span class="math inline">\(S\times E_v\)</span>。</p>
 <p><a href="#eq-sha">公式 1</a>中，<span class="math inline">\(QK^T\)</span>的计算可以理解为求query向量和key向量间的“匹配程度”，使得SHA能够根据匹配程度从value中取得相关的数据。Softmax函数在这里起到归一化的作用，使得SHA的计算结果可以视为V的加权平均。</p>
 <p>注意力机制是一个有趣的设计。RNN（Recurrent Neural Networks）结构面临著长程记忆困难的问题；类似的，CNN（Convolutional Neural Networks）中也存在远距离像素感知困难的问题。SHA的特点是，为每一对query和key都作计算，而不考虑其时间或空间上的位置差距。</p>
-<p>在我个人看来，注意力机制就好像构造了一个“完全二部图”。这个二部图由<span class="math inline">\(A\)</span>和<span class="math inline">\(B\)</span>两个顶点集合组成，其中<span class="math inline">\(A\)</span>集合代表query，<span class="math inline">\(B\)</span>集合代表key和value。<span class="math inline">\(A\)</span>和<span class="math inline">\(B\)</span>之间的结点两两之间都有一条边，边的权重由query和key的“匹配程度”决定。类似SHA，全连接层或卷积层也可以表示为二部图，只不过其边的权重是通过训练得到的，固定的值，而在注意力机制中，边的权重是动态的，根据query和key计算得到的。</p>
+<p>我个人的观察是，注意力机制就好像构造了一个“完全二部图”。这个二部图由<span class="math inline">\(A\)</span>和<span class="math inline">\(B\)</span>两个顶点集合组成，其中<span class="math inline">\(A\)</span>集合代表query，<span class="math inline">\(B\)</span>集合代表key和value。<span class="math inline">\(A\)</span>和<span class="math inline">\(B\)</span>之间的结点两两之间都有一条边，边的权重由query和key的“匹配程度”决定。类似SHA，全连接层或卷积层也可以表示为二部图，只不过其边的权重是通过训练得到的，固定的值，而在注意力机制中，边的权重是动态的，根据query和key计算得到的。</p>
 <section class="level3" data-number="1.1" id="attention的縮放係數">
 <h3 class="anchored" data-anchor-id="attention的縮放係數" data-number="1.1"><span class="header-section-number">1.1</span> Attention的缩放系数</h3>
 <p>从<a href="#eq-sha">公式 1</a>可以看到，在执行Softmax函数前，SHA使用系数<span class="math inline">\(\frac{1}{\sqrt{d_k}}\)</span>对输入作了缩放。<strong>为什么是<span class="math inline">\(\sqrt{d_k}\)</span>，而不是其它系数呢？</strong>本节主要摘录<a href="https://spaces.ac.cn/archives/9812">苏剑林的系列文章</a>中的结论，对这个问题作简要的讨论。</p>
@@ -327,10 +332,10 @@ test(16); test(32); test(64); test(128)
 <span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention操作返回结果：'</span>, ret)</span>
 <span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention矩阵为：'</span>, attn_weights)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>attention操作返回结果： tensor([[[0.4272, 0.4486, 0.5352, 0.1839],
-         [0.4111, 0.4235, 0.5275, 0.1826]]])
-attention矩阵为： tensor([[[0.5208, 0.4792],
-         [0.5562, 0.4438]]])</code></pre>
+<pre><code>attention操作返回结果： tensor([[[0.7227, 0.6952, 0.7328, 0.4552],
+         [0.5469, 0.5500, 0.7784, 0.5451]]])
+attention矩阵为： tensor([[[0.2746, 0.7254],
+         [0.5585, 0.4415]]])</code></pre>
 </div>
 </div>
 <p>一个检查实现正确性的小技巧是，观察返回attention矩阵的各列之和是否为1. 如果不为1，说明实现有问题。</p>
@@ -612,13 +617,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         <div><span>Tags : </span>
             
             
+            <span><a href="./">#注意力機制, </a></span>
+            
+            <span><a href="./">#多頭注意力, </a></span>
+            
             <span><a href="./">#深度學習, </a></span>
             
             <span><a href="./">#自然語言處理, </a></span>
             
-            <span><a href="./">#注意力機制, </a></span>
-            
-            <span><a href="./">#多頭注意力, </a></span>
+            <span><a href="./">#Multi-head attention, </a></span>
             
             
         </div>
