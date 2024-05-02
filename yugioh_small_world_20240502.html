@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
+
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="./_vercel/insights/script.js"></script>
+  
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
+
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
+
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>遊戲王小世界現象一卡的檢索鏈分析</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././yugioh_small_world_20240502.html">
+<meta name="twitter:title" content="執迷的博客 ~ 遊戲王小世界現象一卡的檢索鏈分析">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ 遊戲王小世界現象一卡的檢索鏈分析" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+
+<!-- MathJax -->
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+      <p>做一個有趣的人！</p>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="././about.html">About</a></li>
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <h2 class="post_title post_detail"><a href="././yugioh_small_world_20240502.html" rel="bookmark" title="Permalink to 遊戲王小世界現象一卡的檢索鏈分析">遊戲王小世界現象一卡的檢索鏈分析</a></h2>
+    
+    <p>
+        <span id="busuanzi_container_page_pv">
+            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+        </span>
+    </p>
+    
+    <div class="entry-content blog-post">
+        <div class="fullcontent">
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+
+</div>
+<div class="quarto-title-meta">
+<div>
+<div class="quarto-title-meta-heading">Published</div>
+<div class="quarto-title-meta-contents">
+<p class="date">May 2, 2024</p>
+</div>
+</div>
+</div>
+</header>
+<p>當我看到遊戲王出了<strong>小世界現象</strong>這張卡時，不禁會心一笑。</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img class="img-fluid figure-img" src="./yugioh_small_world_20240502/small_world.jpg"/></p>
+<p></p><figcaption class="figure-caption">“小世界現象”卡圖</figcaption><p></p>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>這個卡名的卡1回合只能發動1張。①：向對手展示手牌的1只怪獸。從卡組選1只與展示的怪獸的種族·屬性·等級·攻擊力·守備力之中，只有1項相同的怪獸確認，將從手牌將展示的怪獸以裏側表示除外。再從卡組將1只與確認的怪獸的種族·屬性·等級·攻擊力·守備力之中，只有1項相同的怪獸加入手牌，將從卡組確認的卡以裏側表示除外。</p>
+</blockquote>
+<p>“六度分隔理論”認為世界上任何兩個人之間都可以通過六個中間人就可以建立起聯繫。類似的，“小世界現象”這張卡讓你能夠藉助一張中間怪獸，將手中的怪獸換成另一張怪獸。</p>
+<p>注意到這張卡時，我正在玩“魔救·積木龍”卡組，小世界現象的出現為我檢索積木龍（一張關鍵卡）提供了一種額外的途徑。這張卡的有趣之處不僅在於關鍵卡的檢索，還在於它提供了許多有趣的可能。例如，我該如何將手中的一張廢件換成一張有用的手坑呢（例如灰流麗、增殖的G），相應檢索鏈的中間卡是哪張？在思考這個問題的過程中，你會發現小世界現象一卡帶來了種類繁多的可能檢索鏈。人工窮盡這所有的可能幾乎辦不到。</p>
+<p>為了做這件事，我寫了<a href="https://www.kaggle.com/code/outlier4933/yugioh-small-world-searching-chain">一個程序</a>來分析這個問題。 以下展示在一些典型卡組上運行程序得到的結果。</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img class="img-fluid figure-img" src="./yugioh_small_world_20240502/chain_adamancipator.png"/></p>
+<p></p><figcaption class="figure-caption">魔救·積木龍卡組的檢索鏈</figcaption><p></p>
+</figure>
+</div>
+<p>假如我們手中有A卡，想用小世界現象將其轉化為B卡，可以從圖中看看有沒有C卡能夠作為中間結點，將AB相互鏈接。例如，設A卡是灰流麗，我們想把它換成B卡積木龍。查找這張圖發現我們可以用魔救的鷹石作為中間卡（這是因為鷹石和灰流麗都是0攻，和積木龍都是岩石族）。</p>
+<p>可以看到如泣神像、隕石、增殖的G等結點有許多邊與之連接。這樣的結點好比是卡組中的“明星”結點。許多卡都可以它們為中間卡來檢索得到。</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img class="img-fluid figure-img" src="./yugioh_small_world_20240502/chain_magician.png"/></p>
+<p></p><figcaption class="figure-caption">黑魔導卡組的檢索鏈</figcaption><p></p>
+</figure>
+</div>
+<p>上圖展示的是黑魔導卡組的檢索鏈。可以看到，效果遮蒙者是一個重要的明星結點；想要構建檢索增殖的G的檢索鏈很困難，因為圖中增殖的G只和壞獸相連接，形成了一個“孤島”。</p>
+<p><img alt="相劍卡組的檢索鏈" class="img-fluid" src="./yugioh_small_world_20240502/chain_sword_soul.png"/> 最後展示一個相劍卡組的檢索鏈。如圖，該卡組沒有十分明顯的“明星結點”。卡組沒有明星結點會導致小世界現象的牌效降低，想記住一些實用的檢索鏈也變得很困難。</p>
+<section class="level2" id="總結">
+<h2 class="anchored" data-anchor-id="總結">總結</h2>
+<p>本文介紹了小世界現象這張卡，介紹了我寫的用於分析卡組檢索鏈條的小程序。 你可以在<a href="https://www.kaggle.com/code/outlier4933/yugioh-small-world-searching-chain">這裡</a>試用這個程序。</p>
+<p>總的來看，小世界現象不是一張特別強的卡——它需要里側除外一張手卡作為代價。目前的T0卡組總是會有各種各樣的檢索手段和1卡展開方法，投入小世界現象對於它們意義不大。 這張卡的存在對於缺乏關鍵卡檢索手段的娛樂卡組還是很重要的。希望Konami多出一些像小世界現象這樣，有趣、有用而且又不打破平衡的卡吧。</p>
+</section>
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+</div>
+    </div>
+    <div class="post_list">
+        <span>By </span>
+        <a href="./">@執迷</a>
+        <span> in </span>
+        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 遊戲">[ 遊戲 ]</a></span>
+        <span class="post_date">2024-05-02</span>
+        <div><span>Tags : </span>
+            
+            
+            <span><a href="./">#遊戲, </a></span>
+            
+            <span><a href="./">#遊戲王, </a></span>
+            
+            <span><a href="./">#Master Duel, </a></span>
+            
+            
+        </div>
+
+        <div class="entry-social">
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././yugioh_small_world_20240502.html&text=遊戲王小世界現象一卡的檢索鏈分析&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././yugioh_small_world_20240502.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././yugioh_small_world_20240502.html&t=遊戲王小世界現象一卡的檢索鏈分析"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././yugioh_small_world_20240502.html&title=遊戲王小世界現象一卡的檢索鏈分析" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+            <span class="mail"><a href="mailto:?subject=遊戲王小世界現象一卡的檢索鏈分析&amp;body=Viens découvrir un article à propos de [遊戲王小世界現象一卡的檢索鏈分析] sur le site de 執迷. ././yugioh_small_world_20240502.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+        </div>
+    </div>
+    
+
+</section>
+
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
+</body>
+</html>
