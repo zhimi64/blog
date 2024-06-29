@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
+
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="./_vercel/insights/script.js"></script>
+  
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
+
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
+
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>手寫梯度下降和反向傳播</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././gradient_descent_20240629.html">
+<meta name="twitter:title" content="執迷的博客 ~ 手寫梯度下降和反向傳播">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ 手寫梯度下降和反向傳播" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+
+<!-- MathJax -->
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+      <p>做一個有趣的人！</p>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="././about.html">About</a></li>
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <h2 class="post_title post_detail"><a href="././gradient_descent_20240629.html" rel="bookmark" title="Permalink to 手寫梯度下降和反向傳播">手寫梯度下降和反向傳播</a></h2>
+    
+    <p>
+        <span id="busuanzi_container_page_pv">
+            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+        </span>
+    </p>
+    
+    <div class="entry-content blog-post">
+        <div>
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+<nav class="toc-active" id="TOC" role="doc-toc">
+<h2 id="toc-title">目录</h2>
+<ul>
+<li><a class="nav-link active" data-scroll-target="#多層感知機的反向傳播" href="#多層感知機的反向傳播" id="toc-多層感知機的反向傳播"><span class="toc-section-number">1</span>  多層感知機的反向傳播</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#建立模型" href="#建立模型" id="toc-建立模型"><span class="toc-section-number">1.1</span>  建立模型</a></li>
+<li><a class="nav-link" data-scroll-target="#mae的梯度" href="#mae的梯度" id="toc-mae的梯度"><span class="toc-section-number">1.2</span>  MAE的梯度</a></li>
+<li><a class="nav-link" data-scroll-target="#relu的梯度" href="#relu的梯度" id="toc-relu的梯度"><span class="toc-section-number">1.3</span>  ReLU的梯度</a></li>
+<li><a class="nav-link" data-scroll-target="#綫性層的梯度" href="#綫性層的梯度" id="toc-綫性層的梯度"><span class="toc-section-number">1.4</span>  綫性層的梯度</a></li>
+<li><a class="nav-link" data-scroll-target="#反向傳播代碼" href="#反向傳播代碼" id="toc-反向傳播代碼"><span class="toc-section-number">1.5</span>  反向傳播代碼</a></li>
+<li><a class="nav-link" data-scroll-target="#梯度检查" href="#梯度检查" id="toc-梯度检查"><span class="toc-section-number">1.6</span>  梯度检查</a></li>
+<li><a class="nav-link" data-scroll-target="#训练" href="#训练" id="toc-训练"><span class="toc-section-number">1.7</span>  训练</a></li>
+</ul></li>
+<li><a class="nav-link" data-scroll-target="#附录" href="#附录" id="toc-附录"><span class="toc-section-number">2</span>  附录</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#sigmoid的梯度推導" href="#sigmoid的梯度推導" id="toc-sigmoid的梯度推導"><span class="toc-section-number">2.1</span>  Sigmoid的梯度推導</a></li>
+<li><a class="nav-link" data-scroll-target="#二值交叉熵函數的梯度推導" href="#二值交叉熵函數的梯度推導" id="toc-二值交叉熵函數的梯度推導"><span class="toc-section-number">2.2</span>  二值交叉熵函數的梯度推導</a></li>
+<li><a class="nav-link" data-scroll-target="#參考材料" href="#參考材料" id="toc-參考材料"><span class="toc-section-number">2.3</span>  參考材料</a></li>
+</ul></li>
+</ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+
+</div>
+<div class="quarto-title-meta">
+<div>
+<div class="quarto-title-meta-heading">发布日期</div>
+<div class="quarto-title-meta-contents">
+<p class="date">2024年6月29日</p>
+</div>
+</div>
+</div>
+</header>
+<div class="hidden">
+<p><span class="math display">\[
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\]</span></p>
+</div>
+<p>最近在準備面試，所以把反向傳播和梯度下降的知識重新撿起來過一遍。雖然這兩個東西都屬於基礎，但要想順暢地在有限時間内把它寫出來，還是挺不容易。</p>
+<p>在編寫代碼的過程中，要注意數組尺寸的正確性；不管多麽熟練，犯錯也是在所難免的。最好能通過梯度檢查來校驗梯度計算的正確性，這樣我們才有信心根據計算得到的梯度進行梯度下降。</p>
+<p>本文代碼以示範為目的，並不適用於工程實踐，因此文中的程序不會追求擴展性、運行效率等，而是盡量簡潔明瞭。</p>
+<p>本文嘗試通過numpy庫實現梯度下降，不依賴任何深度學習工具。我們先<code>import numpy</code>.</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<section class="level1" data-number="1" id="多層感知機的反向傳播">
+
+<p>本節將實現一個多層感知機，用它來回歸<span class="math inline">\(\sin\)</span>函數。</p>
+<p>為簡便起見，這個多層感知機只使用relu激活函數。</p>
+<section class="level2" data-number="1.1" id="建立模型">
+<h2 class="anchored" data-anchor-id="建立模型" data-number="1.1"><span class="header-section-number">1.1</span> 建立模型</h2>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="kw">def</span> relu(x):</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>    <span class="cf">return</span> np.clip(x, <span class="dv">0</span>, <span class="va">None</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>以下代碼定義了<code>MLPRegression</code>類的初始化函數。我們通過硬編碼的方式將這個多層感知機設置為3層，并規定每層的輸入輸出維度。</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="kw">class</span> MLPRegression:</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>    ):</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>        <span class="va">self</span>.w1 <span class="op">=</span> np.random.randn(<span class="dv">1</span>, <span class="dv">16</span>)</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>        <span class="va">self</span>.b1 <span class="op">=</span> np.random.randn(<span class="dv">16</span>, <span class="dv">1</span>)</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>        <span class="va">self</span>.w2 <span class="op">=</span> np.random.randn(<span class="dv">16</span>, <span class="dv">32</span>)</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>        <span class="va">self</span>.b2 <span class="op">=</span> np.random.randn(<span class="dv">32</span>, <span class="dv">1</span>)</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a></span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>        <span class="va">self</span>.w3 <span class="op">=</span> np.random.randn(<span class="dv">32</span>, <span class="dv">1</span>)</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>        <span class="va">self</span>.b3 <span class="op">=</span> np.random.randn(<span class="dv">1</span>, <span class="dv">1</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>在前向傳播階段，這個多層感知機在每一層綫性層后應用了一個<code>relu</code>激活函數。最後一層是例外的，沒有任何激活函數，這樣就不會限制模型擬合函數的值域。</p>
+<p>與一般的<code>torch</code>代碼不同，我們在forward過程中需要手動保存<code>cache</code>變量，記錄模型的中間執行結果。在反向傳播過程中，我們需要使用它們來計算梯度。</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="kw">def</span> mlp_regression_forward(<span class="va">self</span>, x, y<span class="op">=</span><span class="va">None</span>): </span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    d_in, bs <span class="op">=</span> x.shape </span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>    h1 <span class="op">=</span> <span class="va">self</span>.w1.transpose() <span class="op">@</span> x <span class="op">+</span> <span class="va">self</span>.b1   <span class="co"># d_1, bs</span></span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    a1 <span class="op">=</span> relu(h1)</span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>    </span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>    h2 <span class="op">=</span> <span class="va">self</span>.w2.transpose() <span class="op">@</span> a1 <span class="op">+</span> <span class="va">self</span>.b2  <span class="co"># d_2, bs</span></span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>    a2 <span class="op">=</span> relu(h2)</span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>    h3 <span class="op">=</span> <span class="va">self</span>.w3.transpose() <span class="op">@</span> a2 <span class="op">+</span> <span class="va">self</span>.b3  <span class="co"># 1, bs</span></span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a></span>
+<span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a>    cache <span class="op">=</span> {</span>
+<span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a>        <span class="st">'x'</span>: x, </span>
+<span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a>        <span class="st">'h1'</span>: h1, </span>
+<span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a>        <span class="st">'a1'</span>: a1, </span>
+<span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>        <span class="st">'h2'</span>: h2, </span>
+<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>        <span class="st">'a2'</span>: a2, </span>
+<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>        <span class="st">'h3'</span>: h3,</span>
+<span id="cb4-18"><a aria-hidden="true" href="#cb4-18" tabindex="-1"></a>        <span class="st">'y'</span>: y</span>
+<span id="cb4-19"><a aria-hidden="true" href="#cb4-19" tabindex="-1"></a>    }</span>
+<span id="cb4-20"><a aria-hidden="true" href="#cb4-20" tabindex="-1"></a></span>
+<span id="cb4-21"><a aria-hidden="true" href="#cb4-21" tabindex="-1"></a>    <span class="cf">if</span> y <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb4-22"><a aria-hidden="true" href="#cb4-22" tabindex="-1"></a>        loss <span class="op">=</span> np.mean(np.<span class="bu">abs</span>(y <span class="op">-</span> h3))</span>
+<span id="cb4-23"><a aria-hidden="true" href="#cb4-23" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb4-24"><a aria-hidden="true" href="#cb4-24" tabindex="-1"></a>        loss <span class="op">=</span> <span class="va">None</span> </span>
+<span id="cb4-25"><a aria-hidden="true" href="#cb4-25" tabindex="-1"></a></span>
+<span id="cb4-26"><a aria-hidden="true" href="#cb4-26" tabindex="-1"></a>    <span class="cf">return</span> h3, loss, cache </span>
+<span id="cb4-27"><a aria-hidden="true" href="#cb4-27" tabindex="-1"></a></span>
+<span id="cb4-28"><a aria-hidden="true" href="#cb4-28" tabindex="-1"></a>MLPRegression.forward <span class="op">=</span> mlp_regression_forward</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>接下來我們試運行一下<code>forward</code>函數。函數返回<code>pred</code>，<code>loss</code>，<code>cache</code>三個變量，分別對應模型的預測值，損失以及用於計算梯度的中間變量。</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>r <span class="op">=</span> MLPRegression()</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>pred, loss, cache <span class="op">=</span> r.forward(np.random.random((<span class="dv">1</span>, <span class="dv">2</span>)))</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a><span class="cf">for</span> k, v <span class="kw">in</span> cache.items():</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>    <span class="bu">print</span>(k, v.shape <span class="cf">if</span> v <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="st">'None'</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x (1, 2)
+h1 (16, 2)
+a1 (16, 2)
+h2 (32, 2)
+a2 (32, 2)
+h3 (1, 2)
+y None</code></pre>
+</div>
+</div>
+<p>反向傳播是代碼的重點部分。</p>
+</section>
+<section class="level2" data-number="1.2" id="mae的梯度">
+<h2 class="anchored" data-anchor-id="mae的梯度" data-number="1.2"><span class="header-section-number">1.2</span> MAE的梯度</h2>
+<p>代碼中，我們使用的損失函數為MAE，即 <span class="math display">\[
+l=\frac{1}{m} \sum_i^m |\hat y - y|
+\]</span> 易知其導數為 <span class="math display">\[
+\frac{\mathrm d l}{\mathrm d \hat y} =
+\left\{
+    \begin{aligned}
+    1&amp;, \hat y &gt; y \\
+    -1&amp;, \hat y &lt; y
+    \end{aligned}
+\right.
+\]</span> 姑且不考慮0點処該函數沒有導數的問題。</p>
+</section>
+<section class="level2" data-number="1.3" id="relu的梯度">
+<h2 class="anchored" data-anchor-id="relu的梯度" data-number="1.3"><span class="header-section-number">1.3</span> ReLU的梯度</h2>
+<p>ReLU函數的公式為： <span class="math display">\[a=\text{ReLU}(h)=\max(0, h)\]</span> 易得其導數（同樣不考慮<span class="math inline">\(h=0\)</span>時沒有導數的問題）為 <span class="math display">\[
+\frac{\mathrm d a}{\mathrm dh} =
+\left\{
+\begin{aligned}
+1 &amp; ,h &gt; 0 \\
+0 &amp; ,h &lt; 0
+\end{aligned}
+\right.
+\]</span></p>
+</section>
+<section class="level2" data-number="1.4" id="綫性層的梯度">
+<h2 class="anchored" data-anchor-id="綫性層的梯度" data-number="1.4"><span class="header-section-number">1.4</span> 綫性層的梯度</h2>
+<p>設MLP的一層綫性變換為 <span class="math display">\[
+\vec y=\mathbf W^T \vec x + \vec b,
+\]</span> 其中<span class="math inline">\(\mathbf W\in \mathbb R^{d_\text{in}, d_\text{out}}\)</span>, <span class="math inline">\(\vec b\in \mathbb R^{d_\text{out}}, \vec x\in \mathbb R^{d_\text{in}, 1}\)</span> 應用鏈式法則，可以求得以下梯度： <span class="math display">\[
+\begin{aligned}
+\frac{\partial l}{\partial \mathbf W} &amp;= \vec x \left(\frac{\partial l}{\partial \vec y}\right)^T\\
+\frac{\partial l}{\partial \vec b} &amp;= \frac{\partial l}{\partial \vec y}\\
+\frac{\partial l}{\partial \vec x} &amp;= \mathbf W \left(\frac{\partial l}{\partial \vec y}\right) \\
+\end{aligned},
+\]</span> 其中<span class="math inline">\(l\)</span>為模型的損失。</p>
+</section>
+<section class="level2" data-number="1.5" id="反向傳播代碼">
+<h2 class="anchored" data-anchor-id="反向傳播代碼" data-number="1.5"><span class="header-section-number">1.5</span> 反向傳播代碼</h2>
+<p>根據以上推導，可以寫出如下的反向傳播代碼。該函數返回一個<code>dict</code>用於存儲各個變量的梯度。</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="kw">def</span> mlp_regression_backward(<span class="va">self</span>, cache):</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>    y <span class="op">=</span> cache[<span class="st">'y'</span>]</span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>    _, bs <span class="op">=</span> y.shape</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>    pred <span class="op">=</span> cache[<span class="st">'h3'</span>]</span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a></span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a>    dh3 <span class="op">=</span> <span class="fl">1.</span> <span class="op">/</span> bs <span class="op">*</span> (</span>
+<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a>        np.int64(pred <span class="op">&gt;</span> y) </span>
+<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a>        <span class="op">-</span> np.int64(pred <span class="op">&lt;</span> y)</span>
+<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a>    ) <span class="co"># 1, m</span></span>
+<span id="cb7-10"><a aria-hidden="true" href="#cb7-10" tabindex="-1"></a></span>
+<span id="cb7-11"><a aria-hidden="true" href="#cb7-11" tabindex="-1"></a>    <span class="co"># w3.T @ a2 + b3 = h3 </span></span>
+<span id="cb7-12"><a aria-hidden="true" href="#cb7-12" tabindex="-1"></a>    dw3 <span class="op">=</span> cache[<span class="st">'a2'</span>] <span class="op">@</span> dh3.T  <span class="co"># d_2, 1</span></span>
+<span id="cb7-13"><a aria-hidden="true" href="#cb7-13" tabindex="-1"></a>    db3 <span class="op">=</span> dh3.<span class="bu">sum</span>(axis<span class="op">=-</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)            <span class="co"># 1, 1 </span></span>
+<span id="cb7-14"><a aria-hidden="true" href="#cb7-14" tabindex="-1"></a>    da2 <span class="op">=</span> <span class="va">self</span>.w3 <span class="op">@</span> dh3        <span class="co"># d_2, bs</span></span>
+<span id="cb7-15"><a aria-hidden="true" href="#cb7-15" tabindex="-1"></a></span>
+<span id="cb7-16"><a aria-hidden="true" href="#cb7-16" tabindex="-1"></a>    <span class="co"># a2 = relu(h2)</span></span>
+<span id="cb7-17"><a aria-hidden="true" href="#cb7-17" tabindex="-1"></a>    dh2 <span class="op">=</span> da2 <span class="op">*</span> (cache[<span class="st">'h2'</span>] <span class="op">&gt;</span> <span class="dv">0</span>)      <span class="co"># d_2, bs </span></span>
+<span id="cb7-18"><a aria-hidden="true" href="#cb7-18" tabindex="-1"></a>    <span class="co"># h2 = w2.T @ a1 + b2 </span></span>
+<span id="cb7-19"><a aria-hidden="true" href="#cb7-19" tabindex="-1"></a>    dw2 <span class="op">=</span> cache[<span class="st">'a1'</span>] <span class="op">@</span> dh2.T  <span class="co"># d_1, d_2</span></span>
+<span id="cb7-20"><a aria-hidden="true" href="#cb7-20" tabindex="-1"></a>    db2 <span class="op">=</span> dh2.<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)          <span class="co"># d_2, 1 </span></span>
+<span id="cb7-21"><a aria-hidden="true" href="#cb7-21" tabindex="-1"></a>    da1 <span class="op">=</span> <span class="va">self</span>.w2 <span class="op">@</span> dh2        <span class="co"># d_1, bs </span></span>
+<span id="cb7-22"><a aria-hidden="true" href="#cb7-22" tabindex="-1"></a></span>
+<span id="cb7-23"><a aria-hidden="true" href="#cb7-23" tabindex="-1"></a>    <span class="co"># a1 = relu(h1)</span></span>
+<span id="cb7-24"><a aria-hidden="true" href="#cb7-24" tabindex="-1"></a>    dh1 <span class="op">=</span> da1 <span class="op">*</span> (cache[<span class="st">'h1'</span>] <span class="op">&gt;</span> <span class="dv">0</span>)      <span class="co"># d_1, bs </span></span>
+<span id="cb7-25"><a aria-hidden="true" href="#cb7-25" tabindex="-1"></a>    <span class="co"># h1 = w1.T @ x + b1 </span></span>
+<span id="cb7-26"><a aria-hidden="true" href="#cb7-26" tabindex="-1"></a>    dw1 <span class="op">=</span> cache[<span class="st">'x'</span>] <span class="op">@</span> dh1.T   <span class="co"># d_in, d_1 </span></span>
+<span id="cb7-27"><a aria-hidden="true" href="#cb7-27" tabindex="-1"></a>    db1 <span class="op">=</span> dh1.<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)          <span class="co"># d_in, 1 </span></span>
+<span id="cb7-28"><a aria-hidden="true" href="#cb7-28" tabindex="-1"></a></span>
+<span id="cb7-29"><a aria-hidden="true" href="#cb7-29" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb7-30"><a aria-hidden="true" href="#cb7-30" tabindex="-1"></a>        <span class="st">'dw3'</span>: dw3, <span class="st">'db3'</span>: db3, </span>
+<span id="cb7-31"><a aria-hidden="true" href="#cb7-31" tabindex="-1"></a>        <span class="st">'dw2'</span>: dw2, <span class="st">'db2'</span>: db2, </span>
+<span id="cb7-32"><a aria-hidden="true" href="#cb7-32" tabindex="-1"></a>        <span class="st">'dw1'</span>: dw1, <span class="st">'db1'</span>: db1 </span>
+<span id="cb7-33"><a aria-hidden="true" href="#cb7-33" tabindex="-1"></a>    }</span>
+<span id="cb7-34"><a aria-hidden="true" href="#cb7-34" tabindex="-1"></a></span>
+<span id="cb7-35"><a aria-hidden="true" href="#cb7-35" tabindex="-1"></a>    </span>
+<span id="cb7-36"><a aria-hidden="true" href="#cb7-36" tabindex="-1"></a>MLPRegression.backward <span class="op">=</span> mlp_regression_backward</span>
+<span id="cb7-37"><a aria-hidden="true" href="#cb7-37" tabindex="-1"></a></span>
+<span id="cb7-38"><a aria-hidden="true" href="#cb7-38" tabindex="-1"></a>r <span class="op">=</span> MLPRegression()</span>
+<span id="cb7-39"><a aria-hidden="true" href="#cb7-39" tabindex="-1"></a>yh, loss, cache <span class="op">=</span> r.forward(</span>
+<span id="cb7-40"><a aria-hidden="true" href="#cb7-40" tabindex="-1"></a>    np.array([<span class="dv">1</span>, <span class="dv">2</span>]).reshape(<span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb7-41"><a aria-hidden="true" href="#cb7-41" tabindex="-1"></a>    y<span class="op">=</span>np.array([<span class="dv">2</span>, <span class="dv">3</span>]).reshape(<span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb7-42"><a aria-hidden="true" href="#cb7-42" tabindex="-1"></a>)</span>
+<span id="cb7-43"><a aria-hidden="true" href="#cb7-43" tabindex="-1"></a>grads <span class="op">=</span> r.backward(cache)</span>
+<span id="cb7-44"><a aria-hidden="true" href="#cb7-44" tabindex="-1"></a><span class="cf">for</span> k, v <span class="kw">in</span> grads.items():</span>
+<span id="cb7-45"><a aria-hidden="true" href="#cb7-45" tabindex="-1"></a>    <span class="bu">print</span>(k, v.shape)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>dw3 (32, 1)
+db3 (1, 1)
+dw2 (16, 32)
+db2 (32, 1)
+dw1 (1, 16)
+db1 (16, 1)</code></pre>
+</div>
+</div>
+</section>
+<section class="level2" data-number="1.6" id="梯度检查">
+<h2 class="anchored" data-anchor-id="梯度检查" data-number="1.6"><span class="header-section-number">1.6</span> 梯度检查</h2>
+<p>一次性正確寫完梯度反傳并不容易。梯度檢查是校驗梯度計算正確性的重要方法。 根據梯度的定義，設損失函數為<span class="math inline">\(J\)</span>，那麽梯度可以用如下方法估計； <span class="math display">\[
+\frac{\partial J(x;\vec \theta)}{\partial \theta_i} \approx \frac{J(x;[\theta_1, \theta_2, \cdots, \theta_i + \epsilon, \cdots, \theta_n]) - J(x;[\theta_1, \theta_2, \cdots, \theta_i - \epsilon, \cdots, \theta_n] )}{2\epsilon}
+\]</span></p>
+<p>下面提供的<code>parameters_to_vector</code>，<code>restore_parameters_from_vector</code>函數提供了將模型參數轉化爲向量和從向量恢復模型參數的功能。<code>grads_to_vector</code>和<code>vector_to_grads</code>也起類似作用。基於此我們可以實現梯度檢查。</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="kw">def</span> parameters_to_vector(<span class="va">self</span>):</span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>    ret <span class="op">=</span> [<span class="va">self</span>.w1, <span class="va">self</span>.b1, <span class="va">self</span>.w2, <span class="va">self</span>.b2, <span class="va">self</span>.w3, <span class="va">self</span>.b3]</span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>    ret <span class="op">=</span> [it.reshape((<span class="op">-</span><span class="dv">1</span>,)) <span class="cf">for</span> it <span class="kw">in</span> ret]</span>
+<span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a>    <span class="cf">return</span> np.concatenate(ret)</span>
+<span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a>MLPRegression.parameters_to_vector <span class="op">=</span> parameters_to_vector</span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a></span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a><span class="kw">def</span> grads_to_vector(<span class="va">self</span>, grads):</span>
+<span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a>    ret <span class="op">=</span> [grads[k] <span class="cf">for</span> k <span class="kw">in</span> [<span class="st">'dw1'</span>, <span class="st">'db1'</span>, <span class="st">'dw2'</span>, <span class="st">'db2'</span>, <span class="st">'dw3'</span>, <span class="st">'db3'</span>]]</span>
+<span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a>    ret <span class="op">=</span> [it.reshape((<span class="op">-</span><span class="dv">1</span>,)) <span class="cf">for</span> it <span class="kw">in</span> ret]</span>
+<span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a>    <span class="cf">return</span> np.concatenate(ret)</span>
+<span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a>MLPRegression.grads_to_vector <span class="op">=</span> grads_to_vector</span>
+<span id="cb9-12"><a aria-hidden="true" href="#cb9-12" tabindex="-1"></a></span>
+<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a></span>
+<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a><span class="kw">def</span> vector_to_grads(<span class="va">self</span>, vec):</span>
+<span id="cb9-15"><a aria-hidden="true" href="#cb9-15" tabindex="-1"></a>    params <span class="op">=</span> [<span class="va">self</span>.w1, <span class="va">self</span>.b1, <span class="va">self</span>.w2, <span class="va">self</span>.b2, <span class="va">self</span>.w3, <span class="va">self</span>.b3]</span>
+<span id="cb9-16"><a aria-hidden="true" href="#cb9-16" tabindex="-1"></a>    names <span class="op">=</span> [<span class="st">'dw1'</span>, <span class="st">'db1'</span>, <span class="st">'dw2'</span>, <span class="st">'db2'</span>, <span class="st">'dw3'</span>, <span class="st">'db3'</span>]</span>
+<span id="cb9-17"><a aria-hidden="true" href="#cb9-17" tabindex="-1"></a>    param_sizes <span class="op">=</span> [it.size <span class="cf">for</span> it <span class="kw">in</span> params]</span>
+<span id="cb9-18"><a aria-hidden="true" href="#cb9-18" tabindex="-1"></a>    param_offsets <span class="op">=</span> [<span class="dv">0</span>] <span class="op">+</span> param_sizes</span>
+<span id="cb9-19"><a aria-hidden="true" href="#cb9-19" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(param_offsets) <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb9-20"><a aria-hidden="true" href="#cb9-20" tabindex="-1"></a>        param_offsets[i <span class="op">+</span> <span class="dv">1</span>] <span class="op">+=</span> param_offsets[i]</span>
+<span id="cb9-21"><a aria-hidden="true" href="#cb9-21" tabindex="-1"></a>    grads <span class="op">=</span> [vec[param_offsets[i]:param_offsets[i <span class="op">+</span> <span class="dv">1</span>]].reshape(p.shape) <span class="cf">for</span> i, p <span class="kw">in</span> <span class="bu">enumerate</span>(params)]</span>
+<span id="cb9-22"><a aria-hidden="true" href="#cb9-22" tabindex="-1"></a>    <span class="cf">return</span> {k: v <span class="cf">for</span> k, v <span class="kw">in</span> <span class="bu">zip</span>(names, grads)}</span>
+<span id="cb9-23"><a aria-hidden="true" href="#cb9-23" tabindex="-1"></a>MLPRegression.vector_to_grads <span class="op">=</span> vector_to_grads</span>
+<span id="cb9-24"><a aria-hidden="true" href="#cb9-24" tabindex="-1"></a></span>
+<span id="cb9-25"><a aria-hidden="true" href="#cb9-25" tabindex="-1"></a></span>
+<span id="cb9-26"><a aria-hidden="true" href="#cb9-26" tabindex="-1"></a><span class="kw">def</span> restore_parameters_from_vector(<span class="va">self</span>, vec):</span>
+<span id="cb9-27"><a aria-hidden="true" href="#cb9-27" tabindex="-1"></a>    params <span class="op">=</span> [<span class="va">self</span>.w1, <span class="va">self</span>.b1, <span class="va">self</span>.w2, <span class="va">self</span>.b2, <span class="va">self</span>.w3, <span class="va">self</span>.b3]</span>
+<span id="cb9-28"><a aria-hidden="true" href="#cb9-28" tabindex="-1"></a>    param_sizes <span class="op">=</span> [it.size <span class="cf">for</span> it <span class="kw">in</span> params]</span>
+<span id="cb9-29"><a aria-hidden="true" href="#cb9-29" tabindex="-1"></a>    param_offsets <span class="op">=</span> [<span class="dv">0</span>] <span class="op">+</span> param_sizes</span>
+<span id="cb9-30"><a aria-hidden="true" href="#cb9-30" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(param_offsets) <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb9-31"><a aria-hidden="true" href="#cb9-31" tabindex="-1"></a>        param_offsets[i <span class="op">+</span> <span class="dv">1</span>] <span class="op">+=</span> param_offsets[i]</span>
+<span id="cb9-32"><a aria-hidden="true" href="#cb9-32" tabindex="-1"></a>    params2 <span class="op">=</span> [vec[param_offsets[i]:param_offsets[i <span class="op">+</span> <span class="dv">1</span>]].reshape(p.shape) <span class="cf">for</span> i, p <span class="kw">in</span> <span class="bu">enumerate</span>(params)]</span>
+<span id="cb9-33"><a aria-hidden="true" href="#cb9-33" tabindex="-1"></a>    w1, b1, w2, b2, w3, b3 <span class="op">=</span> params2 </span>
+<span id="cb9-34"><a aria-hidden="true" href="#cb9-34" tabindex="-1"></a>    <span class="va">self</span>.w1 <span class="op">=</span> w1 </span>
+<span id="cb9-35"><a aria-hidden="true" href="#cb9-35" tabindex="-1"></a>    <span class="va">self</span>.b1 <span class="op">=</span> b1 </span>
+<span id="cb9-36"><a aria-hidden="true" href="#cb9-36" tabindex="-1"></a>    <span class="va">self</span>.w2 <span class="op">=</span> w2 </span>
+<span id="cb9-37"><a aria-hidden="true" href="#cb9-37" tabindex="-1"></a>    <span class="va">self</span>.b2 <span class="op">=</span> b2 </span>
+<span id="cb9-38"><a aria-hidden="true" href="#cb9-38" tabindex="-1"></a>    <span class="va">self</span>.w3 <span class="op">=</span> w3 </span>
+<span id="cb9-39"><a aria-hidden="true" href="#cb9-39" tabindex="-1"></a>    <span class="va">self</span>.b3 <span class="op">=</span> b3 </span>
+<span id="cb9-40"><a aria-hidden="true" href="#cb9-40" tabindex="-1"></a>MLPRegression.restore_parameters_from_vector <span class="op">=</span> restore_parameters_from_vector</span>
+<span id="cb9-41"><a aria-hidden="true" href="#cb9-41" tabindex="-1"></a></span>
+<span id="cb9-42"><a aria-hidden="true" href="#cb9-42" tabindex="-1"></a></span>
+<span id="cb9-43"><a aria-hidden="true" href="#cb9-43" tabindex="-1"></a>r <span class="op">=</span> MLPRegression()</span>
+<span id="cb9-44"><a aria-hidden="true" href="#cb9-44" tabindex="-1"></a>x <span class="op">=</span> np.random.randn(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb9-45"><a aria-hidden="true" href="#cb9-45" tabindex="-1"></a>y <span class="op">=</span> np.random.randn(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb9-46"><a aria-hidden="true" href="#cb9-46" tabindex="-1"></a>yh, loss, cache <span class="op">=</span> r.forward(x, y)</span>
+<span id="cb9-47"><a aria-hidden="true" href="#cb9-47" tabindex="-1"></a>grads <span class="op">=</span> r.backward(cache)</span>
+<span id="cb9-48"><a aria-hidden="true" href="#cb9-48" tabindex="-1"></a>grads_vec <span class="op">=</span> r.grads_to_vector(grads)</span>
+<span id="cb9-49"><a aria-hidden="true" href="#cb9-49" tabindex="-1"></a>grads_est <span class="op">=</span> grads_vec <span class="op">*</span> <span class="dv">0</span> </span>
+<span id="cb9-50"><a aria-hidden="true" href="#cb9-50" tabindex="-1"></a>parameters_vec <span class="op">=</span> r.parameters_to_vector()</span>
+<span id="cb9-51"><a aria-hidden="true" href="#cb9-51" tabindex="-1"></a><span class="bu">print</span>(grads_vec.shape)</span>
+<span id="cb9-52"><a aria-hidden="true" href="#cb9-52" tabindex="-1"></a>num_parameters <span class="op">=</span> <span class="bu">len</span>(grads_vec)</span>
+<span id="cb9-53"><a aria-hidden="true" href="#cb9-53" tabindex="-1"></a>eps <span class="op">=</span> <span class="fl">1e-4</span></span>
+<span id="cb9-54"><a aria-hidden="true" href="#cb9-54" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_parameters):</span>
+<span id="cb9-55"><a aria-hidden="true" href="#cb9-55" tabindex="-1"></a>    parameters_vec_copy <span class="op">=</span> parameters_vec.copy()</span>
+<span id="cb9-56"><a aria-hidden="true" href="#cb9-56" tabindex="-1"></a>    parameters_vec_copy[i] <span class="op">+=</span> eps </span>
+<span id="cb9-57"><a aria-hidden="true" href="#cb9-57" tabindex="-1"></a>    r.restore_parameters_from_vector(parameters_vec_copy)</span>
+<span id="cb9-58"><a aria-hidden="true" href="#cb9-58" tabindex="-1"></a>    _, loss, _ <span class="op">=</span> r.forward(x, y)</span>
+<span id="cb9-59"><a aria-hidden="true" href="#cb9-59" tabindex="-1"></a></span>
+<span id="cb9-60"><a aria-hidden="true" href="#cb9-60" tabindex="-1"></a>    parameters_vec_copy <span class="op">=</span> parameters_vec.copy()</span>
+<span id="cb9-61"><a aria-hidden="true" href="#cb9-61" tabindex="-1"></a>    parameters_vec_copy[i] <span class="op">-=</span> eps </span>
+<span id="cb9-62"><a aria-hidden="true" href="#cb9-62" tabindex="-1"></a>    r.restore_parameters_from_vector(parameters_vec_copy)</span>
+<span id="cb9-63"><a aria-hidden="true" href="#cb9-63" tabindex="-1"></a>    _, loss2, _ <span class="op">=</span> r.forward(x, y)</span>
+<span id="cb9-64"><a aria-hidden="true" href="#cb9-64" tabindex="-1"></a></span>
+<span id="cb9-65"><a aria-hidden="true" href="#cb9-65" tabindex="-1"></a>    grad <span class="op">=</span> (loss <span class="op">-</span> loss2) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> eps)</span>
+<span id="cb9-66"><a aria-hidden="true" href="#cb9-66" tabindex="-1"></a>    grads_est[i] <span class="op">=</span> grad </span>
+<span id="cb9-67"><a aria-hidden="true" href="#cb9-67" tabindex="-1"></a></span>
+<span id="cb9-68"><a aria-hidden="true" href="#cb9-68" tabindex="-1"></a>difference <span class="op">=</span> np.<span class="bu">max</span>(np.<span class="bu">abs</span>(grads_vec <span class="op">-</span> grads_est))</span>
+<span id="cb9-69"><a aria-hidden="true" href="#cb9-69" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Diff:'</span>, difference)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(609,)
+Diff: 4.162181710398727e-11</code></pre>
+</div>
+</div>
+<p>由代碼輸出可見，文章給出的梯度計算方法與梯度估算法的結果相差無幾，這證明了本文推導的正確性。</p>
+</section>
+<section class="level2" data-number="1.7" id="训练">
+<h2 class="anchored" data-anchor-id="训练" data-number="1.7"><span class="header-section-number">1.7</span> 训练</h2>
+<p>以下程序以最基礎的SGD方法訓練了給出的模型，並打印損失函數。</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="im">import</span> tqdm.notebook <span class="im">as</span> tqdm</span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a></span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>learning_rate <span class="op">=</span> <span class="fl">1e-3</span></span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>r <span class="op">=</span> MLPRegression()</span>
+<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a>total_iters <span class="op">=</span> <span class="dv">10000</span></span>
+<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a>pbar <span class="op">=</span> tqdm.tqdm(total<span class="op">=</span>total_iters)</span>
+<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a>loss_records <span class="op">=</span> []</span>
+<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(total_iters):</span>
+<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(<span class="dv">1</span>, <span class="dv">16</span>) <span class="op">*</span> <span class="dv">10</span> <span class="op">-</span> <span class="dv">5</span></span>
+<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a>    y <span class="op">=</span> np.sin(x)</span>
+<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a>    yh, loss, cache <span class="op">=</span> r.forward(x, y)</span>
+<span id="cb11-12"><a aria-hidden="true" href="#cb11-12" tabindex="-1"></a>    grads <span class="op">=</span> r.backward(cache)</span>
+<span id="cb11-13"><a aria-hidden="true" href="#cb11-13" tabindex="-1"></a>    <span class="cf">for</span> k, v <span class="kw">in</span> grads.items():</span>
+<span id="cb11-14"><a aria-hidden="true" href="#cb11-14" tabindex="-1"></a>        <span class="cf">assert</span> k.startswith(<span class="st">'d'</span>)</span>
+<span id="cb11-15"><a aria-hidden="true" href="#cb11-15" tabindex="-1"></a>        param_name <span class="op">=</span> k[<span class="dv">1</span>:]</span>
+<span id="cb11-16"><a aria-hidden="true" href="#cb11-16" tabindex="-1"></a>        param <span class="op">=</span> <span class="bu">getattr</span>(r, param_name) </span>
+<span id="cb11-17"><a aria-hidden="true" href="#cb11-17" tabindex="-1"></a>        <span class="cf">assert</span> param.shape <span class="op">==</span> v.shape, (param.shape, v.shape)</span>
+<span id="cb11-18"><a aria-hidden="true" href="#cb11-18" tabindex="-1"></a>        <span class="bu">setattr</span>(r, param_name, param <span class="op">-</span> v <span class="op">*</span> learning_rate)</span>
+<span id="cb11-19"><a aria-hidden="true" href="#cb11-19" tabindex="-1"></a>    </span>
+<span id="cb11-20"><a aria-hidden="true" href="#cb11-20" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">%</span> <span class="dv">10</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb11-21"><a aria-hidden="true" href="#cb11-21" tabindex="-1"></a>        loss_records.append((i, loss))</span>
+<span id="cb11-22"><a aria-hidden="true" href="#cb11-22" tabindex="-1"></a></span>
+<span id="cb11-23"><a aria-hidden="true" href="#cb11-23" tabindex="-1"></a>    pbar.set_description(<span class="ss">f'loss: </span><span class="sc">{</span>loss<span class="sc">:.4f}</span><span class="ss">'</span>)</span>
+<span id="cb11-24"><a aria-hidden="true" href="#cb11-24" tabindex="-1"></a>    pbar.update()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"e438f3c816154bde943e32ed712a1142","version_major":2,"version_minor":0}
+</script>
+</div>
+</div>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a></span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a>loss_records <span class="op">=</span> np.array(loss_records)</span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a>plt.plot(loss_records[:, <span class="dv">0</span>], loss_records[:, <span class="dv">1</span>])</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img class="img-fluid" src="gradient_descent_20240629\figure-html\cell-10-output-1.png"/></p>
+</div>
+</div>
+<p>訓練完成後，模型的推理效果如圖所示。由圖可見，模型成功擬合了<span class="math inline">\(sin\)</span>函數。</p>
+<p>這裏模型的擬合效果并不完美。畢竟這只是一個三層的小型MLP，它還是有很大改進空間的。</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">1000</span>)[<span class="va">None</span>, :]</span>
+<span id="cb13-2"><a aria-hidden="true" href="#cb13-2" tabindex="-1"></a>y, _, _ <span class="op">=</span> r.forward(x)</span>
+<span id="cb13-3"><a aria-hidden="true" href="#cb13-3" tabindex="-1"></a>plt.figure()</span>
+<span id="cb13-4"><a aria-hidden="true" href="#cb13-4" tabindex="-1"></a>x <span class="op">=</span> x.reshape((<span class="op">-</span><span class="dv">1</span>,))</span>
+<span id="cb13-5"><a aria-hidden="true" href="#cb13-5" tabindex="-1"></a>y <span class="op">=</span> y.reshape((<span class="op">-</span><span class="dv">1</span>,))</span>
+<span id="cb13-6"><a aria-hidden="true" href="#cb13-6" tabindex="-1"></a>plt.plot(x, np.sin(x))</span>
+<span id="cb13-7"><a aria-hidden="true" href="#cb13-7" tabindex="-1"></a>plt.plot(x, y)</span>
+<span id="cb13-8"><a aria-hidden="true" href="#cb13-8" tabindex="-1"></a>plt.legend([</span>
+<span id="cb13-9"><a aria-hidden="true" href="#cb13-9" tabindex="-1"></a>    <span class="st">'sin(x)'</span>,</span>
+<span id="cb13-10"><a aria-hidden="true" href="#cb13-10" tabindex="-1"></a>    <span class="st">'pred'</span></span>
+<span id="cb13-11"><a aria-hidden="true" href="#cb13-11" tabindex="-1"></a>])</span>
+<span id="cb13-12"><a aria-hidden="true" href="#cb13-12" tabindex="-1"></a>plt.show()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img class="img-fluid" src="gradient_descent_20240629\figure-html\cell-11-output-1.png"/></p>
+</div>
+</div>
+</section>
+</section>
+<section class="level1" data-number="2" id="附录">
+
+<p>附錄提供了正文未使用到的一些常用函數的梯度推導。這些推導對實現分類器會有幫助，但本文就不給出詳細實現了。</p>
+<section class="level2" data-number="2.1" id="sigmoid的梯度推導">
+<h2 class="anchored" data-anchor-id="sigmoid的梯度推導" data-number="2.1"><span class="header-section-number">2.1</span> Sigmoid的梯度推導</h2>
+<p>設<span class="math inline">\(\sigma(x)=\frac{1}{1+e^{-x}}\)</span>是sigmoid函數。那麼<span class="math inline">\(\sigma(x)\)</span>的導數爲 <span class="math display">\[
+\begin{aligned}
+\sigma'(x) &amp;= \frac{e^{-x}}{(1 + e^{-x})^2} \\
+&amp;= \frac{1}{1 + e^{-x}} \frac{e^{-x}}{1+e^{-x}} \\
+&amp;= \sigma(x)(1-\sigma(x))
+\end{aligned}
+\]</span></p>
+</section>
+<section class="level2" data-number="2.2" id="二值交叉熵函數的梯度推導">
+<h2 class="anchored" data-anchor-id="二值交叉熵函數的梯度推導" data-number="2.2"><span class="header-section-number">2.2</span> 二值交叉熵函數的梯度推導</h2>
+<p><span class="math display">\[
+J(\vec a)=-\frac{1}{m}
+\sum_i^m \left(
+y_i \log (a_i)
++ (1-y_i)\log(1 - a_i)
+\right)
+\]</span> 於是 <span class="math display">\[
+\frac{\partial J}{\partial a_i} = -\frac{1}{m}
+\left(
+y_i \frac{1}{a_i}
+-(1 - y_i)\frac{1}{1-a_i}
+\right)
+\]</span> <span class="math display">\[
+\begin{aligned}
+\therefore \frac{\partial J}{\partial h_i} =
+\frac{\partial J}{\partial a_i} \frac{\partial a_i}{\partial h_i} &amp; = -\frac{1}{m}
+\left(
+y_i \frac{1}{a_i}
+-(1 - y_i)\frac{1}{1-a_i}
+\right) (a_i)(1 - a_i) \\
+&amp;= -\frac{1}{m} \left(y_i(1-a_i) - (1 - y_i)a_i \right)\\
+&amp;= -\frac{1}{m} \left(y_i - y_ia_i - a_i + y_ia_i\right) \\
+&amp;= \frac{1}{m} (a_i - y_i)
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[
+\therefore \frac{\partial J}{\partial \vec h} = \frac{1}{m}(\mathbf A - \mathbf Y)
+\]</span> 假设<span class="math inline">\(\mathbf A\)</span>是由特征<span class="math inline">\(x\)</span>经过一层线性层，再經過softmax激活函数得来的，那麽 <span class="math display">\[\mathbf A=\sigma(\vec h) = \sigma( \vec w^T\mathbf X+ \vec b)\]</span> <span class="math display">\[
+\begin{aligned}
+\therefore \frac{\partial J}{\partial \vec w} &amp;= \frac{1}{m}\mathbf X(\mathbf A- \mathbf Y)^T \\
+\frac{\partial J}{\partial \vec b} &amp;= \frac{1}{m}(\mathbf A - \mathbf Y)
+\end{aligned}
+\]</span></p>
+</section>
+<section class="level2" data-number="2.3" id="參考材料">
+<h2 class="anchored" data-anchor-id="參考材料" data-number="2.3"><span class="header-section-number">2.3</span> 參考材料</h2>
+<ul>
+<li><a href="https://www.coursera.org/specializations/deep-learning">吳恩達的深度學習課程</a></li>
+</ul>
+</section>
+</section>
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+</div>
+    </div>
+    <div class="post_list">
+        <span>By </span>
+        <a href="./">@執迷</a>
+        <span> in </span>
+        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 深度學習">[ 深度學習 ]</a></span>
+        <span class="post_date">2024-06-29</span>
+        <div><span>Tags : </span>
+            
+            
+            <span><a href="./">#深度學習, </a></span>
+            
+            <span><a href="./">#多層感知機, </a></span>
+            
+            <span><a href="./">#梯度反向傳播, </a></span>
+            
+            <span><a href="./">#梯度下降, </a></span>
+            
+            
+        </div>
+
+        <div class="entry-social">
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././gradient_descent_20240629.html&text=手寫梯度下降和反向傳播&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././gradient_descent_20240629.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././gradient_descent_20240629.html&t=手寫梯度下降和反向傳播"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././gradient_descent_20240629.html&title=手寫梯度下降和反向傳播" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+            <span class="mail"><a href="mailto:?subject=手寫梯度下降和反向傳播&amp;body=Viens découvrir un article à propos de [手寫梯度下降和反向傳播] sur le site de 執迷. ././gradient_descent_20240629.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+        </div>
+    </div>
+    
+
+</section>
+
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
+</body>
+</html>
