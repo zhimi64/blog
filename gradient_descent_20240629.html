@@ -182,7 +182,8 @@
 <p>本文代碼以示範為目的，並不適用於工程實踐，因此文中的程序不會追求擴展性、運行效率等，而是盡量簡潔明瞭。</p>
 <p>本文嘗試通過numpy庫實現梯度下降，不依賴任何深度學習工具。我們先<code>import numpy</code>.</p>
 <div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </div>
 <section class="level1" data-number="1" id="多層感知機的反向傳播">
 
@@ -361,7 +362,7 @@ db1 (16, 1)</code></pre>
 <p>一次性正確寫完梯度反傳并不容易。梯度檢查是校驗梯度計算正確性的重要方法。 根據梯度的定義，設損失函數為<span class="math inline">\(J\)</span>，那麽梯度可以用如下方法估計； <span class="math display">\[
 \frac{\partial J(x;\vec \theta)}{\partial \theta_i} \approx \frac{J(x;[\theta_1, \theta_2, \cdots, \theta_i + \epsilon, \cdots, \theta_n]) - J(x;[\theta_1, \theta_2, \cdots, \theta_i - \epsilon, \cdots, \theta_n] )}{2\epsilon}
 \]</span></p>
-<p>下面提供的<code>parameters_to_vector</code>，<code>restore_parameters_from_vector</code>函數提供了將模型參數轉化爲向量和從向量恢復模型參數的功能。<code>grads_to_vector</code>和<code>vector_to_grads</code>也起類似作用。基於此我們可以實現梯度檢查。</p>
+<p>下面提供的<code>parameters_to_vector</code>，<code>restore_parameters_from_vector</code>函數實現了將模型參數轉化爲向量和從向量恢復模型參數的功能。<code>grads_to_vector</code>和<code>vector_to_grads</code>也起類似作用。基於此我們可以實現梯度檢查。</p>
 <div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="kw">def</span> parameters_to_vector(<span class="va">self</span>):</span>
 <span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>    ret <span class="op">=</span> [<span class="va">self</span>.w1, <span class="va">self</span>.b1, <span class="va">self</span>.w2, <span class="va">self</span>.b2, <span class="va">self</span>.w3, <span class="va">self</span>.b3]</span>

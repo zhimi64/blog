@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
+
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="./_vercel/insights/script.js"></script>
+  
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
+
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
+
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>大模型算法工程师面试经验</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././llm_interview_exp_20240711_zh-cn.html">
+<meta name="twitter:title" content="執迷的博客 ~ 大模型算法工程师面试经验">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ 大模型算法工程师面试经验" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+
+<!-- MathJax -->
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+      <p>做一個有趣的人！</p>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <h2 class="post_title post_detail"><a href="././llm_interview_exp_20240711_zh-cn.html" rel="bookmark" title="Permalink to 大模型算法工程师面试经验">大模型算法工程师面试经验</a></h2>
+    
+    <p>
+        <span id="busuanzi_container_page_pv">
+            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+        </span>
+    </p>
+    
+    <div class="entry-content blog-post">
+        <div class="fullcontent">
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+
+</div>
+<div class="quarto-title-meta">
+<div>
+<div class="quarto-title-meta-heading">发布日期</div>
+<div class="quarto-title-meta-contents">
+<p class="date">July 13, 2024</p>
+</div>
+</div>
+</div>
+</header>
+<div class="hidden">
+<style>
+    .src-minimax { 
+        background-image: url("./llm_interview_exp_20240711/logo-minimax.png");   
+        background-size: contain;
+        background-repeat: no-repeat;
+        /* background: black; */
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+    }
+
+    .src-bilibili { 
+        background-image: url("./llm_interview_exp_20240711/bilibili_favicon.ico");   
+        background-size: contain;
+        background-repeat: no-repeat;
+        /* background: black; */
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+    }
+</style>
+</div>
+<p>从2024年三月以来，我著手做一些大模型方向的面试准备工作。本文简单记录了一些实际面试过程中被问到的问题以及一些自己认为比较重要的知识。</p>
+<p>文章使用“🌙”符号表示自己认为比较重要的知识，用“⭐”表示面试中实际被问到过的知识。“🌙/⭐”符号的多少指示我对问题重要性的评估（五分制）。</p>
+<p>文章持续更新中……</p>
+<section class="level2" data-number="1" id="llm相關問題">
+<h2 class="anchored" data-anchor-id="llm相關問題" data-number="1"><span class="header-section-number">1</span> LLM相关问题</h2>
+<section class="level3" data-number="1.1" id="數據工程">
+<h3 class="anchored" data-anchor-id="數據工程" data-number="1.1"><span class="header-section-number">1.1</span> 数据工程</h3>
+<div class="theorem example" id="exm-data-experience">
+<p><span class="theorem-title"><strong>例子 1 </strong></span>🌙你有哪些大模型数据工程方面的经验值得分享？</p>
+<p>一些感性经验：</p>
+<ol type="1">
+<li><strong>数据的配比</strong>：在训练模型的过程中，我们经常为不同来源的训练数据设置不同配比，例如为数量级比较少的数据设置一个比较大的采样比例，为辅助任务数据设置较小的采样比例。<br/>
+多次重复采样同一个数据可能导致模型在推理时有概率重复输出训练数据中的这些文本，因此采样比例不宜设置过大。（采样比例过大可以类比为训练集中有大量重复数据，因此这一经验也说明了<strong>训练数据去重</strong>的重要性。）</li>
+<li><strong>Early stop</strong>：一般经过SFT，使得交叉熵损失降低到<span class="math inline">\(0.5\)</span>~<span class="math inline">\(0.3\)</span>可以认为模型的训练已经充分。一般不宜将损失训练到<span class="math inline">\(0.1\)</span>以下，此时模型可能已经发生过拟合。基于同样的理由，一般不要训练太多epoch，一般取<span class="math inline">\(1\)</span>~<span class="math inline">\(3\)</span> epoch内的训练结果。（这里提到的一些具体数值可能要依据具体项目而定，不是一成不变的。）</li>
+<li><strong>数据质量</strong>：相关论文<span class="citation" data-cites="zhou2023limaalignment"><sup>[<a href="#ref-zhou2023limaalignment" role="doc-biblioref">1</a>]</sup></span>认为，少量高质量的SFT数据能胜过大规模SFT数据， 即数据的质量对于模型最终效果有非常直接的影响。当预测数据中出现不符合预期的模式（例如错别字、乱码等），应该及时从SFT数据集中搜索相关文本，找到导致问题的原因，并向数据来源做出反馈。<br/>
+在项目的初期，人们常常使用GPT4等业界领先的通用大模型生产数据。这样的“伪造”数据对快速启动项目，建立项目雏形是有帮助的。但是，在项目数据得到充分积累之后，应当尽量用真实的、面向项目需求的人工标注数据、线上回流数据代替伪造数据，这样才能取得最好的效果。</li>
+<li><strong>验证集建设</strong>：合理的验证集设置是正确引导项目前进的关键。验证集建设过程中首先要注意数据分布接近真实场景，其次要注意“去毒化（Detoxification）”，即确保验证集数据不要泄露到训练集中。</li>
+</ol>
+</div>
+</section>
+<section class="level3" data-number="1.2" id="訓練工程">
+<h3 class="anchored" data-anchor-id="訓練工程" data-number="1.2"><span class="header-section-number">1.2</span> 训练工程</h3>
+<p>大模型的训练工程是指通过建设训练基础设施、改进训练策略等方法保障大模型在大规模数据、调用大量计算设备上正常训练、提高训练效率的工作。大模型的不同并行训练方法是需要熟悉掌握的重点。</p>
+<div class="theorem example" id="exm-parallel-training">
+<p><span class="theorem-title"><strong>例子 2 </strong></span>🌙🌙🌙🌙请介绍一下常见的几种并行训练方法。</p>
+<!-- **Data Parallel**：TODO
+
+**Model Parallel**：TODO
+
+**Tensor Parallel**：TODO
+
+**ZeRO**：ZeRo並行（Zero Redundancy Optimizer），又被稱為Sharded DDP，可以視為對DDP的改進。  
+ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
+<p>参考资料：</p>
+<ul>
+<li><a href="https://huggingface.co/docs/transformers/v4.15.0/en/parallelism">Huggingface Transformers文档</a></li>
+</ul>
+</div>
+<section class="level4" data-number="1.2.1" id="總結">
+<h4 class="anchored" data-anchor-id="總結" data-number="1.2.1"><span class="header-section-number">1.2.1</span> 总结</h4>
+</section>
+</section>
+<section class="level3" data-number="1.3" id="偏好對齊">
+<h3 class="anchored" data-anchor-id="偏好對齊" data-number="1.3"><span class="header-section-number">1.3</span> 偏好对齐</h3>
+<div class="theorem example" id="exm-why-align">
+<p><span class="theorem-title"><strong>例子 3 </strong></span>⭐为什么要做偏好对齐？只做SFT不行吗？</p>
+<p>只做SFT不做偏好对齐经常会导致一些问题。<br/>
+首先是<strong>从训练目标来看</strong>：预训练、SFT任务本质上都是要求模型预测下一个token，而这与AI应用的目标——“以安全和有益的方式遵循人类指令”是不一致的<span class="citation" data-cites="Ouyang2022InstructGPT"><sup>[<a href="#ref-Ouyang2022InstructGPT" role="doc-biblioref">2</a>]</sup></span>。这种训练目标的不对齐导致模型容易产生不安全、不忠实或有害的信息。</p>
+<p>其次是<strong>曝光偏差问题</strong>：在预训练、SFT阶段，模型只是在训练数据的分布上进行下一个token的预测。一些基于强化学习的偏好对齐任务提供了一种在模型自身预测分布上进行训练的方法<span class="citation" data-cites="Ranzato2015SequenceLT"><sup>[<a href="#ref-Ranzato2015SequenceLT" role="doc-biblioref">3</a>]</sup></span>，缓解了曝光偏差问题。</p>
+</div>
+<div class="theorem example" id="exm-why-paired-data">
+<p><span class="theorem-title"><strong>例子 4 </strong></span>⭐基于PPO强化学习方法为什么需要使用成对的训练数据？</p>
+<p>（目前KTO已经实现了基于不成对的偏好数据进行训练。这里不讨论KTO，只讨论经典的PPO。）</p>
+<p>我们从以下几点分析这个问题。<br/>
+<strong>1. 能不能只给一个正面数据或负面数据？</strong>如果只给正面数据，那么偏好对齐任务便退化为SFT任务。Jiwoo Hong等人<span class="citation" data-cites="Hong_Lee_Thorne_ORPO_2024"><sup>[<a href="#ref-Hong_Lee_Thorne_ORPO_2024" role="doc-biblioref">4</a>]</sup></span>指出，随著SFT过程的进行，虽然模型产生训练文本的概率会上升，但被拒绝文本的概率也随之上升。这表明只给出正面数据（只做SFT）是无法作偏好微调的。类似的，可以推测如果只降低负面数据的出现概率，那正面文本的出现概率也会下降。<br/>
+<strong>2. 为什么PPO使用的是成对的正负样本，而不是为每一个回复给出一个准确的分值？</strong>如果给每一个回复打分，那么很容易便可以通过分值数据构造正负样本对。但是<strong>从标注规范制定的角度看</strong>，制定一个统一且清晰的打分标准可能比较困难。不是所有事情都有统一的标准。相对的，判断哪个回复更容易被接受就相对容易一些。<br/>
+<strong>从reward model学习的角度看</strong>，reward model学习目标是正确地评估不同回复之间的<strong>相对</strong>优劣，而不是模型回复的<strong>绝对</strong>评分。既然模型回复的绝对评分是不需要的，为什么还要在标注过程中打出具体的分数呢？此外，评分的<strong>粒度</strong>也是一个问题。例如，有两个模型回复都打了3分（5分制），那这两个回复间就不能再分出优劣了吗？即使两个回复都打了同样的分数，它们之间的差异也可能提供有价值的信息。 以上讨论说明了为什么PPO为什么采用了成对正负样本进行训练。但是在项目实践中，我也经历过需要标注员标注具体分数的情况。在任务规范清晰、打分标准容易制定的前提下，规定具体的评分标准有好处：</p>
+<ol type="1">
+<li>详细、严谨的规范有助于减少数据中的噪声；</li>
+<li>分值间的相对差异大小可以为训练过程提供细化的指导。例如，可参考LLaMa 2<span class="citation" data-cites="Touvron_llama2"><sup>[<a href="#ref-Touvron_llama2" role="doc-biblioref">5</a>]</sup></span>在reward model的损失中加入一个margin component，要求正负样本相似时reward model的打分可以不用差距太大，反之则要求二者的打分要有显著差异。</li>
+<li>最后，即使是在标注员已经提供了具体分值的情况下，我们仍要求标注员对所有回复进行排序，即使有些模型回复的分值是相同的。不同标注员的排序一致性是评价数据质量的一个重要指标。</li>
+</ol>
+<p><strong>3. 训练成本。</strong> 从训练成本的角度来看，成对的偏好训练数据更容易大规模收集（例如可以在用户点踩的时候立即给出另一个备选回复），标注成本也更低。</p>
+</div>
+<div class="theorem example" id="exm-aligning-tax">
+<p><span class="theorem-title"><strong>例子 5 </strong></span>🌙<strong>什么是对齐税？如何减少对齐税？</strong></p>
+<p>在经过偏好对齐后，模型的通用能力可能下降，比如可能出现更多地生成不适当的“拒绝回答”现象，这一问题被称为“对齐税”。 那么，我们要如何减少“对齐税”，让经过RLHF的模型尽量保持RLHF之前的能力呢？</p>
+<p>在PPO算法中，除了reward model、policy model，还有一个reference model（同样由SFT后的模型初始化得到）。PPO算法会限制policy model不过分偏离reference model。这可以视为一种限制policy model能力偏移的机制。（尽管reference model的作用不止于此。）</p>
+<p>InstructGPT<span class="citation" data-cites="Ouyang2022InstructGPT"><sup>[<a href="#ref-Ouyang2022InstructGPT" role="doc-biblioref">2</a>]</sup></span>指出通过在PPO更新步骤中混入增加预训练分布的对数似然可以大幅降低模型的能力衰退。尽管多数研究未能消除偏好对齐对模型性能的损害，但也存在证据表明负对齐税是可能实现的。OpenAI对大模型数学答题能力的一项研究<span class="citation" data-cites="lightman2023prm"><sup>[<a href="#ref-lightman2023prm" role="doc-biblioref">6</a>]</sup></span>显示以合适的reward model设计为前提，模型的数学回答正确率能够提升。尽管这项工作是针对数学任务进行的，但这一结论有可能可以推广到一般的文本生成任务。</p>
+</div>
+<div class="theorem example" id="exm-rlhf-improvement">
+<p><span class="theorem-title"><strong>例子 6 </strong></span>🌙<strong>当前RLHF的流程有什么值得优化的地方？</strong></p>
+<p>这是一个开放性问题。言之有理地回答即可。</p>
+<p>个人认为可以讨论的点：</p>
+<ol type="1">
+<li>如<em>Let’s Verify Step by Step</em><span class="citation" data-cites="lightman2023prm"><sup>[<a href="#ref-lightman2023prm" role="doc-biblioref">6</a>]</sup></span>一文指出的那样，偏好对齐可有更细粒度的标注，给出更准确的reward反馈。现在普遍常见的偏好数据只针对完整的回答给出标注，而不是针对每一个句子给出标注。相比于标注整个回答的偏好，仅标注出第一个有问题的句子/步骤不会增加更多的标注代价，但能够提升reward信号的精细程度。这样的细粒度偏好数据是目前比较少见的，有待建设；</li>
+<li>大多数偏好对齐方法采用了BT模型。BT模型要求reward model拉开正负样本的得分差距，但并没有考虑到正负样本间差异以及偏好程度差异的强弱问题。直觉上，对于回复相似，偏好差异不明显的情况，应该给与比较低的权重；对于回复差异大，偏好对比明显的情况，应该给与比较高的权重。一些工作<span class="citation" data-cites="Touvron_llama2 meng2024simpo"><sup>[<a href="#ref-Touvron_llama2" role="doc-biblioref">5</a>,<a href="#ref-meng2024simpo" role="doc-biblioref">7</a>]</sup></span>尝试了人为设置规则或调整超参来调整BT model的margin，但也许还有自适应地调整BT model的margin且取得更好对齐效果的方法存在。</li>
+</ol>
+</div>
+</section>
+<section class="level3" data-number="1.4" id="幻覺">
+<h3 class="anchored" data-anchor-id="幻覺" data-number="1.4"><span class="header-section-number">1.4</span> 幻觉</h3>
+<div class="theorem example" id="exm-reason-of-hallumination">
+<p><span class="theorem-title"><strong>例子 7 </strong></span>⭐<strong>为什么SFT后的大模型会有幻觉？</strong> 模型的幻觉是指模型误认为自己能感知到一些实际感知不到的东西，或者以非常肯定的态度给出错误信息。例如，问“现在是几点钟？”，模型在不接入外部插件的情况下回答“现在是下午三点”，这便属于模型幻觉。</p>
+<p>预训练、SFT任务本质上都是要求模型预测下一个token，而这与AI应用的目标——“以安全和有益的方式遵循人类指令”是不一致的<span class="citation" data-cites="Ouyang2022InstructGPT"><sup>[<a href="#ref-Ouyang2022InstructGPT" role="doc-biblioref">2</a>]</sup></span>。这种训练目标的不对齐导致模型容易产生不安全、不忠实或有害的信息，例如导致模型幻觉。</p>
+</div>
+</section>
+<section class="level3" data-number="1.5" id="災難性遺忘">
+<h3 class="anchored" data-anchor-id="災難性遺忘" data-number="1.5"><span class="header-section-number">1.5</span> 灾难性遗忘</h3>
+<div class="theorem example" id="exm-llm-forgetting">
+<p><span class="theorem-title"><strong>例子 8 </strong></span>⭐<strong>SFT过程中会出现灾难性遗忘吗？如何应对灾难性遗忘？</strong></p>
+<p>一般我们在项目中会通过SFT来获得一个面向专门领域和特定任务的模型，例如心理诊疗模型、法律咨询模型、医疗建议模型、论文修改模型。SFT的过程中大模型很容易忘记对象任务以外的知识，损失一部分通用能力。就目前的技术来看，灾难性遗忘问题是不可避免的，但可以通过以下方法缓解：<br/>
+<strong>蒸馏</strong>：使用预训练模型作为教师模型，引入KL散度约束，使模型的token分布不要过于偏离预训练模型。（实践上来看比较难起作用，调参困难。）<br/>
+<strong>数据重放</strong>：一种直接的做法是在SFT阶段随机地采样一部分预训练数据。（经验上看，预训练数据的采样比例在SFT阶段会起到比较大的影响。）<br/>
+<strong>部分参数微调</strong>：与全量微调不同，可考虑采用LoRA、Soft Prompt等方法，通过调控参与训练的参数量来控制SFT的拟合程度。（个人实践中还是全量微调比较多。）<br/>
+<strong>一些相关的学术工作</strong>：LoRAMoE<span class="citation" data-cites="dou2024loramoe"><sup>[<a href="#ref-dou2024loramoe" role="doc-biblioref">8</a>]</sup></span>通过冻结主干网络，迫使LoRA利用一部分世界知识来缓解灾难性遗忘。<br/>
+<strong>其它训练参数的调整</strong>：可以尝试调整学习率、epoch数等参数，使用early stop等技巧减少过拟合和遗忘现象。一般训练1~3个epoch、损失降到0.5~0.3以下就好。训练太多，训练集拟合得太厉害也不是好事。<br/>
+除了在训练阶段尽量缓解灾难性遗忘问题，去弥补训练后已经发生的遗忘也是一种可取思路。以下是一些工程上可以选择的方法：<br/>
+<strong>外部知识库/知识图谱/检索增强</strong>：实际上指望大模型记住各种各样琐碎的知识是十分困难的。相比之下，赋予大模型随时调用外部知识库是一种弥补知识缺陷的有效方法。<br/>
+<strong>推理阶段的多专家模型</strong>：将不同主题的对话派发给不同的“专家”模型。尽管当前模型可能在SFT过程中丢失了相关信息，当使用对应的专家模型还是能很好地弥补这些能力的缺失。<br/>
+<strong>拒绝识别模块</strong>：在用户进行指定范围外的对话时，拒绝识别模块将会触发，拒绝就此话题进行讨论，从而避免模型就不擅长的话题进行讨论。拒绝识别模块非常容易降低用户的使用体验，但是实际应用场景往往对对涉政、色情等敏感信息的拒绝识别有非常严格的要求。<br/>
+拒绝识别模块可以设计为专门的小型分类器。另外，也可以在SFT数据中加入一些拒绝模板，使模型具备拒绝不安全对话的能力。</p>
+</div>
+</section>
+<section class="level3" data-number="1.6" id="cot">
+<h3 class="anchored" data-anchor-id="cot" data-number="1.6"><span class="header-section-number">1.6</span> CoT</h3>
+<div class="theorem example" id="exm-cot-exp">
+<p><span class="theorem-title"><strong>例子 9 </strong></span>⭐<strong>你是如何构造CoT的？</strong></p>
+</div>
+</section>
+<section class="level3" data-number="1.7" id="多模態大模型">
+<h3 class="anchored" data-anchor-id="多模態大模型" data-number="1.7"><span class="header-section-number">1.7</span> 多模态大模型</h3>
+<div class="theorem example" id="exm-mmllm-fusion-models-intro">
+<p><span class="theorem-title"><strong>例子 10 </strong></span>⭐<strong>你能列举几个常见的从视觉编码器的图像特征映射到大模型文本特征的方法吗？</strong></p>
+</div>
+<div class="theorem example" id="exm-mmllm-fusion-models-cmp">
+<p><span class="theorem-title"><strong>例子 11 </strong></span>⭐<strong>各种多模态融合模块的优缺点？</strong> （注意）Q-Former容易破坏visual token之间的空间关系。</p>
+</div>
+<div class="theorem example" id="exm-mmllm-overall-design">
+<p><span class="theorem-title"><strong>例子 12 </strong></span>⭐<strong>如果让你从头开始训练一个多模态大模型，你会如何设计模型结构、训练流程和项目流程？</strong></p>
+</div>
+<div class="theorem example" id="exm-mmllm-resolution">
+<p><span class="theorem-title"><strong>例子 13 </strong></span>⭐<strong>对于多模态大模型，提高图像的分辨率是十分重要的。为什么现在的大模型往往使用如256x256这类低分辨率的图像，无法做到高分辨率呢？</strong></p>
+</div>
+<div class="theorem example" id="exm-gpt4v-pitfalls">
+<p><span class="theorem-title"><strong>例子 14 </strong></span>⭐<strong>你观察到GPT4-V有哪些问题？为什么会存在这些问题？</strong></p>
+</div>
+</section>
+</section>
+<section class="level2" data-number="2" id="自然語言處理">
+<h2 class="anchored" data-anchor-id="自然語言處理" data-number="2"><span class="header-section-number">2</span> 自然语言处理</h2>
+<div class="theorem example" id="exm-rope">
+<p><span class="theorem-title"><strong>例子 15 </strong></span>⭐⭐⭐⭐<strong>旋转位置编码相对于原本的绝对位置编码有何改进？</strong></p>
+<p>TODO</p>
+</div>
+<div class="theorem example" id="exm-mha">
+<p><span class="theorem-title"><strong>例子 16 </strong></span>🌙🌙<strong>手写Multi-Head Attention。</strong></p>
+<p>本题答案可参考：<a href="https://zhimi.vercel.app/multi_head_20240311_zh-cn.html">《手写Multi-Head Attention：从公式到代码实现》</a></p>
+</div>
+<div class="theorem example" id="exm-prenorm-postnorm">
+<p><span class="theorem-title"><strong>例子 17 </strong></span>🌙🌙<strong>你知道PreNorm和PostNorm的区别吗？</strong></p>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="https://kexue.fm/archives/9009">为什么Pre Norm的效果不如Post Norm？</a></li>
+</ul>
+</div>
+<div class="theorem example" id="exm-why-layer-norm">
+<p><span class="theorem-title"><strong>例子 18 </strong></span>🌙🌙<strong>为什么Transformer模型要使用LayerNorm而不是BatchNorm。</strong></p>
+</div>
+<div class="theorem example" id="exm-tokenizers">
+<p><span class="theorem-title"><strong>例子 19 </strong></span>🌙🌙<strong>请介绍几种你熟悉的tokenization方法。</strong></p>
+</div>
+</section>
+<section class="level2" data-number="3" id="計算機視覺相關問題">
+<h2 class="anchored" data-anchor-id="計算機視覺相關問題" data-number="3"><span class="header-section-number">3</span> 计算机视觉相关问题</h2>
+<div class="theorem example" id="exm-vit-pos-encoding">
+<p><span class="theorem-title"><strong>例子 20 </strong></span>⭐<strong>ViT模型中是如何对位置信息进行编码的？</strong></p>
+</div>
+<div class="theorem example" id="exm-transformer-cnn-cmp">
+<p><span class="theorem-title"><strong>例子 21 </strong></span>⭐<strong>请比较Transformer和CNN</strong></p>
+</div>
+</section>
+<section class="level2" data-number="4" id="深度學習相關問題">
+<h2 class="anchored" data-anchor-id="深度學習相關問題" data-number="4"><span class="header-section-number">4</span> 深度学习相关问题</h2>
+<div class="theorem example" id="exm-overfitting">
+<p><span class="theorem-title"><strong>例子 22 </strong></span>⭐<strong>在训练模型的过程中，我们经常遇到过拟合。有哪些常见的应对过拟合的方法？</strong></p>
+<ol type="1">
+<li>数据层面：增加数据量、数据增强；</li>
+<li>模型设计层面：Dropout、DropBlock、weight decay；</li>
+<li>训练策略：迁移学习、部分参数微调、early stop、辅助任务、不确定性估计；</li>
+<li>推理策略：test-time augmentation；</li>
+</ol>
+</div>
+</section>
+<section class="level2" data-number="5" id="機器學習問題">
+<h2 class="anchored" data-anchor-id="機器學習問題" data-number="5"><span class="header-section-number">5</span> 机器学习问题</h2>
+<div class="theorem example" id="exm-k-means-imp">
+<p><span class="theorem-title"><strong>例子 23 </strong></span>⭐<strong>手写K-Means</strong></p>
+<p>被问到过一次。按照自己的理解实现出来，但是只通过了35%的测试用例。</p>
+</div>
+<p>⭐<strong>你知道softmax函数的上溢和下溢问题吗？如何解决这个问题。</strong></p>
+<p>TODO :::</p>
+<div class="theorem example" id="exm-collinearity">
+<p><span class="theorem-title"><strong>例子 24 </strong></span>🌙<strong>特征存在共线性问题会有什么影响？应当如何应对。</strong></p>
+<p>TODO</p>
+</div>
+<div class="theorem example" id="exm-high-dim-little-sample">
+<p><span class="theorem-title"><strong>例子 25 </strong></span>🌙<strong>如果特征维度很大而样本又少，应该怎么办？</strong></p>
+<p>TODO</p>
+</div>
+<div class="theorem example" id="exm-mse-vs-mae">
+<p><span class="theorem-title"><strong>例子 26 </strong></span>🌙🌙<strong>MSE和MAE分别作为损失函数会带来什么区别？</strong></p>
+</div>
+<div class="theorem example" id="exm-collinearity">
+<p><span class="theorem-title"><strong>例子 27 </strong></span>🌙<strong>特征存在共线性问题会有什么影响？应当如何应对。</strong></p>
+<p>TODO</p>
+</div>
+</section>
+<section class="level2" data-number="6" id="算法題">
+<h2 class="anchored" data-anchor-id="算法題" data-number="6"><span class="header-section-number">6</span> 算法题</h2>
+<p>接下来简单记录一些面试过程中实际遇到的或其它面试经验推荐的题。</p>
+<p>在面试过程中要求现场手写的算法题常常不会很难，但作答过程中要思路清晰，能够有效地与面试官沟通，尽量减少试错次数，一次通过。</p>
+<p>答题之前记得问清楚数据规模，时间复杂度和空间复杂度需求。</p>
+<ul>
+<li>⭐<strong>最长回文子串</strong></li>
+<li>⭐<strong>二叉树的最近公共祖先</strong></li>
+<li>⭐⭐<strong>两数之和变体</strong>：设A、B是两个有序数组，找出所有<span class="math inline">\(i, j\)</span>满足<code>A[i] + B[j] = k</code>，要求常数空间复杂度，线性时间复杂度。<br/>
+此题需要注意数组不是严格单调的，即可能连续出现若干个相同的数。编写双指针法时需要注意边界条件，避免漏掉一些解。</li>
+<li>⭐⭐<span class="src-bilibili"></span><strong>三数之和</strong>：由两数之和扩展而来的一道题。</li>
+<li>⭐<span class="src-bilibili"></span><strong><a href="https://leetcode.cn/problems/sliding-window-maximum/description/">滑动窗口求最大值</a></strong>：要求<span class="math inline">\(O(n)\)</span>时间复杂度。</li>
+<li>⭐<span class="src-minimax"></span><a href="https://leetcode.cn/problems/zui-xiao-de-kge-shu-lcof/description/"><strong>top k算法</strong></a>：写出<span class="math inline">\(O(n\log k)\)</span>的基于堆的方法并不困难，但最好能进一步掌握基于快排的<span class="math inline">\(O(n)\)</span>时间复杂度的解法。</li>
+<li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/number-of-islands/description/"><strong>岛屿数量</strong></a>：实际上属于求连通域数量的算法，可用DFS/BFS/并查集方法解。</li>
+<li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/reverse-substrings-between-each-pair-of-parentheses/description/"><strong>反转每对括号间的子串</strong></a>：考察栈的用法。也可以不用栈来解。容易想到<span class="math inline">\(O(n^2)\)</span>复杂度的算法，但实际也存在<span class="math inline">\(O(n)\)</span>的解法。</li>
+<li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/search-in-rotated-sorted-array/"><strong>搜索选择排序数组</strong></a>：考察二分法。需要做题者注意到选择排序数组的特性。</li>
+<li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/median-of-two-sorted-arrays/description/"><strong>寻找两个正序数组的中位数</strong></a>（困难）：更一般的，可以推广为寻找两个正序数组的第k小的数。考察二分法。需要思考应该对哪个量做二分查找。</li>
+<li>🌙<span class="src-minimax"></span><strong>NER的BIO形式标注转start，end形式</strong>（<a href="#exm-ner-bio-to-start-end">例子 33</a>）：以命名实体识别（NER）任务为背景的简单算法题。</li>
+<li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/knight-probability-in-chessboard/description/"><strong>马在棋盘上的概率</strong></a>：可以用动态规划的方法求解，时间复杂度为<span class="math inline">\(O(n^2k)\)</span>，这里<span class="math inline">\(n\)</span>为棋盘大小，<span class="math inline">\(k\)</span>为步数。还可以想到本题所执行的动态规划步骤实际上是一种卷积，且每一步的卷积核都是相同的，因此本题可以用快速幂的方式进行优化。</li>
+<li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/integer-break/solutions/2834147/ji-yu-shu-xue-fen-xi-de-chang-shu-shi-ji-32qm"><strong>整数拆分</strong></a>：将整数<span class="math inline">\(n\geq 2\)</span>拆分为任意个正整数的和，使其乘积最大。容易想到基于动态规划的解法，但不容易给出<span class="math inline">\(O(1)\)</span>时间复杂度的，基于数学分析的解法。
+<ul>
+<li>问题延伸：如果题目改为将整数<span class="math inline">\(n\geq 2\)</span>拆分为任意个正数的和，使其乘积最大。该如何分析？参考<a href="#exm-split-int">例子 34</a></li>
+</ul></li>
+</ul>
+</section>
+<section class="level2" data-number="7" id="開放性問題">
+<h2 class="anchored" data-anchor-id="開放性問題" data-number="7"><span class="header-section-number">7</span> 开放性问题</h2>
+<div class="theorem example" id="exm-tech-planning">
+<p><span class="theorem-title"><strong>例子 28 </strong></span>⭐<strong>在个人技术成长方面，你有什么规划？</strong></p>
+</div>
+<div class="theorem example" id="exm-why-leaving">
+<p><span class="theorem-title"><strong>例子 29 </strong></span>⭐<strong>为什么想要离职？</strong></p>
+</div>
+<div class="theorem example" id="exm-the-most-hard-proj">
+<p><span class="theorem-title"><strong>例子 30 </strong></span>⭐<strong>请介绍一下过往最困难的一个项目。</strong></p>
+</div>
+<div class="theorem example" id="exm-proj-contrib">
+<p><span class="theorem-title"><strong>例子 31 </strong></span>⭐<span class="src-minimax"></span><strong>你当前采用的项目方案的亮点是什么？你对项目最重要的贡献是？</strong></p>
+</div>
+<div class="theorem example" id="exm-indispensability">
+<p><span class="theorem-title"><strong>例子 32 </strong></span>⭐<strong>是什么使你在项目中具有不可替代性？或者是什么使你具备比他人更高的价值？</strong></p>
+</div>
+</section>
+<section class="level2" data-number="8" id="總結-1">
+<h2 class="anchored" data-anchor-id="總結-1" data-number="8"><span class="header-section-number">8</span> 总结</h2>
+<p>笔记的重要性：只学习不总结就容易忘。不做笔记不行啊。最好每次面试过后，立即将记录下来，时不时重新过一遍。</p>
+<p>平时多练习，多刷题，保持手感。有的公司（例如Minimax）的算法测试会期望给出最优解，面试时即使把题目做出来了，也可以问一下需不需要继续改进，提一提能想到的改进点。</p>
+<p>拿到Offer后，记得问以下重点问题。可以不直接问，但也需要间接地通过各种渠道去了解。要了解的包括但不限于：</p>
+<ol type="1">
+<li>绩效的考核方式，KPI的考核情况</li>
+</ol>
+<ul>
+<li>有没有末位淘汰</li>
+<li>有没有轮流背D绩效</li>
+<li>绩效工资占縂工资比例</li>
+</ul>
+<ol start="2" type="1">
+<li>竞业协议</li>
+</ol>
+<ul>
+<li>是否需要背竞业协议</li>
+<li>竞业协议是否与期权等权利挂钩</li>
+</ul>
+<p>一些经验和感想：</p>
+<ol type="1">
+<li>（不是绝对的）不论是体制内还是体制外，国企还是私企，只要在国内，就不要相信955的存在。一位HR可以毫无心里负担地告诉你它是955，但它也可以随时转变为996而不受到任何约束。同理，一家企业声称它是996，那么你可以大胆推测它实际上已经是9106了；</li>
+<li>竞业协议是不公平的。如果你签下了竞业协议，公司就有权阻止你入职同行业内的任何公司，并在你离职后提供一些微小的补偿。但相反的，假如你主动离职去赌博、考公，主动希望公司启动竞业协议，公司却可以选择不启动竞业。主动权总是掌握在公司手上。<br/>
+一般来说，即使签订了协议，公司也不会舍得为一个初入职场的大头兵启动竞业。因此初入职场的同学不必过于担心这个问题。但不论如何，在签订新公司时还是要对竞业协议保持谨慎；</li>
+</ol>
+</section>
+<div class="default" id="quarto-appendix"><section class="level2 appendix" data-number="9" id="附錄"><h2 class="quarto-appendix-heading"><span class="header-section-number">9</span> 附录</h2><div class="quarto-appendix-contents">
+<section class="level3" data-number="9.1" id="例題">
+<h3 class="anchored" data-anchor-id="例題" data-number="9.1"><span class="header-section-number">9.1</span> 例题</h3>
+<div class="theorem example" id="exm-ner-bio-to-start-end">
+<p><span class="theorem-title"><strong>例子 33 </strong></span>🌙<span class="src-minimax"></span><strong>NER标注格式转换</strong></p>
+<p>描述: 在命名实体识别(NER)任务中,BIO标注方式是常用的标注格式之一。但在某些应用场景下,我们可能需要将BIO格式转换为start,end形式的标注。</p>
+<p>请你实现一个Python函数,将BIO格式的NER标注转换为start,end形式。</p>
+<p>函数输入:</p>
+<ul>
+<li>tokens: 一个字符串列表,表示分词后的句子</li>
+<li>bio_tags: 一个字符串列表,表示对应的BIO标注</li>
+</ul>
+<p>函数输出: 一个字典列表,每个字典包含以下键:</p>
+<ul>
+<li>‘entity’: 实体文本</li>
+<li>‘start’: 实体开始位置</li>
+<li>‘end’: 实体结束位置</li>
+<li>‘type’: 实体类型</li>
+</ul>
+<p>示例:<br/>
+输入:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a>tokens <span class="op">=</span> [<span class="st">'John'</span>, <span class="st">'lives'</span>, <span class="st">'in'</span>, <span class="st">'New'</span>, <span class="st">'York'</span>, <span class="st">'.'</span>]</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>bio_tags <span class="op">=</span> [<span class="st">'B-PER'</span>, <span class="st">'O'</span>, <span class="st">'O'</span>, <span class="st">'B-LOC'</span>, <span class="st">'I-LOC'</span>, <span class="st">'O'</span>]</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<p>输出:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>[</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>    {<span class="st">'entity'</span>: <span class="st">'John'</span>, <span class="st">'start'</span>: <span class="dv">0</span>, <span class="st">'end'</span>: <span class="dv">1</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>},</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>    {<span class="st">'entity'</span>: <span class="st">'New York'</span>, <span class="st">'start'</span>: <span class="dv">3</span>, <span class="st">'end'</span>: <span class="dv">5</span>, <span class="st">'type'</span>: <span class="st">'LOC'</span>}</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>]</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<p>请实现函数<code>bio_to_span(tokens, bio_tags)</code>来完成这个转换任务。</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+提示
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>实体的end索引应该是实体最后一个词的索引+1<br/>
+对于单个词的实体,start和end的差值应该是1<br/>
+需要正确处理连续的多个词组成的实体</p>
+</div>
+</div>
+<div id="sol-ner-bio-to-start-end">
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="kw">def</span> bio_to_span(tokens, bio_tags):</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    tokens.append(<span class="st">'&lt;eos&gt;'</span>)</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>    bio_tags.append(<span class="st">'O'</span>)</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>    start <span class="op">=</span> <span class="dv">0</span> </span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>    end <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>    entity <span class="op">=</span> []</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>    typ <span class="op">=</span> <span class="va">None</span> </span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>    ret <span class="op">=</span> []</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>    <span class="cf">for</span> i, (t, b) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(tokens, bio_tags)):</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>        <span class="cf">if</span> b.startswith(<span class="st">'B-'</span>):</span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>            start <span class="op">=</span> i </span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>            entity <span class="op">=</span> [t]</span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>            typ <span class="op">=</span> b[<span class="dv">2</span>:]</span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>        <span class="cf">elif</span> b.startswith(<span class="st">'I-'</span>):</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a>            <span class="cf">assert</span> typ <span class="op">==</span> b[<span class="dv">2</span>:], <span class="st">'</span><span class="sc">{}</span><span class="st"> != </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(typ, b[<span class="dv">2</span>:])</span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a>        <span class="cf">elif</span> b <span class="op">==</span> <span class="st">'O'</span>:</span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">len</span>(entity):</span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a>                end <span class="op">=</span> i </span>
+<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a>                ret.append({</span>
+<span id="cb3-20"><a aria-hidden="true" href="#cb3-20" tabindex="-1"></a>                    <span class="st">'entity'</span>: <span class="st">''</span>.join(tokens[start:end]),</span>
+<span id="cb3-21"><a aria-hidden="true" href="#cb3-21" tabindex="-1"></a>                    <span class="st">'start'</span>: start,</span>
+<span id="cb3-22"><a aria-hidden="true" href="#cb3-22" tabindex="-1"></a>                    <span class="st">'end'</span>: end,</span>
+<span id="cb3-23"><a aria-hidden="true" href="#cb3-23" tabindex="-1"></a>                    <span class="st">'type'</span>: typ </span>
+<span id="cb3-24"><a aria-hidden="true" href="#cb3-24" tabindex="-1"></a>                })</span>
+<span id="cb3-25"><a aria-hidden="true" href="#cb3-25" tabindex="-1"></a>                entity.clear()</span>
+<span id="cb3-26"><a aria-hidden="true" href="#cb3-26" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb3-27"><a aria-hidden="true" href="#cb3-27" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">"Invalid BIO label: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(b))</span>
+<span id="cb3-28"><a aria-hidden="true" href="#cb3-28" tabindex="-1"></a>    <span class="cf">return</span> ret </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>接下来用一些测试用例检查给出的算法的正确性。在请求面试官检查之前，先自己编写一些测试用例是一个好习惯。</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>test_cases <span class="op">=</span> [</span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    <span class="co"># case 1</span></span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>    {</span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>        <span class="st">"input"</span>: ([<span class="st">"我"</span>, <span class="st">"爱"</span>, <span class="st">"北京"</span>, <span class="st">"天安门"</span>], [<span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"B-LOC"</span>, <span class="st">"I-LOC"</span>]),</span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>        <span class="st">"output"</span>: [{<span class="st">'entity'</span>: <span class="st">'北京天安门'</span>, <span class="st">'type'</span>: <span class="st">'LOC'</span>, <span class="st">'start'</span>: <span class="dv">2</span>, <span class="st">'end'</span>: <span class="dv">4</span>}]</span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>    },</span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>    <span class="co"># case 2</span></span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a>    {</span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>        <span class="st">"input"</span>: ([<span class="st">"他"</span>, <span class="st">"是"</span>, <span class="st">"一位"</span>, <span class="st">"来自"</span>, <span class="st">"中国"</span>, <span class="st">"的"</span>, <span class="st">"医生"</span>, <span class="st">"，"</span>, <span class="st">"名叫"</span>, <span class="st">"张伟"</span>], </span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>                  [<span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"B-LOC"</span>, <span class="st">"O"</span>, <span class="st">"B-PROF"</span>, <span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"B-PER"</span>]),</span>
+<span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a>        <span class="st">"output"</span>: [{<span class="st">'entity'</span>: <span class="st">'中国'</span>, <span class="st">'type'</span>: <span class="st">'LOC'</span>, <span class="st">'start'</span>: <span class="dv">4</span>, <span class="st">'end'</span>: <span class="dv">5</span>}, </span>
+<span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a>                   {<span class="st">'entity'</span>: <span class="st">'医生'</span>, <span class="st">'type'</span>: <span class="st">'PROF'</span>, <span class="st">'start'</span>: <span class="dv">6</span>, <span class="st">'end'</span>: <span class="dv">7</span>}, </span>
+<span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a>                   {<span class="st">'entity'</span>: <span class="st">'张伟'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">9</span>, <span class="st">'end'</span>: <span class="dv">10</span>}]</span>
+<span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a>    },</span>
+<span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>    <span class="co"># case 3 (空实体)</span></span>
+<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>    {</span>
+<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>        <span class="st">"input"</span>: ([<span class="st">"今天"</span>, <span class="st">"天气"</span>, <span class="st">"真好"</span>], [<span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"O"</span>]),</span>
+<span id="cb4-18"><a aria-hidden="true" href="#cb4-18" tabindex="-1"></a>        <span class="st">"output"</span>: []</span>
+<span id="cb4-19"><a aria-hidden="true" href="#cb4-19" tabindex="-1"></a>    },</span>
+<span id="cb4-20"><a aria-hidden="true" href="#cb4-20" tabindex="-1"></a>    <span class="co"># case 4 </span></span>
+<span id="cb4-21"><a aria-hidden="true" href="#cb4-21" tabindex="-1"></a>    {</span>
+<span id="cb4-22"><a aria-hidden="true" href="#cb4-22" tabindex="-1"></a>        <span class="st">'input'</span>: (</span>
+<span id="cb4-23"><a aria-hidden="true" href="#cb4-23" tabindex="-1"></a>            [<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="st">'d'</span>, <span class="st">'e'</span>, <span class="st">'f'</span>, <span class="st">'g'</span>, <span class="st">'h'</span>, <span class="st">'i'</span>, <span class="st">'j'</span>], </span>
+<span id="cb4-24"><a aria-hidden="true" href="#cb4-24" tabindex="-1"></a>            [<span class="st">'O'</span>, <span class="st">'B-PER'</span>, <span class="st">'I-PER'</span>, <span class="st">'O'</span>, <span class="st">'B-ORG'</span>, <span class="st">'I-ORG'</span>, <span class="st">'I-ORG'</span>, <span class="st">'O'</span>, <span class="st">'B-LOC'</span>, <span class="st">'O'</span>]</span>
+<span id="cb4-25"><a aria-hidden="true" href="#cb4-25" tabindex="-1"></a>        ),</span>
+<span id="cb4-26"><a aria-hidden="true" href="#cb4-26" tabindex="-1"></a>        <span class="st">'output'</span>: [{<span class="st">'entity'</span>: <span class="st">'bc'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">1</span>, <span class="st">'end'</span>: <span class="dv">3</span>},</span>
+<span id="cb4-27"><a aria-hidden="true" href="#cb4-27" tabindex="-1"></a>            {<span class="st">'entity'</span>: <span class="st">'efg'</span>, <span class="st">'type'</span>: <span class="st">'ORG'</span>, <span class="st">'start'</span>: <span class="dv">4</span>, <span class="st">'end'</span>: <span class="dv">7</span>},</span>
+<span id="cb4-28"><a aria-hidden="true" href="#cb4-28" tabindex="-1"></a>            {<span class="st">'entity'</span>: <span class="st">'i'</span>, <span class="st">'type'</span>: <span class="st">'LOC'</span>, <span class="st">'start'</span>: <span class="dv">8</span>, <span class="st">'end'</span>: <span class="dv">9</span>}]</span>
+<span id="cb4-29"><a aria-hidden="true" href="#cb4-29" tabindex="-1"></a>    },</span>
+<span id="cb4-30"><a aria-hidden="true" href="#cb4-30" tabindex="-1"></a>    <span class="co"># case 5 (空序列)</span></span>
+<span id="cb4-31"><a aria-hidden="true" href="#cb4-31" tabindex="-1"></a>    {</span>
+<span id="cb4-32"><a aria-hidden="true" href="#cb4-32" tabindex="-1"></a>        <span class="st">'input'</span>: (</span>
+<span id="cb4-33"><a aria-hidden="true" href="#cb4-33" tabindex="-1"></a>            [], []</span>
+<span id="cb4-34"><a aria-hidden="true" href="#cb4-34" tabindex="-1"></a>        ),</span>
+<span id="cb4-35"><a aria-hidden="true" href="#cb4-35" tabindex="-1"></a>        <span class="st">'output'</span>: []</span>
+<span id="cb4-36"><a aria-hidden="true" href="#cb4-36" tabindex="-1"></a>    },</span>
+<span id="cb4-37"><a aria-hidden="true" href="#cb4-37" tabindex="-1"></a>    <span class="co"># case 6 (只有O标签)</span></span>
+<span id="cb4-38"><a aria-hidden="true" href="#cb4-38" tabindex="-1"></a>    {</span>
+<span id="cb4-39"><a aria-hidden="true" href="#cb4-39" tabindex="-1"></a>        <span class="st">'input'</span>: ([<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>], [<span class="st">'O'</span>, <span class="st">'O'</span>, <span class="st">'O'</span>]),</span>
+<span id="cb4-40"><a aria-hidden="true" href="#cb4-40" tabindex="-1"></a>        <span class="st">'output'</span>: []</span>
+<span id="cb4-41"><a aria-hidden="true" href="#cb4-41" tabindex="-1"></a>    },</span>
+<span id="cb4-42"><a aria-hidden="true" href="#cb4-42" tabindex="-1"></a>    <span class="co"># case 7 </span></span>
+<span id="cb4-43"><a aria-hidden="true" href="#cb4-43" tabindex="-1"></a>    {</span>
+<span id="cb4-44"><a aria-hidden="true" href="#cb4-44" tabindex="-1"></a>        <span class="st">'input'</span>: (</span>
+<span id="cb4-45"><a aria-hidden="true" href="#cb4-45" tabindex="-1"></a>            [<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="st">'d'</span>, <span class="st">'e'</span>, <span class="st">'f'</span>, <span class="st">'g'</span>, <span class="st">'h'</span>],</span>
+<span id="cb4-46"><a aria-hidden="true" href="#cb4-46" tabindex="-1"></a>            [<span class="st">'B-PER'</span>, <span class="st">'I-PER'</span>, <span class="st">'O'</span>, <span class="st">'B-PER'</span>, <span class="st">'O'</span>, <span class="st">'B-PER'</span>, <span class="st">'I-PER'</span>, <span class="st">'I-PER'</span>]</span>
+<span id="cb4-47"><a aria-hidden="true" href="#cb4-47" tabindex="-1"></a>        ),</span>
+<span id="cb4-48"><a aria-hidden="true" href="#cb4-48" tabindex="-1"></a>        <span class="st">'output'</span>: [{<span class="st">'entity'</span>: <span class="st">'ab'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">0</span>, <span class="st">'end'</span>: <span class="dv">2</span>},</span>
+<span id="cb4-49"><a aria-hidden="true" href="#cb4-49" tabindex="-1"></a>            {<span class="st">'entity'</span>: <span class="st">'d'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">3</span>, <span class="st">'end'</span>: <span class="dv">4</span>},</span>
+<span id="cb4-50"><a aria-hidden="true" href="#cb4-50" tabindex="-1"></a>            {<span class="st">'entity'</span>: <span class="st">'fgh'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">5</span>, <span class="st">'end'</span>: <span class="dv">8</span>}]</span>
+<span id="cb4-51"><a aria-hidden="true" href="#cb4-51" tabindex="-1"></a>    }</span>
+<span id="cb4-52"><a aria-hidden="true" href="#cb4-52" tabindex="-1"></a>]</span>
+<span id="cb4-53"><a aria-hidden="true" href="#cb4-53" tabindex="-1"></a></span>
+<span id="cb4-54"><a aria-hidden="true" href="#cb4-54" tabindex="-1"></a><span class="cf">for</span> test_case <span class="kw">in</span> test_cases: </span>
+<span id="cb4-55"><a aria-hidden="true" href="#cb4-55" tabindex="-1"></a>    out <span class="op">=</span> bio_to_span(<span class="op">*</span>test_case[<span class="st">'input'</span>])</span>
+<span id="cb4-56"><a aria-hidden="true" href="#cb4-56" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(out) <span class="op">==</span> <span class="bu">len</span>(test_case[<span class="st">'output'</span>]), <span class="st">'Length inqueal! </span><span class="sc">{}</span><span class="st"> != </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(out, test_case[<span class="st">'output'</span>])</span>
+<span id="cb4-57"><a aria-hidden="true" href="#cb4-57" tabindex="-1"></a>    <span class="cf">for</span> o1, o2 <span class="kw">in</span> <span class="bu">zip</span>(out, test_case[<span class="st">'output'</span>]):</span>
+<span id="cb4-58"><a aria-hidden="true" href="#cb4-58" tabindex="-1"></a>        <span class="cf">for</span> k <span class="kw">in</span> o2.keys():</span>
+<span id="cb4-59"><a aria-hidden="true" href="#cb4-59" tabindex="-1"></a>            <span class="cf">assert</span> o1[k] <span class="op">==</span> o2[k], <span class="st">'</span><span class="sc">{}</span><span class="st"> != </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(o1, o2)</span>
+<span id="cb4-60"><a aria-hidden="true" href="#cb4-60" tabindex="-1"></a></span>
+<span id="cb4-61"><a aria-hidden="true" href="#cb4-61" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'所有测试用例均通过。'</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>所有测试用例均通过。</code></pre>
+</div>
+</div>
+</div>
+<div class="theorem example" id="exm-split-int">
+<p><span class="theorem-title"><strong>例子 34 </strong></span>🌙<span class="src-minimax"></span>如何将整数<span class="math inline">\(n\geq 2\)</span>拆分为任意个正数的和，使其乘积最大？</p>
+<p>设<span class="math inline">\(n\)</span>被拆分为<span class="math inline">\(k\)</span>个数，容易证明每个数都为<span class="math inline">\(n/k\)</span>时乘积最大。（先证明<span class="math inline">\(k=2\)</span>时，<span class="math inline">\(n\)</span>应该被拆为<span class="math inline">\(\frac{n}{2} + \frac{n}{2}\)</span>；然后通过构造条件满足数学归纳法来证明。）</p>
+<p>加下来，设将<span class="math inline">\(n\)</span>拆为<span class="math inline">\(k\)</span>份，可知其乘积应为<span class="math inline">\(f(n, k) = \left(\frac{n}{k}\right)^k\)</span>. 先不考虑<span class="math inline">\(k\)</span>应为正整数的问题，令<span class="math inline">\(k \in \mathbb R^+\)</span>. <span class="math inline">\(f(n, k)\)</span>是一个连续函数。</p>
+<p><span class="math display">\[
+\begin{aligned}
+f(n, k) &amp;= e^{\ln \left(\frac{n}{k}\right)^k} \\
+    &amp;= e^{k\ln n - k \ln k }
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial f}{\partial k} &amp;= e^{k\ln n - k \ln k }\cdot  (\ln n - \ln k - 1)
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial f}{\partial k} = 0 &amp; \Rightarrow \ln n - \ln k - 1 = 0\\
+&amp; \Rightarrow k = \frac{n}{e}
+\end{aligned}
+\]</span></p>
+<p>容易看出<span class="math inline">\(\frac{\partial f}{\partial k}\)</span>随著<span class="math inline">\(k\)</span>的增加而单调上升。因此<span class="math inline">\(k=\frac{n}{e}\)</span>是函数的极大值点。但是<span class="math inline">\(k\)</span>需要是整数，因此我们可以考虑取<span class="math inline">\(k=\lceil \frac{n}{e} \rceil\)</span>或<span class="math inline">\(k=\lfloor \frac{n}{e}\rfloor\)</span>，取其中使乘积最大的<span class="math inline">\(k\)</span>即可。</p>
+</div>
+<div class="theorem example" id="exm-fibonacci">
+<p><span class="theorem-title"><strong>例子 35 </strong></span>求斐波那契数列1、1、2、3、5、8……的通项公式。</p>
+<p>当<span class="math inline">\(n\geq 3\)</span>时，有<span class="math inline">\(F_{n} = F_{n-1} + F_{n-2}\)</span>. 写成矩阵形式为 <span class="math display">\[
+\begin{pmatrix}
+F_n\\
+F_{n-1}
+\end{pmatrix} =
+\begin{pmatrix}
+1 &amp; 1 \\
+1 &amp; 0
+\end{pmatrix}
+\begin{pmatrix}
+F_{n-1}\\
+F_{n-2}
+\end{pmatrix}
+\]</span></p>
+<p>于是可得 <span class="math display">\[
+\begin{aligned}
+\begin{pmatrix}
+F_n\\
+F_{n-1}
+\end{pmatrix} &amp; =
+\begin{pmatrix}
+1 &amp; 1 \\
+1 &amp; 0
+\end{pmatrix}
+\begin{pmatrix}
+F_{n-1}\\
+F_{n-2}
+\end{pmatrix} \\
+&amp;=
+\begin{pmatrix}
+1 &amp; 1 \\
+1 &amp; 0
+\end{pmatrix}^2
+\begin{pmatrix}
+F_{n-2}\\
+F_{n-3}
+\end{pmatrix} \\
+&amp;=
+\begin{pmatrix}
+1 &amp; 1 \\
+1 &amp; 0
+\end{pmatrix}^{n-2}
+\begin{pmatrix}
+1\\
+1
+\end{pmatrix} \\
+&amp;=\mathbf A^{n-2}
+\begin{pmatrix}
+1\\
+1
+\end{pmatrix}
+\end{aligned}
+\]</span></p>
+<p><span class="math inline">\(\mathbf A= \begin{pmatrix} 1 &amp; 1 \\ 1 &amp; 0 \end{pmatrix}\)</span>的特征值为<span class="math inline">\(\lambda_1 = \frac{1 - \sqrt 5}{2}\)</span>, <span class="math inline">\(\lambda_2 = \frac{1 + \sqrt 5}{2}\)</span>，对应的特征向量为 <span class="math inline">\(\vec x_1 = (\frac{1 - \sqrt 5}{2}, 1)^T\)</span>， <span class="math inline">\(\vec x_2 = (\frac{1 + \sqrt 5}{2}, 1)^T\)</span></p>
+<details>
+<summary>
+特征值的求解方法
+</summary>
+<p>设<span class="math inline">\(\lambda\)</span>是<span class="math inline">\(\mathbf A\)</span>的特征值，<span class="math inline">\(\vec x\)</span>是对应的特征向量，则有 <span class="math display">\[
+\mathbf A \vec x = \lambda \vec x
+\]</span></p>
+<p>从而得到<span class="math inline">\(\lambda \mathbf E - \mathbf A\)</span>的秩为0.</p>
+<p><span class="math display">\[
+\left|
+\begin{matrix}
+\lambda - 1 &amp;  -1 \\
+-1 &amp; \lambda
+\end{matrix}
+\right| = 0
+\Rightarrow
+\lambda ^2 - \lambda - 1 = 0
+\]</span> 从而得到两个解：<span class="math inline">\(\lambda_1 = \frac{1 - \sqrt 5}{2}\)</span>, <span class="math inline">\(\lambda_2 = \frac{1 + \sqrt 5}{2}\)</span></p>
+<p>将<span class="math inline">\(\lambda_1, \lambda_2\)</span>的值代入到<span class="math inline">\((\lambda \mathbf E - \mathbf A)\vec x = \vec 0\)</span>可解得两个特征向量 <span class="math display">\[
+\vec x_1 = (\frac{1 - \sqrt 5}{2}, 1)^T
+\]</span> 和 <span class="math display">\[
+\vec x_2 = (\frac{1 + \sqrt 5}{2}, 1)^T
+\]</span></p>
+</details>
+<p>因此<span class="math inline">\(\mathbf A\)</span>是可对角化的，即令 <span class="math display">\[
+\mathbf P = \begin{pmatrix}
+\vec x_1, \vec x_2
+\end{pmatrix}
+,\]</span></p>
+<p>则有<span class="math inline">\(\mathbf P^{-1} \mathbf A \mathbf P = \mathbf\Lambda=\begin{pmatrix} \lambda_1 &amp; 0 \\ 0 &amp; \lambda_2 \end{pmatrix}\)</span> 因此<span class="math inline">\(\mathbf A^{n-2}=(\mathbf P^{-1} \mathbf\Lambda \mathbf P)^{n-2}=\mathbf P \mathbf\Lambda^{n-2} \mathbf P^{-1}\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbf P \mathbf\Lambda^{n-2} \mathbf P^{-1}
+\begin{pmatrix}
+1 \\
+1
+\end{pmatrix} &amp;= \frac{1}{\lambda_1 - \lambda_2}
+\begin{pmatrix}
+\lambda_1 &amp; \lambda_2 \\
+1 &amp; 1
+\end{pmatrix}
+\begin{pmatrix}
+\lambda_1 &amp; 0 \\
+0 &amp; \lambda_2
+\end{pmatrix}^{n-2}
+\begin{pmatrix}
+1 &amp; -\lambda_2 \\
+-1 &amp; \lambda_1
+\end{pmatrix}
+\begin{pmatrix}
+1 \\
+1
+\end{pmatrix} \\
+&amp;=\frac{1}{\lambda_1 - \lambda_2}
+\begin{pmatrix}
+\lambda_1 &amp; \lambda_2 \\
+1 &amp; 1
+\end{pmatrix}
+\begin{pmatrix}
+\lambda_1^{n-2} &amp; 0 \\
+0 &amp; \lambda_2^{n-2}
+\end{pmatrix}
+\begin{pmatrix}
+\lambda_1 \\
+\lambda_2
+\end{pmatrix}\\
+&amp;=\frac{1}{\lambda_1 - \lambda_2}
+\begin{pmatrix}
+\lambda_1 &amp; \lambda_2 \\
+1 &amp; 1
+\end{pmatrix}
+\begin{pmatrix}
+\lambda_1^{n-1} \\
+\lambda_2^{n-1}
+\end{pmatrix}\\
+&amp;=\frac{1}{\lambda_1 - \lambda_2}
+\begin{pmatrix}
+\lambda_1^n + \lambda_2^n\\
+\lambda_1^{n-1}+\lambda_2^{n-1}
+\end{pmatrix}\\
+\end{aligned}
+\]</span> 即通项公式为<span class="math inline">\(F_n=\frac{1}{\lambda_1 - \lambda_2}(\lambda_1^n + \lambda_2^n)\)</span>，代入特征值得到<span class="math inline">\(F_n=\frac{1}{\sqrt 5}((\frac{1+\sqrt 5}{2})^n - (\frac{1 - \sqrt 5}{2})^n)\)</span></p>
+<p>参考资料：<a href="https://zhuanlan.zhihu.com/p/451617827?utm_psn=1793775415459966976">斐波那契数列通项公式求解</a></p>
+</div>
+</section>
+</div></section><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">参考</h2><div class="references csl-bib-body" id="refs" role="doc-bibliography">
+<div class="csl-entry" id="ref-zhou2023limaalignment" role="doc-biblioentry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">ZHOU C, LIU P, XU P, 等. <a href="https://arxiv.org/abs/2305.11206">LIMA: Less Is More for Alignment</a>[J]. 2023.</div>
+</div>
+<div class="csl-entry" id="ref-Ouyang2022InstructGPT" role="doc-biblioentry">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">OUYANG L, WU J, JIANG X, 等. <a href="https://api.semanticscholar.org/CorpusID:246426909">Training language models to follow instructions with human feedback</a>[J]. ArXiv, 2022, abs/2203.02155.</div>
+</div>
+<div class="csl-entry" id="ref-Ranzato2015SequenceLT" role="doc-biblioentry">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">RANZATO M, CHOPRA S, AULI M, 等. <a href="https://api.semanticscholar.org/CorpusID:7147309">Sequence Level Training with Recurrent Neural Networks</a>[J]. CoRR, 2015, abs/1511.06732.</div>
+</div>
+<div class="csl-entry" id="ref-Hong_Lee_Thorne_ORPO_2024" role="doc-biblioentry">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">HONG J, LEE N, THORNE J. ORPO: Monolithic Preference Optimization without Reference Model[J]. 2024.</div>
+</div>
+<div class="csl-entry" id="ref-Touvron_llama2" role="doc-biblioentry">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">TOUVRON H, MARTIN L, STONE K, 等. Llama 2: Open Foundation and Fine-Tuned Chat Models[J].</div>
+</div>
+<div class="csl-entry" id="ref-lightman2023prm" role="doc-biblioentry">
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">LIGHTMAN H, KOSARAJU V, BURDA Y, 等. <a href="https://arxiv.org/abs/2305.20050">Let’s Verify Step by Step</a>[J]. 2023.</div>
+</div>
+<div class="csl-entry" id="ref-meng2024simpo" role="doc-biblioentry">
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline">MENG Y, XIA M, CHEN D. <a href="https://arxiv.org/abs/2405.14734">SimPO: Simple Preference Optimization with a Reference-Free Reward</a>[J]. 2024.</div>
+</div>
+<div class="csl-entry" id="ref-dou2024loramoe" role="doc-biblioentry">
+<div class="csl-left-margin">[8] </div><div class="csl-right-inline">DOU S, ZHOU E, LIU Y, 等. <a href="https://arxiv.org/abs/2312.09979">LoRAMoE: Alleviate World Knowledge Forgetting in Large Language Models via MoE-Style Plugin</a>[J]. 2024.</div>
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+</div>
+    </div>
+    <div class="post_list">
+        <span>By </span>
+        <a href="./">@執迷</a>
+        <span> in </span>
+        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 大模型">[ 大模型 ]</a></span>
+        <span class="post_date">2024-07-13</span>
+        <div><span>Tags : </span>
+            
+            
+            <span><a href="./">#面試經驗, </a></span>
+            
+            <span><a href="./">#大模型, </a></span>
+            
+            
+        </div>
+
+        <div class="entry-social">
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././llm_interview_exp_20240711_zh-cn.html&text=大模型算法工程师面试经验&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././llm_interview_exp_20240711_zh-cn.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././llm_interview_exp_20240711_zh-cn.html&t=大模型算法工程师面试经验"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././llm_interview_exp_20240711_zh-cn.html&title=大模型算法工程师面试经验" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+            <span class="mail"><a href="mailto:?subject=大模型算法工程师面试经验&amp;body=Viens découvrir un article à propos de [大模型算法工程师面试经验] sur le site de 執迷. ././llm_interview_exp_20240711_zh-cn.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+        </div>
+    </div>
+    
+
+</section>
+
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
+</body>
+</html>
