@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
+
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="./_vercel/insights/script.js"></script>
+  
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
+
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
+
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>淺談MinHash：求文檔的交並比</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././minhash_exp_20240717.html">
+<meta name="twitter:title" content="執迷的博客 ~ 淺談MinHash：求文檔的交並比">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ 淺談MinHash：求文檔的交並比" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+
+<!-- MathJax -->
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+      <p>做一個有趣的人！</p>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="././about.html">About</a></li>
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <h2 class="post_title post_detail"><a href="././minhash_exp_20240717.html" rel="bookmark" title="Permalink to 淺談MinHash：求文檔的交並比">淺談MinHash：求文檔的交並比</a></h2>
+    
+    <p>
+        <span id="busuanzi_container_page_pv">
+            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+        </span>
+    </p>
+    
+    <div class="entry-content blog-post">
+        <div>
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+<nav class="toc-active" id="TOC" role="doc-toc">
+<h2 id="toc-title">目录</h2>
+<ul>
+<li><a class="nav-link active" data-scroll-target="#将文档看作集合" href="#将文档看作集合" id="toc-将文档看作集合"><span class="toc-section-number">1</span>  将文档看作集合</a></li>
+<li><a class="nav-link" data-scroll-target="#用最小值估計文檔相似度" href="#用最小值估計文檔相似度" id="toc-用最小值估計文檔相似度"><span class="toc-section-number">2</span>  用最小值估計文檔相似度</a></li>
+<li><a class="nav-link" data-scroll-target="#哈希函数" href="#哈希函数" id="toc-哈希函数"><span class="toc-section-number">3</span>  哈希函数</a></li>
+<li><a class="nav-link" data-scroll-target="#局部敏感哈希" href="#局部敏感哈希" id="toc-局部敏感哈希"><span class="toc-section-number">4</span>  局部敏感哈希</a></li>
+<li><a class="nav-link" data-scroll-target="#一些參考資料" href="#一些參考資料" id="toc-一些參考資料"><span class="toc-section-number">5</span>  一些參考資料</a></li>
+</ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+
+</div>
+<div class="quarto-title-meta">
+</div>
+</header>
+<p>最近在工作中用到了MinHash<span class="citation" data-cites="minhash_1997"><sup>[<a href="#ref-minhash_1997" role="doc-biblioref">1</a>]</sup></span>，使用它做了一些文檔去重和查找相似數據的任務。工欲善其事，必先利其器。要想用好一個算法/工具，就需要深入瞭解它的底層細節。本文簡單記錄了我對MinHash方法的理解，並展示了一些簡單的實驗。</p>
+<p>本文先介紹了將文檔視爲數字的集合這一思想，並演示了幾種不同的實現方案；既然文章可以視爲數的集合，那麽自然可以用集合的交并比這一度量來衡量文章之間的相似度；接著，文章介紹了MinHash的核心：對集合的最小值進行采樣，借此估測集合閒的交並比；最後，文章介紹了MinHash作爲一種局部敏感哈希（Locality Sensitive Hashing，LSH）具有怎樣的特點，可以如何利用LSH的特點來加速文檔去重過程。</p>
+<p>在文章的開頭，我們先羅列和導入後續會需要用到的包：</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Tuple, List, Set, Dict </span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict </span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="im">import</span> random </span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a><span class="im">import</span> time </span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>random.seed(<span class="dv">0</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<section class="level2" data-number="1" id="将文档看作集合">
+<h2 class="anchored" data-anchor-id="将文档看作集合" data-number="1"><span class="header-section-number">1</span> 将文档看作集合</h2>
+<p>文檔可以看作是字符組成的序列。儘管現在使用RNN、Transformer等深度神經網絡來處理文本的方法已經十分普遍，但當要處理文本規模達到上百萬的量級時，忽略詞語的語義、語序，僅考慮其詞語構成，進行“機械的”相似度比較仍是一種有效的方法。</p>
+<p>以文檔A<code>"a rose is a rose is a rose"</code>和文檔B<code>"a rose is a flower which is a rose"</code>為例，兩個文檔可以分別被拆解為如下的單詞：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:23.918760Z","iopub.status.busy":"2024-07-18T07:44:23.917700Z","iopub.status.idle":"2024-07-18T07:44:23.924610Z","shell.execute_reply":"2024-07-18T07:44:23.923248Z","shell.execute_reply.started":"2024-07-18T07:44:23.918711Z"}' data-execution_count="2" data-trusted="true">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>A <span class="op">=</span> (<span class="st">"a"</span>, <span class="st">"rose"</span>, <span class="st">"is"</span>, <span class="st">"a"</span>, <span class="st">"rose"</span>, <span class="st">"is"</span>, <span class="st">"a"</span>, <span class="st">"rose"</span>)</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>B <span class="op">=</span> (<span class="st">"a"</span>, <span class="st">"rose"</span>, <span class="st">"is"</span>, <span class="st">"a"</span>, <span class="st">"flower"</span>, <span class="st">"which"</span>, <span class="st">"is"</span>, <span class="st">"a"</span>, <span class="st">"rose"</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>將A和B分別表示為其使用到的單詞的集合是一種簡單的方法。除此之外，還可以考慮將相鄰的若干單詞組成“Shingle”（又被稱為n-gram），將文檔考慮為Shingle的集合。</p>
+<p>顯然，Shingle可以被定義為字符串組成的n元組。</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:23.926570Z","iopub.status.busy":"2024-07-18T07:44:23.926107Z","iopub.status.idle":"2024-07-18T07:44:23.942791Z","shell.execute_reply":"2024-07-18T07:44:23.941518Z","shell.execute_reply.started":"2024-07-18T07:44:23.926529Z"}' data-execution_count="3" data-trusted="true">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>Shingle <span class="op">=</span> Tuple[<span class="bu">str</span>]</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>下面的代碼展示了如何將一個文檔轉化為由Shingle構成的<strong>多重集</strong>。與普通的集合不同，多重集允許其中包含多個重複元素。</p>
+<p>代碼使用<code>Dict</code>來模擬多重集。函數返回的<code>Dict</code>統計了文檔中出現的每種Shingle的數量。</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:23.946903Z","iopub.status.busy":"2024-07-18T07:44:23.946464Z","iopub.status.idle":"2024-07-18T07:44:23.955407Z","shell.execute_reply":"2024-07-18T07:44:23.954290Z","shell.execute_reply.started":"2024-07-18T07:44:23.946869Z"}' data-execution_count="4" data-trusted="true">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="kw">def</span> doc_to_shingle_bag(doc: List[<span class="bu">str</span>], w:<span class="bu">int</span>) <span class="op">-&gt;</span> Dict[Shingle, <span class="bu">int</span>]: </span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    <span class="cf">assert</span> w <span class="op">&gt;</span> <span class="dv">0</span>, w </span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>    ret <span class="op">=</span> defaultdict(<span class="bu">int</span>)</span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(doc) <span class="op">-</span> w <span class="op">+</span> <span class="dv">1</span>): </span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>        ret[<span class="bu">tuple</span>(doc[i:i<span class="op">+</span>w])] <span class="op">+=</span> <span class="dv">1</span> </span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>    <span class="cf">return</span> ret </span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>    </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>下面的代碼展示了將文檔A轉化為Shingle的多重集的結果。Shingle的大小分別被設置為1、2、4.</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:23.957220Z","iopub.status.busy":"2024-07-18T07:44:23.956761Z","iopub.status.idle":"2024-07-18T07:44:23.968688Z","shell.execute_reply":"2024-07-18T07:44:23.967515Z","shell.execute_reply.started":"2024-07-18T07:44:23.957163Z"}' data-execution_count="5" data-trusted="true">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="bu">print</span>(doc_to_shingle_bag(A, <span class="dv">1</span>))</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a><span class="bu">print</span>(doc_to_shingle_bag(A, <span class="dv">2</span>))</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a><span class="bu">print</span>(doc_to_shingle_bag(A, <span class="dv">4</span>))</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>defaultdict(&lt;class 'int'&gt;, {('a',): 3, ('rose',): 3, ('is',): 2})
+defaultdict(&lt;class 'int'&gt;, {('a', 'rose'): 3, ('rose', 'is'): 2, ('is', 'a'): 2})
+defaultdict(&lt;class 'int'&gt;, {('a', 'rose', 'is', 'a'): 2, ('rose', 'is', 'a', 'rose'): 2, ('is', 'a', 'rose', 'is'): 1})</code></pre>
+</div>
+</div>
+<p>其實不考慮Shingle的出現次數，將文檔視為Shingle的普通集合也是可行的。這樣的做法稍微粗糙一些，但效率更高。</p>
+<p><code>doc_to_shingles</code>函數提供了將文檔轉化為Shingle的集合的方法：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:23.970695Z","iopub.status.busy":"2024-07-18T07:44:23.970303Z","iopub.status.idle":"2024-07-18T07:44:23.982850Z","shell.execute_reply":"2024-07-18T07:44:23.981754Z","shell.execute_reply.started":"2024-07-18T07:44:23.970664Z"}' data-execution_count="6" data-trusted="true">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="kw">def</span> doc_to_shingles(doc: List[<span class="bu">str</span>], w: <span class="bu">int</span>) <span class="op">-&gt;</span> Set[Shingle]:</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>    <span class="cf">assert</span> w <span class="op">&gt;</span> <span class="dv">0</span>, w </span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>    ret <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(doc) <span class="op">-</span> w <span class="op">+</span> <span class="dv">1</span>): </span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a>        ret.add(<span class="bu">tuple</span>(doc[i:i<span class="op">+</span>w]))</span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a>    <span class="cf">return</span> ret </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:23.984791Z","iopub.status.busy":"2024-07-18T07:44:23.984422Z","iopub.status.idle":"2024-07-18T07:44:23.996802Z","shell.execute_reply":"2024-07-18T07:44:23.995594Z","shell.execute_reply.started":"2024-07-18T07:44:23.984759Z"}' data-execution_count="7" data-trusted="true">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="bu">print</span>(doc_to_shingles(A, <span class="dv">1</span>))</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a><span class="bu">print</span>(doc_to_shingles(A, <span class="dv">2</span>))</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a><span class="bu">print</span>(doc_to_shingles(A, <span class="dv">4</span>))</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{('a',), ('rose',), ('is',)}
+{('rose', 'is'), ('is', 'a'), ('a', 'rose')}
+{('is', 'a', 'rose', 'is'), ('a', 'rose', 'is', 'a'), ('rose', 'is', 'a', 'rose')}</code></pre>
+</div>
+</div>
+<p>MinHash方法<span class="citation" data-cites="minhash_1997"><sup>[<a href="#ref-minhash_1997" role="doc-biblioref">1</a>]</sup></span>提出使用交並比（又被稱為Jaccard相似度）來衡量文檔間的相似度（resemblance）。交並比（即交集大小與並集大小之比）的計算公式如下：</p>
+<p><span class="math display">\[
+J(A, B) = \frac{|A\cap B|} {|A\cup B|}
+\]</span></p>
+<p>如果文檔被表示為多重集的話，我們可以使用下面的函數來計算其相似度：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:23.998671Z","iopub.status.busy":"2024-07-18T07:44:23.998325Z","iopub.status.idle":"2024-07-18T07:44:24.010120Z","shell.execute_reply":"2024-07-18T07:44:24.008853Z","shell.execute_reply.started":"2024-07-18T07:44:23.998641Z"}' data-execution_count="8" data-trusted="true">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="kw">def</span> naive_resemblance_a(</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a>    shingles_a: defaultdict[Shingle, <span class="bu">int</span>],</span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>    shingles_b: defaultdict[Shingle, <span class="bu">int</span>]</span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>    i <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a>    u <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">set</span>(shingles_a.keys()) <span class="op">|</span> <span class="bu">set</span>(shingles_b.keys()):</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a>        i <span class="op">+=</span> <span class="bu">min</span>(shingles_a[k], shingles_b[k])</span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a>        u <span class="op">+=</span> <span class="bu">max</span>(shingles_a[k], shingles_b[k])</span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a>    <span class="cf">return</span> i <span class="op">/</span> <span class="bu">max</span>(u, <span class="fl">1e-6</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>下面的代碼對相似度計算結果進行的檢查，可以看到計算結果與論文<span class="citation" data-cites="minhash_1997"><sup>[<a href="#ref-minhash_1997" role="doc-biblioref">1</a>]</sup></span>保持一致。</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:24.011957Z","iopub.status.busy":"2024-07-18T07:44:24.011611Z","iopub.status.idle":"2024-07-18T07:44:24.029555Z","shell.execute_reply":"2024-07-18T07:44:24.028170Z","shell.execute_reply.started":"2024-07-18T07:44:24.011927Z"}' data-execution_count="9" data-trusted="true">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>eps <span class="op">=</span> <span class="fl">1e-6</span></span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>ret <span class="op">=</span> naive_resemblance_a(doc_to_shingle_bag(A, <span class="dv">1</span>), doc_to_shingle_bag(B, <span class="dv">1</span>)) </span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">abs</span>(ret <span class="op">-</span> <span class="fl">0.7</span>) <span class="op">&lt;</span> eps, ret</span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a>ret <span class="op">=</span> naive_resemblance_a(doc_to_shingle_bag(A, <span class="dv">2</span>), doc_to_shingle_bag(B, <span class="dv">2</span>)) </span>
+<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">abs</span>(ret <span class="op">-</span> <span class="fl">0.5</span>) <span class="op">&lt;</span> eps, ret</span>
+<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a></span>
+<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a>ret <span class="op">=</span> naive_resemblance_a(doc_to_shingle_bag(A, <span class="dv">3</span>), doc_to_shingle_bag(B, <span class="dv">3</span>)) </span>
+<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">abs</span>(ret <span class="op">-</span> <span class="fl">0.3</span>) <span class="op">&lt;</span> eps, ret</span>
+<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a></span>
+<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'All test cases passed.'</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>All test cases passed.</code></pre>
+</div>
+</div>
+<p>類似的，如下代碼提供了將文檔表示為Shingle的普通集合時，resemblance的計算方法，並作了檢查：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:24.036229Z","iopub.status.busy":"2024-07-18T07:44:24.035177Z","iopub.status.idle":"2024-07-18T07:44:24.043265Z","shell.execute_reply":"2024-07-18T07:44:24.042084Z","shell.execute_reply.started":"2024-07-18T07:44:24.036160Z"}' data-execution_count="10" data-trusted="true">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a><span class="kw">def</span> naive_resemblance_b(</span>
+<span id="cb13-2"><a aria-hidden="true" href="#cb13-2" tabindex="-1"></a>    shingles_a: Set[Shingle], </span>
+<span id="cb13-3"><a aria-hidden="true" href="#cb13-3" tabindex="-1"></a>    shingles_b: Set[Shingle]</span>
+<span id="cb13-4"><a aria-hidden="true" href="#cb13-4" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb13-5"><a aria-hidden="true" href="#cb13-5" tabindex="-1"></a>    intersection <span class="op">=</span> shingles_a <span class="op">&amp;</span> shingles_b </span>
+<span id="cb13-6"><a aria-hidden="true" href="#cb13-6" tabindex="-1"></a>    union <span class="op">=</span> shingles_a <span class="op">|</span> shingles_b </span>
+<span id="cb13-7"><a aria-hidden="true" href="#cb13-7" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">len</span>(intersection) <span class="op">/</span> <span class="bu">max</span>(<span class="bu">len</span>(union), <span class="fl">1e-6</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:24.044934Z","iopub.status.busy":"2024-07-18T07:44:24.044513Z","iopub.status.idle":"2024-07-18T07:44:24.058669Z","shell.execute_reply":"2024-07-18T07:44:24.057251Z","shell.execute_reply.started":"2024-07-18T07:44:24.044894Z"}' data-execution_count="11" data-trusted="true">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>eps <span class="op">=</span> <span class="fl">1e-6</span></span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>ret <span class="op">=</span> naive_resemblance_b(doc_to_shingles(A, <span class="dv">1</span>), doc_to_shingles(B, <span class="dv">1</span>)) </span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">abs</span>(ret <span class="op">-</span> <span class="fl">0.6</span>) <span class="op">&lt;</span> eps, ret </span>
+<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a>ret <span class="op">=</span> naive_resemblance_b(doc_to_shingles(A, <span class="dv">2</span>), doc_to_shingles(B, <span class="dv">2</span>)) </span>
+<span id="cb14-5"><a aria-hidden="true" href="#cb14-5" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">abs</span>(ret <span class="op">-</span> <span class="fl">0.5</span>) <span class="op">&lt;</span> eps, ret </span>
+<span id="cb14-6"><a aria-hidden="true" href="#cb14-6" tabindex="-1"></a>ret <span class="op">=</span> naive_resemblance_b(doc_to_shingles(A, <span class="dv">3</span>), doc_to_shingles(B, <span class="dv">3</span>)) </span>
+<span id="cb14-7"><a aria-hidden="true" href="#cb14-7" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">abs</span>(ret <span class="op">-</span> <span class="fl">0.42857142</span>) <span class="op">&lt;</span> eps, ret</span>
+<span id="cb14-8"><a aria-hidden="true" href="#cb14-8" tabindex="-1"></a></span>
+<span id="cb14-9"><a aria-hidden="true" href="#cb14-9" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'All test cases passed'</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>All test cases passed</code></pre>
+</div>
+</div>
+<p>將Shingle的大小記為<span class="math inline">\(w\)</span>，從以上的計算中我們可以看到<span class="math inline">\(w\)</span>越大，resemblance就对差異越敏感。</p>
+<p>至此，文章展示了如何將文檔轉化為Shingle的集合，並用交並比衡量文檔相似性。在實際程序中，我們可以為每一種可能的Shingle分配一個<code>id</code>，因此，我們可以認為文檔也可以表示為數字的集合。</p>
+<p>上文介紹的方法與MinHash論文<span class="citation" data-cites="minhash_1997"><sup>[<a href="#ref-minhash_1997" role="doc-biblioref">1</a>]</sup></span>保持一致。但這種方法仍是粗淺的。在實際的應用中，我們可以考慮是否去除stop words（即“a”, “the”，“of”等對文章語義貢獻較小的詞彙）。我們還可以考慮合併單詞的不同詞性，例如為“learn”、“learning”、“learned”賦予相同的id……初次之外，如何實現中文的分詞也是一個值得深入的問題。本文就不再就此作更多探討了。接下來，讓我們假設文檔已經被轉化為數字的集合。</p>
+</section>
+<section class="level2" data-number="2" id="用最小值估計文檔相似度">
+<h2 class="anchored" data-anchor-id="用最小值估計文檔相似度" data-number="2"><span class="header-section-number">2</span> 用最小值估計文檔相似度</h2>
+<p>前文我們介紹了如何將文檔表示為數字的集合，我們將這種操作記為<span class="math inline">\(S(A, w)\)</span>，其中<span class="math inline">\(A\)</span>為輸入的文檔，<span class="math inline">\(w\)</span>為shingle的尺寸。</p>
+<p>在後面的文章中，我們可以生成一些隨機集合用於實驗（跳過shingle操作）。建設變量<code>vocab_size</code>規定了集合的最大尺寸，下面的代碼能隨機為我們生成一些“文章”：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:24.097268Z","iopub.status.busy":"2024-07-18T07:44:24.096863Z","iopub.status.idle":"2024-07-18T07:44:24.107682Z","shell.execute_reply":"2024-07-18T07:44:24.106529Z","shell.execute_reply.started":"2024-07-18T07:44:24.097231Z"}' data-execution_count="12" data-trusted="true">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a aria-hidden="true" href="#cb16-1" tabindex="-1"></a>vocab_size <span class="op">=</span> <span class="dv">60000</span></span>
+<span id="cb16-2"><a aria-hidden="true" href="#cb16-2" tabindex="-1"></a><span class="kw">def</span> random_doc(k):</span>
+<span id="cb16-3"><a aria-hidden="true" href="#cb16-3" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">set</span>(random.sample(<span class="bu">range</span>(vocab_size), k))</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:24.110103Z","iopub.status.busy":"2024-07-18T07:44:24.109253Z","iopub.status.idle":"2024-07-18T07:44:24.125386Z","shell.execute_reply":"2024-07-18T07:44:24.123833Z","shell.execute_reply.started":"2024-07-18T07:44:24.110052Z"}' data-execution_count="13" data-trusted="true">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a aria-hidden="true" href="#cb17-1" tabindex="-1"></a>random_doc(<span class="dv">4</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>{25247, 49673, 55340, 58343}</code></pre>
+</div>
+</div>
+<p>如前所述，文章的相似度可以用交並比（又名Jaccard similarity）衡量。既然文章被表示為集合，那麼相似度的計算可以被實現為：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:24.127879Z","iopub.status.busy":"2024-07-18T07:44:24.127342Z","iopub.status.idle":"2024-07-18T07:44:24.137594Z","shell.execute_reply":"2024-07-18T07:44:24.136344Z","shell.execute_reply.started":"2024-07-18T07:44:24.127797Z"}' data-execution_count="14" data-trusted="true">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a aria-hidden="true" href="#cb19-1" tabindex="-1"></a><span class="kw">def</span> Jaccard_similarity(doc_a, doc_b):</span>
+<span id="cb19-2"><a aria-hidden="true" href="#cb19-2" tabindex="-1"></a>    doc_a <span class="op">=</span> <span class="bu">set</span>(doc_a)</span>
+<span id="cb19-3"><a aria-hidden="true" href="#cb19-3" tabindex="-1"></a>    doc_b <span class="op">=</span> <span class="bu">set</span>(doc_b)</span>
+<span id="cb19-4"><a aria-hidden="true" href="#cb19-4" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">len</span>(doc_a <span class="op">&amp;</span> doc_b) <span class="op">/</span> <span class="bu">len</span>(doc_a <span class="op">|</span> doc_b)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>假設<span class="math inline">\(\Omega\)</span>是所有可能的Shingle組成的集合。設<span class="math inline">\(\Omega\)</span>是一個有序集，因此我們可以比較<span class="math inline">\(\Omega\)</span>中所有元素的大小。對於<span class="math inline">\(\Omega\)</span>的子集<span class="math inline">\(W\)</span>，定義 <span class="math display">\[
+\text{MIN}_s(W) = \left\{
+    \begin{aligned}
+    &amp;\text{W中最小的s個元素}, &amp;\text{if} |W|\geq s; \\
+    &amp;W, &amp;\text{otherwise}
+    \end{aligned}
+\right.,
+\]</span> 定義 <span class="math display">\[
+M(A) = \text{MIN}_s(\pi(S(A, w))),
+\]</span> 其中<span class="math inline">\(\pi:\Omega\rightarrow\Omega\)</span>是定義在集合<span class="math inline">\(\Omega\)</span>上的一個“置換”（即將<span class="math inline">\(\Omega\)</span>集合作了一次“洗牌”，一一對應地將<span class="math inline">\(\Omega\)</span>中的一個元素映射到另一個元素）。</p>
+<p>那麼：</p>
+<div class="theorem" id="thm-minhash">
+<p><span class="theorem-title"><strong>定理 1 </strong></span><span id="eq-minhash"><span class="math display">\[
+\frac{|\text{MIN}_s(M(A)\cup M(B))\cap M(A) \cap M(B)|}{|\text{MIN}_s(M(A)\cup M(B)|}
+\tag{1}\]</span></span> 是文檔A和文檔B的resemblance的無偏估計（以置換操作<span class="math inline">\(\pi\)</span>是隨機挑選的為前提）。</p>
+<p><strong>證明</strong>： 顯然 <span class="math display">\[
+\begin{aligned}
+\text{MIN}_s(M(A)\cup M(B)) &amp;= \text{MIN}_s(\pi(S(A, w))\cup \pi(S(B, w))) \\
+&amp;= \text{MIN}_s (\pi(S(A, w)\cup S(B, w)))
+\end{aligned}
+\]</span> 設<span class="math inline">\(\alpha\)</span>是<span class="math inline">\(\pi(S(A, w)\cup S(B, w))\)</span>中最小的元素，那麼 <span class="math display">\[
+\begin{aligned}
+P(\alpha \in M(A) \cap M(B)) &amp;= P(\pi^{-1}(\alpha)\in S(A, w)\cap S(B, w)) \\
+&amp;= \frac{|S(A, w)\cap S(B, w)|}{|S(A, w)\cup S(B, w)|}
+\end{aligned}
+\]</span> 假設<span class="math inline">\(\alpha\)</span>是<span class="math inline">\(\pi(S(A, w)\cup S(B, w))\)</span>中第二小、第三小……的元素，上式同樣成立。因此命題成立。</p>
+<p>這實際上是一個關於“超幾何分佈”的期望的問題，你可以在網絡上查找<a href="https://math.stackexchange.com/questions/119145/expected-value-of-a-hypergeometric-random-variable">相關討論</a></p>
+</div>
+<p>以上介紹的命題就是MinHash工作的核心原理。接下來，文章使用代碼驗證這個命題，並演示相關函數是如何工作的。</p>
+<p>首先，我們先實現<span class="math inline">\(\text{MIN}_s\)</span>函數：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:24.461034Z","iopub.status.busy":"2024-07-18T07:44:24.460686Z","iopub.status.idle":"2024-07-18T07:44:24.467586Z","shell.execute_reply":"2024-07-18T07:44:24.466096Z","shell.execute_reply.started":"2024-07-18T07:44:24.461000Z"}' data-execution_count="17" data-trusted="true">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a aria-hidden="true" href="#cb20-1" tabindex="-1"></a><span class="kw">def</span> min_s(doc, s):</span>
+<span id="cb20-2"><a aria-hidden="true" href="#cb20-2" tabindex="-1"></a>    doc <span class="op">=</span> np.asarray(<span class="bu">list</span>(doc))</span>
+<span id="cb20-3"><a aria-hidden="true" href="#cb20-3" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>find_top_k(<span class="op">-</span>doc, s) <span class="op">\</span></span>
+<span id="cb20-4"><a aria-hidden="true" href="#cb20-4" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(doc) <span class="op">&gt;</span> s <span class="op">\</span></span>
+<span id="cb20-5"><a aria-hidden="true" href="#cb20-5" tabindex="-1"></a>        <span class="cf">else</span> doc</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>min_s</code>的實現使用到了<code>find_top_k</code>函數。我隱藏了它的實現，實際上<code>find_top_k</code>是一個返回數組中最大的<span class="math inline">\(k\)</span>個數的函數，可以用排序法或者quick select算法實現。</p>
+<p>假設我們有一個大小為<span class="math inline">\(4\)</span>的集合作為輸入，那麼<code>min_s</code>取<span class="math inline">\(s=2\)</span>時的輸出為：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:24.469839Z","iopub.status.busy":"2024-07-18T07:44:24.469478Z","iopub.status.idle":"2024-07-18T07:44:24.484160Z","shell.execute_reply":"2024-07-18T07:44:24.482926Z","shell.execute_reply.started":"2024-07-18T07:44:24.469805Z"}' data-execution_count="18" data-trusted="true">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a aria-hidden="true" href="#cb21-1" tabindex="-1"></a>d <span class="op">=</span> random_doc(<span class="dv">4</span>)</span>
+<span id="cb21-2"><a aria-hidden="true" href="#cb21-2" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'document:'</span>, d)</span>
+<span id="cb21-3"><a aria-hidden="true" href="#cb21-3" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'min_s(document):'</span>, min_s(d, <span class="dv">2</span>))</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>document: {37120, 22297, 40130, 50311}
+min_s(document): [37120 22297]</code></pre>
+</div>
+</div>
+<p>MinHash中，隨機性的來源是對置換操作<span class="math inline">\(\pi\)</span>的採樣。下面的代碼隨機初始化了一些候選的置換操作，可以作為<span class="math inline">\(\pi\)</span>的候選。</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:24.486087Z","iopub.status.busy":"2024-07-18T07:44:24.485651Z","iopub.status.idle":"2024-07-18T07:45:31.477787Z","shell.execute_reply":"2024-07-18T07:45:31.476355Z","shell.execute_reply.started":"2024-07-18T07:44:24.486041Z"}' data-execution_count="19" data-trusted="true">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a aria-hidden="true" href="#cb23-1" tabindex="-1"></a>random_permutations <span class="op">=</span> []</span>
+<span id="cb23-2"><a aria-hidden="true" href="#cb23-2" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1000</span>):</span>
+<span id="cb23-3"><a aria-hidden="true" href="#cb23-3" tabindex="-1"></a>    indices <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(vocab_size))</span>
+<span id="cb23-4"><a aria-hidden="true" href="#cb23-4" tabindex="-1"></a>    random.shuffle(indices)</span>
+<span id="cb23-5"><a aria-hidden="true" href="#cb23-5" tabindex="-1"></a>    random_permutations.append(indices)</span>
+<span id="cb23-6"><a aria-hidden="true" href="#cb23-6" tabindex="-1"></a>    </span>
+<span id="cb23-7"><a aria-hidden="true" href="#cb23-7" tabindex="-1"></a>random_permutation_index <span class="op">=</span> <span class="dv">0</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:45:31.480123Z","iopub.status.busy":"2024-07-18T07:45:31.479752Z","iopub.status.idle":"2024-07-18T07:45:31.486214Z","shell.execute_reply":"2024-07-18T07:45:31.485016Z","shell.execute_reply.started":"2024-07-18T07:45:31.480090Z"}' data-execution_count="20" data-trusted="true">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a aria-hidden="true" href="#cb24-1" tabindex="-1"></a><span class="kw">def</span> get_random_permutation():</span>
+<span id="cb24-2"><a aria-hidden="true" href="#cb24-2" tabindex="-1"></a>    <span class="kw">global</span> random_permutation_index</span>
+<span id="cb24-3"><a aria-hidden="true" href="#cb24-3" tabindex="-1"></a>    indices <span class="op">=</span> random_permutations[random_permutation_index]</span>
+<span id="cb24-4"><a aria-hidden="true" href="#cb24-4" tabindex="-1"></a>    random_permutation_index <span class="op">+=</span> <span class="dv">1</span> </span>
+<span id="cb24-5"><a aria-hidden="true" href="#cb24-5" tabindex="-1"></a>    random_permutation_index <span class="op">%=</span> <span class="bu">len</span>(random_permutations)</span>
+<span id="cb24-6"><a aria-hidden="true" href="#cb24-6" tabindex="-1"></a>    pi <span class="op">=</span> <span class="kw">lambda</span> x: [indices[i] <span class="cf">for</span> i <span class="kw">in</span> x]</span>
+<span id="cb24-7"><a aria-hidden="true" href="#cb24-7" tabindex="-1"></a>    <span class="cf">return</span> pi    </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>接著實現<span class="math inline">\(M(A)\)</span>函數。<span class="math inline">\(M(A) = \text{MIN}_s(\pi(S(A, w)))\)</span>，其代碼實現為：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:45:31.488823Z","iopub.status.busy":"2024-07-18T07:45:31.487908Z","iopub.status.idle":"2024-07-18T07:45:31.502397Z","shell.execute_reply":"2024-07-18T07:45:31.501086Z","shell.execute_reply.started":"2024-07-18T07:45:31.488776Z"}' data-execution_count="21" data-trusted="true">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a aria-hidden="true" href="#cb25-1" tabindex="-1"></a><span class="kw">def</span> m(pi, doc, s):</span>
+<span id="cb25-2"><a aria-hidden="true" href="#cb25-2" tabindex="-1"></a>    <span class="cf">return</span> min_s(pi(doc), s)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>利用<code>min_s</code>和<code>m</code>函數，resemblance計算的實現就直觀明了了。根據<a href="#eq-minhash">公式 1</a>，resemblance可以用如下代碼估計：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:45:31.504355Z","iopub.status.busy":"2024-07-18T07:45:31.503860Z","iopub.status.idle":"2024-07-18T07:45:31.517752Z","shell.execute_reply":"2024-07-18T07:45:31.516517Z","shell.execute_reply.started":"2024-07-18T07:45:31.504304Z"}' data-execution_count="22" data-trusted="true">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a aria-hidden="true" href="#cb26-1" tabindex="-1"></a><span class="kw">def</span> estimate_resemblance(pi, doc_a, doc_b, s):</span>
+<span id="cb26-2"><a aria-hidden="true" href="#cb26-2" tabindex="-1"></a>    ma <span class="op">=</span> <span class="bu">set</span>(m(pi, doc_a, s))</span>
+<span id="cb26-3"><a aria-hidden="true" href="#cb26-3" tabindex="-1"></a>    mb <span class="op">=</span> <span class="bu">set</span>(m(pi, doc_b, s))</span>
+<span id="cb26-4"><a aria-hidden="true" href="#cb26-4" tabindex="-1"></a>    tmp <span class="op">=</span> <span class="bu">set</span>(min_s(ma <span class="op">|</span> mb, s))</span>
+<span id="cb26-5"><a aria-hidden="true" href="#cb26-5" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">len</span>(tmp <span class="op">&amp;</span> ma <span class="op">&amp;</span> mb) <span class="op">/</span> <span class="bu">len</span>(tmp)   </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>下面的程序檢驗了<code>estimate_resemblance</code>函數對resemblance的估計結果與真值（Jaccard similarity）的一致性。實驗表明MinHash所提出的方法確實能比較好地對Jaccard similarity進行估計。</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:45:31.519625Z","iopub.status.busy":"2024-07-18T07:45:31.519223Z","iopub.status.idle":"2024-07-18T07:47:37.849999Z","shell.execute_reply":"2024-07-18T07:47:37.848801Z","shell.execute_reply.started":"2024-07-18T07:45:31.519586Z"}' data-execution_count="23" data-trusted="true">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a aria-hidden="true" href="#cb27-1" tabindex="-1"></a>errors <span class="op">=</span> []</span>
+<span id="cb27-2"><a aria-hidden="true" href="#cb27-2" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">8</span>):</span>
+<span id="cb27-3"><a aria-hidden="true" href="#cb27-3" tabindex="-1"></a>    length_a <span class="op">=</span> random.randint(<span class="dv">10000</span>, <span class="dv">30000</span>)</span>
+<span id="cb27-4"><a aria-hidden="true" href="#cb27-4" tabindex="-1"></a>    length_b <span class="op">=</span> random.randint(<span class="dv">10000</span>, <span class="dv">30000</span>)</span>
+<span id="cb27-5"><a aria-hidden="true" href="#cb27-5" tabindex="-1"></a>    doc_a <span class="op">=</span> random_doc(length_a)</span>
+<span id="cb27-6"><a aria-hidden="true" href="#cb27-6" tabindex="-1"></a>    doc_b <span class="op">=</span> random_doc(length_b)</span>
+<span id="cb27-7"><a aria-hidden="true" href="#cb27-7" tabindex="-1"></a>    sim_j <span class="op">=</span> Jaccard_similarity(doc_a, doc_b)</span>
+<span id="cb27-8"><a aria-hidden="true" href="#cb27-8" tabindex="-1"></a>    </span>
+<span id="cb27-9"><a aria-hidden="true" href="#cb27-9" tabindex="-1"></a>    num_samples <span class="op">=</span> <span class="dv">256</span></span>
+<span id="cb27-10"><a aria-hidden="true" href="#cb27-10" tabindex="-1"></a>    samples <span class="op">=</span> []</span>
+<span id="cb27-11"><a aria-hidden="true" href="#cb27-11" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(num_samples):</span>
+<span id="cb27-12"><a aria-hidden="true" href="#cb27-12" tabindex="-1"></a>        pi <span class="op">=</span> get_random_permutation()</span>
+<span id="cb27-13"><a aria-hidden="true" href="#cb27-13" tabindex="-1"></a>        s <span class="op">=</span> estimate_resemblance(pi, doc_a, doc_b, s<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb27-14"><a aria-hidden="true" href="#cb27-14" tabindex="-1"></a>        samples.append(s)</span>
+<span id="cb27-15"><a aria-hidden="true" href="#cb27-15" tabindex="-1"></a>    resemblance_est <span class="op">=</span> np.mean(samples)</span>
+<span id="cb27-16"><a aria-hidden="true" href="#cb27-16" tabindex="-1"></a><span class="co">#     assert abs(sim_j - resemblance_est) &lt; 1e-2</span></span>
+<span id="cb27-17"><a aria-hidden="true" href="#cb27-17" tabindex="-1"></a>    errors.append((sim_j <span class="op">-</span> resemblance_est))</span>
+<span id="cb27-18"><a aria-hidden="true" href="#cb27-18" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'</span><span class="sc">{}</span><span class="st">：</span><span class="sc">{:.4f}</span><span class="st"> ≈ </span><span class="sc">{:.4f}</span><span class="st">'</span>.<span class="bu">format</span>(i <span class="op">+</span> <span class="dv">1</span>, sim_j, resemblance_est))</span>
+<span id="cb27-19"><a aria-hidden="true" href="#cb27-19" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Average error:'</span>, np.mean(np.<span class="bu">abs</span>(errors)))    </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1：0.2656 ≈ 0.2516
+2：0.2224 ≈ 0.2391
+3：0.1757 ≈ 0.1734
+4：0.2111 ≈ 0.2066
+5：0.2557 ≈ 0.2387
+6：0.2848 ≈ 0.2785
+7：0.1928 ≈ 0.1980
+8：0.1944 ≈ 0.1961
+Average error: 0.008473042802044726</code></pre>
+</div>
+</div>
+<p>後續的方法<span class="citation" data-cites="minwise_2000"><sup>[<a href="#ref-minwise_2000" role="doc-biblioref">2</a>]</sup></span>往往採用<span class="math inline">\(s=1\)</span>的MinHash的特例。在<span class="math inline">\(s=1\)</span>時，公式<a href="#eq-minhash">公式 1</a>的含義就變為：</p>
+<blockquote class="blockquote">
+<p>設<span class="math inline">\(A\)</span>和<span class="math inline">\(B\)</span>為待比較的輸入文檔，<span class="math inline">\(\pi\)</span>為隨機採樣的置換。<span class="math inline">\(a=\min(\pi(A))\)</span>，<span class="math inline">\(b=\min(\pi(B))\)</span>，<span class="math inline">\(J(A, B) = P(a=b)\)</span>.</p>
+</blockquote>
+<p>讀者可以自行通過實驗驗證：當<span class="math inline">\(s=1\)</span>時，MinHash也能很好地估計文檔的相似度。</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:47:37.852269Z","iopub.status.busy":"2024-07-18T07:47:37.851798Z","iopub.status.idle":"2024-07-18T07:49:51.009849Z","shell.execute_reply":"2024-07-18T07:49:51.008531Z","shell.execute_reply.started":"2024-07-18T07:47:37.852225Z"}' data-execution_count="24" data-trusted="true">
+<div class="cell-output cell-output-stdout">
+<pre><code>1：0.1397 ≈ 0.1328
+2：0.1931 ≈ 0.2227
+3：0.2143 ≈ 0.1992
+4：0.1561 ≈ 0.1328
+5：0.1908 ≈ 0.1641
+6：0.1904 ≈ 0.1680
+7：0.1810 ≈ 0.1914
+8：0.2895 ≈ 0.3008
+Average error: 0.018207159673676865</code></pre>
+</div>
+</div>
+</section>
+<section class="level2" data-number="3" id="哈希函数">
+<h2 class="anchored" data-anchor-id="哈希函数" data-number="3"><span class="header-section-number">3</span> 哈希函数</h2>
+<p>前文已經介紹了MinHash的核心思想，即基於隨機採樣的置換操作<span class="math inline">\(\pi\)</span>選取最小的<span class="math inline">\(s\)</span>個元素，根據這些元素是否相同，可以估計輸入文檔的相似度。但是隨機置換<span class="math inline">\(\pi\)</span>的生成比較耗時。考慮到shingle集合一般可以通過哈希函數<span class="math inline">\(h(\cdot)\)</span>轉化為範圍有限的數字，然後這些數字經過置換操作<span class="math inline">\(\pi:\Omega\rightarrow\Omega\)</span>在變換為<span class="math inline">\(\Omega\)</span>內的其它數字，我們可以假設哈希函數<span class="math inline">\(h\)</span>內部已經實現了置換操作，從而將<span class="math inline">\(\pi\)</span>省略掉。這種假設的前提是<span class="math inline">\(h\)</span>的哈希碰撞很少。</p>
+<p>以下代碼實現了一種哈希函數： <span class="math display">\[
+h_i(x) = (a_i x + b_i) \mod P
+\]</span> ，其實現參考了<a href="">chrisjmccormick的开源代码</a>。</p>
+<p>該哈希函數中，<span class="math inline">\(a_i\)</span>和<span class="math inline">\(b_i\)</span>分別是隨機採樣的係數，這使得哈希函數<span class="math inline">\(h_i\)</span>具有隨機性，對應於原<span class="math inline">\(\pi\)</span>的隨機性。</p>
+<p>首先，我們需要隨機選取<span class="math inline">\(a_i\)</span>和<span class="math inline">\(b_i\)</span>，在代碼中對應於<code>coeff_a</code>和<code>coeff_b</code>. 待要生成的哈希函數的數量記為<code>num_hashes</code>.</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T08:09:40.400029Z","iopub.status.busy":"2024-07-18T08:09:40.399254Z","iopub.status.idle":"2024-07-18T08:09:40.409853Z","shell.execute_reply":"2024-07-18T08:09:40.408702Z","shell.execute_reply.started":"2024-07-18T08:09:40.399988Z"}' data-execution_count="25" data-trusted="true">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a aria-hidden="true" href="#cb30-1" tabindex="-1"></a>max_shingle_ID <span class="op">=</span> <span class="dv">2</span><span class="op">**</span><span class="dv">32</span><span class="op">-</span><span class="dv">1</span></span>
+<span id="cb30-2"><a aria-hidden="true" href="#cb30-2" tabindex="-1"></a>next_prime <span class="op">=</span> <span class="dv">4294967311</span></span>
+<span id="cb30-3"><a aria-hidden="true" href="#cb30-3" tabindex="-1"></a>num_hashes <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb30-4"><a aria-hidden="true" href="#cb30-4" tabindex="-1"></a></span>
+<span id="cb30-5"><a aria-hidden="true" href="#cb30-5" tabindex="-1"></a><span class="kw">def</span> pick_random_coeffs(k):</span>
+<span id="cb30-6"><a aria-hidden="true" href="#cb30-6" tabindex="-1"></a>    rand_list <span class="op">=</span> []</span>
+<span id="cb30-7"><a aria-hidden="true" href="#cb30-7" tabindex="-1"></a>  </span>
+<span id="cb30-8"><a aria-hidden="true" href="#cb30-8" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(k):</span>
+<span id="cb30-9"><a aria-hidden="true" href="#cb30-9" tabindex="-1"></a>        rand_index <span class="op">=</span> random.randint(<span class="dv">0</span>, max_shingle_ID) </span>
+<span id="cb30-10"><a aria-hidden="true" href="#cb30-10" tabindex="-1"></a></span>
+<span id="cb30-11"><a aria-hidden="true" href="#cb30-11" tabindex="-1"></a>        <span class="cf">while</span> rand_index <span class="kw">in</span> rand_list:</span>
+<span id="cb30-12"><a aria-hidden="true" href="#cb30-12" tabindex="-1"></a>            rand_index <span class="op">=</span> random.randint(<span class="dv">0</span>, max_shingle_ID) </span>
+<span id="cb30-13"><a aria-hidden="true" href="#cb30-13" tabindex="-1"></a></span>
+<span id="cb30-14"><a aria-hidden="true" href="#cb30-14" tabindex="-1"></a>        rand_list.append(rand_index)</span>
+<span id="cb30-15"><a aria-hidden="true" href="#cb30-15" tabindex="-1"></a>    </span>
+<span id="cb30-16"><a aria-hidden="true" href="#cb30-16" tabindex="-1"></a>    <span class="cf">return</span> rand_list</span>
+<span id="cb30-17"><a aria-hidden="true" href="#cb30-17" tabindex="-1"></a></span>
+<span id="cb30-18"><a aria-hidden="true" href="#cb30-18" tabindex="-1"></a>coeff_a <span class="op">=</span> pick_random_coeffs(num_hashes)</span>
+<span id="cb30-19"><a aria-hidden="true" href="#cb30-19" tabindex="-1"></a>coeff_b <span class="op">=</span> pick_random_coeffs(num_hashes)</span>
+<span id="cb30-20"><a aria-hidden="true" href="#cb30-20" tabindex="-1"></a><span class="bu">print</span>(coeff_a[:<span class="dv">8</span>], coeff_b[:<span class="dv">8</span>])</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1725382162, 4099968420, 181011877, 2646584740, 2425745411, 1382556146, 2811366918, 584506969] [4024735497, 432468821, 4092063574, 1311785557, 3815225036, 3844735591, 2426666110, 66760331]</code></pre>
+</div>
+</div>
+<p>那麼，記錄了<code>num_hashes</code>條隨機哈希函數的列表可以實現為：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T08:13:23.581080Z","iopub.status.busy":"2024-07-18T08:13:23.580635Z","iopub.status.idle":"2024-07-18T08:13:23.599809Z","shell.execute_reply":"2024-07-18T08:13:23.598532Z","shell.execute_reply.started":"2024-07-18T08:13:23.581042Z"}' data-execution_count="26" data-trusted="true">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a aria-hidden="true" href="#cb32-1" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> partial </span>
+<span id="cb32-2"><a aria-hidden="true" href="#cb32-2" tabindex="-1"></a></span>
+<span id="cb32-3"><a aria-hidden="true" href="#cb32-3" tabindex="-1"></a>hash_functions <span class="op">=</span> [</span>
+<span id="cb32-4"><a aria-hidden="true" href="#cb32-4" tabindex="-1"></a>    partial(</span>
+<span id="cb32-5"><a aria-hidden="true" href="#cb32-5" tabindex="-1"></a>        <span class="kw">lambda</span> x, i: (coeff_a[i] <span class="op">*</span> x <span class="op">+</span> coeff_b[i]) <span class="op">%</span> next_prime,</span>
+<span id="cb32-6"><a aria-hidden="true" href="#cb32-6" tabindex="-1"></a>        i<span class="op">=</span>i</span>
+<span id="cb32-7"><a aria-hidden="true" href="#cb32-7" tabindex="-1"></a>    )</span>
+<span id="cb32-8"><a aria-hidden="true" href="#cb32-8" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_hashes)</span>
+<span id="cb32-9"><a aria-hidden="true" href="#cb32-9" tabindex="-1"></a>]</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<!-- 不能写成：
+```python
+hash_functions = [
+    lambda x: (coeff_a[i] * x + coeff_b[i]) % next_prime 
+    for i in range(num_hashes)
+]
+``` -->
+<p>以下是一些例子，說明不同的哈希函數對於同樣的輸入，輸出是不同的：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T08:13:23.750910Z","iopub.status.busy":"2024-07-18T08:13:23.750457Z","iopub.status.idle":"2024-07-18T08:13:23.759810Z","shell.execute_reply":"2024-07-18T08:13:23.758487Z","shell.execute_reply.started":"2024-07-18T08:13:23.750874Z"}' data-execution_count="27" data-trusted="true">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a aria-hidden="true" href="#cb33-1" tabindex="-1"></a>hash_functions[<span class="dv">0</span>](<span class="dv">0</span>), hash_functions[<span class="dv">1</span>](<span class="dv">0</span>), hash_functions[<span class="dv">0</span>](<span class="dv">0</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<pre><code>(4024735497, 432468821, 4024735497)</code></pre>
+</div>
+</div>
+<p>於是，對於輸入文檔<code>doc</code>，我們可以對應應用<code>num_hashes</code>條哈希函數，得到對應的哈希值作為它的“signature”。</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T08:14:18.679893Z","iopub.status.busy":"2024-07-18T08:14:18.679464Z","iopub.status.idle":"2024-07-18T08:14:18.686037Z","shell.execute_reply":"2024-07-18T08:14:18.684757Z","shell.execute_reply.started":"2024-07-18T08:14:18.679860Z"}' data-execution_count="28" data-trusted="true">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a aria-hidden="true" href="#cb35-1" tabindex="-1"></a><span class="kw">def</span> get_min_hash(doc):</span>
+<span id="cb35-2"><a aria-hidden="true" href="#cb35-2" tabindex="-1"></a>    hash_codes <span class="op">=</span> [</span>
+<span id="cb35-3"><a aria-hidden="true" href="#cb35-3" tabindex="-1"></a>        <span class="bu">min</span>((hash_function(x) <span class="cf">for</span> x <span class="kw">in</span> doc))</span>
+<span id="cb35-4"><a aria-hidden="true" href="#cb35-4" tabindex="-1"></a>        <span class="cf">for</span> hash_function <span class="kw">in</span> hash_functions </span>
+<span id="cb35-5"><a aria-hidden="true" href="#cb35-5" tabindex="-1"></a>    ]</span>
+<span id="cb35-6"><a aria-hidden="true" href="#cb35-6" tabindex="-1"></a>    <span class="cf">return</span> hash_codes </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+</div>
+<p>根據<a href="#eq-minhash">公式 1</a>，signature的漢明距離（即數一數不同的哈希值的數量）就衡量了兩篇文檔的距離。讓我們用實驗來驗證這一點：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T08:19:26.973786Z","iopub.status.busy":"2024-07-18T08:19:26.973378Z","iopub.status.idle":"2024-07-18T08:19:49.686961Z","shell.execute_reply":"2024-07-18T08:19:49.685680Z","shell.execute_reply.started":"2024-07-18T08:19:26.973754Z"}' data-execution_count="29" data-trusted="true">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a aria-hidden="true" href="#cb36-1" tabindex="-1"></a>random_docs <span class="op">=</span> [random_doc(random.randint(<span class="dv">10000</span>, <span class="dv">30000</span>)) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">8</span>)]</span>
+<span id="cb36-2"><a aria-hidden="true" href="#cb36-2" tabindex="-1"></a>hash_codes <span class="op">=</span> [get_min_hash(doc) <span class="cf">for</span> doc <span class="kw">in</span> random_docs]</span>
+<span id="cb36-3"><a aria-hidden="true" href="#cb36-3" tabindex="-1"></a></span>
+<span id="cb36-4"><a aria-hidden="true" href="#cb36-4" tabindex="-1"></a>errors <span class="op">=</span> [] </span>
+<span id="cb36-5"><a aria-hidden="true" href="#cb36-5" tabindex="-1"></a>total_time_j <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb36-6"><a aria-hidden="true" href="#cb36-6" tabindex="-1"></a>total_time_min_hash <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb36-7"><a aria-hidden="true" href="#cb36-7" tabindex="-1"></a></span>
+<span id="cb36-8"><a aria-hidden="true" href="#cb36-8" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(random_docs)):</span>
+<span id="cb36-9"><a aria-hidden="true" href="#cb36-9" tabindex="-1"></a>    doc_a <span class="op">=</span> random_docs[i]</span>
+<span id="cb36-10"><a aria-hidden="true" href="#cb36-10" tabindex="-1"></a>    min_hash_a <span class="op">=</span> hash_codes[i]</span>
+<span id="cb36-11"><a aria-hidden="true" href="#cb36-11" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(i <span class="op">+</span> <span class="dv">1</span>, <span class="bu">len</span>(random_docs)):</span>
+<span id="cb36-12"><a aria-hidden="true" href="#cb36-12" tabindex="-1"></a>        doc_b <span class="op">=</span> random_docs[j]</span>
+<span id="cb36-13"><a aria-hidden="true" href="#cb36-13" tabindex="-1"></a>        min_hash_b <span class="op">=</span> hash_codes[j]</span>
+<span id="cb36-14"><a aria-hidden="true" href="#cb36-14" tabindex="-1"></a>        </span>
+<span id="cb36-15"><a aria-hidden="true" href="#cb36-15" tabindex="-1"></a>        t <span class="op">=</span> time.time()</span>
+<span id="cb36-16"><a aria-hidden="true" href="#cb36-16" tabindex="-1"></a>        sim_j <span class="op">=</span> Jaccard_similarity(doc_a, doc_b)</span>
+<span id="cb36-17"><a aria-hidden="true" href="#cb36-17" tabindex="-1"></a>        total_time_j <span class="op">+=</span> time.time() <span class="op">-</span> t </span>
+<span id="cb36-18"><a aria-hidden="true" href="#cb36-18" tabindex="-1"></a>        </span>
+<span id="cb36-19"><a aria-hidden="true" href="#cb36-19" tabindex="-1"></a>        t <span class="op">=</span> time.time()</span>
+<span id="cb36-20"><a aria-hidden="true" href="#cb36-20" tabindex="-1"></a>        resemblance_est <span class="op">=</span> np.mean([a <span class="op">==</span> b <span class="cf">for</span> a, b <span class="kw">in</span> <span class="bu">zip</span>(min_hash_a, min_hash_b)])</span>
+<span id="cb36-21"><a aria-hidden="true" href="#cb36-21" tabindex="-1"></a>        total_time_min_hash <span class="op">+=</span> time.time() <span class="op">-</span> t </span>
+<span id="cb36-22"><a aria-hidden="true" href="#cb36-22" tabindex="-1"></a>        </span>
+<span id="cb36-23"><a aria-hidden="true" href="#cb36-23" tabindex="-1"></a>        errors.append((sim_j <span class="op">-</span> resemblance_est))</span>
+<span id="cb36-24"><a aria-hidden="true" href="#cb36-24" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'</span><span class="sc">{}</span><span class="st">-</span><span class="sc">{}</span><span class="st">：</span><span class="sc">{:.4f}</span><span class="st"> ≈ </span><span class="sc">{:.4f}</span><span class="st">'</span>.<span class="bu">format</span>(i, j, sim_j, resemblance_est))</span>
+<span id="cb36-25"><a aria-hidden="true" href="#cb36-25" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Average error:'</span>, np.mean(np.<span class="bu">abs</span>(errors)))   </span>
+<span id="cb36-26"><a aria-hidden="true" href="#cb36-26" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Time Difference: </span><span class="sc">{:.4}</span><span class="st">s:</span><span class="sc">{:.4}</span><span class="st">s'</span>.<span class="bu">format</span>(total_time_j, total_time_min_hash))</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0-1：0.1899 ≈ 0.2031
+0-2：0.1655 ≈ 0.1406
+0-3：0.2121 ≈ 0.2812
+0-4：0.1410 ≈ 0.1562
+0-5：0.1861 ≈ 0.1094
+0-6：0.1992 ≈ 0.1562
+0-7：0.1130 ≈ 0.1250
+1-2：0.1965 ≈ 0.1719
+1-3：0.2701 ≈ 0.2812
+1-4：0.1685 ≈ 0.1250
+1-5：0.2263 ≈ 0.2188
+1-6：0.2462 ≈ 0.2109
+1-7：0.1313 ≈ 0.1406
+2-3：0.2153 ≈ 0.2422
+2-4：0.1431 ≈ 0.1328
+2-5：0.1900 ≈ 0.1719
+2-6：0.2063 ≈ 0.2109
+2-7：0.1174 ≈ 0.1484
+3-4：0.1840 ≈ 0.1328
+3-5：0.2553 ≈ 0.2031
+3-6：0.2885 ≈ 0.2188
+3-7：0.1425 ≈ 0.1484
+4-5：0.1633 ≈ 0.1406
+4-6：0.1732 ≈ 0.1484
+4-7：0.1084 ≈ 0.1250
+5-6：0.2399 ≈ 0.1875
+5-7：0.1304 ≈ 0.1953
+6-7：0.1370 ≈ 0.1484
+Average error: 0.03030614381569787
+Time Difference: 0.1847s:0.09761s</code></pre>
+</div>
+</div>
+<p>我們注意到該方法確實能大體反應文檔間的Jaccard similarity。如果增大<code>num_hashes</code>，計算的結果可以變得更加準確。</p>
+<p>此外，還可以看到比較signature的方法比直接計算Jaccard similarity要快上不少，這是因為<strong>signature的計算可以提前準備</strong>，而比較signature的漢明距離是很快的。</p>
+<p>儘管將文檔轉化為Signature的方式加速了文檔的兩兩比較，但這種方法的時間複雜度還是<span class="math inline">\(O(n^2)\)</span>. 面對海量的大規模數據，有沒有能夠避免兩兩比對的，快速找出相似數據的方法呢？</p>
+</section>
+<section class="level2" data-number="4" id="局部敏感哈希">
+<h2 class="anchored" data-anchor-id="局部敏感哈希" data-number="4"><span class="header-section-number">4</span> 局部敏感哈希</h2>
+<p>如前所述，我們希望避免大量數據將兩兩比對的情況。已知每個文檔都可以表示為一個由哈希值構成的列表，我們可以考慮两种简单的做法：</p>
+<ol type="1">
+<li>将所有哈希值完全一致的文档挑出来；</li>
+<li>只要有一个任意位置，在列表的這個位置上哈希值重复，就将這些文檔視為重複；</li>
+</ol>
+<p>首先注意到這兩種方法的時間複雜度都小於<span class="math inline">\(O(n^2)\)</span>，因為挑出哈希值重複的數據可以通過<code>dict</code>等數據結構實現；其次，这两种做法都是极端的。随着哈希函数数量的增加，1将挑不出任何数据，而2将返回所有数据——尽管如此，结合1和2，我们能得到一种折衷的，能实际应用的方案。</p>
+<p>局部敏感哈希（Locality-Sensitive Hashing，LSH）就是這樣一種，實現1和2的折中的技術。LSH方法首先要求相似的文檔的哈希值有更大的概率相同，反之則希望它們大概率不同；其次，LSH方法將哈希函數分組，並鼓勵相似的文檔落入相同的bucket內。</p>
+<p>接下來我們討論哈希函數的分組。一組哈希函數被稱為一個band。 设<span class="math inline">\(b\)</span>为一个band内hash函数的数量，<span class="math inline">\(r\)</span>為band的數量，於是使用到的哈希函數的總數為<span class="math inline">\(t=rb\)</span>. 那麼對於隨機選取的兩個文檔，它們的相似度為<span class="math inline">\(p\)</span>；那麼在使用MinHash的前提下，其哈希值相同的概率也為<span class="math inline">\(p\)</span>。有如下等式成立： <span class="math display">\[
+\begin{aligned}
+\text{一个band内所有哈希值都相同的概率} &amp;= p^r \\
+\text{一个band内存在不同哈希值的概率} &amp;= 1 - p^r\\
+\text{所有band都不相同的概率为} &amp;= (1 - p^r)^b \\
+\text{至少存在一个完全相同的band的概率为} &amp;= f(p) = 1 - (1 - p^r)^b \\
+\end{aligned}
+\]</span> 將這個函數繪製出來，我們可以看到這樣的圖像：</p>
+<div class="cell" data-execution='{"iopub.execute_input":"2024-07-19T06:38:49.161980Z","iopub.status.busy":"2024-07-19T06:38:49.161295Z","iopub.status.idle":"2024-07-19T06:38:49.444812Z","shell.execute_reply":"2024-07-19T06:38:49.443708Z","shell.execute_reply.started":"2024-07-19T06:38:49.161941Z"}' data-execution_count="30" data-trusted="true">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a aria-hidden="true" href="#cb38-1" tabindex="-1"></a>t <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb38-2"><a aria-hidden="true" href="#cb38-2" tabindex="-1"></a>rb_list <span class="op">=</span> [</span>
+<span id="cb38-3"><a aria-hidden="true" href="#cb38-3" tabindex="-1"></a>    [<span class="dv">32</span>, <span class="dv">4</span>],</span>
+<span id="cb38-4"><a aria-hidden="true" href="#cb38-4" tabindex="-1"></a>    [<span class="dv">16</span>, <span class="dv">8</span>],</span>
+<span id="cb38-5"><a aria-hidden="true" href="#cb38-5" tabindex="-1"></a>    [<span class="dv">8</span>, <span class="dv">16</span>],</span>
+<span id="cb38-6"><a aria-hidden="true" href="#cb38-6" tabindex="-1"></a>    [<span class="dv">4</span>, <span class="dv">32</span>],</span>
+<span id="cb38-7"><a aria-hidden="true" href="#cb38-7" tabindex="-1"></a>]</span>
+<span id="cb38-8"><a aria-hidden="true" href="#cb38-8" tabindex="-1"></a>plt.figure()</span>
+<span id="cb38-9"><a aria-hidden="true" href="#cb38-9" tabindex="-1"></a></span>
+<span id="cb38-10"><a aria-hidden="true" href="#cb38-10" tabindex="-1"></a><span class="cf">for</span> r, b <span class="kw">in</span> rb_list:</span>
+<span id="cb38-11"><a aria-hidden="true" href="#cb38-11" tabindex="-1"></a>    <span class="cf">assert</span> r <span class="op">*</span> b <span class="op">==</span> t </span>
+<span id="cb38-12"><a aria-hidden="true" href="#cb38-12" tabindex="-1"></a>    p <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1000</span>)</span>
+<span id="cb38-13"><a aria-hidden="true" href="#cb38-13" tabindex="-1"></a>    fp <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> (<span class="dv">1</span> <span class="op">-</span> p<span class="op">**</span>r)<span class="op">**</span>b</span>
+<span id="cb38-14"><a aria-hidden="true" href="#cb38-14" tabindex="-1"></a>    plt.plot(p, fp)</span>
+<span id="cb38-15"><a aria-hidden="true" href="#cb38-15" tabindex="-1"></a></span>
+<span id="cb38-16"><a aria-hidden="true" href="#cb38-16" tabindex="-1"></a>plt.legend([<span class="st">'r=</span><span class="sc">{}</span><span class="st">;b=</span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(r, b) <span class="cf">for</span> r, b <span class="kw">in</span> rb_list])</span>
+<span id="cb38-17"><a aria-hidden="true" href="#cb38-17" tabindex="-1"></a>plt.xlabel(<span class="st">'p'</span>)</span>
+<span id="cb38-18"><a aria-hidden="true" href="#cb38-18" tabindex="-1"></a>plt.ylabel(<span class="st">'f(p)'</span>)</span>
+<span id="cb38-19"><a aria-hidden="true" href="#cb38-19" tabindex="-1"></a>plt.show()</span>
+<span id="cb38-20"><a aria-hidden="true" href="#cb38-20" tabindex="-1"></a>plt.close()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img class="img-fluid" src="minhash_exp_20240717\figure-html\cell-31-output-1.png"/></p>
+</div>
+</div>
+<p>該函數的圖像是一個遞增的S形曲線。在<span class="math inline">\(p\)</span>的值不超過某個閾值的時候，概率<span class="math inline">\(f(p)\)</span>很小；反之一旦超過這個值，<span class="math inline">\(f(p)\)</span>就驟然增大。</p>
+<p>用通俗的話來說，MinHash方法具有一個很好的性質：相似的兩個文檔（<span class="math inline">\(p\)</span>的值比較大）有很大的概率（<span class="math inline">\(f(p)\)</span>）使得至少存在一個band，這個band內的兩文檔的哈希值全部相同——這會使得它們落在同一個bucket內；函數圖像中中部的跳變意味著<strong>存在一個可以調控的界限</strong>，在這個界限兩端，文檔落在同一bucket內的概率有鮮明的差別。</p>
+<p>對於實際應用，該函數圖像的“跳變點”是需要調控的一個重要參數。设我们希望提取相似度在阈值<span class="math inline">\(\tau\)</span>以上的数据，那么上图的斜率最大点可以近似为<span class="math inline">\(\tau \approx (1/b)1/r\)</span>，据此可以解出<span class="math inline">\(r,b\)</span>的值。</p>
+</section>
+<section class="level2" data-number="5" id="一些參考資料">
+<h2 class="anchored" data-anchor-id="一些參考資料" data-number="5"><span class="header-section-number">5</span> 一些參考資料</h2>
+<ul>
+<li><a href="https://github.com/chrisjmccormick/MinHash/blob/master/runMinHashExample.py" id="minhash_example">MinHash Example</a></li>
+<li><a href="http://infolab.stanford.edu/~ullman/mmds.html" id="mmds_book">MMDS text book</a></li>
+<li>http://www.mmds.org/</li>
+</ul>
+</section>
+<div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">参考</h2><div class="references csl-bib-body" id="refs" role="doc-bibliography">
+<div class="csl-entry" id="ref-minhash_1997" role="doc-biblioentry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">BRODER A Z. <a href="https://doi.org/10.1109/SEQUEN.1997.666900">On the resemblance and containment of documents</a>[C]//Proceedings. Compression and Complexity of SEQUENCES 1997 (Cat. No.97TB100171). : 21–29.</div>
+</div>
+<div class="csl-entry" id="ref-minwise_2000" role="doc-biblioentry">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">BRODER A Z, CHARIKAR M, FRIEZE A M, 等. <a href="https://doi.org/10.1006/jcss.1999.1690">Min-Wise Independent Permutations</a>[J]. Journal of Computer and System Sciences, 2000, 60(3): 630–659.</div>
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+</div>
+    </div>
+    <div class="post_list">
+        <span>By </span>
+        <a href="./">@執迷</a>
+        <span> in </span>
+        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 自然語言處理">[ 自然語言處理 ]</a></span>
+        <span class="post_date">2024-07-20</span>
+        <div><span>Tags : </span>
+            
+            
+            <span><a href="./">#數據挖掘, </a></span>
+            
+            <span><a href="./">#局部敏感哈希, </a></span>
+            
+            <span><a href="./">#LSH, </a></span>
+            
+            <span><a href="./">#MinHash, </a></span>
+            
+            <span><a href="./">#文本去重, </a></span>
+            
+            
+        </div>
+
+        <div class="entry-social">
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././minhash_exp_20240717.html&text=淺談MinHash：求文檔的交並比&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././minhash_exp_20240717.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././minhash_exp_20240717.html&t=淺談MinHash：求文檔的交並比"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././minhash_exp_20240717.html&title=淺談MinHash：求文檔的交並比" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+            <span class="mail"><a href="mailto:?subject=淺談MinHash：求文檔的交並比&amp;body=Viens découvrir un article à propos de [淺談MinHash：求文檔的交並比] sur le site de 執迷. ././minhash_exp_20240717.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+        </div>
+    </div>
+    
+
+</section>
+
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
+</body>
+</html>
