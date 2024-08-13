@@ -1,86 +1,43 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-    <loc>https://zhimi.vercel.app/minhash_exp_20240717.html</loc>
-</url>
-<url>
     <loc>https://zhimi.vercel.app/minhash_exp_20240717_zh-cn.html</loc>
-</url>
-<url>
-    <loc>https://zhimi.vercel.app/llm_interview_exp_20240711.html</loc>
 </url>
 <url>
     <loc>https://zhimi.vercel.app/llm_interview_exp_20240711_zh-cn.html</loc>
 </url>
 <url>
-    <loc>https://zhimi.vercel.app/gradient_descent_20240629.html</loc>
-</url>
-<url>
     <loc>https://zhimi.vercel.app/gradient_descent_20240629_zh-cn.html</loc>
-</url>
-<url>
-    <loc>https://zhimi.vercel.app/yugioh_small_world_20240502.html</loc>
 </url>
 <url>
     <loc>https://zhimi.vercel.app/yugioh_small_world_20240502_zh-cn.html</loc>
 </url>
 <url>
-    <loc>https://zhimi.vercel.app/bn_20240318.html</loc>
-</url>
-<url>
     <loc>https://zhimi.vercel.app/bn_20240318_zh-cn.html</loc>
-</url>
-<url>
-    <loc>https://zhimi.vercel.app/multi_head_20240311.html</loc>
 </url>
 <url>
     <loc>https://zhimi.vercel.app/multi_head_20240311_zh-cn.html</loc>
 </url>
 <url>
-    <loc>https://zhimi.vercel.app/guided_filter_20240202.html</loc>
-</url>
-<url>
     <loc>https://zhimi.vercel.app/guided_filter_20240202_zh-cn.html</loc>
-</url>
-<url>
-    <loc>https://zhimi.vercel.app/pid_demo_20240129.html</loc>
 </url>
 <url>
     <loc>https://zhimi.vercel.app/pid_demo_20240129_zh-cn.html</loc>
 </url>
 <url>
-    <loc>https://zhimi.vercel.app/softmax20240109.html</loc>
-</url>
-<url>
     <loc>https://zhimi.vercel.app/softmax20240109_zh-cn.html</loc>
-</url>
-<url>
-    <loc>https://zhimi.vercel.app/temperament20240104.html</loc>
 </url>
 <url>
     <loc>https://zhimi.vercel.app/temperament20240104_zh-cn.html</loc>
 </url>
 <url>
-    <loc>https://zhimi.vercel.app/calibration_20220222.html</loc>
-</url>
-<url>
     <loc>https://zhimi.vercel.app/calibration_20220222_zh-cn.html</loc>
-</url>
-<url>
-    <loc>https://zhimi.vercel.app/vibe_20220218.html</loc>
 </url>
 <url>
     <loc>https://zhimi.vercel.app/vibe_20220218_zh-cn.html</loc>
 </url>
 <url>
-    <loc>https://zhimi.vercel.app/least_squares_20220104.html</loc>
-</url>
-<url>
     <loc>https://zhimi.vercel.app/least_squares_20220104_zh-cn.html</loc>
-</url>
-<url>
-    <loc>https://zhimi.vercel.app/about.html</loc>
 </url>
 <url>
     <loc>https://zhimi.vercel.app/about_zh-cn.html</loc>
