@@ -143,7 +143,8 @@
 <li><a class="nav-link" data-scroll-target="#用最小值估計文檔相似度" href="#用最小值估計文檔相似度" id="toc-用最小值估計文檔相似度"><span class="toc-section-number">2</span>  用最小值估計文檔相似度</a></li>
 <li><a class="nav-link" data-scroll-target="#哈希函数" href="#哈希函数" id="toc-哈希函数"><span class="toc-section-number">3</span>  哈希函数</a></li>
 <li><a class="nav-link" data-scroll-target="#局部敏感哈希" href="#局部敏感哈希" id="toc-局部敏感哈希"><span class="toc-section-number">4</span>  局部敏感哈希</a></li>
-<li><a class="nav-link" data-scroll-target="#一些參考資料" href="#一些參考資料" id="toc-一些參考資料"><span class="toc-section-number">5</span>  一些參考資料</a></li>
+<li><a class="nav-link" data-scroll-target="#總結" href="#總結" id="toc-總結"><span class="toc-section-number">5</span>  總結</a></li>
+<li><a class="nav-link" data-scroll-target="#一些參考資料" href="#一些參考資料" id="toc-一些參考資料"><span class="toc-section-number">6</span>  一些參考資料</a></li>
 </ul>
 </nav>
 </div>
@@ -157,7 +158,7 @@
 <div>
 <div class="abstract">
 <div class="abstract-title">摘要</div>
-    介紹了MinHash的原理。本文首先介紹了幾種不同的將文檔表示為數的集合的方法，隨後引入MinHash的核心思想：用集合的交並比衡量文檔的相似度。文章給出了MinHash核心定理的證明，給出了程序實現和運行結果，討論了MinHash作為一種LSH所具備的性質和調參要點。
+    本文介紹了MinHash的原理。本文首先介紹了幾種不同的將文檔表示為數的集合的方法，隨後引入MinHash的核心思想：用集合的交並比衡量文檔的相似度。文章給出了MinHash核心定理的證明，給出了程序實現和運行結果，討論了MinHash作為一種LSH所具備的性質和調參要點。
   </div>
 </div>
 </header>
@@ -611,8 +612,14 @@ Time Difference: 0.1847s:0.09761s</code></pre>
 <p>用通俗的話來說，MinHash方法具有一個很好的性質：相似的兩個文檔（<span class="math inline">\(p\)</span>的值比較大）有很大的概率（<span class="math inline">\(f(p)\)</span>）使得至少存在一個band，這個band內的兩文檔的哈希值全部相同——這會使得它們落在同一個bucket內；函數圖像中中部的跳變意味著<strong>存在一個可以調控的界限</strong>，在這個界限兩端，文檔落在同一bucket內的概率有鮮明的差別。</p>
 <p>對於實際應用，該函數圖像的“跳變點”是需要調控的一個重要參數。设我们希望提取相似度在阈值<span class="math inline">\(\tau\)</span>以上的数据，那么上图的斜率最大点可以近似为<span class="math inline">\(\tau \approx (1/b)1/r\)</span>，据此可以解出<span class="math inline">\(r,b\)</span>的值。</p>
 </section>
-<section class="level2" data-number="5" id="一些參考資料">
-<h2 class="anchored" data-anchor-id="一些參考資料" data-number="5"><span class="header-section-number">5</span> 一些參考資料</h2>
+<section class="level2" data-number="5" id="總結">
+<h2 class="anchored" data-anchor-id="總結" data-number="5"><span class="header-section-number">5</span> 總結</h2>
+<p>回想去年參與了一個大模型項目的數據管理，負責處理源數據，然後轉給資源部標註。在這個項目裡我沒有料到供應商給的源數據居然有大量的重複，就這樣把重複的數據發給資源部了……等到反應過來，已經不知道損失了多少錢。<br/>
+_(¦3」∠)_</p>
+<p>一開始用的是暴力的編輯距離或者TFIDF特征比較的方法去重，但隨著數據的增多，兩兩比較的暴力去重開始變得有點應付不過來。後來才學習了基於哈希的去重方法。基於哈希的方法能有更高的效率，精準度高，召回率不如暴力方法。但是深入了解了算法細節，結合項目數據的特征，還是能夠設計出好用的去重策略的。</p>
+</section>
+<section class="level2" data-number="6" id="一些參考資料">
+<h2 class="anchored" data-anchor-id="一些參考資料" data-number="6"><span class="header-section-number">6</span> 一些參考資料</h2>
 <ul>
 <li><a href="https://github.com/chrisjmccormick/MinHash/blob/master/runMinHashExample.py" id="minhash_example">MinHash Example</a></li>
 <li><a href="http://infolab.stanford.edu/~ullman/mmds.html" id="mmds_book">MMDS text book</a></li>
