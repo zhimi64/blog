@@ -247,7 +247,7 @@
 <span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.logprob <span class="op">&gt;</span> other.logprob</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>實踐中，我們經常存儲概率的對數，即代碼中的<code>logprob</code>，這樣能將概率的相乘轉化為對數概率的相加，減少計算代價，改善數值穩定性問題。</p>
-<p>在<code>probs</code>這個簡單模型的基礎上，beam search算法實現如下：</p>
+<p>在理解算法運行過程的基礎上，程序的實現並不困難。同樣，以<code>model</code>這個簡單模型為例，beam search算法實現如下：</p>
 <div class="cell" data-execution_count="51">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="kw">def</span> simple_top_k(arr, k):</span>
 <span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    <span class="co">'''一種簡單的top k算法。'''</span></span>
@@ -274,12 +274,13 @@
 <span id="cb4-23"><a aria-hidden="true" href="#cb4-23" tabindex="-1"></a>                <span class="cf">for</span> c, lp <span class="kw">in</span> <span class="bu">zip</span>(model.tokens, model.logprob(cdd.tokens)):</span>
 <span id="cb4-24"><a aria-hidden="true" href="#cb4-24" tabindex="-1"></a>                    next_candidates.append(</span>
 <span id="cb4-25"><a aria-hidden="true" href="#cb4-25" tabindex="-1"></a>                        BeamSearchCandidate(</span>
-<span id="cb4-26"><a aria-hidden="true" href="#cb4-26" tabindex="-1"></a>                            cdd.tokens <span class="op">+</span> [c], </span>
+<span id="cb4-26"><a aria-hidden="true" href="#cb4-26" tabindex="-1"></a>                            cdd.tokens <span class="op">+</span> [c],  <span class="co"># 計算每個候選語句的概率</span></span>
 <span id="cb4-27"><a aria-hidden="true" href="#cb4-27" tabindex="-1"></a>                            cdd.logprob <span class="op">+</span> lp</span>
 <span id="cb4-28"><a aria-hidden="true" href="#cb4-28" tabindex="-1"></a>                        )</span>
 <span id="cb4-29"><a aria-hidden="true" href="#cb4-29" tabindex="-1"></a>                    )</span>
-<span id="cb4-30"><a aria-hidden="true" href="#cb4-30" tabindex="-1"></a>        candidates <span class="op">=</span> top_k(next_candidates, k<span class="op">=</span>beam_width)</span>
-<span id="cb4-31"><a aria-hidden="true" href="#cb4-31" tabindex="-1"></a>    <span class="cf">return</span> candidates</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<span id="cb4-30"><a aria-hidden="true" href="#cb4-30" tabindex="-1"></a>        <span class="co"># 每一步都只保留概率最高的那些候選語句</span></span>
+<span id="cb4-31"><a aria-hidden="true" href="#cb4-31" tabindex="-1"></a>        candidates <span class="op">=</span> top_k(next_candidates, k<span class="op">=</span>beam_width)</span>
+<span id="cb4-32"><a aria-hidden="true" href="#cb4-32" tabindex="-1"></a>    <span class="cf">return</span> candidates</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>從beam search的運算結果可以看到，其生成結果與我們手動計算的一致。</p>
 <div class="cell" data-execution_count="28">
