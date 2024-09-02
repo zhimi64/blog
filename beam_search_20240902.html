@@ -167,6 +167,7 @@
   </div>
 </div>
 </header>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.1.0/dist/mermaid.min.js"></script>
 <p>生成式語言模型常見的採樣方式有貪心采樣、top k採樣、top p採樣和beam search采樣。 top k采樣和top p采樣都是對候選token作“截斷”，僅考慮概率最大的若干個token的方法。top k只從概率最高的k個候選token中進行隨機選擇。top p同樣優先考慮高概率的token，直到候選token的概率纍積達到p。貪心采樣可以視爲top k和top p的特例，即總是只考慮概率最高的那個token。</p>
 <p>無論是貪心、top k還是top p，它們都只探索了一條生成序列，容易落入局部最優。<strong>Beam Search的特點</strong>是通過在搜索過程中同時考慮概率最高的若干條可能序列，這樣就擴大了搜索範圍。</p>
 <p>以我個人的實際項目經驗來看，只要用上beam search，一般模型的評測得分都能小漲幾個點。在一些對輸出字符串有限制的任務中，我們還可以在beam search內引入約束，限制模型的生成。Beam search是一個基礎、方便、能夠即插即用的改善生成質量的生成策略。這篇文章就來簡單記錄下beam search的原理。</p>
