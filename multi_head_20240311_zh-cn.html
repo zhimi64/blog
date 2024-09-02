@@ -145,7 +145,8 @@
 <li><a class="nav-link" data-scroll-target="#代碼實現" href="#代碼實現" id="toc-代碼實現"><span class="toc-section-number">1.2</span>  代码实现</a></li>
 </ul></li>
 <li><a class="nav-link" data-scroll-target="#multi-head-attention" href="#multi-head-attention" id="toc-multi-head-attention"><span class="toc-section-number">2</span>  Multi-head Attention</a></li>
-<li><a class="nav-link" data-scroll-target="#總結" href="#總結" id="toc-總結"><span class="toc-section-number">3</span>  总结</a></li>
+<li><a class="nav-link" data-scroll-target="#練習題" href="#練習題" id="toc-練習題"><span class="toc-section-number">3</span>  练习题</a></li>
+<li><a class="nav-link" data-scroll-target="#總結" href="#總結" id="toc-總結"><span class="toc-section-number">4</span>  总结</a></li>
 </ul>
 </nav>
 </div>
@@ -169,18 +170,18 @@
 </div>
 </header>
 <p>自从“Attention is All You need”<span class="citation" data-cites="vaswani_attention_2017"><sup>[<a href="#ref-vaswani_attention_2017" role="doc-biblioref">1</a>]</sup></span>这篇文章发布之后，注意力机制开始广为人知。虽然一开始注意力机制被应用于自然语言处理领域，但人们很快发现它也能够用于处理图像、点云等数据结构，并且取得非常好的效果。</p>
-<p>本文介绍如何用pytorch实现文章<span class="citation" data-cites="vaswani_attention_2017"><sup>[<a href="#ref-vaswani_attention_2017" role="doc-biblioref">1</a>]</sup></span>提出的multi-head attention（MHA）。MHA是scaled dot-product attention<span class="citation" data-cites="vaswani_attention_2017 Bahdanau2014NeuralMT"><sup>[<a href="#ref-vaswani_attention_2017" role="doc-biblioref">1</a>,<a href="#ref-Bahdanau2014NeuralMT" role="doc-biblioref">2</a>]</sup></span>的改进，（本文简称其为SHA，single-head attention）。让我们先从SHA开始。</p>
+<p>本文介绍如何用pytorch实现文章<span class="citation" data-cites="vaswani_attention_2017"><sup>[<a href="#ref-vaswani_attention_2017" role="doc-biblioref">1</a>]</sup></span>提出的multi-head attention（MHA）。MHA是scaled dot-product attention（SDPA）<span class="citation" data-cites="vaswani_attention_2017 Bahdanau2014NeuralMT"><sup>[<a href="#ref-vaswani_attention_2017" role="doc-biblioref">1</a>,<a href="#ref-Bahdanau2014NeuralMT" role="doc-biblioref">2</a>]</sup></span>的改进。既然MHA是SDPA的multi-head版，那么也许将SDPA称为单头注意力会比较形象。让我们先从单头注意力开始。</p>
 <section class="level2" data-number="1" id="scaled-dot-product-attention">
 <h2 class="anchored" data-anchor-id="scaled-dot-product-attention" data-number="1"><span class="header-section-number">1</span> Scaled Dot-product Attention</h2>
-<p>SHA的计算公式如下： <span id="eq-sha"><span class="math display">\[
+<p>。 SDPA的计算公式如下： <span id="eq-sdpa"><span class="math display">\[
 \text{Attention}(Q, K, V) = \text{Softmax}(\frac{QK^T}{\sqrt{d_k}})V
 \tag{1}\]</span></span> 其中，<span class="math inline">\(Q\)</span>、<span class="math inline">\(K\)</span>和<span class="math inline">\(V\)</span>分别为输入的query、key和value向量。<span class="math inline">\(Q\)</span>的尺寸为<span class="math inline">\(L\times E_q\)</span>，<span class="math inline">\(K\)</span>的尺寸为<span class="math inline">\(S\times E_q\)</span>，<span class="math inline">\(V\)</span>的尺寸为<span class="math inline">\(S\times E_v\)</span>。</p>
-<p><a href="#eq-sha">公式 1</a>中，<span class="math inline">\(QK^T\)</span>的计算可以理解为求query向量和key向量间的“匹配程度”，使得SHA能够根据匹配程度从value中取得相关的数据。Softmax函数在这里起到归一化的作用，使得SHA的计算结果可以视为V的加权平均。</p>
-<p>注意力机制是一个有趣的设计。RNN（Recurrent Neural Networks）结构面临著长程记忆困难的问题；类似的，CNN（Convolutional Neural Networks）中也存在远距离像素感知困难的问题。SHA的特点是，为每一对query和key都作计算，而不考虑其时间或空间上的位置差距。</p>
-<p>我个人的观察是，注意力机制就好像构造了一个“完全二部图”。这个二部图由<span class="math inline">\(A\)</span>和<span class="math inline">\(B\)</span>两个顶点集合组成，其中<span class="math inline">\(A\)</span>集合代表query，<span class="math inline">\(B\)</span>集合代表key和value。<span class="math inline">\(A\)</span>和<span class="math inline">\(B\)</span>之间的结点两两之间都有一条边，边的权重由query和key的“匹配程度”决定。类似SHA，全连接层或卷积层也可以表示为二部图，只不过其边的权重是通过训练得到的，固定的值，而在注意力机制中，边的权重是动态的，根据query和key计算得到的。</p>
+<p><a href="#eq-sdpa">公式 1</a>中，<span class="math inline">\(QK^T\)</span>的计算可以理解为求query向量和key向量间的“匹配程度”，使得SDPA能够根据匹配程度从value中取得相关的数据。Softmax函数在这里起到归一化的作用，使得SDPA的计算结果可以视为V的加权平均。</p>
+<p>注意力机制是一个有趣的设计。RNN（Recurrent Neural Networks）结构面临著长程记忆困难的问题；类似的，CNN（Convolutional Neural Networks）中也存在远距离像素感知困难的问题。SDPA的特点是，为每一对query和key都作计算，而不考虑其时间或空间上的位置差距。</p>
+<p>我个人的观察是，注意力机制就好像构造了一个“完全二部图”。这个二部图由<span class="math inline">\(A\)</span>和<span class="math inline">\(B\)</span>两个顶点集合组成，其中<span class="math inline">\(A\)</span>集合代表query，<span class="math inline">\(B\)</span>集合代表key和value。<span class="math inline">\(A\)</span>和<span class="math inline">\(B\)</span>之间的结点两两之间都有一条边，边的权重由query和key的“匹配程度”决定。类似SDPA，全连接层或卷积层也可以表示为二部图，只不过其边的权重是通过训练得到的，固定的值，而在注意力机制中，边的权重是动态的，根据query和key计算得到的。</p>
 <section class="level3" data-number="1.1" id="attention的縮放係數">
 <h3 class="anchored" data-anchor-id="attention的縮放係數" data-number="1.1"><span class="header-section-number">1.1</span> Attention的缩放系数</h3>
-<p>从<a href="#eq-sha">公式 1</a>可以看到，在执行Softmax函数前，SHA使用系数<span class="math inline">\(\frac{1}{\sqrt{d_k}}\)</span>对输入作了缩放。<strong>为什么是<span class="math inline">\(\sqrt{d_k}\)</span>，而不是其它系数呢？</strong>本节主要摘录<a href="https://spaces.ac.cn/archives/9812">苏剑林的系列文章</a>中的结论，对这个问题作简要的讨论。</p>
+<p>从<a href="#eq-sdpa">公式 1</a>可以看到，在执行Softmax函数前，SDPA使用系数<span class="math inline">\(\frac{1}{\sqrt{d_k}}\)</span>对输入作了缩放。<strong>为什么是<span class="math inline">\(\sqrt{d_k}\)</span>，而不是其它系数呢？</strong>本节主要摘录<a href="https://spaces.ac.cn/archives/9812">苏剑林的系列文章</a>中的结论，对这个问题作简要的讨论。</p>
 <p>Softmax是一个将向量映射为向量的函数。首先，我们注意到Softmax输入向量的方差对于其输出向量的分布有重要影响。</p>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
@@ -248,7 +249,7 @@
 </div>
 </div>
 </div>
-<p>从<a href="#fig-softmax-grad">图 2</a>可以看到，当Softmax的输入接近<span class="math inline">\(0\)</span>向量或者one-hot向量的时候，都容易发生梯度消失现象，此时梯度的绝对值接近<span class="math inline">\(0\)</span>.</p>
+<p>从<a href="#fig-softmax-grad">图 2</a>可以看到，当Softmax的输入接近<span class="math inline">\(0\)</span>向量或者one-hot向量的时候，容易发生梯度消失现象，此时梯度的绝对值接近<span class="math inline">\(0\)</span>.</p>
 综上所述，为尽量避免Softmax的梯度消失，<strong>控制输入向量的方差很重要</strong>。假设<span class="math inline">\(\vec q\)</span>和<span class="math inline">\(\vec k\)</span>都是<span class="math inline">\(0\)</span>均值的，二者相互独立，方差分别为<span class="math inline">\(v_q\)</span>和<span class="math inline">\(v_k\)</span>，不难证明它们的内积<span class="math inline">\(\vec q^T \vec k\)</span>的数学期望为<span class="math inline">\(0\)</span>。
 <details>
 <summary>
@@ -301,7 +302,7 @@ test(16); test(32); test(64); test(128)
 </section>
 <section class="level3" data-number="1.2" id="代碼實現">
 <h3 class="anchored" data-anchor-id="代碼實現" data-number="1.2"><span class="header-section-number">1.2</span> 代码实现</h3>
-<p>在充分理解清楚SHA的计算公式的前提下，用pytorch实现它就不困难。需要注意的是公式中没有体现attention mask。attention mask在训练中用于阻止模型在预测某一步的token时观察到未来的token，这对训练聊天机器人、机器翻译模型是等生成式模型是必要的。</p>
+<p>在充分理解清楚SDPA的计算公式的前提下，用pytorch实现它就不困难。需要注意的是公式中没有体现attention mask。attention mask在训练中用于阻止模型在预测某一步的token时观察到未来的token，这对训练聊天机器人、机器翻译模型是等生成式模型是必要的。</p>
 <p>下列代码实现了scaled dot-product attention：</p>
 <div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="im">import</span> torch</span>
@@ -332,10 +333,10 @@ test(16); test(32); test(64); test(128)
 <span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention操作返回结果：'</span>, ret)</span>
 <span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention矩阵为：'</span>, attn_weights)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>attention操作返回结果： tensor([[[0.6877, 0.8795, 0.3479, 0.5837],
-         [0.7884, 0.8757, 0.2805, 0.5241]]])
-attention矩阵为： tensor([[[0.2569, 0.7431],
-         [0.5186, 0.4814]]])</code></pre>
+<pre><code>attention操作返回结果： tensor([[[0.7645, 0.4704, 0.4851, 0.6103],
+         [0.7256, 0.4594, 0.4788, 0.6185]]])
+attention矩阵为： tensor([[[0.2957, 0.7043],
+         [0.3860, 0.6140]]])</code></pre>
 </div>
 </div>
 <p>一个检查实现正确性的小技巧是，观察返回attention矩阵的各列之和是否为1. 如果不为1，说明实现有问题。</p>
@@ -456,14 +457,40 @@ out_proj.bias torch.Size([16])</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Difference: 0.0000, 0.0000</code></pre>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code></code></pre>
-</div>
 </div>
 <p>检查结果表明我们实现的multi-head attention输出与torch官方实现的完全一致，验证了代码的正确性。</p>
 </section>
-<section class="level2" data-number="3" id="總結">
-<h2 class="anchored" data-anchor-id="總結" data-number="3"><span class="header-section-number">3</span> 总结</h2>
+<section class="level2" data-number="3" id="練習題">
+<h2 class="anchored" data-anchor-id="練習題" data-number="3"><span class="header-section-number">3</span> 练习题</h2>
+<div class="theorem example" id="exm-mha-num-of-parameters">
+<p><span class="theorem-title"><strong>例子 1 </strong></span>改变MHA的heads数会如何改变MHA的参数量？</p>
+<details>
+<summary>
+参考答案
+</summary>
+<p>MHA的参数量与head的数量无关，这从代码中也能很容易看出来。</p>
+<p>实验也验证了这一点。</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">16</span></span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>num_heads <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a>mha1 <span class="op">=</span> nn.MultiheadAttention(embed_dim, num_heads)</span>
+<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a>mha2 <span class="op">=</span> nn.MultiheadAttention(embed_dim, num_heads <span class="op">*</span> <span class="dv">2</span>)</span>
+<span id="cb14-5"><a aria-hidden="true" href="#cb14-5" tabindex="-1"></a></span>
+<span id="cb14-6"><a aria-hidden="true" href="#cb14-6" tabindex="-1"></a><span class="kw">def</span> count_parameters(m):</span>
+<span id="cb14-7"><a aria-hidden="true" href="#cb14-7" tabindex="-1"></a>    c <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb14-8"><a aria-hidden="true" href="#cb14-8" tabindex="-1"></a>    <span class="cf">for</span> p <span class="kw">in</span> m.parameters(): c <span class="op">+=</span> p.numel()</span>
+<span id="cb14-9"><a aria-hidden="true" href="#cb14-9" tabindex="-1"></a>    <span class="cf">return</span> c </span>
+<span id="cb14-10"><a aria-hidden="true" href="#cb14-10" tabindex="-1"></a></span>
+<span id="cb14-11"><a aria-hidden="true" href="#cb14-11" tabindex="-1"></a><span class="bu">print</span>(count_parameters(mha1), count_parameters(mha2))</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1088 1088</code></pre>
+</div>
+</div>
+</details>
+</div>
+</section>
+<section class="level2" data-number="4" id="總結">
+<h2 class="anchored" data-anchor-id="總結" data-number="4"><span class="header-section-number">4</span> 总结</h2>
 <p>推荐阅读：</p>
 <ul>
 <li><a href="https://pytorch.org/docs/2.2/generated/torch.nn.functional.scaled_dot_product_attention.html#torch.nn.functional.scaled_dot_product_attention">torch官方的scaled dot-product attention文档</a>中简要介绍了一种scaled dot-product attention的python实现方式。</li>

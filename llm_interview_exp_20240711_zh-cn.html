@@ -170,6 +170,16 @@
         height: 30px;
         display: inline-block;
     }
+
+    .src-bytedance {        
+        background-image: url("./llm_interview_exp_20240711/bytedance_logo.png");   
+        background-size: contain;
+        background-repeat: no-repeat;
+        /* background: black; */
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+    }
 </style>
 </div>
 <p>从2024年三月以来，我著手做一些大模型方向的面试准备工作。本文简单记录了一些实际面试过程中被问到的问题以及一些自己认为比较重要的知识。</p>
@@ -393,6 +403,7 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 <ul>
 <li>问题延伸：如果题目改为将整数<span class="math inline">\(n\geq 2\)</span>拆分为任意个正数的和，使其乘积最大。该如何分析？参考<a href="#exm-split-int">例子 34</a></li>
 </ul></li>
+<li>⭐<span class="src-bytedance"></span>给定一个字符串和一个词典，问字符串能否由词典中的单词拼接而成。用DFS可解。可考虑引入缓存等策略进行优化。</li>
 </ul>
 </section>
 <section class="level2" data-number="7" id="開放性問題">

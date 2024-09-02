@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
+
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="./_vercel/insights/script.js"></script>
+  
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
+
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
+
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>生成式模型的Beam Search采样原理</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././beam_search_20240902_zh-cn.html">
+<meta name="twitter:title" content="執迷的博客 ~ 生成式模型的Beam Search采样原理">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ 生成式模型的Beam Search采样原理" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+
+<!-- MathJax -->
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+      <p>做一個有趣的人！</p>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <h2 class="post_title post_detail"><a href="././beam_search_20240902_zh-cn.html" rel="bookmark" title="Permalink to 生成式模型的Beam Search采样原理">生成式模型的Beam Search采样原理</a></h2>
+    
+    <p>
+        <span id="busuanzi_container_page_pv">
+            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+        </span>
+    </p>
+    
+    <div class="entry-content blog-post">
+        <div>
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+<nav class="toc-active" id="TOC" role="doc-toc">
+<h2 id="toc-title">Table of contents</h2>
+<ul>
+<li><a class="nav-link active" data-scroll-target="#beam-search代碼實現" href="#beam-search代碼實現" id="toc-beam-search代碼實現"><span class="toc-section-number">1</span>  Beam Search代码实现</a></li>
+<li><a class="nav-link" data-scroll-target="#top-k算法優化" href="#top-k算法優化" id="toc-top-k算法優化"><span class="toc-section-number">2</span>  Top K算法优化</a></li>
+<li><a class="nav-link" data-scroll-target="#數值精度優化" href="#數值精度優化" id="toc-數值精度優化"><span class="toc-section-number">3</span>  数值精度优化</a></li>
+<li><a class="nav-link" data-scroll-target="#長度歸一化" href="#長度歸一化" id="toc-長度歸一化"><span class="toc-section-number">4</span>  长度归一化</a></li>
+<li><a class="nav-link" data-scroll-target="#推薦閱讀" href="#推薦閱讀" id="toc-推薦閱讀"><span class="toc-section-number">5</span>  推荐阅读</a></li>
+</ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+
+</div>
+<div class="quarto-title-meta">
+<div>
+<div class="quarto-title-meta-heading">Published</div>
+<div class="quarto-title-meta-contents">
+<p class="date">September 3, 2024</p>
+</div>
+</div>
+</div>
+<div>
+<div class="abstract">
+<div class="abstract-title">Abstract</div>
+    Beam Search是生成式语言模型的常见采样算法之一。本文结合一些简单的例子介绍了Beam Search的原理。
+  </div>
+</div>
+</header>
+<p>生成式语言模型常见的采样方式有贪心采样、top k采样、top p采样和beam search采样。 top k采样和top p采样都是对候选token作“截断”，仅考虑概率最大的若干个token的方法。top k只从概率最高的k个候选token中进行随机选择。top p同样优先考虑高概率的token，直到候选token的概率累积达到p。贪心采样可以视为top k和top p的特例，即总是只考虑概率最高的那个token。</p>
+<p>无论是贪心、top k还是top p，它们都只探索了一条生成序列，容易落入局部最优。<strong>Beam Search的特点</strong>是通过在搜索过程中同时考虑概率最高的若干条可能序列，这样就扩大了搜索范围。</p>
+<p>以我个人的实际项目经验来看，只要用上beam search，一般模型的评测得分都能小涨几个点。在一些对输出字符串有限制的任务中，我们还可以在beam search内引入约束，限制模型的生成。Beam search是一个基础、方便、能够即插即用的改善生成质量的生成策略。这篇文章就来简单记录下beam search的原理。</p>
+<p>假设下面的<code>model</code>存储了每个token被生成的概率，我们讨论如何基于这个模型实现beam search采样。</p>
+<div class="cell" data-execution_count="49">
+<details>
+<summary>显示初始化代码</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> math </span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> List </span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a><span class="im">from</span> numbers <span class="im">import</span> Number </span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a><span class="im">import</span> functools</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>random.seed(<span class="dv">0</span>) </span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="48">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a></span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>model <span class="op">=</span> {</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>    <span class="st">'a'</span>: <span class="fl">0.7</span>, </span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>    <span class="st">'&lt;eos&gt;'</span>: <span class="fl">0.3</span>, </span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a>}</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+<p>这是一个简化了的语言模型——在实际应用中，语言模型的概率分布会随上下文变化，但这里我们假设token产生的概率是与历史token无关的。</p>
+<p>Beam search的要点是，在每次生成下一个token时列举出所有可能，然后只保留使整体序列概率最大的那n个。</p>
+<p>为了理解beam search，我们先手推一遍基于<code>model</code>模型的beam search生成过程，然后再编写程序与手推的结果进行比对。</p>
+<p>beam search的两个基本参数是<code>beam_width</code>和<code>tokens_to_gen</code>. <code>beam_width</code>表示在生成时要考虑多少个候选序列，而tokens_to_gen表示要生成多少个字符。</p>
+<p>假设<code>beam_width = 2</code>，我们在空字符串的基础上生成3个token。手推生成beam search的生成过程，我们会得到这样的一个生成树：</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<p>
+</p><pre class="mermaid mermaid-js" data-tooltip-selector="#mermaid-tooltip-1">flowchart LR
+    subgraph "第0步" 
+    A
+    end 
+    subgraph "第1步" 
+    A["空串, 1"] --&gt; B("a, 1 * 0.7 = 0.7")
+    A --&gt; C("&amp;lt;eos&amp;gt;, 1 * 0.3 = 0.3")
+    end 
+    subgraph "第2步" 
+    B --&gt; D("aa, 0.7 * 0.7 = 0.49")
+    B --&gt; E("a&amp;lt;eos&amp;gt;, 0.3 * 0.7 = 0.21")
+    C --&gt; F("&amp;lt;eos&amp;gt;, 0.3")
+    end 
+    subgraph "第3步" 
+    D --&gt; G("aaa, 0.49 * 0.7 = 0.343")
+    D --&gt; H("aa&amp;lt;eos&amp;gt;, 0.49 * 0.3 = 0.147")
+    F --&gt; I("&amp;lt;eos&amp;gt;, 0.3")
+    end
+</pre>
+<div class="mermaidTooltip" id="mermaid-tooltip-1">
+</div>
+<p></p>
+</div>
+</div>
+</div>
+<p>上图以树的形式展示了beam search的生成过程。每个节点都以“字符串，概率”的形式表示了当前生成的文本和对应的概率。每一步概率最大的两个节点会被选中，在下一步生成后续token。在计算过程中需要注意，一旦<code>&lt;eos&gt;</code>token被生成，那么它不会再产生后续token，其概率也不会再被改变。每生成一个token，当前生成结果的概率便等于上一个token序列的概率乘以生成token的概率。</p>
+<p>在树状图的最后一层，我们可以看到算法的最终生成结果。取出概率最大的两个生成结果，分别得到<code>aaa</code>和<code>&lt;eos&gt;</code>. 下面就让我们编写对应的beam search程序，并对照检查结果是否正确。</p>
+<section class="level2" data-number="1" id="beam-search代碼實現">
+<h2 class="anchored" data-anchor-id="beam-search代碼實現" data-number="1"><span class="header-section-number">1</span> Beam Search代码实现</h2>
+<p>我们先构造一个<code>BeamSearchCandidate</code>类用于表示beam search的生成结果。这个类储存了当前生成的token和对应的概率。</p>
+<div class="cell" data-execution_count="50">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="at">@functools.total_ordering</span></span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a><span class="at">@dataclass</span> </span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a><span class="kw">class</span> BeamSearchCandidate:</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>    tokens: List[<span class="bu">str</span>]</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>    logprob: Number </span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a></span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__repr__</span>(<span class="va">self</span>):</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f'</span><span class="sc">{</span><span class="st">""</span><span class="sc">.</span>join(<span class="va">self</span>.tokens)<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>math<span class="sc">.</span>exp(<span class="va">self</span>.logprob)<span class="sc">:.2f}</span><span class="ss">'</span></span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a></span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__ge__</span>(<span class="va">self</span>, other: <span class="st">'BeamSearchCandidate'</span>):</span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.logprob <span class="op">&gt;</span> other.logprob</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+<p>实践中，我们经常存储概率的对数，即代码中的<code>logprob</code>，这样能将概率的相乘转化为对数概率的相加，减少计算代价，改善数值稳定性问题。</p>
+<p>在<code>probs</code>这个简单模型的基础上，beam search算法实现如下：</p>
+<div class="cell" data-execution_count="51">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="kw">def</span> simple_top_k(arr, k):</span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    <span class="co">'''一种简单的top k算法。'''</span></span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>    arr.sort()</span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    <span class="cf">return</span> arr[<span class="op">-</span>k:]</span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a><span class="im">import</span> tqdm </span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a></span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a><span class="kw">def</span> beam_search(</span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>    model, </span>
+<span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a>    input_sequence:<span class="bu">str</span>,</span>
+<span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a>    beam_width:<span class="bu">int</span>,</span>
+<span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a>    tokens_to_gen:<span class="bu">int</span>,</span>
+<span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a>    top_k<span class="op">=</span>simple_top_k, <span class="co"># ←后续我们会讨论top k算法的优化</span></span>
+<span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>) <span class="op">-&gt;</span> List[BeamSearchCandidate]:</span>
+<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>    candidates <span class="op">=</span> [BeamSearchCandidate([input_sequence], <span class="fl">0.</span>)]</span>
+<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> tqdm.tqdm(<span class="bu">range</span>(tokens_to_gen)):</span>
+<span id="cb4-18"><a aria-hidden="true" href="#cb4-18" tabindex="-1"></a>        next_candidates <span class="op">=</span> []</span>
+<span id="cb4-19"><a aria-hidden="true" href="#cb4-19" tabindex="-1"></a>        <span class="cf">for</span> cdd <span class="kw">in</span> candidates:</span>
+<span id="cb4-20"><a aria-hidden="true" href="#cb4-20" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">len</span>(cdd.tokens) <span class="kw">and</span> cdd.tokens[<span class="op">-</span><span class="dv">1</span>] <span class="op">==</span> <span class="st">'&lt;eos&gt;'</span>:</span>
+<span id="cb4-21"><a aria-hidden="true" href="#cb4-21" tabindex="-1"></a>                next_candidates.append(cdd)</span>
+<span id="cb4-22"><a aria-hidden="true" href="#cb4-22" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb4-23"><a aria-hidden="true" href="#cb4-23" tabindex="-1"></a>                <span class="cf">for</span> c, lp <span class="kw">in</span> <span class="bu">zip</span>(model.tokens, model.logprob(cdd.tokens)):</span>
+<span id="cb4-24"><a aria-hidden="true" href="#cb4-24" tabindex="-1"></a>                    next_candidates.append(</span>
+<span id="cb4-25"><a aria-hidden="true" href="#cb4-25" tabindex="-1"></a>                        BeamSearchCandidate(</span>
+<span id="cb4-26"><a aria-hidden="true" href="#cb4-26" tabindex="-1"></a>                            cdd.tokens <span class="op">+</span> [c], </span>
+<span id="cb4-27"><a aria-hidden="true" href="#cb4-27" tabindex="-1"></a>                            cdd.logprob <span class="op">+</span> lp</span>
+<span id="cb4-28"><a aria-hidden="true" href="#cb4-28" tabindex="-1"></a>                        )</span>
+<span id="cb4-29"><a aria-hidden="true" href="#cb4-29" tabindex="-1"></a>                    )</span>
+<span id="cb4-30"><a aria-hidden="true" href="#cb4-30" tabindex="-1"></a>        candidates <span class="op">=</span> top_k(next_candidates, k<span class="op">=</span>beam_width)</span>
+<span id="cb4-31"><a aria-hidden="true" href="#cb4-31" tabindex="-1"></a>    <span class="cf">return</span> candidates</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+<p>从beam search的运算结果可以看到，其生成结果与我们手动计算的一致。</p>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>ret <span class="op">=</span> beam_search(model, <span class="st">''</span>, beam_width<span class="op">=</span><span class="dv">2</span>, tokens_to_gen<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a><span class="bu">print</span>(ret)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>100%|██████████| 3/3 [00:00&lt;00:00, 2092.62it/s]</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[&lt;eos&gt;:0.30, aaa:0.34]</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+</div>
+<p>接下来本文记录笔者实践中遇到的一些问题和解决思路。</p>
+</section>
+<section class="level2" data-number="2" id="top-k算法優化">
+<h2 class="anchored" data-anchor-id="top-k算法優化" data-number="2"><span class="header-section-number">2</span> Top K算法优化</h2>
+<p>Beam search算法中，选择概率最大的若干个候选token序列是一个比较耗时的操作。以上<code>beam search</code>函数使用了排序算法来找到前<span class="math inline">\(k\)</span>个概率最大的候选文本，这一操作的时间复杂度为<span class="math inline">\(O(n\log n)\)</span>，<span class="math inline">\(n\)</span>为总的候选token数量。因为大模型的词表比较大，所以改进beam search所用的top k算法能带来不少加速。</p>
+<p>第一个思路是对选择排序进行改造。在排序的过程中，使其在完成k个数字的排序时停止。这样就获得了一种简单的top k选择算法，此类方法的时间复杂度是<span class="math inline">\(O(nk)\)</span>，<span class="math inline">\(k\)</span>为<code>beam width</code>。</p>
+<p>另一种思路是基于优先队列（堆）实现top k算法。我们可以维护一个大小为<span class="math inline">\(k\)</span>的堆，在遍历过所有<span class="math inline">\(n\)</span>个候选token后，堆中留下的便是概率最大的<span class="math inline">\(k\)</span>个预测序列。维护堆的复杂度为<span class="math inline">\(O(\log k)\)</span>，共维护<span class="math inline">\(n\)</span>次，因此总的时间复杂度为<span class="math inline">\(O(n\log k)\)</span>.</p>
+<p>最后，一种非常高效的，但知道的人比较少的top k算法是快速选择算法（quick select），其时间复杂度为<span class="math inline">\(O(n)\)</span>. 显然这是top k算法所能达到的最优时间复杂度——因为不管哪种算法也要把原始输入序列逐个过一遍。<br/>
+与前面几种top k算法相比，<strong>快速选择算法的缺点在于其无法保证返回的k个结果的有序性</strong>。即quick select方法以牺牲结果的有序性为代价改进了其时间复杂度。</p>
+</section>
+<section class="level2" data-number="3" id="數值精度優化">
+<h2 class="anchored" data-anchor-id="數值精度優化" data-number="3"><span class="header-section-number">3</span> 数值精度优化</h2>
+<ol type="1">
+<li>大模型的词表一般很大，这就导致所有token的生成概率可能会整体偏低；</li>
+<li>模型内部实现上并不是直接返回<span class="math inline">\([0, 1)\)</span>之间的概率数值，而是返回范围在<span class="math inline">\((-\infty, \infty)\)</span>内的logits；</li>
+<li>为了加速推理和训练，人们经常使用<code>float16</code>等低精度浮点型。</li>
+</ol>
+<p>以上因素的共同作用下，beam search很容易遇到数值溢出的问题。在实践中，可以利用将logits同时加上或者减去任意数，不影响概率大小的特性来调控logits数值的范围，尽量避免溢出。这一原理我在之前的<a href="./softmax20240109_zh-cn.html">《Softmax原理》</a>一文中也有讲解。</p>
+</section>
+<section class="level2" data-number="4" id="長度歸一化">
+<h2 class="anchored" data-anchor-id="長度歸一化" data-number="4"><span class="header-section-number">4</span> 长度归一化</h2>
+<p>模型有时候可能会倾向于产生较长或较短的文本，这时候对概率作长度归一化是一种可以考虑的手段。</p>
+<p>在未引入长度归一化时，beam search选取候选token的条件为 <span class="math display">\[
+\arg\max \sum_{t=1}^{T_y}\log P(y_t|X, y_1, y_2, \dots, y_{t-1}),
+\]</span> 其中<span class="math inline">\(T_y\)</span>为序列长度。</p>
+<p>在引入长度归一化后，条件变为： <span class="math display">\[
+\arg\max \frac{1}{T_y^\alpha}  \sum_{t=1}^{T_y}\log P(y_t|X, y_1, y_2, \dots, y_{t-1}).
+\]</span> 新的条件引入了一个额外的参数<span class="math inline">\(\alpha\in[0, 1]\)</span>。当<span class="math inline">\(\alpha\)</span>为0时，beam search的行为相当于不作任何归一化；<span class="math inline">\(\alpha=1\)</span>则对应著“标准的”归一化操作。如果想要取得一个折中的效果，可以设<span class="math inline">\(\alpha\)</span>为<span class="math inline">\((0, 1)\)</span>内的一个数字。</p>
+</section>
+<section class="level2" data-number="5" id="推薦閱讀">
+<h2 class="anchored" data-anchor-id="推薦閱讀" data-number="5"><span class="header-section-number">5</span> 推荐阅读</h2>
+<ul>
+<li><a href="https://www.cnblogs.com/dangui/p/14691132.html">Beam Search 及5种优化方法</a></li>
+</ul>
+</section>
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+</div>
+    </div>
+    <div class="post_list">
+        <span>By </span>
+        <a href="./">@執迷</a>
+        <span> in </span>
+        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 自然語言處理">[ 自然語言處理 ]</a></span>
+        <span class="post_date">2024-09-02</span>
+        <div><span>Tags : </span>
+            
+            
+            <span><a href="./">#LLM, </a></span>
+            
+            <span><a href="./">#大模型, </a></span>
+            
+            <span><a href="./">#Beam Search, </a></span>
+            
+            <span><a href="./">#生成式模型, </a></span>
+            
+            
+        </div>
+
+        <div class="entry-social">
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././beam_search_20240902_zh-cn.html&text=生成式模型的Beam Search采样原理&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././beam_search_20240902_zh-cn.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././beam_search_20240902_zh-cn.html&t=生成式模型的Beam Search采样原理"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././beam_search_20240902_zh-cn.html&title=生成式模型的Beam Search采样原理" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+            <span class="mail"><a href="mailto:?subject=生成式模型的Beam Search采样原理&amp;body=Viens découvrir un article à propos de [生成式模型的Beam Search采样原理] sur le site de 執迷. ././beam_search_20240902_zh-cn.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+        </div>
+    </div>
+    
+
+</section>
+
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
+</body>
+</html>
