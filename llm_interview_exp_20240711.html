@@ -397,11 +397,11 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 <li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/reverse-substrings-between-each-pair-of-parentheses/description/"><strong>反转每对括号间的子串</strong></a>：考察栈的用法。也可以不用栈来解。容易想到<span class="math inline">\(O(n^2)\)</span>复杂度的算法，但实际也存在<span class="math inline">\(O(n)\)</span>的解法。</li>
 <li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/search-in-rotated-sorted-array/"><strong>搜索選擇排序數組</strong></a>：考察二分法。需要做題者注意到選擇排序數組的特性。</li>
 <li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/median-of-two-sorted-arrays/description/"><strong>尋找兩個正序數組的中位數</strong></a>（困難）：更一般的，可以推廣為尋找兩個正序數組的第k小的數。考察二分法。需要思考應該對哪個量做二分查找。</li>
-<li>🌙<span class="src-minimax"></span><strong>NER的BIO形式標註轉start，end形式</strong>（<a href="#exm-ner-bio-to-start-end">例子 33</a>）：以命名實體識別（NER）任務為背景的簡單算法題。</li>
+<li>🌙<span class="src-minimax"></span><strong>NER的BIO形式標註轉start，end形式</strong>（<a href="#exm-ner-bio-to-start-end">例子 34</a>）：以命名實體識別（NER）任務為背景的簡單算法題。</li>
 <li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/knight-probability-in-chessboard/description/"><strong>馬在棋盤上的概率</strong></a>：可以用動態規劃的方法求解，時間複雜度為<span class="math inline">\(O(n^2k)\)</span>，這裏<span class="math inline">\(n\)</span>為棋盤大小，<span class="math inline">\(k\)</span>為步數。還可以想到本題所執行的動態規劃步驟實際上是一種捲積，且每一步的捲積核都是相同的，因此本題可以用快速冪的方式進行優化。</li>
 <li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/integer-break/solutions/2834147/ji-yu-shu-xue-fen-xi-de-chang-shu-shi-ji-32qm"><strong>整数拆分</strong></a>：將整數<span class="math inline">\(n\geq 2\)</span>拆分為任意個正整數的和，使其乘積最大。容易想到基於動態規劃的解法，但不容易給出<span class="math inline">\(O(1)\)</span>時間複雜度的，基於數學分析的解法。
 <ul>
-<li>問題延伸：如果題目改為將整數<span class="math inline">\(n\geq 2\)</span>拆分為任意個正數的和，使其乘積最大。該如何分析？參考<a href="#exm-split-int">例子 34</a></li>
+<li>問題延伸：如果題目改為將整數<span class="math inline">\(n\geq 2\)</span>拆分為任意個正數的和，使其乘積最大。該如何分析？參考<a href="#exm-split-int">例子 35</a></li>
 </ul></li>
 <li>⭐<span class="src-bytedance"></span>給定一個字符串和一個詞典，問字符串能否由詞典中的單詞拼接而成。用DFS可解。可考慮引入緩存等策略進行優化。</li>
 </ul>
@@ -454,8 +454,33 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 <div class="default" id="quarto-appendix"><section class="level2 appendix" data-number="9" id="附錄"><h2 class="quarto-appendix-heading"><span class="header-section-number">9</span> 附錄</h2><div class="quarto-appendix-contents">
 <section class="level3" data-number="9.1" id="例題">
 <h3 class="anchored" data-anchor-id="例題" data-number="9.1"><span class="header-section-number">9.1</span> 例題</h3>
+<div class="theorem example" id="exm-post-prob-of-coins">
+<p><span class="theorem-title"><strong>例子 33 </strong></span>⭐<span class="src-bytedance"></span>兩個硬幣的後驗概率</p>
+<p>有兩個硬幣，一個硬幣的兩面都是正面；另一個是正常硬幣：一面是正面，另一面是反面；</p>
+<p>隨機選取其中一枚，拋擲五次，都是正面。問這枚硬幣是正常硬幣的概率是？</p>
+<p>解：設<span class="math inline">\(A=\text{拋擲五次硬幣都是正面}\)</span>，<span class="math inline">\(B={這是一枚正常硬幣}\)</span></p>
+<p>題目要求<span class="math inline">\(P(B|A)\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+P(B|A) &amp;= P(A|B) P(B) / P(A)\\
+        &amp;= 0.5^5 \times 0.5 / P(A)
+\end{aligned}
+\]</span> 其中 <span class="math display">\[
+\begin{aligned}
+P(A) &amp;= P(A|B)P(B) + P(A|\neg B)P(\neg B) \\
+&amp;= 0.5^5 \times 0.5 + 1 \times 0.5 \\
+\end{aligned}
+\]</span> 所以 <span class="math display">\[
+\begin{aligned}
+P(B|A) &amp;= 0.5^5 \times 0.5/ P(A) \\
+    &amp;= \frac{0.5^5 \times 0.5} {0.5^5\times 0.5 + 1\times 0.5}\\
+    &amp;= \frac{1}{1 + 32}\\
+    &amp;= \frac{1}{33}
+\end{aligned}
+\]</span></p>
+</div>
 <div class="theorem example" id="exm-ner-bio-to-start-end">
-<p><span class="theorem-title"><strong>例子 33 </strong></span>🌙<span class="src-minimax"></span><strong>NER标注格式转换</strong></p>
+<p><span class="theorem-title"><strong>例子 34 </strong></span>🌙<span class="src-minimax"></span><strong>NER标注格式转换</strong></p>
 <p>描述: 在命名实体识别(NER)任务中,BIO标注方式是常用的标注格式之一。但在某些应用场景下,我们可能需要将BIO格式转换为start,end形式的标注。</p>
 <p>请你实现一个Python函数,将BIO格式的NER标注转换为start,end形式。</p>
 <p>函数输入:</p>
@@ -596,7 +621,7 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 </div>
 </div>
 <div class="theorem example" id="exm-split-int">
-<p><span class="theorem-title"><strong>例子 34 </strong></span>🌙<span class="src-minimax"></span>如何將整數<span class="math inline">\(n\geq 2\)</span>拆分為任意個正數的和，使其乘積最大？</p>
+<p><span class="theorem-title"><strong>例子 35 </strong></span>🌙<span class="src-minimax"></span>如何將整數<span class="math inline">\(n\geq 2\)</span>拆分為任意個正數的和，使其乘積最大？</p>
 <p>設<span class="math inline">\(n\)</span>被拆分為<span class="math inline">\(k\)</span>個數，容易證明每個數都為<span class="math inline">\(n/k\)</span>時乘積最大。（先證明<span class="math inline">\(k=2\)</span>時，<span class="math inline">\(n\)</span>應該被拆為<span class="math inline">\(\frac{n}{2} + \frac{n}{2}\)</span>；然後通過構造條件滿足數學歸納法來證明。）</p>
 <p>加下來，設將<span class="math inline">\(n\)</span>拆為<span class="math inline">\(k\)</span>份，可知其乘積應為<span class="math inline">\(f(n, k) = \left(\frac{n}{k}\right)^k\)</span>. 先不考慮<span class="math inline">\(k\)</span>應為正整數的問題，令<span class="math inline">\(k \in \mathbb R^+\)</span>. <span class="math inline">\(f(n, k)\)</span>是一個連續函數。</p>
 <p><span class="math display">\[
@@ -619,7 +644,7 @@ f(n, k) &amp;= e^{\ln \left(\frac{n}{k}\right)^k} \\
 <p>容易看出<span class="math inline">\(\frac{\partial f}{\partial k}\)</span>隨著<span class="math inline">\(k\)</span>的增加而單調上升。因此<span class="math inline">\(k=\frac{n}{e}\)</span>是函數的極大值點。但是<span class="math inline">\(k\)</span>需要是整數，因此我們可以考慮取<span class="math inline">\(k=\lceil \frac{n}{e} \rceil\)</span>或<span class="math inline">\(k=\lfloor \frac{n}{e}\rfloor\)</span>，取其中使乘積最大的<span class="math inline">\(k\)</span>即可。</p>
 </div>
 <div class="theorem example" id="exm-fibonacci">
-<p><span class="theorem-title"><strong>例子 35 </strong></span>求斐波那契數列1、1、2、3、5、8……的通項公式。</p>
+<p><span class="theorem-title"><strong>例子 36 </strong></span>求斐波那契數列1、1、2、3、5、8……的通項公式。</p>
 <p>當<span class="math inline">\(n\geq 3\)</span>時，有<span class="math inline">\(F_{n} = F_{n-1} + F_{n-2}\)</span>. 寫成矩陣形式為 <span class="math display">\[
 \begin{pmatrix}
 F_n\\
