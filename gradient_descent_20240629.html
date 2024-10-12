@@ -35,10 +35,10 @@
 
   <meta charset="utf-8">
   <!-- Site Meta Data -->
-  <title>手寫梯度下降和反向傳播</title>
+  <title>用numpy實現神經網絡梯度下降</title>
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
+  <meta name="description" content="本文通過numpy庫實現梯度下降，不依賴任何深度學習工具。代碼實現了使用多層感知機擬合sin函數。文章附帶介紹了多種常見激活函數的梯度推導。">
   <meta name="author" content="執迷">
 
   <link rel="shortcut icon" href="favicon.ico">
@@ -46,7 +46,7 @@
   <!-- schema.org -->
   <meta itemprop="name" content="執迷的博客">
   <meta itemprop="image" content="">
-  <meta itemprop="description" content="">
+  <meta itemprop="description" content="本文通過numpy庫實現梯度下降，不依賴任何深度學習工具。代碼實現了使用多層感知機擬合sin函數。文章附帶介紹了多種常見激活函數的梯度推導。">
 
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   <!-- Style Meta Data -->
@@ -64,11 +64,11 @@
   
 <meta name="twitter:creator" content="">
 <meta name="twitter:url" content="././gradient_descent_20240629.html">
-<meta name="twitter:title" content="執迷的博客 ~ 手寫梯度下降和反向傳播">
+<meta name="twitter:title" content="執迷的博客 ~ 用numpy實現神經網絡梯度下降">
 <meta name="twitter:description" content="">
 
 <!-- Facebook Meta Data -->
-<meta property="og:title" content="執迷的博客 ~ 手寫梯度下降和反向傳播" />
+<meta property="og:title" content="執迷的博客 ~ 用numpy實現神經網絡梯度下降" />
 <meta property="og:description" content="" />
 <meta property="og:image" content="" />
 
@@ -124,7 +124,7 @@
   <article>
     
 <section id="content">
-    <h2 class="post_title post_detail"><a href="././gradient_descent_20240629.html" rel="bookmark" title="Permalink to 手寫梯度下降和反向傳播">手寫梯度下降和反向傳播</a></h2>
+    <h2 class="post_title post_detail"><a href="././gradient_descent_20240629.html" rel="bookmark" title="Permalink to 用numpy實現神經網絡梯度下降">用numpy實現神經網絡梯度下降</a></h2>
     
     <p>
         <span id="busuanzi_container_page_pv">
@@ -137,24 +137,27 @@
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
 <nav class="toc-active" id="TOC" role="doc-toc">
-<h2 id="toc-title">目录</h2>
+<h2 id="toc-title">Table of contents</h2>
 <ul>
-<li><a class="nav-link active" data-scroll-target="#多層感知機的反向傳播" href="#多層感知機的反向傳播" id="toc-多層感知機的反向傳播"><span class="toc-section-number">1</span>  多層感知機的反向傳播</a>
+<li><a class="nav-link active" data-scroll-target="#多層感知機的前向計算" href="#多層感知機的前向計算" id="toc-多層感知機的前向計算"><span class="toc-section-number">1</span>  多層感知機的前向計算</a>
 <ul class="collapse">
 <li><a class="nav-link" data-scroll-target="#建立模型" href="#建立模型" id="toc-建立模型"><span class="toc-section-number">1.1</span>  建立模型</a></li>
-<li><a class="nav-link" data-scroll-target="#mae的梯度" href="#mae的梯度" id="toc-mae的梯度"><span class="toc-section-number">1.2</span>  MAE的梯度</a></li>
-<li><a class="nav-link" data-scroll-target="#relu的梯度" href="#relu的梯度" id="toc-relu的梯度"><span class="toc-section-number">1.3</span>  ReLU的梯度</a></li>
-<li><a class="nav-link" data-scroll-target="#綫性層的梯度" href="#綫性層的梯度" id="toc-綫性層的梯度"><span class="toc-section-number">1.4</span>  綫性層的梯度</a></li>
-<li><a class="nav-link" data-scroll-target="#反向傳播代碼" href="#反向傳播代碼" id="toc-反向傳播代碼"><span class="toc-section-number">1.5</span>  反向傳播代碼</a></li>
-<li><a class="nav-link" data-scroll-target="#梯度检查" href="#梯度检查" id="toc-梯度检查"><span class="toc-section-number">1.6</span>  梯度检查</a></li>
-<li><a class="nav-link" data-scroll-target="#训练" href="#训练" id="toc-训练"><span class="toc-section-number">1.7</span>  训练</a></li>
 </ul></li>
-<li><a class="nav-link" data-scroll-target="#附录" href="#附录" id="toc-附录"><span class="toc-section-number">2</span>  附录</a>
+<li><a class="nav-link" data-scroll-target="#多層感知機的反向傳播" href="#多層感知機的反向傳播" id="toc-多層感知機的反向傳播"><span class="toc-section-number">2</span>  多層感知機的反向傳播</a>
 <ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#sigmoid的梯度推導" href="#sigmoid的梯度推導" id="toc-sigmoid的梯度推導"><span class="toc-section-number">2.1</span>  Sigmoid的梯度推導</a></li>
-<li><a class="nav-link" data-scroll-target="#二值交叉熵函數的梯度推導" href="#二值交叉熵函數的梯度推導" id="toc-二值交叉熵函數的梯度推導"><span class="toc-section-number">2.2</span>  二值交叉熵函數的梯度推導</a></li>
-<li><a class="nav-link" data-scroll-target="#參考材料" href="#參考材料" id="toc-參考材料"><span class="toc-section-number">2.3</span>  參考材料</a></li>
+<li><a class="nav-link" data-scroll-target="#mae函數的梯度" href="#mae函數的梯度" id="toc-mae函數的梯度"><span class="toc-section-number">2.1</span>  MAE函數的梯度</a></li>
+<li><a class="nav-link" data-scroll-target="#relu函數的梯度" href="#relu函數的梯度" id="toc-relu函數的梯度"><span class="toc-section-number">2.2</span>  ReLU函數的梯度</a></li>
+<li><a class="nav-link" data-scroll-target="#綫性層的梯度" href="#綫性層的梯度" id="toc-綫性層的梯度"><span class="toc-section-number">2.3</span>  綫性層的梯度</a></li>
+<li><a class="nav-link" data-scroll-target="#反向傳播代碼" href="#反向傳播代碼" id="toc-反向傳播代碼"><span class="toc-section-number">2.4</span>  反向傳播代碼</a></li>
+<li><a class="nav-link" data-scroll-target="#梯度检查" href="#梯度检查" id="toc-梯度检查"><span class="toc-section-number">2.5</span>  梯度检查</a></li>
 </ul></li>
+<li><a class="nav-link" data-scroll-target="#训练" href="#训练" id="toc-训练"><span class="toc-section-number">3</span>  训练</a></li>
+<li><a class="nav-link" data-scroll-target="#附录" href="#附录" id="toc-附录"><span class="toc-section-number">4</span>  附录</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#sigmoid的梯度推導" href="#sigmoid的梯度推導" id="toc-sigmoid的梯度推導"><span class="toc-section-number">4.1</span>  Sigmoid的梯度推導</a></li>
+<li><a class="nav-link" data-scroll-target="#二值交叉熵函數的梯度推導" href="#二值交叉熵函數的梯度推導" id="toc-二值交叉熵函數的梯度推導"><span class="toc-section-number">4.2</span>  二值交叉熵函數的梯度推導</a></li>
+</ul></li>
+<li><a class="nav-link" data-scroll-target="#參考材料" href="#參考材料" id="toc-參考材料"><span class="toc-section-number">5</span>  參考材料</a></li>
 </ul>
 </nav>
 </div>
@@ -165,37 +168,32 @@
 </div>
 <div class="quarto-title-meta">
 <div>
-<div class="quarto-title-meta-heading">发布日期</div>
+<div class="quarto-title-meta-heading">Published</div>
 <div class="quarto-title-meta-contents">
-<p class="date">2024年6月29日</p>
+<p class="date">June 29, 2024</p>
 </div>
 </div>
 </div>
 </header>
-<div class="hidden">
-<p><span class="math display">\[
-\renewcommand{\vec}[1]{\boldsymbol{#1}}
-\]</span></p>
-</div>
-<p>最近在準備面試，所以把反向傳播和梯度下降的知識重新撿起來過一遍。雖然這兩個東西都屬於基礎，但要想順暢地在有限時間内把它寫出來，還是挺不容易。</p>
-<p>在編寫代碼的過程中，要注意數組尺寸的正確性；不管多麽熟練，犯錯也是在所難免的。最好能通過梯度檢查來校驗梯度計算的正確性，這樣我們才有信心根據計算得到的梯度進行梯度下降。</p>
+<p>之前有一段時間，我需要復習梯度下降和反向傳播來應付面試。 雖然梯度下降和反向傳播都屬於基礎，但要想順暢地在有限時間内把它寫出來，還是挺不容易，必須要提前準備才行。本文記錄了筆者的復習成果。</p>
+<p>在編寫代碼的過程中，尤其要注意數組尺寸的正確性。计算和编写代码的过程中，犯錯常有的。最好能通過梯度檢查來校驗梯度計算的正確性，這樣我們才有信心根據計算得到的梯度進行梯度下降。</p>
 <p>本文代碼以示範為目的，並不適用於工程實踐，因此文中的程序不會追求擴展性、運行效率等，而是盡量簡潔明瞭。</p>
 <p>本文嘗試通過numpy庫實現梯度下降，不依賴任何深度學習工具。我們先<code>import numpy</code>.</p>
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
-<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
-<section class="level1" data-number="1" id="多層感知機的反向傳播">
-
-<p>本節將實現一個多層感知機，用它來回歸<span class="math inline">\(\sin\)</span>函數。</p>
+<section class="level2" data-number="1" id="多層感知機的前向計算">
+<h2 class="anchored" data-anchor-id="多層感知機的前向計算" data-number="1"><span class="header-section-number">1</span> 多層感知機的前向計算</h2>
+<p>本節將實現一個多層感知機，用它來回歸sin函數。</p>
 <p>為簡便起見，這個多層感知機只使用relu激活函數。</p>
-<section class="level2" data-number="1.1" id="建立模型">
-<h2 class="anchored" data-anchor-id="建立模型" data-number="1.1"><span class="header-section-number">1.1</span> 建立模型</h2>
+<section class="level3" data-number="1.1" id="建立模型">
+<h3 class="anchored" data-anchor-id="建立模型" data-number="1.1"><span class="header-section-number">1.1</span> 建立模型</h3>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="kw">def</span> relu(x):</span>
-<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>    <span class="cf">return</span> np.clip(x, <span class="dv">0</span>, <span class="va">None</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>    <span class="cf">return</span> np.clip(x, <span class="dv">0</span>, <span class="va">None</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
-<p>以下代碼定義了<code>MLPRegression</code>類的初始化函數。我們通過硬編碼的方式將這個多層感知機設置為3層，并規定每層的輸入輸出維度。</p>
+<p>以下代碼定義了MLPRegression類的初始化函數。我們通過硬編碼的方式將這個多層感知機設置為3層，并規定每層的輸入輸出維度。</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="kw">class</span> MLPRegression:</span>
 <span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
@@ -208,10 +206,10 @@
 <span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>        <span class="va">self</span>.b2 <span class="op">=</span> np.random.randn(<span class="dv">32</span>, <span class="dv">1</span>)</span>
 <span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a></span>
 <span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>        <span class="va">self</span>.w3 <span class="op">=</span> np.random.randn(<span class="dv">32</span>, <span class="dv">1</span>)</span>
-<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>        <span class="va">self</span>.b3 <span class="op">=</span> np.random.randn(<span class="dv">1</span>, <span class="dv">1</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>        <span class="va">self</span>.b3 <span class="op">=</span> np.random.randn(<span class="dv">1</span>, <span class="dv">1</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
-<p>在前向傳播階段，這個多層感知機在每一層綫性層后應用了一個<code>relu</code>激活函數。最後一層是例外的，沒有任何激活函數，這樣就不會限制模型擬合函數的值域。</p>
-<p>與一般的<code>torch</code>代碼不同，我們在forward過程中需要手動保存<code>cache</code>變量，記錄模型的中間執行結果。在反向傳播過程中，我們需要使用它們來計算梯度。</p>
+<p>在前向傳播階段，這個多層感知機在每一層綫性層后應用了一個relu激活函數。最後一層是例外的，沒有任何激活函數，這樣就不會限制模型擬合函數的值域。</p>
+<p>與一般的torch代碼不同，我們在forward過程中需要手動保存cache變量，記錄模型的中間執行結果。在反向傳播過程中，我們需要使用它們來計算梯度。</p>
 <div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="kw">def</span> mlp_regression_forward(<span class="va">self</span>, x, y<span class="op">=</span><span class="va">None</span>): </span>
 <span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    d_in, bs <span class="op">=</span> x.shape </span>
@@ -240,14 +238,14 @@
 <span id="cb4-25"><a aria-hidden="true" href="#cb4-25" tabindex="-1"></a></span>
 <span id="cb4-26"><a aria-hidden="true" href="#cb4-26" tabindex="-1"></a>    <span class="cf">return</span> h3, loss, cache </span>
 <span id="cb4-27"><a aria-hidden="true" href="#cb4-27" tabindex="-1"></a></span>
-<span id="cb4-28"><a aria-hidden="true" href="#cb4-28" tabindex="-1"></a>MLPRegression.forward <span class="op">=</span> mlp_regression_forward</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<span id="cb4-28"><a aria-hidden="true" href="#cb4-28" tabindex="-1"></a>MLPRegression.forward <span class="op">=</span> mlp_regression_forward</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
-<p>接下來我們試運行一下<code>forward</code>函數。函數返回<code>pred</code>，<code>loss</code>，<code>cache</code>三個變量，分別對應模型的預測值，損失以及用於計算梯度的中間變量。</p>
+<p>接下來我們試運行一下forward函數。函數返回pred，loss，cache三個變量，分別對應模型的預測值，損失以及用於計算梯度的中間變量。</p>
 <div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>r <span class="op">=</span> MLPRegression()</span>
 <span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>pred, loss, cache <span class="op">=</span> r.forward(np.random.random((<span class="dv">1</span>, <span class="dv">2</span>)))</span>
 <span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a><span class="cf">for</span> k, v <span class="kw">in</span> cache.items():</span>
-<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>    <span class="bu">print</span>(k, v.shape <span class="cf">if</span> v <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="st">'None'</span>)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>    <span class="bu">print</span>(k, v.shape <span class="cf">if</span> v <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="st">'None'</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>x (1, 2)
 h1 (16, 2)
@@ -258,10 +256,13 @@ h3 (1, 2)
 y None</code></pre>
 </div>
 </div>
-<p>反向傳播是代碼的重點部分。</p>
 </section>
-<section class="level2" data-number="1.2" id="mae的梯度">
-<h2 class="anchored" data-anchor-id="mae的梯度" data-number="1.2"><span class="header-section-number">1.2</span> MAE的梯度</h2>
+</section>
+<section class="level2" data-number="2" id="多層感知機的反向傳播">
+<h2 class="anchored" data-anchor-id="多層感知機的反向傳播" data-number="2"><span class="header-section-number">2</span> 多層感知機的反向傳播</h2>
+<p>反向傳播代碼是本文的重點。在編寫反向傳播代碼之前，我們先復習幾個重要函數的梯度計算。</p>
+<section class="level3" data-number="2.1" id="mae函數的梯度">
+<h3 class="anchored" data-anchor-id="mae函數的梯度" data-number="2.1"><span class="header-section-number">2.1</span> MAE函數的梯度</h3>
 <p>代碼中，我們使用的損失函數為MAE，即 <span class="math display">\[
 l=\frac{1}{m} \sum_i^m |\hat y - y|
 \]</span> 易知其導數為 <span class="math display">\[
@@ -274,9 +275,11 @@ l=\frac{1}{m} \sum_i^m |\hat y - y|
 \right.
 \]</span> 姑且不考慮0點処該函數沒有導數的問題。</p>
 </section>
-<section class="level2" data-number="1.3" id="relu的梯度">
-<h2 class="anchored" data-anchor-id="relu的梯度" data-number="1.3"><span class="header-section-number">1.3</span> ReLU的梯度</h2>
-<p>ReLU函數的公式為： <span class="math display">\[a=\text{ReLU}(h)=\max(0, h)\]</span> 易得其導數（同樣不考慮<span class="math inline">\(h=0\)</span>時沒有導數的問題）為 <span class="math display">\[
+<section class="level3" data-number="2.2" id="relu函數的梯度">
+<h3 class="anchored" data-anchor-id="relu函數的梯度" data-number="2.2"><span class="header-section-number">2.2</span> ReLU函數的梯度</h3>
+<p>ReLU函數的公式為： <span class="math display">\[
+a=\text{ReLU}(h)=\max(0, h)
+\]</span> 易得其導數（同樣不考慮<span class="math inline">\(h=0\)</span> 時沒有導數的問題）為 <span class="math display">\[
 \frac{\mathrm d a}{\mathrm dh} =
 \left\{
 \begin{aligned}
@@ -286,20 +289,19 @@ l=\frac{1}{m} \sum_i^m |\hat y - y|
 \right.
 \]</span></p>
 </section>
-<section class="level2" data-number="1.4" id="綫性層的梯度">
-<h2 class="anchored" data-anchor-id="綫性層的梯度" data-number="1.4"><span class="header-section-number">1.4</span> 綫性層的梯度</h2>
+<section class="level3" data-number="2.3" id="綫性層的梯度">
+<h3 class="anchored" data-anchor-id="綫性層的梯度" data-number="2.3"><span class="header-section-number">2.3</span> 綫性層的梯度</h3>
 <p>設MLP的一層綫性變換為 <span class="math display">\[
 \vec y=\mathbf W^T \vec x + \vec b,
-\]</span> 其中<span class="math inline">\(\mathbf W\in \mathbb R^{d_\text{in}, d_\text{out}}\)</span>, <span class="math inline">\(\vec b\in \mathbb R^{d_\text{out}}, \vec x\in \mathbb R^{d_\text{in}, 1}\)</span> 應用鏈式法則，可以求得以下梯度： <span class="math display">\[
-\begin{aligned}
+\]</span> 其中<span class="math inline">\(\vec b\in \mathbb R^{d_\text{out}}, \vec x\in \mathbb R^{d_\text{in}, 1}\)</span> , 應用鏈式法則，可以求得以下梯度： <span class="math display">\[\begin{aligned}
 \frac{\partial l}{\partial \mathbf W} &amp;= \vec x \left(\frac{\partial l}{\partial \vec y}\right)^T\\
 \frac{\partial l}{\partial \vec b} &amp;= \frac{\partial l}{\partial \vec y}\\
 \frac{\partial l}{\partial \vec x} &amp;= \mathbf W \left(\frac{\partial l}{\partial \vec y}\right) \\
 \end{aligned},
 \]</span> 其中<span class="math inline">\(l\)</span>為模型的損失。</p>
 </section>
-<section class="level2" data-number="1.5" id="反向傳播代碼">
-<h2 class="anchored" data-anchor-id="反向傳播代碼" data-number="1.5"><span class="header-section-number">1.5</span> 反向傳播代碼</h2>
+<section class="level3" data-number="2.4" id="反向傳播代碼">
+<h3 class="anchored" data-anchor-id="反向傳播代碼" data-number="2.4"><span class="header-section-number">2.4</span> 反向傳播代碼</h3>
 <p>根據以上推導，可以寫出如下的反向傳播代碼。該函數返回一個<code>dict</code>用於存儲各個變量的梯度。</p>
 <div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="kw">def</span> mlp_regression_backward(<span class="va">self</span>, cache):</span>
@@ -346,7 +348,7 @@ l=\frac{1}{m} \sum_i^m |\hat y - y|
 <span id="cb7-42"><a aria-hidden="true" href="#cb7-42" tabindex="-1"></a>)</span>
 <span id="cb7-43"><a aria-hidden="true" href="#cb7-43" tabindex="-1"></a>grads <span class="op">=</span> r.backward(cache)</span>
 <span id="cb7-44"><a aria-hidden="true" href="#cb7-44" tabindex="-1"></a><span class="cf">for</span> k, v <span class="kw">in</span> grads.items():</span>
-<span id="cb7-45"><a aria-hidden="true" href="#cb7-45" tabindex="-1"></a>    <span class="bu">print</span>(k, v.shape)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<span id="cb7-45"><a aria-hidden="true" href="#cb7-45" tabindex="-1"></a>    <span class="bu">print</span>(k, v.shape)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>dw3 (32, 1)
 db3 (1, 1)
@@ -357,12 +359,11 @@ db1 (16, 1)</code></pre>
 </div>
 </div>
 </section>
-<section class="level2" data-number="1.6" id="梯度检查">
-<h2 class="anchored" data-anchor-id="梯度检查" data-number="1.6"><span class="header-section-number">1.6</span> 梯度检查</h2>
-<p>一次性正確寫完梯度反傳并不容易。梯度檢查是校驗梯度計算正確性的重要方法。 根據梯度的定義，設損失函數為<span class="math inline">\(J\)</span>，那麽梯度可以用如下方法估計； <span class="math display">\[
+<section class="level3" data-number="2.5" id="梯度检查">
+<h3 class="anchored" data-anchor-id="梯度检查" data-number="2.5"><span class="header-section-number">2.5</span> 梯度检查</h3>
+<p>一次性正確寫完梯度反傳并不容易。梯度檢查是校驗梯度計算正確性的重要方法。 根據梯度的定義，設損失函數為<span class="math inline">\(J\)</span> ，那麽梯度可以用如下方法估計： <span class="math display">\[
 \frac{\partial J(x;\vec \theta)}{\partial \theta_i} \approx \frac{J(x;[\theta_1, \theta_2, \cdots, \theta_i + \epsilon, \cdots, \theta_n]) - J(x;[\theta_1, \theta_2, \cdots, \theta_i - \epsilon, \cdots, \theta_n] )}{2\epsilon}
-\]</span></p>
-<p>下面提供的<code>parameters_to_vector</code>，<code>restore_parameters_from_vector</code>函數實現了將模型參數轉化爲向量和從向量恢復模型參數的功能。<code>grads_to_vector</code>和<code>vector_to_grads</code>也起類似作用。基於此我們可以實現梯度檢查。</p>
+\]</span> 下面提供的<code>parameters_to_vector</code>，<code>restore_parameters_from_vector</code>函數實現了將模型參數轉化爲向量和從向量恢復模型參數的功能。<code>grads_to_vector</code>和<code>vector_to_grads</code>也起類似作用。基於此我們可以實現梯度檢查。</p>
 <div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="kw">def</span> parameters_to_vector(<span class="va">self</span>):</span>
 <span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>    ret <span class="op">=</span> [<span class="va">self</span>.w1, <span class="va">self</span>.b1, <span class="va">self</span>.w2, <span class="va">self</span>.b2, <span class="va">self</span>.w3, <span class="va">self</span>.b3]</span>
@@ -432,16 +433,17 @@ db1 (16, 1)</code></pre>
 <span id="cb9-66"><a aria-hidden="true" href="#cb9-66" tabindex="-1"></a>    grads_est[i] <span class="op">=</span> grad </span>
 <span id="cb9-67"><a aria-hidden="true" href="#cb9-67" tabindex="-1"></a></span>
 <span id="cb9-68"><a aria-hidden="true" href="#cb9-68" tabindex="-1"></a>difference <span class="op">=</span> np.<span class="bu">max</span>(np.<span class="bu">abs</span>(grads_vec <span class="op">-</span> grads_est))</span>
-<span id="cb9-69"><a aria-hidden="true" href="#cb9-69" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Diff:'</span>, difference)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<span id="cb9-69"><a aria-hidden="true" href="#cb9-69" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Diff:'</span>, difference)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(609,)
-Diff: 4.162181710398727e-11</code></pre>
+Diff: 3.414629690112747e-11</code></pre>
 </div>
 </div>
 <p>由代碼輸出可見，文章給出的梯度計算方法與梯度估算法的結果相差無幾，這證明了本文推導的正確性。</p>
 </section>
-<section class="level2" data-number="1.7" id="训练">
-<h2 class="anchored" data-anchor-id="训练" data-number="1.7"><span class="header-section-number">1.7</span> 训练</h2>
+</section>
+<section class="level2" data-number="3" id="训练">
+<h2 class="anchored" data-anchor-id="训练" data-number="3"><span class="header-section-number">3</span> 训练</h2>
 <p>以下程序以最基礎的SGD方法訓練了給出的模型，並打印損失函數。</p>
 <div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="im">import</span> tqdm.notebook <span class="im">as</span> tqdm</span>
@@ -467,10 +469,10 @@ Diff: 4.162181710398727e-11</code></pre>
 <span id="cb11-21"><a aria-hidden="true" href="#cb11-21" tabindex="-1"></a>        loss_records.append((i, loss))</span>
 <span id="cb11-22"><a aria-hidden="true" href="#cb11-22" tabindex="-1"></a></span>
 <span id="cb11-23"><a aria-hidden="true" href="#cb11-23" tabindex="-1"></a>    pbar.set_description(<span class="ss">f'loss: </span><span class="sc">{</span>loss<span class="sc">:.4f}</span><span class="ss">'</span>)</span>
-<span id="cb11-24"><a aria-hidden="true" href="#cb11-24" tabindex="-1"></a>    pbar.update()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<span id="cb11-24"><a aria-hidden="true" href="#cb11-24" tabindex="-1"></a>    pbar.update()</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"e438f3c816154bde943e32ed712a1142","version_major":2,"version_minor":0}
+{"model_id":"422fec12cd644d8f9e6005b14e4d3de8","version_major":2,"version_minor":0}
 </script>
 </div>
 </div>
@@ -478,12 +480,12 @@ Diff: 4.162181710398727e-11</code></pre>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
 <span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a></span>
 <span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a>loss_records <span class="op">=</span> np.array(loss_records)</span>
-<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a>plt.plot(loss_records[:, <span class="dv">0</span>], loss_records[:, <span class="dv">1</span>])</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a>plt.plot(loss_records[:, <span class="dv">0</span>], loss_records[:, <span class="dv">1</span>])</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img class="img-fluid" src="gradient_descent_20240629\figure-html\cell-10-output-1.png"/></p>
 </div>
 </div>
-<p>訓練完成後，模型的推理效果如圖所示。由圖可見，模型成功擬合了<span class="math inline">\(sin\)</span>函數。</p>
+<p>訓練完成後，模型的推理效果如圖所示。由圖可見，模型成功擬合了 函數。</p>
 <p>這裏模型的擬合效果并不完美。畢竟這只是一個三層的小型MLP，它還是有很大改進空間的。</p>
 <div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">1000</span>)[<span class="va">None</span>, :]</span>
@@ -497,29 +499,27 @@ Diff: 4.162181710398727e-11</code></pre>
 <span id="cb13-9"><a aria-hidden="true" href="#cb13-9" tabindex="-1"></a>    <span class="st">'sin(x)'</span>,</span>
 <span id="cb13-10"><a aria-hidden="true" href="#cb13-10" tabindex="-1"></a>    <span class="st">'pred'</span></span>
 <span id="cb13-11"><a aria-hidden="true" href="#cb13-11" tabindex="-1"></a>])</span>
-<span id="cb13-12"><a aria-hidden="true" href="#cb13-12" tabindex="-1"></a>plt.show()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<span id="cb13-12"><a aria-hidden="true" href="#cb13-12" tabindex="-1"></a>plt.show()</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img class="img-fluid" src="gradient_descent_20240629\figure-html\cell-11-output-1.png"/></p>
 </div>
 </div>
 </section>
-</section>
-<section class="level1" data-number="2" id="附录">
-
+<section class="level2" data-number="4" id="附录">
+<h2 class="anchored" data-anchor-id="附录" data-number="4"><span class="header-section-number">4</span> 附录</h2>
 <p>附錄提供了正文未使用到的一些常用函數的梯度推導。這些推導對實現分類器會有幫助，但本文就不給出詳細實現了。</p>
-<section class="level2" data-number="2.1" id="sigmoid的梯度推導">
-<h2 class="anchored" data-anchor-id="sigmoid的梯度推導" data-number="2.1"><span class="header-section-number">2.1</span> Sigmoid的梯度推導</h2>
-<p>設<span class="math inline">\(\sigma(x)=\frac{1}{1+e^{-x}}\)</span>是sigmoid函數。那麼<span class="math inline">\(\sigma(x)\)</span>的導數爲 <span class="math display">\[
-\begin{aligned}
+<section class="level3" data-number="4.1" id="sigmoid的梯度推導">
+<h3 class="anchored" data-anchor-id="sigmoid的梯度推導" data-number="4.1"><span class="header-section-number">4.1</span> Sigmoid的梯度推導</h3>
+<p>設<span class="math inline">\(\sigma(x)=\frac{1}{1+e^{-x}}\)</span>是sigmoid函數。那麼<span class="math inline">\(\sigma(x)\)</span> 的導數爲 <span class="math display">\[\begin{aligned}
 \sigma'(x) &amp;= \frac{e^{-x}}{(1 + e^{-x})^2} \\
 &amp;= \frac{1}{1 + e^{-x}} \frac{e^{-x}}{1+e^{-x}} \\
 &amp;= \sigma(x)(1-\sigma(x))
 \end{aligned}
 \]</span></p>
 </section>
-<section class="level2" data-number="2.2" id="二值交叉熵函數的梯度推導">
-<h2 class="anchored" data-anchor-id="二值交叉熵函數的梯度推導" data-number="2.2"><span class="header-section-number">2.2</span> 二值交叉熵函數的梯度推導</h2>
-<p><span class="math display">\[
+<section class="level3" data-number="4.2" id="二值交叉熵函數的梯度推導">
+<h3 class="anchored" data-anchor-id="二值交叉熵函數的梯度推導" data-number="4.2"><span class="header-section-number">4.2</span> 二值交叉熵函數的梯度推導</h3>
+<p>假設模型的最後一層激活函數為sigmoid函數，即<span class="math inline">\(\vec a = \sigma(\vec h)\)</span>. 損失函數為： <span class="math display">\[
 J(\vec a)=-\frac{1}{m}
 \sum_i^m \left(
 y_i \log (a_i)
@@ -543,22 +543,23 @@ y_i \frac{1}{a_i}
 &amp;= -\frac{1}{m} \left(y_i - y_ia_i - a_i + y_ia_i\right) \\
 &amp;= \frac{1}{m} (a_i - y_i)
 \end{aligned}
-\]</span></p>
-<p><span class="math display">\[
+\]</span> <span class="math display">\[
 \therefore \frac{\partial J}{\partial \vec h} = \frac{1}{m}(\mathbf A - \mathbf Y)
-\]</span> 假设<span class="math inline">\(\mathbf A\)</span>是由特征<span class="math inline">\(x\)</span>经过一层线性层，再經過softmax激活函数得来的，那麽 <span class="math display">\[\mathbf A=\sigma(\vec h) = \sigma( \vec w^T\mathbf X+ \vec b)\]</span> <span class="math display">\[
+\]</span> 假设<span class="math inline">\(\mathbf A\)</span> 是由特征<span class="math inline">\(\vec x\)</span>经过一层线性层，再經過softmax激活函数得来的，即 <span class="math display">\[
+\mathbf A=\sigma(\vec h) = \sigma( \vec w^T\mathbf X+ \vec b),
+\]</span> 那麽 <span class="math display">\[
 \begin{aligned}
 \therefore \frac{\partial J}{\partial \vec w} &amp;= \frac{1}{m}\mathbf X(\mathbf A- \mathbf Y)^T \\
 \frac{\partial J}{\partial \vec b} &amp;= \frac{1}{m}(\mathbf A - \mathbf Y)
 \end{aligned}
 \]</span></p>
 </section>
-<section class="level2" data-number="2.3" id="參考材料">
-<h2 class="anchored" data-anchor-id="參考材料" data-number="2.3"><span class="header-section-number">2.3</span> 參考材料</h2>
+</section>
+<section class="level2" data-number="5" id="參考材料">
+<h2 class="anchored" data-anchor-id="參考材料" data-number="5"><span class="header-section-number">5</span> 參考材料</h2>
 <ul>
 <li><a href="https://www.coursera.org/specializations/deep-learning">吳恩達的深度學習課程</a></li>
 </ul>
-</section>
 </section>
 </main>
 <!-- /main column -->
@@ -602,12 +603,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "已复制");
+    button.setAttribute("title", "Copied!");
     let tooltip;
     if (window.bootstrap) {
       button.setAttribute("data-bs-toggle", "tooltip");
       button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "已复制");
+      button.setAttribute("data-bs-title", "Copied!");
       tooltip = new bootstrap.Tooltip(button, 
         { trigger: "manual", 
           customClass: "code-copy-button-tooltip",
@@ -719,15 +720,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         </div>
 
         <div class="entry-social">
-            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././gradient_descent_20240629.html&text=手寫梯度下降和反向傳播&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././gradient_descent_20240629.html&text=用numpy實現神經網絡梯度下降&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
 
             <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././gradient_descent_20240629.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
 
-            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././gradient_descent_20240629.html&t=手寫梯度下降和反向傳播"><img src="./theme/images/icons/facebook-s.png"></a></span>
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././gradient_descent_20240629.html&t=用numpy實現神經網絡梯度下降"><img src="./theme/images/icons/facebook-s.png"></a></span>
 
-            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././gradient_descent_20240629.html&title=手寫梯度下降和反向傳播" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././gradient_descent_20240629.html&title=用numpy實現神經網絡梯度下降" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
 
-            <span class="mail"><a href="mailto:?subject=手寫梯度下降和反向傳播&amp;body=Viens découvrir un article à propos de [手寫梯度下降和反向傳播] sur le site de 執迷. ././gradient_descent_20240629.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+            <span class="mail"><a href="mailto:?subject=用numpy實現神經網絡梯度下降&amp;body=Viens découvrir un article à propos de [用numpy實現神經網絡梯度下降] sur le site de 執迷. ././gradient_descent_20240629.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
         </div>
     </div>
     

@@ -173,7 +173,7 @@
 <p>本文介紹如何用pytorch實現文章<span class="citation" data-cites="vaswani_attention_2017"><sup>[<a href="#ref-vaswani_attention_2017" role="doc-biblioref">1</a>]</sup></span>提出的multi-head attention（MHA）。MHA是scaled dot-product attention（SDPA）<span class="citation" data-cites="vaswani_attention_2017 Bahdanau2014NeuralMT"><sup>[<a href="#ref-vaswani_attention_2017" role="doc-biblioref">1</a>,<a href="#ref-Bahdanau2014NeuralMT" role="doc-biblioref">2</a>]</sup></span>的改進。既然MHA是SDPA的multi-head版，那麼也許將SDPA稱為單頭注意力會比較形象。讓我們先從單頭注意力開始。</p>
 <section class="level2" data-number="1" id="scaled-dot-product-attention">
 <h2 class="anchored" data-anchor-id="scaled-dot-product-attention" data-number="1"><span class="header-section-number">1</span> Scaled Dot-product Attention</h2>
-<p>。 SDPA的計算公式如下： <span id="eq-sdpa"><span class="math display">\[
+<p>SDPA的計算公式如下： <span id="eq-sdpa"><span class="math display">\[
 \text{Attention}(Q, K, V) = \text{Softmax}(\frac{QK^T}{\sqrt{d_k}})V
 \tag{1}\]</span></span> 其中，<span class="math inline">\(Q\)</span>、<span class="math inline">\(K\)</span>和<span class="math inline">\(V\)</span>分別為輸入的query、key和value向量。<span class="math inline">\(Q\)</span>的尺寸為<span class="math inline">\(L\times E_q\)</span>，<span class="math inline">\(K\)</span>的尺寸為<span class="math inline">\(S\times E_q\)</span>，<span class="math inline">\(V\)</span>的尺寸為<span class="math inline">\(S\times E_v\)</span>。</p>
 <p><a href="#eq-sdpa">公式 1</a>中，<span class="math inline">\(QK^T\)</span>的計算可以理解為求query向量和key向量間的“匹配程度”，使得SDPA能夠根據匹配程度從value中取得相關的數據。Softmax函數在這裡起到歸一化的作用，使得SDPA的計算結果可以視為V的加權平均。</p>
@@ -302,7 +302,8 @@ test(16); test(32); test(64); test(128)
 </section>
 <section class="level3" data-number="1.2" id="代碼實現">
 <h3 class="anchored" data-anchor-id="代碼實現" data-number="1.2"><span class="header-section-number">1.2</span> 代碼實現</h3>
-<p>在充分理解清楚SDPA的計算公式的前提下，用pytorch實現它就不困難。需要注意的是公式中沒有體現attention mask。attention mask在訓練中用於阻止模型在預測某一步的token時觀察到未來的token，這對訓練聊天機器人、機器翻譯模型是等生成式模型是必要的。</p>
+<p>在充分理解清楚SDPA的計算公式的前提下，用pytorch實現它就不困難。需要注意的是<a href="#eq-sdpa">公式 1</a>中沒有體現attention mask，但我們要在代碼實現中支持它。attention mask用於在訓練中阻止模型到未來的token，這對訓練聊天機器人、機器翻譯模型是等生成式模型是必要的。</p>
+<p>在實現中，<code>mask</code>矩陣的值會被加到注意力矩陣上。如果<code>mask</code>矩陣中有一個值非常小（接近<span class="math inline">\(-\infty\)</span>），那麼對應的注意力就會在<code>softmax</code>中被抑制。</p>
 <p>下列代碼實現了scaled dot-product attention：</p>
 <div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="im">import</span> torch</span>
@@ -333,10 +334,10 @@ test(16); test(32); test(64); test(128)
 <span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention操作返回結果：'</span>, ret)</span>
 <span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention矩陣為：'</span>, attn_weights)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>attention操作返回結果： tensor([[[0.7645, 0.4704, 0.4851, 0.6103],
-         [0.7256, 0.4594, 0.4788, 0.6185]]])
-attention矩陣為： tensor([[[0.2957, 0.7043],
-         [0.3860, 0.6140]]])</code></pre>
+<pre><code>attention操作返回結果： tensor([[[0.5092, 0.4412, 0.1042, 0.1914],
+         [0.6837, 0.5136, 0.1024, 0.2412]]])
+attention矩陣為： tensor([[[0.5479, 0.4521],
+         [0.3397, 0.6603]]])</code></pre>
 </div>
 </div>
 <p>一個檢查實現正確性的小技巧是，觀察返回attention矩陣的各列之和是否為1. 如果不為1，說明實現有問題。</p>
@@ -486,6 +487,18 @@ out_proj.bias torch.Size([16])</code></pre>
 <pre><code>1088 1088</code></pre>
 </div>
 </div>
+</details>
+</div>
+<div class="theorem example" id="exm-mha-time-complexity">
+<p><span class="theorem-title"><strong>例子 2 </strong></span>在自注意力機制中，MHA的時間複雜度是多少？和head數有關嗎？</p>
+<details>
+<summary>
+參考答案
+</summary>
+<p>首先，由<a href="#eq-sdpa">公式 1</a>可以看出，單頭注意力機制的時間複雜度是<span class="math inline">\(O(n^2d)\)</span>，其中<span class="math inline">\(n\)</span>為序列長度，<span class="math inline">\(d\)</span>為特征維度。</p>
+<p>接下來考慮MHA的時間複雜度。MHA先對輸入向量作線性變換得到Q、K、V，這部分的時間複雜度為<span class="math inline">\(O(nd^2)\)</span>；然後這些特征被拆分為<span class="math inline">\(n\)</span>個head，分別做attention，這個部分的時間複雜度為<span class="math inline">\(O(n^2\frac{d}{h} * h)\)</span>，其中<span class="math inline">\(h\)</span>為head數。最後MHA再做一次線性變化，時間複雜度為<span class="math inline">\(O(nd^2)\)</span>.</p>
+<p>因此，總的來看，MHA的時間複雜度為<span class="math inline">\(O(n^2d + nd^2)\)</span>，與head數無關。</p>
+從stack overflow的這個網頁可以看到一些有趣的討論：<a href="https://stackoverflow.com/questions/65703260/computational-complexity-of-self-attention-in-the-transformer-model">https://stackoverflow.com/questions/65703260/computational-complexity-of-self-attention-in-the-transformer-model</a>
 </details>
 </div>
 </section>
