@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
+
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="./_vercel/insights/script.js"></script>
+  
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
+
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
+
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>Sutton的The Bitter Lesson阅读笔记</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The Bitter Lesson是Sutton在2019年发布的一篇文章。文章指出“充分运用计算量的方法终能胜出”，“在通用方法中，学习（learning）和搜索（search）是两种能随著计算力增长发挥更强能力的方法。”本文是我阅读这篇文章的笔记和读后感。">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="The Bitter Lesson是Sutton在2019年发布的一篇文章。文章指出“充分运用计算量的方法终能胜出”，“在通用方法中，学习（learning）和搜索（search）是两种能随著计算力增长发挥更强能力的方法。”本文是我阅读这篇文章的笔记和读后感。">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././bitter_lesson_20241013_zh-cn.html">
+<meta name="twitter:title" content="執迷的博客 ~ Sutton的The Bitter Lesson阅读笔记">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ Sutton的The Bitter Lesson阅读笔记" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+
+<!-- MathJax -->
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+      <p>做一個有趣的人！</p>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <h2 class="post_title post_detail"><a href="././bitter_lesson_20241013_zh-cn.html" rel="bookmark" title="Permalink to Sutton的The Bitter Lesson阅读笔记">Sutton的The Bitter Lesson阅读笔记</a></h2>
+    
+    <p>
+        <span id="busuanzi_container_page_pv">
+            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+        </span>
+    </p>
+    
+    <div class="entry-content blog-post">
+        <div class="fullcontent">
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+
+</div>
+<div class="quarto-title-meta">
+<div>
+<div class="quarto-title-meta-heading">Published</div>
+<div class="quarto-title-meta-contents">
+<p class="date">October 13, 2024</p>
+</div>
+</div>
+</div>
+</header>
+<p><a href="http://www.incompleteideas.net/IncIdeas/BitterLesson.html"><em>The Bitter Lesson</em></a>是Sutton在2019年发布的一篇文章。文章指出“充分运用计算量的方法终能胜出”，“在通用方法中，学习（learning）和搜索（search）是两种能随著计算力增长发挥更强能力的方法。”</p>
+<p>过去GPT系列模型的成功已经体现了learning的规模效应。近来openai发布的o1模型是<em>The Bitter Lesson</em>思想的又一实践，我认为它体现了search在大规模数据合成方面的作用。</p>
+<section class="level2" id="the-bitter-lesson筆記">
+<h2 class="anchored" data-anchor-id="the-bitter-lesson筆記"><em>The Bitter Lesson</em>笔记</h2>
+<p><strong>能充分利用算力的通用方法最终是更有效的。</strong>根本原因在于摩尔定律，以及计算代价的指数下降。大多数AI研究限制可用的计算量为一常数，从而公平比较不同方法。在这一前提下，一般越多引入人类见解效果越好。但是长期来看，随著计算成本的下降，能够充分利用算力的通用方法终能胜出；而过多引入人类知识，使模型复杂化，不能适应算力增长的方法终究会落后。</p>
+<p><strong>一些例子：</strong>1997年，许多研究人员沮丧地看到，那个击败了国际象棋冠军的算法是基于“暴力搜索”的，而非基于人类的象棋知识。类似的，在围棋领域，当计算量上来以后，那些依赖人类知识减少搜索，利用游戏的特殊特征的方法就失去优势。这时通过自我博弈（self-play）学习价值函数的方法也显示出重要性，体现出学习和搜索是能够充分利用大规模算力的两种方法。20世纪七十年代，基于统计学和大规模计算的隐马尔科夫模型主导了语音识别领域。后来深度学习推动了语音识别效果，又再次印证了这一规律。在计算机视觉领域，人们早期构造和识别各种人造特征，例如SIFT特征。但现在人们基本已经淘汰了这些方法。用简单的基于卷积的模型就能表现得更好。</p>
+<p>即使是现在，人们还是经常犯同样的错误，试图在方法中加入更多人类知识和规则。这样做短期有用，但随著算力的增长，总是会有能充分利用算力的通用方法出现，从而改变局面。</p>
+<p>Sutton还认为人类的心智是无比复杂的，其内容规模是巨大的，不能用简单的方法去解释。世界的复杂度是无穷的，我们应该寻找一种元方法来发现和建模任意的复杂度，去自己寻找对世界的一个良好的近似，而不是仅仅灌输人类认识到的规律。</p>
+</section>
+<section class="level2" id="讀後感">
+<h2 class="anchored" data-anchor-id="讀後感">读后感</h2>
+<p><em>The Bitter Lesson</em>指出的一些规律在文章发布后还一直起著作用。犹记得CLIP和SAM这些文章发布后，我的研究生导师抱怨著这对现在的工作有著多么重要的影响，研究方式要改变，许多已有的工作变得不再重要了……大模型的出现尤其如此，颠覆了许多旧的工作方式。这样的颠覆对大家来说常常是带来困扰的，因为超大算力往往是大公司、大实验室才能拥有，而小实验室、小公司或者个人只能做些低成本的工作。</p>
+<p>O1的发布也许意味著OpenAI在探索如何大规模利用合成数据。许多人认为O1的推理能力提升意味著我们距离AGI（通用人工智能）又近了一部。</p>
+<p>我乐观的认为，一方面，大模型的发展速度很快，但短期内我们还是可以通过在其中引入一些人类规则或者外部工具来提升它的能力；另一方面，目测O1的推理能力虽然很强，但代价也很高。推理能力也不是目前大模型距离AGI的最后一道鸿沟，例如持续学习能力、感知外界事物的能力等等都还是现有大模型的短板。最后，目前大模型的训练方式是低效率的，几乎用上了世界上所有的文本，消耗昂贵的电力——而人类从婴儿到成人十八年所学习的材料应该堆不满一间屋子。我想如何实现更高效率的学习这一问题值得思考。总的来讲，我们还是有很多事情可以做，有很多事情值得期待。</p>
+</section>
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+</div>
+    </div>
+    <div class="post_list">
+        <span>By </span>
+        <a href="./">@執迷</a>
+        <span> in </span>
+        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 機器學習">[ 機器學習 ]</a></span>
+        <span class="post_date">2024-10-13</span>
+        <div><span>Tags : </span>
+            
+            
+            <span><a href="./">#機器學習, </a></span>
+            
+            <span><a href="./">#人工智能, </a></span>
+            
+            
+        </div>
+
+        <div class="entry-social">
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././bitter_lesson_20241013_zh-cn.html&text=Sutton的The Bitter Lesson阅读笔记&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././bitter_lesson_20241013_zh-cn.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././bitter_lesson_20241013_zh-cn.html&t=Sutton的The Bitter Lesson阅读笔记"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././bitter_lesson_20241013_zh-cn.html&title=Sutton的The Bitter Lesson阅读笔记" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+            <span class="mail"><a href="mailto:?subject=Sutton的The Bitter Lesson阅读笔记&amp;body=Viens découvrir un article à propos de [Sutton的The Bitter Lesson阅读笔记] sur le site de 執迷. ././bitter_lesson_20241013_zh-cn.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+        </div>
+    </div>
+    
+
+</section>
+
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
+</body>
+</html>
