@@ -610,7 +610,7 @@ Time Difference: 0.1847s:0.09761s</code></pre>
 </div>
 <p>該函數的圖像是一個遞增的S形曲線。在<span class="math inline">\(p\)</span>的值不超過某個閾值的時候，概率<span class="math inline">\(f(p)\)</span>很小；反之一旦超過這個值，<span class="math inline">\(f(p)\)</span>就驟然增大。</p>
 <p>用通俗的話來說，MinHash方法具有一個很好的性質：相似的兩個文檔（<span class="math inline">\(p\)</span>的值比較大）有很大的概率（<span class="math inline">\(f(p)\)</span>）使得至少存在一個band，這個band內的兩文檔的哈希值全部相同——這會使得它們落在同一個bucket內；函數圖像中中部的跳變意味著<strong>存在一個可以調控的界限</strong>，在這個界限兩端，文檔落在同一bucket內的概率有鮮明的差別。</p>
-<p>對於實際應用，該函數圖像的“跳變點”是需要調控的一個重要參數。设我们希望提取相似度在阈值<span class="math inline">\(\tau\)</span>以上的数据，那么上图的斜率最大点可以近似为<span class="math inline">\(\tau \approx (1/b)1/r\)</span>，据此可以解出<span class="math inline">\(r,b\)</span>的值。</p>
+<p>對於實際應用，該函數圖像的“跳變點”是需要調控的一個重要參數。设我们希望提取相似度在阈值<span class="math inline">\(\tau\)</span>以上的数据，那么上图的斜率最大点可以近似为<span class="math inline">\(\tau \approx (1/b)^{1/r}\)</span>，据此可以解出<span class="math inline">\(r,b\)</span>的值。</p>
 </section>
 <section class="level2" data-number="5" id="總結">
 <h2 class="anchored" data-anchor-id="總結" data-number="5"><span class="header-section-number">5</span> 總結</h2>

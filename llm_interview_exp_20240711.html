@@ -331,30 +331,48 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 <div class="theorem example" id="exm-why-layer-norm">
 <p><span class="theorem-title"><strong>例子 18 </strong></span>🌙🌙<strong>爲什麽Transformer模型要使用LayerNorm而不是BatchNorm。</strong></p>
 </div>
+<div class="theorem example" id="exm-rms-norm">
+<p><span class="theorem-title"><strong>例子 19 </strong></span>🌙🌙<strong>介紹RMSNorm。</strong></p>
+</div>
 <div class="theorem example" id="exm-tokenizers">
-<p><span class="theorem-title"><strong>例子 19 </strong></span>🌙🌙<strong>請介紹幾種你熟悉的tokenization方法。</strong></p>
+<p><span class="theorem-title"><strong>例子 20 </strong></span>🌙🌙<strong>請介紹幾種你熟悉的tokenization方法。</strong></p>
+</div>
+<div class="theorem example" id="exm-prefix-lm-vs-causal-lm">
+<p><span class="theorem-title"><strong>例子 21 </strong></span><strong>Encoder-Decoder結構、Prefix LM和Causal LM有什麼不同？</strong></p>
+<p>T5論文的Figure 4很好地展示了三者的不同。 Encoder-Decoder結構下，Encoder的輸入token間是兩兩互相可見的，Decoder的attention mask則是單向可見的。</p>
+<p>Prefix LM和Causal LM的結構相近，區別是Prefix LM中，前綴文本內的token是兩兩互相可見的，前綴文本後的token是單向可見的；而Causal LM中所有token都是單向可見的。</p>
+<p>Prefix LM和Encoder-Decoder相比是類似的，都允許一部分token之間兩兩完全可見，但Prefix LM好比是實現了Encoder和Decoder的參數共享，減少了參數量。</p>
+<p>當下Causal LM是被大模型廣泛採用的架構。雖然Encoder-Decoder和Prefix LM的雙向注意力理論上有優勢，但仍然被大模型領域所“淘汰”。這就引出了另一個問題，“為什麼大模型都採用Causal LM結構”</p>
+</div>
+<div class="theorem example" id="exm-why-causal-lm">
+<p><span class="theorem-title"><strong>例子 22 </strong></span>⭐⭐⭐為什麼大模型都採用Causal LM結構？</p>
+<ol type="1">
+<li>KV-Cache優化：Encoder-Decoder和Prefix LM都不易採用KV-Cache優化，而支持KV-Cache的Causal LM對推理加速更友好；</li>
+<li>訓練效率：Encoder-Decoder架構模型的Pipeline Parallel難以優化。即使模型架構能帶來理論上的性能優勢，但是卻帶來昂貴的訓練代價的話，那麼這種模型結構就會輸給那些更能充分利用算力的模型；</li>
+<li>軌跡依賴：OpenAI使用Causal LM成功實現了GPT系列大模型，這使得後來者都更傾向於採用相近的配置進行實驗。</li>
+</ol>
 </div>
 </section>
 <section class="level2" data-number="3" id="計算機視覺相關問題">
 <h2 class="anchored" data-anchor-id="計算機視覺相關問題" data-number="3"><span class="header-section-number">3</span> 計算機視覺相關問題</h2>
 <div class="theorem example" id="exm-why-preprocess">
-<p><span class="theorem-title"><strong>例子 20 </strong></span><strong>爲什麽要對圖像做預處理？</strong></p>
+<p><span class="theorem-title"><strong>例子 23 </strong></span><strong>爲什麽要對圖像做預處理？</strong></p>
 <ol type="1">
 <li>預處理將數據變換到統一的格式，方便模型學習；</li>
 <li>通過提前提取有用的特徵，裁剪出感興趣區域來加快計算；</li>
 </ol>
 </div>
 <div class="theorem example" id="exm-vit-pos-encoding">
-<p><span class="theorem-title"><strong>例子 21 </strong></span>⭐<strong>ViT模型中是如何對位置信息進行編碼的？</strong></p>
+<p><span class="theorem-title"><strong>例子 24 </strong></span>⭐<strong>ViT模型中是如何對位置信息進行編碼的？</strong></p>
 </div>
 <div class="theorem example" id="exm-transformer-cnn-cmp">
-<p><span class="theorem-title"><strong>例子 22 </strong></span>⭐<strong>請比較Transformer和CNN</strong></p>
+<p><span class="theorem-title"><strong>例子 25 </strong></span>⭐<strong>請比較Transformer和CNN</strong></p>
 </div>
 </section>
 <section class="level2" data-number="4" id="深度學習相關問題">
 <h2 class="anchored" data-anchor-id="深度學習相關問題" data-number="4"><span class="header-section-number">4</span> 深度學習相關問題</h2>
 <div class="theorem example" id="exm-overfitting">
-<p><span class="theorem-title"><strong>例子 23 </strong></span>⭐<strong>在訓練模型的過程中，我們經常遇到過擬合。有哪些常見的應對過擬合的方法？</strong></p>
+<p><span class="theorem-title"><strong>例子 26 </strong></span>⭐<strong>在訓練模型的過程中，我們經常遇到過擬合。有哪些常見的應對過擬合的方法？</strong></p>
 <ol type="1">
 <li>數據層面：增加數據量、數據增強；</li>
 <li>模型設計層面：Dropout、DropBlock、weight decay；</li>
@@ -366,24 +384,24 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 <section class="level2" data-number="5" id="機器學習問題">
 <h2 class="anchored" data-anchor-id="機器學習問題" data-number="5"><span class="header-section-number">5</span> 機器學習問題</h2>
 <div class="theorem example" id="exm-k-means-imp">
-<p><span class="theorem-title"><strong>例子 24 </strong></span>⭐<strong>手寫K-Means</strong></p>
+<p><span class="theorem-title"><strong>例子 27 </strong></span>⭐<strong>手寫K-Means</strong></p>
 <p>被問到過一次。按照自己的理解實現出來，但是只通過了35%的測試用例。</p>
 </div>
 <p>⭐<strong>你知道softmax函數的上溢和下溢問題嗎？如何解決這個問題。</strong></p>
 <p>TODO :::</p>
 <div class="theorem example" id="exm-collinearity">
-<p><span class="theorem-title"><strong>例子 25 </strong></span>🌙<strong>特徵存在共綫性問題會有什麽影響？應當如何應對。</strong></p>
+<p><span class="theorem-title"><strong>例子 28 </strong></span>🌙<strong>特徵存在共綫性問題會有什麽影響？應當如何應對。</strong></p>
 <p>TODO</p>
 </div>
 <div class="theorem example" id="exm-high-dim-little-sample">
-<p><span class="theorem-title"><strong>例子 26 </strong></span>🌙<strong>如果特徵維度很大而樣本又少，應該怎麽辦？</strong></p>
+<p><span class="theorem-title"><strong>例子 29 </strong></span>🌙<strong>如果特徵維度很大而樣本又少，應該怎麽辦？</strong></p>
 <p>TODO</p>
 </div>
 <div class="theorem example" id="exm-mse-vs-mae">
-<p><span class="theorem-title"><strong>例子 27 </strong></span>🌙🌙<strong>MSE和MAE分別作爲損失函數會帶來什麽區別？</strong></p>
+<p><span class="theorem-title"><strong>例子 30 </strong></span>🌙🌙<strong>MSE和MAE分別作爲損失函數會帶來什麽區別？</strong></p>
 </div>
 <div class="theorem example" id="exm-collinearity">
-<p><span class="theorem-title"><strong>例子 28 </strong></span>🌙<strong>特徵存在共綫性問題會有什麽影響？應當如何應對。</strong></p>
+<p><span class="theorem-title"><strong>例子 31 </strong></span>🌙<strong>特徵存在共綫性問題會有什麽影響？應當如何應對。</strong></p>
 <p>TODO</p>
 </div>
 </section>
@@ -404,11 +422,11 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 <li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/reverse-substrings-between-each-pair-of-parentheses/description/"><strong>反转每对括号间的子串</strong></a>：考察栈的用法。也可以不用栈来解。容易想到<span class="math inline">\(O(n^2)\)</span>复杂度的算法，但实际也存在<span class="math inline">\(O(n)\)</span>的解法。</li>
 <li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/search-in-rotated-sorted-array/"><strong>搜索選擇排序數組</strong></a>：考察二分法。需要做題者注意到選擇排序數組的特性。</li>
 <li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/median-of-two-sorted-arrays/description/"><strong>尋找兩個正序數組的中位數</strong></a>（困難）：更一般的，可以推廣為尋找兩個正序數組的第k小的數。考察二分法。需要思考應該對哪個量做二分查找。</li>
-<li>🌙<span class="src-minimax"></span><strong>NER的BIO形式標註轉start，end形式</strong>（<a href="#exm-ner-bio-to-start-end">例子 35</a>）：以命名實體識別（NER）任務為背景的簡單算法題。</li>
+<li>🌙<span class="src-minimax"></span><strong>NER的BIO形式標註轉start，end形式</strong>（<a href="#exm-ner-bio-to-start-end">例子 38</a>）：以命名實體識別（NER）任務為背景的簡單算法題。</li>
 <li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/knight-probability-in-chessboard/description/"><strong>馬在棋盤上的概率</strong></a>：可以用動態規劃的方法求解，時間複雜度為<span class="math inline">\(O(n^2k)\)</span>，這裏<span class="math inline">\(n\)</span>為棋盤大小，<span class="math inline">\(k\)</span>為步數。還可以想到本題所執行的動態規劃步驟實際上是一種捲積，且每一步的捲積核都是相同的，因此本題可以用快速冪的方式進行優化。</li>
 <li>🌙<span class="src-minimax"></span><a href="https://leetcode.cn/problems/integer-break/solutions/2834147/ji-yu-shu-xue-fen-xi-de-chang-shu-shi-ji-32qm"><strong>整数拆分</strong></a>：將整數<span class="math inline">\(n\geq 2\)</span>拆分為任意個正整數的和，使其乘積最大。容易想到基於動態規劃的解法，但不容易給出<span class="math inline">\(O(1)\)</span>時間複雜度的，基於數學分析的解法。
 <ul>
-<li>問題延伸：如果題目改為將整數<span class="math inline">\(n\geq 2\)</span>拆分為任意個正數的和，使其乘積最大。該如何分析？參考<a href="#exm-split-int">例子 36</a></li>
+<li>問題延伸：如果題目改為將整數<span class="math inline">\(n\geq 2\)</span>拆分為任意個正數的和，使其乘積最大。該如何分析？參考<a href="#exm-split-int">例子 39</a></li>
 </ul></li>
 <li>⭐<span class="src-bytedance"></span>給定一個字符串和一個詞典，問字符串能否由詞典中的單詞拼接而成。用DFS可解。可考慮引入緩存等策略進行優化。</li>
 </ul>
@@ -416,19 +434,19 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 <section class="level2" data-number="7" id="開放性問題">
 <h2 class="anchored" data-anchor-id="開放性問題" data-number="7"><span class="header-section-number">7</span> 開放性問題</h2>
 <div class="theorem example" id="exm-tech-planning">
-<p><span class="theorem-title"><strong>例子 29 </strong></span>⭐<strong>在個人技術成長方面，你有什麼規劃？</strong></p>
+<p><span class="theorem-title"><strong>例子 32 </strong></span>⭐<strong>在個人技術成長方面，你有什麼規劃？</strong></p>
 </div>
 <div class="theorem example" id="exm-why-leaving">
-<p><span class="theorem-title"><strong>例子 30 </strong></span>⭐<strong>為什麼想要離職？</strong></p>
+<p><span class="theorem-title"><strong>例子 33 </strong></span>⭐<strong>為什麼想要離職？</strong></p>
 </div>
 <div class="theorem example" id="exm-the-most-hard-proj">
-<p><span class="theorem-title"><strong>例子 31 </strong></span>⭐<strong>請介紹一下過往最困難的一個項目。</strong></p>
+<p><span class="theorem-title"><strong>例子 34 </strong></span>⭐<strong>請介紹一下過往最困難的一個項目。</strong></p>
 </div>
 <div class="theorem example" id="exm-proj-contrib">
-<p><span class="theorem-title"><strong>例子 32 </strong></span>⭐<span class="src-minimax"></span><strong>你當前採用的項目方案的亮點是什麼？你對項目最重要的貢獻是？</strong></p>
+<p><span class="theorem-title"><strong>例子 35 </strong></span>⭐<span class="src-minimax"></span><strong>你當前採用的項目方案的亮點是什麼？你對項目最重要的貢獻是？</strong></p>
 </div>
 <div class="theorem example" id="exm-indispensability">
-<p><span class="theorem-title"><strong>例子 33 </strong></span>⭐<strong>是什麼使你在項目中具有不可替代性？或者是什麼使你具備比他人更高的價值？</strong></p>
+<p><span class="theorem-title"><strong>例子 36 </strong></span>⭐<strong>是什麼使你在項目中具有不可替代性？或者是什麼使你具備比他人更高的價值？</strong></p>
 </div>
 </section>
 <section class="level2" data-number="8" id="總結-1">
@@ -462,7 +480,7 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 <section class="level3" data-number="9.1" id="例題">
 <h3 class="anchored" data-anchor-id="例題" data-number="9.1"><span class="header-section-number">9.1</span> 例題</h3>
 <div class="theorem example" id="exm-post-prob-of-coins">
-<p><span class="theorem-title"><strong>例子 34 </strong></span>⭐<span class="src-bytedance"></span>兩個硬幣的後驗概率</p>
+<p><span class="theorem-title"><strong>例子 37 </strong></span>⭐<span class="src-bytedance"></span>兩個硬幣的後驗概率</p>
 <p>有兩個硬幣，一個硬幣的兩面都是正面；另一個是正常硬幣：一面是正面，另一面是反面；</p>
 <p>隨機選取其中一枚，拋擲五次，都是正面。問這枚硬幣是正常硬幣的概率是？</p>
 <p>解：設<span class="math inline">\(A=\text{拋擲五次硬幣都是正面}\)</span>，<span class="math inline">\(B={這是一枚正常硬幣}\)</span></p>
@@ -487,7 +505,7 @@ P(B|A) &amp;= 0.5^5 \times 0.5/ P(A) \\
 \]</span></p>
 </div>
 <div class="theorem example" id="exm-ner-bio-to-start-end">
-<p><span class="theorem-title"><strong>例子 35 </strong></span>🌙<span class="src-minimax"></span><strong>NER标注格式转换</strong></p>
+<p><span class="theorem-title"><strong>例子 38 </strong></span>🌙<span class="src-minimax"></span><strong>NER标注格式转换</strong></p>
 <p>描述: 在命名实体识别(NER)任务中,BIO标注方式是常用的标注格式之一。但在某些应用场景下,我们可能需要将BIO格式转换为start,end形式的标注。</p>
 <p>请你实现一个Python函数,将BIO格式的NER标注转换为start,end形式。</p>
 <p>函数输入:</p>
@@ -628,7 +646,7 @@ P(B|A) &amp;= 0.5^5 \times 0.5/ P(A) \\
 </div>
 </div>
 <div class="theorem example" id="exm-split-int">
-<p><span class="theorem-title"><strong>例子 36 </strong></span>🌙<span class="src-minimax"></span>如何將整數<span class="math inline">\(n\geq 2\)</span>拆分為任意個正數的和，使其乘積最大？</p>
+<p><span class="theorem-title"><strong>例子 39 </strong></span>🌙<span class="src-minimax"></span>如何將整數<span class="math inline">\(n\geq 2\)</span>拆分為任意個正數的和，使其乘積最大？</p>
 <p>設<span class="math inline">\(n\)</span>被拆分為<span class="math inline">\(k\)</span>個數，容易證明每個數都為<span class="math inline">\(n/k\)</span>時乘積最大。（先證明<span class="math inline">\(k=2\)</span>時，<span class="math inline">\(n\)</span>應該被拆為<span class="math inline">\(\frac{n}{2} + \frac{n}{2}\)</span>；然後通過構造條件滿足數學歸納法來證明。）</p>
 <p>加下來，設將<span class="math inline">\(n\)</span>拆為<span class="math inline">\(k\)</span>份，可知其乘積應為<span class="math inline">\(f(n, k) = \left(\frac{n}{k}\right)^k\)</span>. 先不考慮<span class="math inline">\(k\)</span>應為正整數的問題，令<span class="math inline">\(k \in \mathbb R^+\)</span>. <span class="math inline">\(f(n, k)\)</span>是一個連續函數。</p>
 <p><span class="math display">\[
@@ -651,7 +669,7 @@ f(n, k) &amp;= e^{\ln \left(\frac{n}{k}\right)^k} \\
 <p>容易看出<span class="math inline">\(\frac{\partial f}{\partial k}\)</span>隨著<span class="math inline">\(k\)</span>的增加而單調上升。因此<span class="math inline">\(k=\frac{n}{e}\)</span>是函數的極大值點。但是<span class="math inline">\(k\)</span>需要是整數，因此我們可以考慮取<span class="math inline">\(k=\lceil \frac{n}{e} \rceil\)</span>或<span class="math inline">\(k=\lfloor \frac{n}{e}\rfloor\)</span>，取其中使乘積最大的<span class="math inline">\(k\)</span>即可。</p>
 </div>
 <div class="theorem example" id="exm-fibonacci">
-<p><span class="theorem-title"><strong>例子 37 </strong></span>求斐波那契數列1、1、2、3、5、8……的通項公式。</p>
+<p><span class="theorem-title"><strong>例子 40 </strong></span>求斐波那契數列1、1、2、3、5、8……的通項公式。</p>
 <p>當<span class="math inline">\(n\geq 3\)</span>時，有<span class="math inline">\(F_{n} = F_{n-1} + F_{n-2}\)</span>. 寫成矩陣形式為 <span class="math display">\[
 \begin{pmatrix}
 F_n\\

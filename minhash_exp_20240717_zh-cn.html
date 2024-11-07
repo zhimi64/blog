@@ -610,7 +610,7 @@ Time Difference: 0.1847s:0.09761s</code></pre>
 </div>
 <p>该函数的图像是一个递增的S形曲线。在<span class="math inline">\(p\)</span>的值不超过某个阈值的时候，概率<span class="math inline">\(f(p)\)</span>很小；反之一旦超过这个值，<span class="math inline">\(f(p)\)</span>就骤然增大。</p>
 <p>用通俗的话来说，MinHash方法具有一个很好的性质：相似的两个文档（<span class="math inline">\(p\)</span>的值比较大）有很大的概率（<span class="math inline">\(f(p)\)</span>）使得至少存在一个band，这个band内的两文档的哈希值全部相同——这会使得它们落在同一个bucket内；函数图像中中部的跳变意味著<strong>存在一个可以调控的界限</strong>，在这个界限两端，文档落在同一bucket内的概率有鲜明的差别。</p>
-<p>对于实际应用，该函数图像的“跳变点”是需要调控的一个重要参数。设我们希望提取相似度在阈值<span class="math inline">\(\tau\)</span>以上的数据，那么上图的斜率最大点可以近似为<span class="math inline">\(\tau \approx (1/b)1/r\)</span>，据此可以解出<span class="math inline">\(r,b\)</span>的值。</p>
+<p>对于实际应用，该函数图像的“跳变点”是需要调控的一个重要参数。设我们希望提取相似度在阈值<span class="math inline">\(\tau\)</span>以上的数据，那么上图的斜率最大点可以近似为<span class="math inline">\(\tau \approx (1/b)^{1/r}\)</span>，据此可以解出<span class="math inline">\(r,b\)</span>的值。</p>
 </section>
 <section class="level2" data-number="5" id="總結">
 <h2 class="anchored" data-anchor-id="總結" data-number="5"><span class="header-section-number">5</span> 总结</h2>
