@@ -184,7 +184,7 @@
 </div>
 <p>從2024年三月以來，我著手做一些大模型方向的面試準備工作。本文簡單記錄了一些實際面試過程中被問到的問題以及一些自己認為比較重要的知識。</p>
 <p>文章使用“🌙”符號表示自己認為比較重要的知識，用“⭐”表示面試中實際被問到過的知識。“🌙/⭐”符號的多少指示我對問題重要性的評估（五分制）。</p>
-<p>文章持續更新中……</p>
+<p>本人水平有限，文章内容不一定正確。本文的内容也難稱完整，會持續保持更新。</p>
 <section class="level2" data-number="1" id="llm相關問題">
 <h2 class="anchored" data-anchor-id="llm相關問題" data-number="1"><span class="header-section-number">1</span> LLM相關問題</h2>
 <section class="level3" data-number="1.1" id="數據工程">
@@ -220,9 +220,6 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 <li><a href="https://huggingface.co/docs/transformers/v4.15.0/en/parallelism">Huggingface Transformers文檔</a></li>
 </ul>
 </div>
-<section class="level4" data-number="1.2.1" id="總結">
-<h4 class="anchored" data-anchor-id="總結" data-number="1.2.1"><span class="header-section-number">1.2.1</span> 總結</h4>
-</section>
 </section>
 <section class="level3" data-number="1.3" id="偏好對齊">
 <h3 class="anchored" data-anchor-id="偏好對齊" data-number="1.3"><span class="header-section-number">1.3</span> 偏好對齊</h3>
@@ -330,12 +327,15 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 </div>
 <div class="theorem example" id="exm-why-layer-norm">
 <p><span class="theorem-title"><strong>例子 18 </strong></span>🌙🌙<strong>爲什麽Transformer模型要使用LayerNorm而不是BatchNorm。</strong></p>
+<p>TODO</p>
 </div>
 <div class="theorem example" id="exm-rms-norm">
 <p><span class="theorem-title"><strong>例子 19 </strong></span>🌙🌙<strong>介紹RMSNorm。</strong></p>
+<p>TODO</p>
 </div>
 <div class="theorem example" id="exm-tokenizers">
 <p><span class="theorem-title"><strong>例子 20 </strong></span>🌙🌙<strong>請介紹幾種你熟悉的tokenization方法。</strong></p>
+<p>TODO</p>
 </div>
 <div class="theorem example" id="exm-prefix-lm-vs-causal-lm">
 <p><span class="theorem-title"><strong>例子 21 </strong></span><strong>Encoder-Decoder結構、Prefix LM和Causal LM有什麼不同？</strong></p>
@@ -364,9 +364,11 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 </div>
 <div class="theorem example" id="exm-vit-pos-encoding">
 <p><span class="theorem-title"><strong>例子 24 </strong></span>⭐<strong>ViT模型中是如何對位置信息進行編碼的？</strong></p>
+<p>TODO</p>
 </div>
 <div class="theorem example" id="exm-transformer-cnn-cmp">
 <p><span class="theorem-title"><strong>例子 25 </strong></span>⭐<strong>請比較Transformer和CNN</strong></p>
+<p>TODO</p>
 </div>
 </section>
 <section class="level2" data-number="4" id="深度學習相關問題">
@@ -449,8 +451,8 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 <p><span class="theorem-title"><strong>例子 36 </strong></span>⭐<strong>是什麼使你在項目中具有不可替代性？或者是什麼使你具備比他人更高的價值？</strong></p>
 </div>
 </section>
-<section class="level2" data-number="8" id="總結-1">
-<h2 class="anchored" data-anchor-id="總結-1" data-number="8"><span class="header-section-number">8</span> 總結</h2>
+<section class="level2" data-number="8" id="總結">
+<h2 class="anchored" data-anchor-id="總結" data-number="8"><span class="header-section-number">8</span> 總結</h2>
 <p>筆記的重要性：只學習不總結就容易忘。不做筆記不行啊。最好每次面試過後，立即將記錄下來，時不時重新過一遍。</p>
 <p>平時多練習，多刷題，保持手感。有的公司（例如Minimax）的算法测试会期望给出最优解，面試時即使把題目做出來了，也可以問一下需不需要繼續改進，提一提能想到的改進點。</p>
 <p>拿到Offer後，記得問以下重點問題。可以不直接問，但也需要間接地通過各種渠道去瞭解。要瞭解的包括但不限於：</p>
@@ -471,9 +473,9 @@ ZeRO與Tensor Paralle相似，是一種橫向切分模型的方式。 -->
 </ul>
 <p>一些經驗和感想：</p>
 <ol type="1">
-<li>（不是絕對的）不論是體制内還是體制外，國企還是私企，只要在國内，就不要相信955的存在。一位HR可以毫無心裏負擔地告訴你它是955，但它也可以隨時轉變為996而不受到任何約束。同理，一家企業聲稱它是996，那麽你可以大膽推測它實際上已經是9106了；</li>
-<li>競業協議是不公平的。如果你簽下了競業協議，公司就有權阻止你入職同行業内的任何公司，並在你離職後提供一些微小的補償。但相反的，假如你主動離職去賭博、考公，主動希望公司啟動競業協議，公司卻可以選擇不啟動競業。主動權總是掌握在公司手上。<br/>
-一般來說，即使簽訂了協議，公司也不會捨得為一個初入職場的大頭兵啟動競業。因此初入職場的同學不必過於擔心這個問題。但不論如何，在簽訂新公司時還是要對競業協議保持謹慎；</li>
+<li>（不是絕對的）不論是體制内還是體制外，國企還是私企，只要在國内，就不要相信955的存在。一位HR可以毫無心裏負擔地告訴你它是955，但它也可以隨時轉變為996而不受到任何約束。同理，一家企業聲稱它是996，那麽你可以大膽推測它實際上已經是9106了。在这一点上面，猎头可能比HR更不可信。有一个猎头给我推荐了一家香港的初创公司，告诉我这是一家WLB（Work-Life Balance）的公司，但是我和创始人聊天的时候，他却笑着告诉我“初创公司不加班，还有谁敢来呀”。另一个猎头给我推荐宁德时代，告诉我那个组加班不严重。我觉得都不可相信；</li>
+<li>競業協議是不公平的。如果你簽下了競業協議，公司就有權阻止你入職同行業内的任何公司，並在你離職後提供一些微小的補償。但相反的，假如你主動離職去读博、考公，主動希望公司啟動競業協議，公司卻可以選擇不啟動競業。主動權總是掌握在公司手上。<br/>
+一般來說，即使簽訂了協議，公司也不會捨得為一個初入職場的大頭兵啟動競業。因此初入職場的同學不必過於擔心這個問題。但不論如何，在簽訂新公司時還是要對競業協議保持謹慎。某些公司，例如拼多多，有很大的概率啓動競業協議，并且在员工離職後派人調查其去向；</li>
 </ol>
 </section>
 <div class="default" id="quarto-appendix"><section class="level2 appendix" data-number="9" id="附錄"><h2 class="quarto-appendix-heading"><span class="header-section-number">9</span> 附錄</h2><div class="quarto-appendix-contents">
@@ -669,7 +671,7 @@ f(n, k) &amp;= e^{\ln \left(\frac{n}{k}\right)^k} \\
 <p>容易看出<span class="math inline">\(\frac{\partial f}{\partial k}\)</span>隨著<span class="math inline">\(k\)</span>的增加而單調上升。因此<span class="math inline">\(k=\frac{n}{e}\)</span>是函數的極大值點。但是<span class="math inline">\(k\)</span>需要是整數，因此我們可以考慮取<span class="math inline">\(k=\lceil \frac{n}{e} \rceil\)</span>或<span class="math inline">\(k=\lfloor \frac{n}{e}\rfloor\)</span>，取其中使乘積最大的<span class="math inline">\(k\)</span>即可。</p>
 </div>
 <div class="theorem example" id="exm-fibonacci">
-<p><span class="theorem-title"><strong>例子 40 </strong></span>求斐波那契數列1、1、2、3、5、8……的通項公式。</p>
+<p><span class="theorem-title"><strong>例子 40 </strong></span><span class="src-minimax"></span> 求斐波那契數列1、1、2、3、5、8……的通項公式。</p>
 <p>當<span class="math inline">\(n\geq 3\)</span>時，有<span class="math inline">\(F_{n} = F_{n-1} + F_{n-2}\)</span>. 寫成矩陣形式為 <span class="math display">\[
 \begin{pmatrix}
 F_n\\
