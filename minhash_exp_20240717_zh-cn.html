@@ -188,7 +188,8 @@
 <div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:23.926570Z","iopub.status.busy":"2024-07-18T07:44:23.926107Z","iopub.status.idle":"2024-07-18T07:44:23.942791Z","shell.execute_reply":"2024-07-18T07:44:23.941518Z","shell.execute_reply.started":"2024-07-18T07:44:23.926529Z"}' data-execution_count="3" data-trusted="true">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>Shingle <span class="op">=</span> Tuple[<span class="bu">str</span>]</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </div>
-<p>下面的代码展示了如何将一个文档转化为由Shingle构成的<strong>多重集</strong>。与普通的集合不同，多重集允许其中包含多个重复元素。</p>
+<p>忽略Shingle的出现顺序，我们可以将文章看作是Shingle的集合。我们分<strong>普通集合</strong>和<strong>多重集</strong>两种情况分别讨论。</p>
+<p>下面的代码展示了如何将一个文档转化为由Shingle构成的<strong>多重集</strong>。与普通的集合不同，多重集允许元素多次重复出现，这使得我们可以统计每种Shingle的出现次数。</p>
 <p>代码使用<code>Dict</code>来模拟多重集。函数返回的<code>Dict</code>统计了文档中出现的每种Shingle的数量。</p>
 <div class="cell" data-execution='{"iopub.execute_input":"2024-07-18T07:44:23.946903Z","iopub.status.busy":"2024-07-18T07:44:23.946464Z","iopub.status.idle":"2024-07-18T07:44:23.955407Z","shell.execute_reply":"2024-07-18T07:44:23.954290Z","shell.execute_reply.started":"2024-07-18T07:44:23.946869Z"}' data-execution_count="4" data-trusted="true">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="kw">def</span> doc_to_shingle_bag(doc: List[<span class="bu">str</span>], w:<span class="bu">int</span>) <span class="op">-&gt;</span> Dict[Shingle, <span class="bu">int</span>]: </span>
@@ -289,8 +290,8 @@ J(A, B) = \frac{|A\cap B|} {|A\cup B|}
 </div>
 </div>
 <p>将Shingle的大小记为<span class="math inline">\(w\)</span>，从以上的计算中我们可以看到<span class="math inline">\(w\)</span>越大，resemblance就对差异越敏感。</p>
-<p>至此，文章展示了如何将文档转化为Shingle的集合，并用交并比衡量文档相似性。在实际程序中，我们可以为每一种可能的Shingle分配一个id，因此，我们可以认为文档也可以表示为数字的集合。</p>
-<p>上文介绍的方法与MinHash论文<span class="citation" data-cites="minhash_1997"><sup>[<a href="#ref-minhash_1997" role="doc-biblioref">1</a>]</sup></span>保持一致。但这种方法仍是粗浅的。在实际的应用中，我们可以考虑是否去除stop words（即“a”, “the”，“of”等对文章语义贡献较小的词汇）。我们还可以考虑合并单词的不同形态，例如为“learn”、“learning”、“learned”赋予相同的id……初次之外，如何实现中文的分词也是一个值得深入的问题。本文就不再就此作更多探讨了。接下来，让我们假设文档已经被转化为数字的集合。</p>
+<p>至此，文章展示了如何将文档转化为Shingle的集合，并用交并比衡量文档相似性。在实际程序中，我们可以为每一种可能的Shingle分配一个id。至此，我们介绍了如何将文档表示为数字的集合。</p>
+<p>上文介绍的方法与MinHash论文<span class="citation" data-cites="minhash_1997"><sup>[<a href="#ref-minhash_1997" role="doc-biblioref">1</a>]</sup></span>保持一致。但这种方法仍是粗浅的。在实际的应用中，我们可以考虑是否去除stop words（即“a”, “the”，“of”等对文章语义贡献较小的词汇）。我们还可以考虑合并单词的不同形态，例如为“learn”、“learning”、“learned”赋予相同的id……除此之外，如何实现中文的分词也是一个值得深入的问题。本文就不再就此作更多探讨了。接下来，让我们假设文档已经被转化为数字的集合。</p>
 </section>
 <section class="level2" data-number="2" id="用最小值估計文檔相似度">
 <h2 class="anchored" data-anchor-id="用最小值估計文檔相似度" data-number="2"><span class="header-section-number">2</span> 用最小值估计文档相似度</h2>
