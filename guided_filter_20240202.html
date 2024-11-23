@@ -277,8 +277,8 @@ q_i &amp;= \frac{1}{|\omega|} \sum_{k:i\in\omega_k}(a_kI_i+b_k) \\
 <p>接著，爲原圖像加上簡單的噪聲：</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>img_gray_with_noise <span class="op">=</span> img_gray <span class="op">*</span> <span class="dv">1</span></span>
-<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>coords <span class="op">=</span> <span class="bu">tuple</span>(np.random.randint(<span class="dv">0</span>, size <span class="op">-</span> <span class="dv">1</span>, <span class="dv">500</span>) <span class="cf">for</span> size <span class="kw">in</span> img_gray.shape)</span>
-<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>img_gray_with_noise[coords] <span class="op">=</span> np.random.random((<span class="bu">len</span>(coords[<span class="dv">0</span>]), ))</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>coords <span class="op">=</span> <span class="bu">tuple</span>(np.random.randint(<span class="dv">0</span>, size <span class="op">-</span> <span class="dv">1</span>, <span class="dv">1000</span>) <span class="cf">for</span> size <span class="kw">in</span> img_gray.shape)</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>img_gray_with_noise[coords] <span class="op">+=</span> np.random.randn(<span class="bu">len</span>(coords[<span class="dv">0</span>]), ) <span class="op">*</span> <span class="fl">0.2</span></span>
 <span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>img_gray_with_noise <span class="op">=</span> np.clip(img_gray_with_noise, <span class="dv">0</span>, <span class="dv">1</span>)</span>
 <span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a></span>
 <span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>plt.imshow(img_gray_with_noise)</span>
@@ -298,26 +298,24 @@ q_i &amp;= \frac{1}{|\omega|} \sum_{k:i\in\omega_k}(a_kI_i+b_k) \\
 <span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>    epsilon<span class="op">=</span><span class="fl">0.01</span></span>
 <span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>)</span>
 <span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a></span>
-<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">3</span>))</span>
-<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>plt.subplot(<span class="dv">121</span>)</span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">18</span>))</span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>plt.subplot(<span class="dv">311</span>)</span>
 <span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a>plt.imshow(img_gray)</span>
 <span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a>plt.title(<span class="st">'Original Image'</span>)</span>
 <span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a>plt.colorbar()</span>
-<span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a>plt.subplot(<span class="dv">122</span>)</span>
-<span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>plt.imshow(img_gray_with_noise)</span>
-<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>plt.title(<span class="st">'Image with Noise'</span>)</span>
-<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>plt.colorbar()</span>
-<span id="cb4-18"><a aria-hidden="true" href="#cb4-18" tabindex="-1"></a>plt.show()</span>
+<span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a></span>
+<span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>plt.subplot(<span class="dv">312</span>)</span>
+<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>plt.imshow(img_gray_with_noise)</span>
+<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>plt.title(<span class="st">'Image with Noise'</span>)</span>
+<span id="cb4-18"><a aria-hidden="true" href="#cb4-18" tabindex="-1"></a>plt.colorbar()</span>
 <span id="cb4-19"><a aria-hidden="true" href="#cb4-19" tabindex="-1"></a></span>
-<span id="cb4-20"><a aria-hidden="true" href="#cb4-20" tabindex="-1"></a>plt.imshow(out_gray)</span>
-<span id="cb4-21"><a aria-hidden="true" href="#cb4-21" tabindex="-1"></a>plt.title(<span class="st">'After Filtering'</span>)</span>
-<span id="cb4-22"><a aria-hidden="true" href="#cb4-22" tabindex="-1"></a>plt.colorbar()</span>
-<span id="cb4-23"><a aria-hidden="true" href="#cb4-23" tabindex="-1"></a>plt.show()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<span id="cb4-20"><a aria-hidden="true" href="#cb4-20" tabindex="-1"></a>plt.subplot(<span class="dv">313</span>)</span>
+<span id="cb4-21"><a aria-hidden="true" href="#cb4-21" tabindex="-1"></a>plt.imshow(out_gray)</span>
+<span id="cb4-22"><a aria-hidden="true" href="#cb4-22" tabindex="-1"></a>plt.title(<span class="st">'After Filtering'</span>)</span>
+<span id="cb4-23"><a aria-hidden="true" href="#cb4-23" tabindex="-1"></a>plt.colorbar()</span>
+<span id="cb4-24"><a aria-hidden="true" href="#cb4-24" tabindex="-1"></a>plt.show()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img height="283" src="guided_filter_20240202\figure-html\cell-5-output-1.png" width="698"/></p>
-</div>
-<div class="cell-output cell-output-display">
-<p><img height="431" src="guided_filter_20240202\figure-html\cell-5-output-2.png" width="499"/></p>
+<p><img height="1360" src="guided_filter_20240202\figure-html\cell-5-output-1.png" width="484"/></p>
 </div>
 </div>
 <p>從濾波結果中可以看到，圖像中角色面部大部分的噪點都被成功的平滑了。美中不足的是，綫條附近的噪點仍然被保留下來。這是因爲導向濾波是一個<strong>保邊</strong>的濾波器。如果遇到圖像的邊緣，那麽這個地方的平滑效果就會降低。</p>
