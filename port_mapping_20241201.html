@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
+
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="./_vercel/insights/script.js"></script>
+  
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
+
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
+
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>記錄一些端口映射的配置命令</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././port_mapping_20241201.html">
+<meta name="twitter:title" content="執迷的博客 ~ 記錄一些端口映射的配置命令">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ 記錄一些端口映射的配置命令" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+
+<!-- MathJax -->
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+      <p>做一個有趣的人！</p>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="././about.html">About</a></li>
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <h2 class="post_title post_detail"><a href="././port_mapping_20241201.html" rel="bookmark" title="Permalink to 記錄一些端口映射的配置命令">記錄一些端口映射的配置命令</a></h2>
+    
+    <p>
+        <span id="busuanzi_container_page_pv">
+            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+        </span>
+    </p>
+    
+    <div class="entry-content blog-post">
+        <div>
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+<nav class="toc-active" id="TOC" role="doc-toc">
+<h2 id="toc-title">Table of contents</h2>
+<ul>
+<li><a class="nav-link active" data-scroll-target="#用iptables配置端口映射" href="#用iptables配置端口映射" id="toc-用iptables配置端口映射"><span class="toc-section-number">1</span>  用iptables配置端口映射</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#添加規則" href="#添加規則" id="toc-添加規則"><span class="toc-section-number">1.1</span>  添加規則</a></li>
+<li><a class="nav-link" data-scroll-target="#羅列現有的nat規則" href="#羅列現有的nat規則" id="toc-羅列現有的nat規則"><span class="toc-section-number">1.2</span>  羅列現有的NAT規則</a></li>
+<li><a class="nav-link" data-scroll-target="#刪除iptables的nat規則" href="#刪除iptables的nat規則" id="toc-刪除iptables的nat規則"><span class="toc-section-number">1.3</span>  刪除iptables的NAT規則</a></li>
+<li><a class="nav-link" data-scroll-target="#iptables規則的保存" href="#iptables規則的保存" id="toc-iptables規則的保存"><span class="toc-section-number">1.4</span>  iptables規則的保存</a></li>
+</ul></li>
+<li><a class="nav-link" data-scroll-target="#ssh搭建端口映射" href="#ssh搭建端口映射" id="toc-ssh搭建端口映射"><span class="toc-section-number">2</span>  SSH搭建端口映射</a></li>
+<li><a class="nav-link" data-scroll-target="#在windows的powershell中配置端口映射" href="#在windows的powershell中配置端口映射" id="toc-在windows的powershell中配置端口映射"><span class="toc-section-number">3</span>  在Windows的Powershell中配置端口映射</a></li>
+<li><a class="nav-link" data-scroll-target="#後記" href="#後記" id="toc-後記"><span class="toc-section-number">4</span>  後記</a></li>
+</ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+
+</div>
+<div class="quarto-title-meta">
+<div>
+<div class="quarto-title-meta-heading">Published</div>
+<div class="quarto-title-meta-contents">
+<p class="date">December 1, 2024</p>
+</div>
+</div>
+</div>
+</header>
+<p>最近租了一台便宜的雲主機。我想把雲主機的公網ip上的一些端口映射到宿舍台式機上的一些服務上（例如SSH、jupyter lab），這樣就可以遠程登陸管理自己的台式機了。</p>
+<p>我採取的辦法是</p>
+<ol type="1">
+<li>使用Zerotier組成一個局域網，使得雲主機和宿舍台式機可以互相訪問；</li>
+<li>使用端口映射，將宿舍台式機的服務暴露到公網ip上；</li>
+</ol>
+<p>在這個背景下，我寫下這篇筆記來記錄使用iptables配置端口映射的方法，同時順帶記錄一下如何用ssh命令以及Windows下的netsh命令配置端口映射。這幾種方法都很常用。</p>
+<section class="level2" data-number="1" id="用iptables配置端口映射">
+<h2 class="anchored" data-anchor-id="用iptables配置端口映射" data-number="1"><span class="header-section-number">1</span> 用iptables配置端口映射</h2>
+<p>在Linux系統上，可以使用iptables命令來配置端口的轉發規則。端口轉發技術允許網絡流量從一個端口轉發到另一個端口，通常是將流量從一個網絡接口轉發到另一個網絡接口上的不同端口。</p>
+<p>例如，假設我們有A主機及其端口P_A, B主機及其端口P_B，我們想將P_A端口映射到B主機的P_B端口。假如P_B端口對應著B主機的ssh服務，那麼經過端口映射，我們可以使用</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="fu">ssh</span> <span class="va">${USER_NAME}</span>@<span class="va">${A}</span> <span class="at">-p</span> <span class="va">${P_A}</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<p>命令來訪問P_B主機的服務。這裡我用<code>${A}</code>表示A主機的IP地址，<code>${P_A}</code>表示端口號。</p>
+<section class="level3" data-number="1.1" id="添加規則">
+<h3 class="anchored" data-anchor-id="添加規則" data-number="1.1"><span class="header-section-number">1.1</span> 添加規則</h3>
+<p>要實現這個任務，可以在A主機上使用以下命令：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-A</span> PREROUTING <span class="at">-p</span> tcp <span class="at">--dport</span> <span class="va">${P_A}</span> <span class="at">-j</span> DNAT <span class="at">--to-destination</span> <span class="va">${B}</span>:<span class="va">${P_B}</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<p>這裡<code>-t nat</code>選項指定了要操作的表（table）。nat（network address translation）表用於網絡地址轉換，包括源地址轉換（SNAT）和目的地址轉換（DNAT）。<code>-A</code>是Append的縮寫，表示將一條規則添加到指定的鏈（chain）的末尾。PREROUTING是nat表中的一個鏈，用於處理進入（ingress）流量，在路由決策之前應用NAT規則。<code>-p tcp</code>這個選項指定了要匹配的協議類型，這裏是tcp，表示這條規則只適用於TCP協議的流量。<code>--dport</code>指定了要匹配的目的端口。<code>-j</code>是jump的縮寫，指定了匹配規則後的動作。DNAT表示目的地址轉換，即修改流量的目的IP地址。<code>--to-destination</code>選項指定了DNAT的目標地址和端口。</p>
+<p>除了PREROUTING規則，你還需要添加一條命令處理POSTROUTING時的轉發：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-A</span> POSTROUTING <span class="at">-p</span> tcp <span class="at">-d</span> <span class="va">${B}</span> <span class="at">--dport</span> <span class="va">${P_B}</span> <span class="at">-j</span> MASQUERADE</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<p>這裡MASQUERADE是一種特殊的NAT操作，用於動態地將出站流量的源地址替換爲出口接口的地址。這通常用於撥號或移動網絡，其中IP地址可能會變化。</p>
+<p>這時，你就可以從第三個主機C嘗試訪問主機A上的P_A端口了。</p>
+<p>假如不使用第三台機器，而是從主機A上訪問P_A端口，流量會無法轉發到B主機的P_B端口。這是因為來自主機A內部的連接不會經過PREROUTE規則。如果你想處理來自主機A內部的連接，可以增加一條命令：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-A</span> OUTPUT <span class="at">-p</span> tcp <span class="at">--dport</span> <span class="va">${P_A}</span> <span class="at">-j</span> DNAT <span class="at">--to-destination</span> <span class="va">${B}</span>:<span class="va">${P_B}</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<p>這條命令應用於OUTPUT鏈，可以處理從主機A內部發起的連接。</p>
+</section>
+<section class="level3" data-number="1.2" id="羅列現有的nat規則">
+<h3 class="anchored" data-anchor-id="羅列現有的nat規則" data-number="1.2"><span class="header-section-number">1.2</span> 羅列現有的NAT規則</h3>
+<p>可以用如下命令列出所有的NAT規則。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-L</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</section>
+<section class="level3" data-number="1.3" id="刪除iptables的nat規則">
+<h3 class="anchored" data-anchor-id="刪除iptables的nat規則" data-number="1.3"><span class="header-section-number">1.3</span> 刪除iptables的NAT規則</h3>
+<p>在羅列NAT規則時，我們可以讓iptables命令顯示每條規則的行號，然後用行號告訴iptables我們想刪除哪條規則：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">--list</span> <span class="at">-t</span> nat <span class="at">-n</span> <span class="at">--line-numbers</span></span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a></span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-D</span> POSTROUTING 2  <span class="co"># ←刪除POSTROUTING鏈下的第二條規則</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</section>
+<section class="level3" data-number="1.4" id="iptables規則的保存">
+<h3 class="anchored" data-anchor-id="iptables規則的保存" data-number="1.4"><span class="header-section-number">1.4</span> iptables規則的保存</h3>
+<p>用上面的命令設置的規則在機器重啟後將會丟失，你需要通過額外的命令將iptables的規則保存下來。</p>
+<p>在Ubuntu 18.04 LTS系統上，可以用下面的命令保存iptables的規則：</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="fu">sudo</span> apt install iptables-persistant</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<p>執行該命令後，程序將詢問你是否保存規則。</p>
+<p>後續你還可以通過使用<code>sudo netfilter-persistent save</code>命令，將iptables規則的更改保存下來。</p>
+</section>
+</section>
+<section class="level2" data-number="2" id="ssh搭建端口映射">
+<h2 class="anchored" data-anchor-id="ssh搭建端口映射" data-number="2"><span class="header-section-number">2</span> SSH搭建端口映射</h2>
+<p>ssh命令也提供了一個非常方便的搭建端口映射的辦法：</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-L</span> <span class="op">&lt;</span>本地的一個空閒端口<span class="op">&gt;</span>:<span class="va">$B</span>:<span class="va">$P_B</span> <span class="op">&lt;</span>用戶名<span class="op">&gt;</span>@<span class="va">$A</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<p>這段命令會將指定的本地端口映射到B主機的P_B端口。前提是你能登陸A主機，且A主機能夠訪問B主機的P_B端口。</p>
+</section>
+<section class="level2" data-number="3" id="在windows的powershell中配置端口映射">
+<h2 class="anchored" data-anchor-id="在windows的powershell中配置端口映射" data-number="3"><span class="header-section-number">3</span> 在Windows的Powershell中配置端口映射</h2>
+<p>Windows系統帶有netsh命令，可以幫助你配置端口映射規則，使用方法如下。</p>
+<p>首先你需要以管理員身份打開Powershell，然後才能執行各命令。</p>
+<p>查看所有端口映射規則：</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>netsh interface portproxy show all</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<p>添加端口映射規則，（以8888端口為例）：</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a>netsh interface portproxy add v4tov4 listenaddress<span class="op">=</span>0<span class="op">.</span><span class="fu">0</span><span class="op">.</span><span class="fu">0</span><span class="op">.</span><span class="fu">0</span> listenport<span class="op">=</span>8888 connectaddress<span class="op">=</span>localhost connectport<span class="op">=</span>8888</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<p>刪除轉發規則：</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>netsh interface portproxy delete v4tov4 listenaddress<span class="op">=</span>0<span class="op">.</span><span class="fu">0</span><span class="op">.</span><span class="fu">0</span><span class="op">.</span><span class="fu">0</span> listenport<span class="op">=</span>8888</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</section>
+<section class="level2" data-number="4" id="後記">
+<h2 class="anchored" data-anchor-id="後記" data-number="4"><span class="header-section-number">4</span> 後記</h2>
+<p>本文的背景是將自己台式機上的一些網絡服務暴露到公網。這其實還蠻危險的，需要注意</p>
+<ol type="1">
+<li>可以盡量改用比較複雜的密碼</li>
+<li>不使用默認的端口號，例如不把SSH服務開放在22端口，而是隨機選擇一個端口</li>
+<li>能不開放的服務盡量不開放，而只在要使用的時候，臨時搭一個端口映射。例如可以臨時用ssh命令搭一個端口映射，用完就關閉</li>
+</ol>
+</section>
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+</div>
+    </div>
+    <div class="post_list">
+        <span>By </span>
+        <a href="./">@執迷</a>
+        <span> in </span>
+        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 網絡技術">[ 網絡技術 ]</a></span>
+        <span class="post_date">2024-12-01</span>
+        <div><span>Tags : </span>
+            
+            
+            <span><a href="./">#端口映射, </a></span>
+            
+            <span><a href="./">#iptables, </a></span>
+            
+            <span><a href="./">#網絡技術, </a></span>
+            
+            <span><a href="./">#Linux, </a></span>
+            
+            
+        </div>
+
+        <div class="entry-social">
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././port_mapping_20241201.html&text=記錄一些端口映射的配置命令&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././port_mapping_20241201.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././port_mapping_20241201.html&t=記錄一些端口映射的配置命令"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././port_mapping_20241201.html&title=記錄一些端口映射的配置命令" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+            <span class="mail"><a href="mailto:?subject=記錄一些端口映射的配置命令&amp;body=Viens découvrir un article à propos de [記錄一些端口映射的配置命令] sur le site de 執迷. ././port_mapping_20241201.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+        </div>
+    </div>
+    
+
+</section>
+
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
+</body>
+</html>
