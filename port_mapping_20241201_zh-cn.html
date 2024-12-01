@@ -35,10 +35,10 @@
 
   <meta charset="utf-8">
   <!-- Site Meta Data -->
-  <title>记录一些端口映射的配置命令</title>
+  <title>记录一些端口映射的配置命令：iptables、ssh和netsh</title>
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
+  <meta name="description" content="分别介绍了使用iptables、ssh、netsh命令配置端口映射的方法，讲解了如何在不同的操作系统（Linux/Windows）下配置端口映射，介绍了长期或临时配置端口映射的方法。">
   <meta name="author" content="執迷">
 
   <link rel="shortcut icon" href="favicon.ico">
@@ -46,7 +46,7 @@
   <!-- schema.org -->
   <meta itemprop="name" content="執迷的博客">
   <meta itemprop="image" content="">
-  <meta itemprop="description" content="">
+  <meta itemprop="description" content="分别介绍了使用iptables、ssh、netsh命令配置端口映射的方法，讲解了如何在不同的操作系统（Linux/Windows）下配置端口映射，介绍了长期或临时配置端口映射的方法。">
 
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   <!-- Style Meta Data -->
@@ -64,11 +64,11 @@
   
 <meta name="twitter:creator" content="">
 <meta name="twitter:url" content="././port_mapping_20241201_zh-cn.html">
-<meta name="twitter:title" content="執迷的博客 ~ 记录一些端口映射的配置命令">
+<meta name="twitter:title" content="執迷的博客 ~ 记录一些端口映射的配置命令：iptables、ssh和netsh">
 <meta name="twitter:description" content="">
 
 <!-- Facebook Meta Data -->
-<meta property="og:title" content="執迷的博客 ~ 记录一些端口映射的配置命令" />
+<meta property="og:title" content="執迷的博客 ~ 记录一些端口映射的配置命令：iptables、ssh和netsh" />
 <meta property="og:description" content="" />
 <meta property="og:image" content="" />
 
@@ -124,7 +124,7 @@
   <article>
     
 <section id="content">
-    <h2 class="post_title post_detail"><a href="././port_mapping_20241201_zh-cn.html" rel="bookmark" title="Permalink to 记录一些端口映射的配置命令">记录一些端口映射的配置命令</a></h2>
+    <h2 class="post_title post_detail"><a href="././port_mapping_20241201_zh-cn.html" rel="bookmark" title="Permalink to 记录一些端口映射的配置命令：iptables、ssh和netsh">记录一些端口映射的配置命令：iptables、ssh和netsh</a></h2>
     
     <p>
         <span id="busuanzi_container_page_pv">
@@ -398,15 +398,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         </div>
 
         <div class="entry-social">
-            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././port_mapping_20241201_zh-cn.html&text=记录一些端口映射的配置命令&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././port_mapping_20241201_zh-cn.html&text=记录一些端口映射的配置命令：iptables、ssh和netsh&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
 
             <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././port_mapping_20241201_zh-cn.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
 
-            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././port_mapping_20241201_zh-cn.html&t=记录一些端口映射的配置命令"><img src="./theme/images/icons/facebook-s.png"></a></span>
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././port_mapping_20241201_zh-cn.html&t=记录一些端口映射的配置命令：iptables、ssh和netsh"><img src="./theme/images/icons/facebook-s.png"></a></span>
 
-            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././port_mapping_20241201_zh-cn.html&title=记录一些端口映射的配置命令" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././port_mapping_20241201_zh-cn.html&title=记录一些端口映射的配置命令：iptables、ssh和netsh" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
 
-            <span class="mail"><a href="mailto:?subject=记录一些端口映射的配置命令&amp;body=Viens découvrir un article à propos de [记录一些端口映射的配置命令] sur le site de 執迷. ././port_mapping_20241201_zh-cn.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+            <span class="mail"><a href="mailto:?subject=记录一些端口映射的配置命令：iptables、ssh和netsh&amp;body=Viens découvrir un article à propos de [记录一些端口映射的配置命令：iptables、ssh和netsh] sur le site de 執迷. ././port_mapping_20241201_zh-cn.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
         </div>
     </div>
     
