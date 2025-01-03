@@ -271,7 +271,7 @@ q_i &amp;= \frac{1}{|\omega|} \sum_{k:i\in\omega_k}(a_kI_i+b_k) \\
 <span id="cb2-10"><a aria-hidden="true" href="#cb2-10" tabindex="-1"></a>plt.imshow(img_gray)</span>
 <span id="cb2-11"><a aria-hidden="true" href="#cb2-11" tabindex="-1"></a>plt.title(<span class="st">'Original Image'</span>)<span class="op">;</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img height="431" src="guided_filter_20240202\figure-html\cell-3-output-1.png" width="424"/></p>
+<p><img height="431" src="guided_filter_20240202/figure-html/cell-3-output-1.png" width="424"/></p>
 </div>
 </div>
 <p>接著，为原图像加上简单的噪声：</p>
@@ -285,7 +285,7 @@ q_i &amp;= \frac{1}{|\omega|} \sum_{k:i\in\omega_k}(a_kI_i+b_k) \\
 <span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>plt.title(<span class="st">'Image with Noise'</span>)</span>
 <span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>plt.colorbar()<span class="op">;</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img height="431" src="guided_filter_20240202\figure-html\cell-4-output-1.png" width="499"/></p>
+<p><img height="431" src="guided_filter_20240202/figure-html/cell-4-output-1.png" width="499"/></p>
 </div>
 </div>
 <p>在噪声图上应用先前写好的导向滤波实现（以噪声图为导向图），结果如下：</p>
@@ -315,7 +315,7 @@ q_i &amp;= \frac{1}{|\omega|} \sum_{k:i\in\omega_k}(a_kI_i+b_k) \\
 <span id="cb4-23"><a aria-hidden="true" href="#cb4-23" tabindex="-1"></a>plt.colorbar()</span>
 <span id="cb4-24"><a aria-hidden="true" href="#cb4-24" tabindex="-1"></a>plt.show()</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img height="1360" src="guided_filter_20240202\figure-html\cell-5-output-1.png" width="484"/></p>
+<p><img height="1360" src="guided_filter_20240202/figure-html/cell-5-output-1.png" width="484"/></p>
 </div>
 </div>
 <p>从滤波结果中可以看到，图像中角色面部大部分的噪点都被成功的平滑了。美中不足的是，线条附近的噪点仍然被保留下来。这是因为导向滤波是一个<strong>保边</strong>的滤波器。如果遇到图像的边缘，那么这个地方的平滑效果就会降低。</p>

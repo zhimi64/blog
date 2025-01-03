@@ -139,16 +139,17 @@
 <nav class="toc-active" id="TOC" role="doc-toc">
 <h2 id="toc-title">Table of contents</h2>
 <ul>
-<li><a class="nav-link active" data-scroll-target="#用iptables配置端口映射" href="#用iptables配置端口映射" id="toc-用iptables配置端口映射"><span class="toc-section-number">1</span>  用iptables配置端口映射</a>
+<li><a class="nav-link active" data-scroll-target="#前置步驟開啟linux的ip轉發功能" href="#前置步驟開啟linux的ip轉發功能" id="toc-前置步驟開啟linux的ip轉發功能"><span class="header-section-number">1</span> 前置步骤：开启Linux的IP转发功能</a></li>
+<li><a class="nav-link" data-scroll-target="#用iptables配置端口映射" href="#用iptables配置端口映射" id="toc-用iptables配置端口映射"><span class="header-section-number">2</span> 用iptables配置端口映射</a>
 <ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#添加規則" href="#添加規則" id="toc-添加規則"><span class="toc-section-number">1.1</span>  添加规则</a></li>
-<li><a class="nav-link" data-scroll-target="#羅列現有的nat規則" href="#羅列現有的nat規則" id="toc-羅列現有的nat規則"><span class="toc-section-number">1.2</span>  罗列现有的NAT规则</a></li>
-<li><a class="nav-link" data-scroll-target="#刪除iptables的nat規則" href="#刪除iptables的nat規則" id="toc-刪除iptables的nat規則"><span class="toc-section-number">1.3</span>  删除iptables的NAT规则</a></li>
-<li><a class="nav-link" data-scroll-target="#iptables規則的保存" href="#iptables規則的保存" id="toc-iptables規則的保存"><span class="toc-section-number">1.4</span>  iptables规则的保存</a></li>
+<li><a class="nav-link" data-scroll-target="#添加規則" href="#添加規則" id="toc-添加規則"><span class="header-section-number">2.1</span> 添加规则</a></li>
+<li><a class="nav-link" data-scroll-target="#羅列現有的nat規則" href="#羅列現有的nat規則" id="toc-羅列現有的nat規則"><span class="header-section-number">2.2</span> 罗列现有的NAT规则</a></li>
+<li><a class="nav-link" data-scroll-target="#刪除iptables的nat規則" href="#刪除iptables的nat規則" id="toc-刪除iptables的nat規則"><span class="header-section-number">2.3</span> 删除iptables的NAT规则</a></li>
+<li><a class="nav-link" data-scroll-target="#iptables規則的保存" href="#iptables規則的保存" id="toc-iptables規則的保存"><span class="header-section-number">2.4</span> iptables规则的保存</a></li>
 </ul></li>
-<li><a class="nav-link" data-scroll-target="#ssh搭建端口映射" href="#ssh搭建端口映射" id="toc-ssh搭建端口映射"><span class="toc-section-number">2</span>  SSH搭建端口映射</a></li>
-<li><a class="nav-link" data-scroll-target="#在windows的powershell中配置端口映射" href="#在windows的powershell中配置端口映射" id="toc-在windows的powershell中配置端口映射"><span class="toc-section-number">3</span>  在Windows的Powershell中配置端口映射</a></li>
-<li><a class="nav-link" data-scroll-target="#後記" href="#後記" id="toc-後記"><span class="toc-section-number">4</span>  后记</a></li>
+<li><a class="nav-link" data-scroll-target="#ssh搭建端口映射" href="#ssh搭建端口映射" id="toc-ssh搭建端口映射"><span class="header-section-number">3</span> SSH搭建端口映射</a></li>
+<li><a class="nav-link" data-scroll-target="#在windows的powershell中配置端口映射" href="#在windows的powershell中配置端口映射" id="toc-在windows的powershell中配置端口映射"><span class="header-section-number">4</span> 在Windows的Powershell中配置端口映射</a></li>
+<li><a class="nav-link" data-scroll-target="#後記" href="#後記" id="toc-後記"><span class="header-section-number">5</span> 后记</a></li>
 </ul>
 </nav>
 </div>
@@ -173,65 +174,75 @@
 <li>使用端口映射，将宿舍台式机的服务暴露到公网ip上；</li>
 </ol>
 <p>在这个背景下，我写下这篇笔记来记录使用iptables配置端口映射的方法，同时顺带记录一下如何用ssh命令以及Windows下的netsh命令配置端口映射。这几种方法都很常用。</p>
-<section class="level2" data-number="1" id="用iptables配置端口映射">
-<h2 class="anchored" data-anchor-id="用iptables配置端口映射" data-number="1"><span class="header-section-number">1</span> 用iptables配置端口映射</h2>
+<section class="level2" data-number="1" id="前置步驟開啟linux的ip轉發功能">
+<h2 class="anchored" data-anchor-id="前置步驟開啟linux的ip轉發功能" data-number="1"><span class="header-section-number">1</span> 前置步骤：开启Linux的IP转发功能</h2>
+<p>在 Linux 系统中，IP 转发（IP Forwarding）功能允许数据包从一个网络接口转发到另一个网络接口。 默认情况下，大多数 Linux 系统将 IP 转发禁用，防止非路由器设备意外充当路由器。</p>
+<p>请打开<code>/etc/sysctl.conf</code>文件，例如</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="fu">sudo</span> nano /etc/sysctl.conf</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<p>然后添加或确保以下行存在：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="ex">net.ipv4.ip_forward</span> = 1</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<p>然后加载配置：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="fu">sudo</span> sysctl <span class="at">-p</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</section>
+<section class="level2" data-number="2" id="用iptables配置端口映射">
+<h2 class="anchored" data-anchor-id="用iptables配置端口映射" data-number="2"><span class="header-section-number">2</span> 用iptables配置端口映射</h2>
 <p>在Linux系统上，可以使用iptables命令来配置端口的转发规则。端口转发技术允许网络流量从一个端口转发到另一个端口，通常是将流量从一个网络接口转发到另一个网络接口上的不同端口。</p>
 <p>例如，假设我们有A主机及其端口P_A, B主机及其端口P_B，我们想将P_A端口映射到B主机的P_B端口。假如P_B端口对应著B主机的ssh服务，那么经过端口映射，我们可以使用</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="fu">ssh</span> <span class="va">${USER_NAME}</span>@<span class="va">${A}</span> <span class="at">-p</span> <span class="va">${P_A}</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="fu">ssh</span> <span class="va">${USER_NAME}</span>@<span class="va">${A}</span> <span class="at">-p</span> <span class="va">${P_A}</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>命令来访问P_B主机的服务。这里我用<code>${A}</code>表示A主机的IP地址，<code>${P_A}</code>表示端口号。</p>
-<section class="level3" data-number="1.1" id="添加規則">
-<h3 class="anchored" data-anchor-id="添加規則" data-number="1.1"><span class="header-section-number">1.1</span> 添加规则</h3>
+<section class="level3" data-number="2.1" id="添加規則">
+<h3 class="anchored" data-anchor-id="添加規則" data-number="2.1"><span class="header-section-number">2.1</span> 添加规则</h3>
 <p>要实现这个任务，可以在A主机上使用以下命令：</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-A</span> PREROUTING <span class="at">-p</span> tcp <span class="at">--dport</span> <span class="va">${P_A}</span> <span class="at">-j</span> DNAT <span class="at">--to-destination</span> <span class="va">${B}</span>:<span class="va">${P_B}</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-A</span> PREROUTING <span class="at">-p</span> tcp <span class="at">--dport</span> <span class="va">${P_A}</span> <span class="at">-j</span> DNAT <span class="at">--to-destination</span> <span class="va">${B}</span>:<span class="va">${P_B}</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>这里<code>-t nat</code>选项指定了要操作的表（table）。nat（network address translation）表用于网络地址转换，包括源地址转换（SNAT）和目的地址转换（DNAT）。<code>-A</code>是Append的缩写，表示将一条规则添加到指定的链（chain）的末尾。PREROUTING是nat表中的一个链，用于处理进入（ingress）流量，在路由决策之前应用NAT规则。<code>-p tcp</code>这个选项指定了要匹配的协议类型，这里是tcp，表示这条规则只适用于TCP协议的流量。<code>--dport</code>指定了要匹配的目的端口。<code>-j</code>是jump的缩写，指定了匹配规则后的动作。DNAT表示目的地址转换，即修改流量的目的IP地址。<code>--to-destination</code>选项指定了DNAT的目标地址和端口。</p>
 <p>除了PREROUTING规则，你还需要添加一条命令处理POSTROUTING时的转发：</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-A</span> POSTROUTING <span class="at">-p</span> tcp <span class="at">-d</span> <span class="va">${B}</span> <span class="at">--dport</span> <span class="va">${P_B}</span> <span class="at">-j</span> MASQUERADE</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-A</span> POSTROUTING <span class="at">-p</span> tcp <span class="at">-d</span> <span class="va">${B}</span> <span class="at">--dport</span> <span class="va">${P_B}</span> <span class="at">-j</span> MASQUERADE</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>这里MASQUERADE是一种特殊的NAT操作，用于动态地将出站流量的源地址替换为出口接口的地址。这通常用于拨号或移动网络，其中IP地址可能会变化。</p>
 <p>这时，你就可以从第三个主机C尝试访问主机A上的P_A端口了。</p>
 <p>假如不使用第三台机器，而是从主机A上访问P_A端口，流量会无法转发到B主机的P_B端口。这是因为来自主机A内部的连接不会经过PREROUTE规则。如果你想处理来自主机A内部的连接，可以增加一条命令：</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-A</span> OUTPUT <span class="at">-p</span> tcp <span class="at">--dport</span> <span class="va">${P_A}</span> <span class="at">-j</span> DNAT <span class="at">--to-destination</span> <span class="va">${B}</span>:<span class="va">${P_B}</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-A</span> OUTPUT <span class="at">-p</span> tcp <span class="at">--dport</span> <span class="va">${P_A}</span> <span class="at">-j</span> DNAT <span class="at">--to-destination</span> <span class="va">${B}</span>:<span class="va">${P_B}</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>这条命令应用于OUTPUT链，可以处理从主机A内部发起的连接。</p>
 </section>
-<section class="level3" data-number="1.2" id="羅列現有的nat規則">
-<h3 class="anchored" data-anchor-id="羅列現有的nat規則" data-number="1.2"><span class="header-section-number">1.2</span> 罗列现有的NAT规则</h3>
+<section class="level3" data-number="2.2" id="羅列現有的nat規則">
+<h3 class="anchored" data-anchor-id="羅列現有的nat規則" data-number="2.2"><span class="header-section-number">2.2</span> 罗列现有的NAT规则</h3>
 <p>可以用如下命令列出所有的NAT规则。</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-L</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-L</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </section>
-<section class="level3" data-number="1.3" id="刪除iptables的nat規則">
-<h3 class="anchored" data-anchor-id="刪除iptables的nat規則" data-number="1.3"><span class="header-section-number">1.3</span> 删除iptables的NAT规则</h3>
+<section class="level3" data-number="2.3" id="刪除iptables的nat規則">
+<h3 class="anchored" data-anchor-id="刪除iptables的nat規則" data-number="2.3"><span class="header-section-number">2.3</span> 删除iptables的NAT规则</h3>
 <p>在罗列NAT规则时，我们可以让iptables命令显示每条规则的行号，然后用行号告诉iptables我们想删除哪条规则：</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">--list</span> <span class="at">-t</span> nat <span class="at">-n</span> <span class="at">--line-numbers</span></span>
-<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a></span>
-<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-D</span> POSTROUTING 2  <span class="co"># ←删除POSTROUTING链下的第二条规则</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">--list</span> <span class="at">-t</span> nat <span class="at">-n</span> <span class="at">--line-numbers</span></span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a></span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-D</span> POSTROUTING 2  <span class="co"># ←删除POSTROUTING链下的第二条规则</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </section>
-<section class="level3" data-number="1.4" id="iptables規則的保存">
-<h3 class="anchored" data-anchor-id="iptables規則的保存" data-number="1.4"><span class="header-section-number">1.4</span> iptables规则的保存</h3>
+<section class="level3" data-number="2.4" id="iptables規則的保存">
+<h3 class="anchored" data-anchor-id="iptables規則的保存" data-number="2.4"><span class="header-section-number">2.4</span> iptables规则的保存</h3>
 <p>用上面的命令设置的规则在机器重启后将会丢失，你需要通过额外的命令将iptables的规则保存下来。</p>
 <p>在Ubuntu 18.04 LTS系统上，可以用下面的命令保存iptables的规则：</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="fu">sudo</span> apt install iptables-persistant</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="fu">sudo</span> apt install iptables-persistent</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>执行该命令后，程序将询问你是否保存规则。</p>
 <p>后续你还可以通过使用<code>sudo netfilter-persistent save</code>命令，将iptables规则的更改保存下来。</p>
 </section>
 </section>
-<section class="level2" data-number="2" id="ssh搭建端口映射">
-<h2 class="anchored" data-anchor-id="ssh搭建端口映射" data-number="2"><span class="header-section-number">2</span> SSH搭建端口映射</h2>
+<section class="level2" data-number="3" id="ssh搭建端口映射">
+<h2 class="anchored" data-anchor-id="ssh搭建端口映射" data-number="3"><span class="header-section-number">3</span> SSH搭建端口映射</h2>
 <p>ssh命令也提供了一个非常方便的搭建端口映射的办法：</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-L</span> <span class="op">&lt;</span>本地的一个空闲端口<span class="op">&gt;</span>:<span class="va">$B</span>:<span class="va">$P_B</span> <span class="op">&lt;</span>用户名<span class="op">&gt;</span>@<span class="va">$A</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-L</span> <span class="op">&lt;</span>本地的一个空闲端口<span class="op">&gt;</span>:<span class="va">$B</span>:<span class="va">$P_B</span> <span class="op">&lt;</span>用户名<span class="op">&gt;</span>@<span class="va">$A</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>这段命令会将指定的本地端口映射到B主机的P_B端口。前提是你能登陆A主机，且A主机能够访问B主机的P_B端口。</p>
 </section>
-<section class="level2" data-number="3" id="在windows的powershell中配置端口映射">
-<h2 class="anchored" data-anchor-id="在windows的powershell中配置端口映射" data-number="3"><span class="header-section-number">3</span> 在Windows的Powershell中配置端口映射</h2>
+<section class="level2" data-number="4" id="在windows的powershell中配置端口映射">
+<h2 class="anchored" data-anchor-id="在windows的powershell中配置端口映射" data-number="4"><span class="header-section-number">4</span> 在Windows的Powershell中配置端口映射</h2>
 <p>Windows系统带有netsh命令，可以帮助你配置端口映射规则，使用方法如下。</p>
 <p>首先你需要以管理员身份打开Powershell，然后才能执行各命令。</p>
 <p>查看所有端口映射规则：</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>netsh interface portproxy show all</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>netsh interface portproxy show all</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>添加端口映射规则，（以8888端口为例）：</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a>netsh interface portproxy add v4tov4 listenaddress<span class="op">=</span>0<span class="op">.</span><span class="fu">0</span><span class="op">.</span><span class="fu">0</span><span class="op">.</span><span class="fu">0</span> listenport<span class="op">=</span>8888 connectaddress<span class="op">=</span>localhost connectport<span class="op">=</span>8888</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a>netsh interface portproxy add v4tov4 listenaddress<span class="op">=</span><span class="dv">0.0</span><span class="op">.</span><span class="dv">0.0</span> listenport<span class="op">=</span><span class="dv">8888</span> connectaddress<span class="op">=</span>localhost connectport<span class="op">=</span><span class="dv">8888</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>删除转发规则：</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>netsh interface portproxy delete v4tov4 listenaddress<span class="op">=</span>0<span class="op">.</span><span class="fu">0</span><span class="op">.</span><span class="fu">0</span><span class="op">.</span><span class="fu">0</span> listenport<span class="op">=</span>8888</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>netsh interface portproxy delete v4tov4 listenaddress<span class="op">=</span><span class="dv">0.0</span><span class="op">.</span><span class="dv">0.0</span> listenport<span class="op">=</span><span class="dv">8888</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </section>
-<section class="level2" data-number="4" id="後記">
-<h2 class="anchored" data-anchor-id="後記" data-number="4"><span class="header-section-number">4</span> 后记</h2>
+<section class="level2" data-number="5" id="後記">
+<h2 class="anchored" data-anchor-id="後記" data-number="5"><span class="header-section-number">5</span> 后记</h2>
 <p>本文的背景是将自己台式机上的一些网络服务暴露到公网。这其实还蛮危险的，需要注意</p>
 <ol type="1">
 <li>可以尽量改用比较复杂的密码</li>
@@ -268,12 +279,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
     }
-  });
-  clipboard.on('success', function(e) {
+    return false;
+  }
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -305,11 +319,48 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -319,8 +370,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -332,9 +392,244 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
