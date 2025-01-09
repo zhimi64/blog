@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+  
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>Lean语言数学之旅——环境配置和一些基础概念</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././lean_basics_20250109_zh-cn.html">
+<meta name="twitter:title" content="執迷的博客 ~ Lean语言数学之旅——环境配置和一些基础概念">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ Lean语言数学之旅——环境配置和一些基础概念" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+      <p>做一個有趣的人！</p>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <article>
+        <h2 class="post_title post_detail"><a href="././lean_basics_20250109_zh-cn.html" rel="bookmark" title="Permalink to Lean语言数学之旅——环境配置和一些基础概念">Lean语言数学之旅——环境配置和一些基础概念</a></h2>
+        <div class="entry-content blog-post">
+            <div>
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+<nav class="toc-active" id="TOC" role="doc-toc">
+<h2 id="toc-title">目录</h2>
+<ul>
+<li><a class="nav-link active" data-scroll-target="#前言" href="#前言" id="toc-前言"><span class="header-section-number">1</span> 前言</a></li>
+<li><a class="nav-link" data-scroll-target="#環境安裝" href="#環境安裝" id="toc-環境安裝"><span class="header-section-number">2</span> 环境安装</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#其它資料" href="#其它資料" id="toc-其它資料"><span class="header-section-number">2.1</span> 其它资料</a></li>
+</ul></li>
+<li><a class="nav-link" data-scroll-target="#自動證明器" href="#自動證明器" id="toc-自動證明器"><span class="header-section-number">3</span> 自动证明器</a></li>
+<li><a class="nav-link" data-scroll-target="#基礎類型" href="#基礎類型" id="toc-基礎類型"><span class="header-section-number">4</span> 基础类型</a></li>
+<li><a class="nav-link" data-scroll-target="#類型的組合" href="#類型的組合" id="toc-類型的組合"><span class="header-section-number">5</span> 类型的组合</a></li>
+<li><a class="nav-link" data-scroll-target="#函數定義與求值" href="#函數定義與求值" id="toc-函數定義與求值"><span class="header-section-number">6</span> 函数定义与求值</a></li>
+<li><a class="nav-link" data-scroll-target="#定義和局部定義" href="#定義和局部定義" id="toc-定義和局部定義"><span class="header-section-number">7</span> 定义和局部定义</a></li>
+<li><a class="nav-link" data-scroll-target="#歸納類型" href="#歸納類型" id="toc-歸納類型"><span class="header-section-number">8</span> 归纳类型</a></li>
+</ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+
+</div>
+<div class="quarto-title-meta">
+<div>
+<div class="quarto-title-meta-heading">发布于</div>
+<div class="quarto-title-meta-contents">
+<p class="date">2025年1月9日</p>
+</div>
+</div>
+</div>
+</header>
+<section class="level2" data-number="1" id="前言">
+<h2 class="anchored" data-anchor-id="前言" data-number="1"><span class="header-section-number">1</span> 前言</h2>
+<p>第一次听闻Lean语言，是浏览到一则关于数学家陶哲轩的报导————他借助Lean语言纠正了自己在论文中犯下的错误。</p>
+<p>数学是一门严谨的学科，但是人们通常用自然语言作为数学的载体，这使得错误的发生难以避免。就算像陶哲轩一样的数学家，也偶有疏失。而通过引入编程语言，用一种更严谨的方式转写数学理论，使用计算机程序进行检查，能降低出错的概率。</p>
+<p>实际使用后，我认为Lean语言是一个很有意思的工具，但是<strong>它并不容易上手</strong>。</p>
+<p>正常来说，人们是先学会<span class="math inline">\(1+1=2\)</span>，然后才学习阿贝尔群；先学习微积分、概率论，然后才学习测度论。使用常见的数学工具并不需要你掌握更深层的数学知识。但做数学定理的形式化时，总需要用户对一些更底层的理论有所了解。数学理论的形式化往往是一个查找API手册的过程，你得翻一翻Mathlib文档，看看这个定理可能是什么名字，是不是在Mathlib中有现成可用的证明。你编写的形式化证明可能会比自然语言更冗长，可读性差。这是我目前感受到的比较不好的体验。但总的来说，我还是对这类型的工作感兴趣，因为这仍然是一个开拓视野的，很有启发性的过程。</p>
+<p>从这篇笔记开始，我会陆续记录和更新一些在学习和使用Lean语言中我掌握的知识和经验，希望对读者有用。</p>
+</section>
+<section class="level2" data-number="2" id="環境安裝">
+<h2 class="anchored" data-anchor-id="環境安裝" data-number="2"><span class="header-section-number">2</span> 环境安装</h2>
+<p>和Python、Javascript等脚本语言不同，Lean 4并没有内置一个交互式的REPL（Read-Eval-Print Loop）程序。官方推荐使用VSCode等编辑器来交互式地编写Lean 4程序。推荐读者阅读<a href="https://leanprover-community.github.io/get_started.html"><em>Get started with Lean</em></a>，根据文档配置好环境。</p>
+<p>如果生活在中国大陆，你可能需要先配置好代理地址，才能安装Lean。 例如，</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="bu">export</span> <span class="va">http_proxy</span><span class="op">=</span>127.0.0.1:7890</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="bu">export</span> <span class="va">https_proxy</span><span class="op">=</span>127.0.0.1:7890</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="co"># 请根据你的具体代理设置完成👆以上配置。</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<p>然后执行</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="fu">bash</span> <span class="at">-c</span> <span class="st">'curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:stable || (echo &amp;&amp; read -n 1 -s -r -p "Install failed, press ENTER to continue...")'</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<p>如果顺利的话，该代码将会下载安装elan和lean程序，把它们放在<code>~/.elan/bin</code>. 你可能需要重新启动shell，或者关闭重连VSCode来使用Lean。</p>
+<p>执行以下命令</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="ex">lean</span> <span class="at">--version</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<p>如果你看到程序打印了Lean的版本，说明Lean的安装成功了。 如果elan下载的lean不是你需要的版本，你可以执行</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="ex">elan</span> toolchain install leanprover/lean4:v4.15.0</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<p>这里假设4.15.0是你想要的版本。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="ex">elan</span> default leanprover/lean4:v4.15.0</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<p>执行上面这条语句可以将指定的版本设置为默认。</p>
+<pre><code>#eval Lean.versionString  -- 请检查你的Lean版本，看看是否和预期的一致。
+
+#eval "Hello, World!"     -- 像这样处于两条横杆右边的是行内注释</code></pre>
+<p>👆这就是Lean语言的Hello world程序。将它保存在一个以<code>.lean</code>为后缀的文本文件中，如果环境配置正常，你会在VsCode的Lean Infoview页面中看到输出。</p>
+<p>在Lean中，–符号右侧的文本是行内注释；成对的/-和-/符号包裹住的是多行注释。</p>
+<pre><code></code></pre>
+<section class="level3" data-number="2.1" id="其它資料">
+<h3 class="anchored" data-anchor-id="其它資料" data-number="2.1"><span class="header-section-number">2.1</span> 其它资料</h3>
+<p>除了看本人的笔记，你也可以参考这些资料</p>
+<ul>
+<li><em>Theorem Proving in Lean</em>：这本书比较适合那些喜欢在使用电器之前，完整地将说明书过一遍的人。</li>
+<li><em>Methematics in Lean</em>：适合那些希望立即能将Lean用于数学问题的人。遗憾的是这本书现在还难称完整。</li>
+</ul>
+<p>本系列文章在很大程度上参考了这些文章。</p>
+</section>
+</section>
+<section class="level2" data-number="3" id="自動證明器">
+<h2 class="anchored" data-anchor-id="自動證明器" data-number="3"><span class="header-section-number">3</span> 自动证明器</h2>
+<p>虽然Lean也可以作为通用编程语言来使用，但其核心功能和设计目标主要还是作为数学领域的自动证明器。</p>
+<p>下面的例子展示了自动证明器的工作。</p>
+<pre><code>example : 1 + 1 = 2 := by simp  -- 证明了1 + 1 = 2</code></pre>
+<p>在上面的例子中，<code>simp</code>是Lean的自动证明策略，能辅助我们完成一些简单证明。</p>
+<p>除了使用自动证明器，我们也可以显式地引用现有的命题来构造证明。例如：</p>
+<pre><code>example : 1 = 1 := rfl -- 引用`rfl`命题</code></pre>
+<p>这里我们引用了<code>rfl</code>，即自反律。自反律表明任何值都于自身相等。</p>
+<pre><code></code></pre>
+<p>在深入介绍自动证明技巧之前，我们先认识一下Lean语言中的一些基础概念。</p>
+<pre><code></code></pre>
+</section>
+<section class="level2" data-number="4" id="基礎類型">
+<h2 class="anchored" data-anchor-id="基礎類型" data-number="4"><span class="header-section-number">4</span> 基础类型</h2>
+<p>在类型理论中，每个表达式都有对应的类型（type）。</p>
+<p>Lean的<code>Nat</code>类型是一个具有<strong>无限精度</strong>的无符号整数类型。当你在Lean中写下一个正整数但不指定类型时，<code>Nat</code>是默认类型。</p>
+<pre><code>#eval 1 - 2  -- 0
+#check 1 - 2 -- Nat</code></pre>
+<p>在上面的代码中，<code>eval</code>指令用于求值，而<code>check</code>指令检查值的类型。注意当计算<code>1 - 2</code>时，因为使用的是<code>Nat</code>类型，所以返回值会被截断为<code>0</code>.</p>
+<p><code>Nat</code>类型能存储任意大的自然数：</p>
+<pre><code>-- 就算是这么大的一个数也能正常存储，这是Lean语言区别于Python、C等通用编程语言的一点。
+#eval (9876543210987654321098765432109876543210 : Nat)</code></pre>
+<p><code>Nat</code>也可以写成<code>ℕ</code>, 用<code>\N</code>即可在受支持的编辑器中打出<code>ℕ</code>符号。</p>
+<pre><code>#check Nat
+-- 在文件开头使用import Mathlib.Data.Nat.Defs后，你便能使用ℕ代表Nat。
+-- #check ℕ</code></pre>
+<p>Lean也提供了<code>Int</code>类型，表示整数。与<code>Nat</code>相同，<code>Int</code>类型同样是无限精度，无溢出的。</p>
+<pre><code>#eval -1     -- -1
+#check -1    -- Int
+#eval (1 - 2 : Int)
+#check (1 - 2 : Int)
+#eval (9876543210987654321098765432109876543210 : Int)</code></pre>
+<p>类似C、Python等编程语言，Lean作为一种通用编程语言，当然也提供了有限精度的整形、浮点型。</p>
+<pre><code>#check (255 : UInt32)
+#check (-255 : Int32)
+#check (0.5 : Float)</code></pre>
+<p>（意外的是，作为常见的基础类型，Int32在我编写本文时前几个月才作为新功能进入Lean 4😂 可见Lean 4距离成熟的通用编程语言还有距离。）</p>
+<pre><code></code></pre>
+<p>Lean也提供了<code>Bool</code>类型，表示布尔值。</p>
+<pre><code>#check (False : Bool)</code></pre>
+</section>
+<section class="level2" data-number="5" id="類型的組合">
+<h2 class="anchored" data-anchor-id="類型的組合" data-number="5"><span class="header-section-number">5</span> 类型的组合</h2>
+<p>新类型可以由旧类型组合而来。例如设<code>a</code>和<code>b</code>为旧类型，那么可以构造类型<code>a -&gt; b</code>或者<code>a → b</code>来表示一个从<code>a</code>映射到<code>b</code>的函数，<code>a × b</code>表示由<code>a</code>中的元素和<code>b</code>中的元素构成的二元组，这也被称为笛卡尔积（Cartesian product）。笛卡尔积也可以通过<code>Prod</code>函数得到：</p>
+<pre><code>#check Prod Nat Nat</code></pre>
+<p>Lean允许使用Unicode字符。可以通过输入<code>\to</code>或<code>\r</code>得到<code>→</code>，通过输入<code>\a \b \g</code>得到<code>α β γ</code>，通过输入<code>\times</code>得到<code>×</code>.</p>
+<pre><code>section
+  variable (a b c α β γ : Nat)
+  -- 自然数到自然数的映射
+  #check Nat → Nat
+  -- 两种笛卡尔积的表示方式
+  #check (Nat × Nat)
+  #check Prod Nat Nat
+end</code></pre>
+<p>上面的代码中，<code>section</code>和<code>end</code>的使用是为了限制variable的范围。在section结束后，我们就不能再使用<code>a b c α β γ</code>等变量了。</p>
+<pre><code></code></pre>
+<section class="level4" data-number="5.0.1" id="函數的類型">
+<h4 class="anchored" data-anchor-id="函數的類型" data-number="5.0.1"><span class="header-section-number">5.0.1</span> 函数的类型</h4>
+<pre><code></code></pre>
+<p>以<code>x</code>为输入的函数<code>f</code>记为<code>f x</code>，而不是<code>f(x)</code>. 函数的类型形如<code>Nat -&gt; Nat</code>。</p>
+<pre><code></code></pre>
+<p>举个例子：自然数加法函数<code>Nat.add</code>的类型为<code>Nat -&gt; Nat -&gt; Nat</code>，其中的箭头是右结合的，因此该类型等同于<code>Nat -&gt; (Nat -&gt; Nat)</code>.</p>
+<pre><code>#eval Nat.add 1 1
+#check Nat.add</code></pre>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+注记
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>结合性:</strong> 结合性（Associativity）是运算符的一个属性。右结合说明同样的运算符连续出现时，应该将运算符的右侧视为一个整体。</p>
+</div>
+</div>
+<p><code>Nat.add</code>的类型为<code>Nat -&gt; (Nat -&gt; Nat)</code>，这说明<code>Nat.add</code>函数可以视为输入一个自然数，返回一个函数，这个函数将输入的自然数与先前那个自然数相加然后返回。这表明我们可将部分参数应用于一个函数，得到一个新函数，例如<code>Nat.add 3</code>具有类型<code>Nat -&gt; Nat</code>.</p>
+<pre><code>#check Nat.add     -- 是一个函数
+#check Nat.add 1   -- 还是函数
+#check Nat.add 1 1 -- 是一个自然数</code></pre>
+<p>请看下面这段代码：</p>
+<pre><code>def add_one := Nat.add 1
+#eval add_one 1</code></pre>
+<p>其中<code>def</code>关键词用于提供定义。这里<code>add_one</code>被定义为将输入的自然数映射为等于它加1的那个自然数.</p>
+<p>类型是Lean语言的第一公民，我们可以对类型作运算，得到新的类型。</p>
+<pre><code>#check Nat         -- Nat : Type
+#check Bool        -- Bool : Type
+#check Nat -&gt; Bool -- Nat → Bool : Type
+#check Nat × Nat   -- Nat × Nat : Type</code></pre>
+<p>从例子中可以看到，Lean中的每一个类型的类型都是<code>Type</code>。那么，<code>Type</code>的类型是什么呢？</p>
+<pre><code>#check Type        -- Type : Type 1
+#check Type 1      -- Type 1 : Type 2
+#check Type 2      -- Type 2 : Type 3
+#check Type 3      -- Type 3 : Type 4</code></pre>
+<p><code>Type 0</code>，等同于<code>Type</code>可以视为“普通”类型所在的集合，<code>Type 1</code>是一个更大的、包含<code>Type 0</code>作为元素的集合，……以此类推。<code>Type n</code>的列表是无穷的。</p>
+<pre><code></code></pre>
+</section>
+<section class="level4" data-number="5.0.2" id="多態">
+<h4 class="anchored" data-anchor-id="多態" data-number="5.0.2"><span class="header-section-number">5.0.2</span> 多态</h4>
+<p>一些类型，例如<code>List α</code>的类型由<code>α</code>决定。<code>List</code>的类型为：</p>
+<pre><code>#check List</code></pre>
+<p><code>Prod</code>函数的类型是：</p>
+<pre><code>#check Prod</code></pre>
+<p>显式定义多态常量的语法使用<code>universe</code>命令：</p>
+<pre><code>namespace a
+  universe u
+  def F (α : Type u) : Type u := Prod α α
+  #check F
+end a</code></pre>
+<p>也可以通过使用universe参数的方法来回避<code>universe</code>命令的使用：</p>
+<pre><code>namespace b
+  def F.{u} (α : Type u) : Type u := Prod α α
+  #check F
+end b</code></pre>
+<p>上面两个例子中，我使用了<code>namespace</code>和<code>end</code>语句来避免<code>u</code>和<code>F</code>的重复定义。类似其它通用编程语言，Lean语言的namespace能够避免不同的定义的撞名。</p>
+</section>
+</section>
+<section class="level2" data-number="6" id="函數定義與求值">
+<h2 class="anchored" data-anchor-id="函數定義與求值" data-number="6"><span class="header-section-number">6</span> 函数定义与求值</h2>
+<p>Lean可以使用<code>fun</code>或<code>λ</code>关键词创建函数：</p>
+<pre><code>#check fun (x : Nat) =&gt; x + 5   -- Nat → Nat
+#check λ (x : Nat) =&gt; x + 5     -- λ and fun mean the same thing
+#check fun x =&gt; x + 5     -- Nat inferred
+#check λ x =&gt; x + 5       -- Nat inferred</code></pre>
+<p>给函数传入参数即可求值：</p>
+<pre><code>#eval (λ x : Nat =&gt; x + 5) 10
+#eval (fun x : Nat =&gt; x + 5) 10</code></pre>
+<p>请注意理解这个例子：下面两个函数的类型都是<code>Nat → Bool → Nat</code></p>
+<pre><code>#check fun x : Nat =&gt; fun y : Bool =&gt; if not y then x + 1 else x + 2
+#check fun (x : Nat) (y : Bool) =&gt; if not y then x + 1 else x + 2</code></pre>
+<p>第一个函数接收一个自然数<code>x</code>，然后返回一个函数，该函数接收一个布尔值<code>y</code>，然后返回一个自然数。因此其类型为<code>Nat → Bool → Nat</code>，本质上与第二个接收多个参数函数的类型相同。</p>
+<pre><code></code></pre>
+</section>
+<section class="level2" data-number="7" id="定義和局部定義">
+<h2 class="anchored" data-anchor-id="定義和局部定義" data-number="7"><span class="header-section-number">7</span> 定义和局部定义</h2>
+<p>定义使用<code>def</code>关键词，局部定义使用<code>let</code>关键词。我们可以在函数内使用局部定义，例如</p>
+<pre><code>def NatAdd (a : Nat) (b : Nat) :=
+  let f := (λ (x : Nat) =&gt; a + x)
+  (f b)
+#eval NatAdd 1 2</code></pre>
+<p>上面的例子中，<code>f</code>是一个局部定义的函数，可以在<code>NatAdd</code>函数的后续计算中使用。</p>
+<pre><code></code></pre>
+</section>
+<section class="level2" data-number="8" id="歸納類型">
+<h2 class="anchored" data-anchor-id="歸納類型" data-number="8"><span class="header-section-number">8</span> 归纳类型</h2>
+<p>在Lean4中，归纳类型（inductive type）是一种通过列举构造函数定义的类型。</p>
+<pre><code></code></pre>
+<p>最简单的归纳类型是枚举类型。下面的<code>Weekdy</code>类型包含七种可能的值，对应于一周的七天。它们的区别仅在于构造函数的不同。</p>
+<pre><code>inductive Weekday where
+  | sunday : Weekday
+  | monday : Weekday
+  | tuesday : Weekday
+  | wednesday : Weekday
+  | thursday : Weekday
+  | friday : Weekday
+  | saturday : Weekday
+
+#check Weekday.sunday
+#check Weekday.monday</code></pre>
+<p>作为归纳类型Weekday的构造函数，它们被定义在名为Weekday的命名空间下。</p>
+<pre><code>open Weekday
+
+#check sunday
+#check monday</code></pre>
+<p>对于归纳类型，我们可以使用match语句，对归纳类型中的每个构造函数进行匹配。</p>
+<pre><code>def numberOfDay (d : Weekday) : Nat :=
+  match d with
+  | sunday    =&gt; 1
+  | monday    =&gt; 2
+  | tuesday   =&gt; 3
+  | wednesday =&gt; 4
+  | thursday  =&gt; 5
+  | friday    =&gt; 6
+  | saturday  =&gt; 7</code></pre>
+<p>实际上自然数也可以用枚举类型表示。print指令可以打印类型的定义。</p>
+<pre><code>#print Nat</code></pre>
+<p>输出为：</p>
+<pre><code>inductive Nat
+  | zero : Nat
+  | succ (n : Nat) : Nat</code></pre>
+<p>可以看到实际上Nat是一种归纳类型。Nat（自然数）是这样定义的： 1. 0是一个自然数 2. 对于任意一个自然数n，<code>succ n</code>是n的“下一个数”，也是一个自然数</p>
+<pre><code></code></pre>
+<hr/>
+<p>至此，本文介绍了一些Lean语言中的基础概念。后续文章将介绍如何应用Lean语言证明一些数学定理。</p>
+</section>
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+</div>
+        </div>
+        <div class="post_list">
+            <span>By </span>
+            <a href="./">@執迷</a>
+            <span> in </span>
+            <span class="post_category"><a href="./" rel="bookmark" title="Permalink to Lean 4">[ Lean 4 ]</a></span>
+            <span class="post_date">2025-01-09</span>
+            <div><span>Tags : </span>
+                
+                
+                <span><a href="./">#Lean, </a></span>
+                
+                <span><a href="./">#自動證明器, </a></span>
+                
+                <span><a href="./">#數學, </a></span>
+                
+                
+            </div>
+
+            <div class="entry-social">
+                <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././lean_basics_20250109_zh-cn.html&text=Lean语言数学之旅——环境配置和一些基础概念&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+                <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././lean_basics_20250109_zh-cn.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+                <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././lean_basics_20250109_zh-cn.html&t=Lean语言数学之旅——环境配置和一些基础概念"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+                <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././lean_basics_20250109_zh-cn.html&title=Lean语言数学之旅——环境配置和一些基础概念" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+                <span class="mail"><a href="mailto:?subject=Lean语言数学之旅——环境配置和一些基础概念&amp;body=Viens découvrir un article à propos de [Lean语言数学之旅——环境配置和一些基础概念] sur le site de 執迷. ././lean_basics_20250109_zh-cn.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+            </div>
+        </div>
+        
+    </article>
+</section>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+  </footer>
+
+  
+  <!-- Analytics -->
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-G3N739QVFZ']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+  </script>
+  
+
+</body>
+</html>

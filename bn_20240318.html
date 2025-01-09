@@ -1,44 +1,13 @@
 <!doctype html>
 <html lang="" itemscope itemtype="http://schema.org/Person">
 <head>
-
   
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-  
-    gtag('config', 'G-G3N739QVFZ');
-  </script>
-  
-
-  
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="./_vercel/insights/script.js"></script>
-  
-
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-  
-  
-  
-
-<!-- Quarto -->
-<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
-<script src="./theme/scripts/quarto/quarto.js"></script>
-
 
   <meta charset="utf-8">
   <!-- Site Meta Data -->
   <title>批歸一化（Batch Normalization）原理分析和代碼實現</title>
-  
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="文章介紹了Batch Norm的實現原理，給出了代碼實現。儘管Batch Norm的提出有效了解決了一些問題，但也有其局限性。文章也總結了一些Batch Norm的踩坑經驗，例如BN在測試階段和訓練階段行爲差異、分佈式訓練的注意事項等。">
+  <meta name="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
   <meta name="author" content="執迷">
 
   <link rel="shortcut icon" href="favicon.ico">
@@ -46,7 +15,7 @@
   <!-- schema.org -->
   <meta itemprop="name" content="執迷的博客">
   <meta itemprop="image" content="">
-  <meta itemprop="description" content="文章介紹了Batch Norm的實現原理，給出了代碼實現。儘管Batch Norm的提出有效了解決了一些問題，但也有其局限性。文章也總結了一些Batch Norm的踩坑經驗，例如BN在測試階段和訓練階段行爲差異、分佈式訓練的注意事項等。">
+  <meta itemprop="description" content="Hi，我是“執迷”，一位算法工程師。我關注計算機視覺、自然語言處理領域的最新問題，分享有趣的技術和經驗。歡迎訪問我的博客！">
 
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   <!-- Style Meta Data -->
@@ -71,15 +40,6 @@
 <meta property="og:title" content="執迷的博客 ~ 批歸一化（Batch Normalization）原理分析和代碼實現" />
 <meta property="og:description" content="" />
 <meta property="og:image" content="" />
-
-
-<!-- MathJax -->
-
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-
-
 
 </head>
 
@@ -124,16 +84,10 @@
   <article>
     
 <section id="content">
-    <h2 class="post_title post_detail"><a href="././bn_20240318.html" rel="bookmark" title="Permalink to 批歸一化（Batch Normalization）原理分析和代碼實現">批歸一化（Batch Normalization）原理分析和代碼實現</a></h2>
-    
-    <p>
-        <span id="busuanzi_container_page_pv">
-            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
-        </span>
-    </p>
-    
-    <div class="entry-content blog-post">
-        <div>
+    <article>
+        <h2 class="post_title post_detail"><a href="././bn_20240318.html" rel="bookmark" title="Permalink to 批歸一化（Batch Normalization）原理分析和代碼實現">批歸一化（Batch Normalization）原理分析和代碼實現</a></h2>
+        <div class="entry-content blog-post">
+            <div>
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
 <nav class="toc-active" id="TOC" role="doc-toc">
@@ -540,65 +494,44 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 </div> <!-- /content -->
 </div>
-    </div>
-    <div class="post_list">
-        <span>By </span>
-        <a href="./">@執迷</a>
-        <span> in </span>
-        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 深度學習">[ 深度學習 ]</a></span>
-        <span class="post_date">2024-03-18</span>
-        <div><span>Tags : </span>
-            
-            
-            <span><a href="./">#Batch Normalization, </a></span>
-            
-            <span><a href="./">#Layer Normalization, </a></span>
-            
-            <span><a href="./">#歸一化方法, </a></span>
-            
-            <span><a href="./">#自然語言處理, </a></span>
-            
-            <span><a href="./">#計算機視覺, </a></span>
-            
-            
         </div>
+        <div class="post_list">
+            <span>By </span>
+            <a href="./">@執迷</a>
+            <span> in </span>
+            <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 深度學習">[ 深度學習 ]</a></span>
+            <span class="post_date">2024-03-18</span>
+            <div><span>Tags : </span>
+                
+                
+                <span><a href="./">#Batch Normalization, </a></span>
+                
+                <span><a href="./">#Layer Normalization, </a></span>
+                
+                <span><a href="./">#歸一化方法, </a></span>
+                
+                <span><a href="./">#自然語言處理, </a></span>
+                
+                <span><a href="./">#計算機視覺, </a></span>
+                
+                
+            </div>
 
-        <div class="entry-social">
-            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././bn_20240318.html&text=批歸一化（Batch Normalization）原理分析和代碼實現&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+            <div class="entry-social">
+                <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././bn_20240318.html&text=批歸一化（Batch Normalization）原理分析和代碼實現&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
 
-            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././bn_20240318.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+                <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././bn_20240318.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
 
-            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././bn_20240318.html&t=批歸一化（Batch Normalization）原理分析和代碼實現"><img src="./theme/images/icons/facebook-s.png"></a></span>
+                <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././bn_20240318.html&t=批歸一化（Batch Normalization）原理分析和代碼實現"><img src="./theme/images/icons/facebook-s.png"></a></span>
 
-            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././bn_20240318.html&title=批歸一化（Batch Normalization）原理分析和代碼實現" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+                <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././bn_20240318.html&title=批歸一化（Batch Normalization）原理分析和代碼實現" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
 
-            <span class="mail"><a href="mailto:?subject=批歸一化（Batch Normalization）原理分析和代碼實現&amp;body=Viens découvrir un article à propos de [批歸一化（Batch Normalization）原理分析和代碼實現] sur le site de 執迷. ././bn_20240318.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+                <span class="mail"><a href="mailto:?subject=批歸一化（Batch Normalization）原理分析和代碼實現&amp;body=Viens découvrir un article à propos de [批歸一化（Batch Normalization）原理分析和代碼實現] sur le site de 執迷. ././bn_20240318.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+            </div>
         </div>
-    </div>
-    
-
+        
+    </article>
 </section>
-
-<!-- Quarto Clipboard -->
-<script type="text/javascript">
-    var clipboard = new ClipboardJS(
-        '.code-copy-button',
-        {
-            target: function(trigger) {
-                console.log("Copy texts. ", trigger);
-                return trigger.previousElementSibling;
-            }
-        }
-    );    
-    clipboard.on('success', function(e) {
-        console.info('Action:', e.action);
-        console.info('Text:', e.text);
-        console.info('Trigger:', e.trigger);
-        e.clearSelection();
-        alert('Copied!');
-    });
-    console.log("ClipboardJS loaded.");
-</script>
 
   </article>
 
@@ -609,14 +542,21 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       which takes great advantage of <a href="http://python.org">Python</a>.
       Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
     </p>
-    
-      
-      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
-      <span id="busuanzi_container_site_uv">
-        訪客數<span id="busuanzi_value_site_uv"></span>
-      </span>
-      
-    
   </footer>
+
+  
+  <!-- Analytics -->
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-G3N739QVFZ']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+  </script>
+  
+
 </body>
 </html>
