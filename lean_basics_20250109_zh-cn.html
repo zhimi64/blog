@@ -138,17 +138,8 @@
 <div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
 <nav class="toc-active" id="TOC" role="doc-toc">
 <h2 id="toc-title">目录</h2>
-<ul>
-<li><a class="nav-link active" data-scroll-target="#前言" href="#前言" id="toc-前言"><span class="header-section-number">1</span> 前言</a></li>
-<li><a class="nav-link" data-scroll-target="#環境安裝" href="#環境安裝" id="toc-環境安裝"><span class="header-section-number">2</span> 环境安装</a></li>
-<li><a class="nav-link" data-scroll-target="#參考資料" href="#參考資料" id="toc-參考資料"><span class="header-section-number">3</span> 参考资料</a></li>
-<li><a class="nav-link" data-scroll-target="#自動證明器" href="#自動證明器" id="toc-自動證明器"><span class="header-section-number">4</span> 自动证明器</a></li>
-<li><a class="nav-link" data-scroll-target="#基礎類型" href="#基礎類型" id="toc-基礎類型"><span class="header-section-number">5</span> 基础类型</a></li>
-<li><a class="nav-link" data-scroll-target="#類型的組合" href="#類型的組合" id="toc-類型的組合"><span class="header-section-number">6</span> 类型的组合</a></li>
-<li><a class="nav-link" data-scroll-target="#函數定義與求值" href="#函數定義與求值" id="toc-函數定義與求值"><span class="header-section-number">7</span> 函数定义与求值</a></li>
-<li><a class="nav-link" data-scroll-target="#定義和局部定義" href="#定義和局部定義" id="toc-定義和局部定義"><span class="header-section-number">8</span> 定义和局部定义</a></li>
-<li><a class="nav-link" data-scroll-target="#歸納類型" href="#歸納類型" id="toc-歸納類型"><span class="header-section-number">9</span> 归纳类型</a></li>
-</ul>
+   
+  true
 </nav>
 </div>
 <main class="content" id="quarto-document-content">
@@ -160,16 +151,28 @@
 <div>
 <div class="quarto-title-meta-heading">发布于</div>
 <div class="quarto-title-meta-contents">
-<p class="date">2025年1月9日</p>
+<p class="date">2025-01-09</p>
 </div>
 </div>
 </div>
 </header>
+<div class="hidden">
+<link href="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/styles/default.min.css" rel="stylesheet"/>
+<script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+<script src="https://unpkg.com/highlightjs-lean/dist/lean.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+  hljs.highlightAll();
+</script>
+<style>
+.lean {background-color: GhostWhite;}
+</style>
+</div>
 <section class="level2" data-number="1" id="前言">
 <h2 class="anchored" data-anchor-id="前言" data-number="1"><span class="header-section-number">1</span> 前言</h2>
 <p>第一次听闻Lean语言，是浏览到一则关于数学家陶哲轩的报导————他借助Lean语言纠正了自己在论文中犯下的错误。</p>
-<p>数学是一门严谨的学科，但是人们通常用自然语言作为数学的载体，这使得错误的发生难以避免。就算像陶哲轩一样的数学家，也偶有疏失。而通过引入编程语言，用一种更严谨的方式转写数学理论，使用计算机程序进行检查，能降低出错的概率。</p>
-<p>实际使用后，我认为Lean语言是一个很有意思的工具，但是<strong>它并不容易上手</strong>。</p>
+<p>数学是一门严谨的学科，但是人们通常用自然语言作为数学的载体，这使得错误的发生难以避免。就算像陶哲轩一样的数学家，也偶有疏失。</p>
+<p>编写编程语言并通过编译的过程就好比编写数学证明并通过程序的检查。使用编程语言作为数学证明的载体，就能允许引入对证明过程的形式化检查，减少出错的可能。</p>
+<p>学习Lean后，我尝试证明了一些命题。我发现Lean语言是一个很有意思的工具，但是<strong>它并不容易上手</strong>。</p>
 <p>正常来说，人们是先学会<span class="math inline">\(1+1=2\)</span>，然后才学习阿贝尔群；先学习微积分、概率论，然后才学习测度论。使用常见的数学工具并不需要你掌握更深层的数学知识。但做数学定理的形式化时，总需要用户对一些更底层的理论有所了解。数学理论的形式化往往是一个查找API手册的过程，你得翻一翻Mathlib文档，看看这个定理可能是什么名字，是不是在Mathlib中有现成可用的证明。你编写的形式化证明可能会比自然语言更冗长，可读性差。这是我目前感受到的比较不好的体验。但总的来说，我还是对这类型的工作感兴趣，因为这仍然是一个开拓视野的，很有启发性的过程。</p>
 <p>从这篇笔记开始，我会陆续记录和更新一些在学习和使用Lean语言中我掌握的知识和经验，希望对读者有用。</p>
 </section>
@@ -195,7 +198,6 @@
 #eval "Hello, World!"     -- 像这样处于两条横杆右边的是行内注释</code></pre>
 <p>👆这就是Lean语言的Hello world程序。将它保存在一个以<code>.lean</code>为后缀的文本文件中，如果环境配置正常，你会在VsCode的Lean Infoview页面中看到输出。</p>
 <p>在Lean中，–符号右侧的文本是行内注释；成对的/-和-/符号包裹住的是多行注释。</p>
-<pre><code></code></pre>
 </section>
 <section class="level2" data-number="3" id="參考資料">
 <h2 class="anchored" data-anchor-id="參考資料" data-number="3"><span class="header-section-number">3</span> 参考资料</h2>
@@ -210,50 +212,47 @@
 <h2 class="anchored" data-anchor-id="自動證明器" data-number="4"><span class="header-section-number">4</span> 自动证明器</h2>
 <p>虽然Lean也可以作为通用编程语言来使用，但其核心功能和设计目标主要还是作为数学领域的自动证明器。</p>
 <p>下面的例子展示了自动证明器的工作。</p>
-<pre><code>example : 1 + 1 = 2 := by simp  -- 证明了1 + 1 = 2</code></pre>
+<pre class="lean"><code>example : 1 + 1 = 2 := by simp  -- 证明了1 + 1 = 2</code></pre>
 <p>在上面的例子中，<code>simp</code>是Lean的自动证明策略，能辅助我们完成一些简单证明。</p>
 <p>除了使用自动证明器，我们也可以显式地引用现有的命题来构造证明。例如：</p>
-<pre><code>example : 1 = 1 := rfl -- 引用`rfl`命题</code></pre>
+<pre class="lean"><code>example : 1 = 1 := rfl -- 引用`rfl`命题</code></pre>
 <p>这里我们引用了<code>rfl</code>，即自反律。自反律表明任何值都于自身相等。</p>
-<pre><code></code></pre>
 <p>在深入介绍自动证明技巧之前，我们先认识一下Lean语言中的一些基础概念。</p>
-<pre><code></code></pre>
 </section>
 <section class="level2" data-number="5" id="基礎類型">
 <h2 class="anchored" data-anchor-id="基礎類型" data-number="5"><span class="header-section-number">5</span> 基础类型</h2>
 <p>在类型理论中，每个表达式都有对应的类型（type）。</p>
 <p>Lean的<code>Nat</code>类型是一个具有<strong>无限精度</strong>的无符号整数类型。当你在Lean中写下一个正整数但不指定类型时，<code>Nat</code>是默认类型。</p>
-<pre><code>#eval 1 - 2  -- 0
+<pre class="lean"><code>#eval 1 - 2  -- 0
 #check 1 - 2 -- Nat</code></pre>
 <p>在上面的代码中，<code>eval</code>指令用于求值，而<code>check</code>指令检查值的类型。注意当计算<code>1 - 2</code>时，因为使用的是<code>Nat</code>类型，所以返回值会被截断为<code>0</code>.</p>
 <p><code>Nat</code>类型能存储任意大的自然数：</p>
-<pre><code>-- 就算是这么大的一个数也能正常存储，这是Lean语言区别于Python、C等通用编程语言的一点。
+<pre class="lean"><code>-- 就算是这么大的一个数也能正常存储，这是Lean语言区别于Python、C等通用编程语言的一点。
 #eval (9876543210987654321098765432109876543210 : Nat)</code></pre>
 <p><code>Nat</code>也可以写成<code>ℕ</code>, 用<code>\N</code>即可在受支持的编辑器中打出<code>ℕ</code>符号。</p>
-<pre><code>#check Nat
+<pre class="lean"><code>#check Nat
 -- 在文件开头使用import Mathlib.Data.Nat.Defs后，你便能使用ℕ代表Nat。
 -- #check ℕ</code></pre>
 <p>Lean也提供了<code>Int</code>类型，表示整数。与<code>Nat</code>相同，<code>Int</code>类型同样是无限精度，无溢出的。</p>
-<pre><code>#eval -1     -- -1
+<pre class="lean"><code>#eval -1     -- -1
 #check -1    -- Int
 #eval (1 - 2 : Int)
 #check (1 - 2 : Int)
 #eval (9876543210987654321098765432109876543210 : Int)</code></pre>
 <p>类似C、Python等编程语言，Lean作为一种通用编程语言，当然也提供了有限精度的整形、浮点型。</p>
-<pre><code>#check (255 : UInt32)
+<pre class="lean"><code>#check (255 : UInt32)
 #check (-255 : Int32)
 #check (0.5 : Float)</code></pre>
 <p>（意外的是，作为常见的基础类型，Int32在我编写本文时前几个月才作为新功能进入Lean 4😂 可见Lean 4距离成熟的通用编程语言还有距离。）</p>
-<pre><code></code></pre>
 <p>Lean也提供了<code>Bool</code>类型，表示布尔值。</p>
-<pre><code>#check (False : Bool)</code></pre>
+<pre class="lean"><code>#check (False : Bool)</code></pre>
 </section>
 <section class="level2" data-number="6" id="類型的組合">
 <h2 class="anchored" data-anchor-id="類型的組合" data-number="6"><span class="header-section-number">6</span> 类型的组合</h2>
 <p>新类型可以由旧类型组合而来。例如设<code>a</code>和<code>b</code>为旧类型，那么可以构造类型<code>a -&gt; b</code>或者<code>a → b</code>来表示一个从<code>a</code>映射到<code>b</code>的函数，<code>a × b</code>表示由<code>a</code>中的元素和<code>b</code>中的元素构成的二元组，这也被称为笛卡尔积（Cartesian product）。笛卡尔积也可以通过<code>Prod</code>函数得到：</p>
-<pre><code>#check Prod Nat Nat</code></pre>
+<pre class="lean"><code>#check Prod Nat Nat</code></pre>
 <p>Lean允许使用Unicode字符。可以通过输入<code>\to</code>或<code>\r</code>得到<code>→</code>，通过输入<code>\a \b \g</code>得到<code>α β γ</code>，通过输入<code>\times</code>得到<code>×</code>.</p>
-<pre><code>section
+<pre class="lean"><code>section
   variable (a b c α β γ : Nat)
   -- 自然数到自然数的映射
   #check Nat → Nat
@@ -262,14 +261,11 @@
   #check Prod Nat Nat
 end</code></pre>
 <p>上面的代码中，<code>section</code>和<code>end</code>的使用是为了限制variable的范围。在section结束后，我们就不能再使用<code>a b c α β γ</code>等变量了。</p>
-<pre><code></code></pre>
 <section class="level4" data-number="6.0.1" id="函數的類型">
 <h4 class="anchored" data-anchor-id="函數的類型" data-number="6.0.1"><span class="header-section-number">6.0.1</span> 函数的类型</h4>
-<pre><code></code></pre>
 <p>以<code>x</code>为输入的函数<code>f</code>记为<code>f x</code>，而不是<code>f(x)</code>. 函数的类型形如<code>Nat -&gt; Nat</code>。</p>
-<pre><code></code></pre>
 <p>举个例子：自然数加法函数<code>Nat.add</code>的类型为<code>Nat -&gt; Nat -&gt; Nat</code>，其中的箭头是右结合的，因此该类型等同于<code>Nat -&gt; (Nat -&gt; Nat)</code>.</p>
-<pre><code>#eval Nat.add 1 1
+<pre class="lean"><code>#eval Nat.add 1 1
 #check Nat.add</code></pre>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -285,40 +281,39 @@ end</code></pre>
 </div>
 </div>
 <p><code>Nat.add</code>的类型为<code>Nat -&gt; (Nat -&gt; Nat)</code>，这说明<code>Nat.add</code>函数可以视为输入一个自然数，返回一个函数，这个函数将输入的自然数与先前那个自然数相加然后返回。这表明我们可将部分参数应用于一个函数，得到一个新函数，例如<code>Nat.add 3</code>具有类型<code>Nat -&gt; Nat</code>.</p>
-<pre><code>#check Nat.add     -- 是一个函数
+<pre class="lean"><code>#check Nat.add     -- 是一个函数
 #check Nat.add 1   -- 还是函数
 #check Nat.add 1 1 -- 是一个自然数</code></pre>
 <p>请看下面这段代码：</p>
-<pre><code>def add_one := Nat.add 1
+<pre class="lean"><code>def add_one := Nat.add 1
 #eval add_one 1</code></pre>
 <p>其中<code>def</code>关键词用于提供定义。这里<code>add_one</code>被定义为将输入的自然数映射为等于它加1的那个自然数.</p>
 <p>类型是Lean语言的第一公民，我们可以对类型作运算，得到新的类型。</p>
-<pre><code>#check Nat         -- Nat : Type
+<pre class="lean"><code>#check Nat         -- Nat : Type
 #check Bool        -- Bool : Type
 #check Nat -&gt; Bool -- Nat → Bool : Type
 #check Nat × Nat   -- Nat × Nat : Type</code></pre>
 <p>从例子中可以看到，Lean中的每一个类型的类型都是<code>Type</code>。那么，<code>Type</code>的类型是什么呢？</p>
-<pre><code>#check Type        -- Type : Type 1
+<pre class="lean"><code>#check Type        -- Type : Type 1
 #check Type 1      -- Type 1 : Type 2
 #check Type 2      -- Type 2 : Type 3
 #check Type 3      -- Type 3 : Type 4</code></pre>
 <p><code>Type 0</code>，等同于<code>Type</code>可以视为“普通”类型所在的集合，<code>Type 1</code>是一个更大的、包含<code>Type 0</code>作为元素的集合，……以此类推。<code>Type n</code>的列表是无穷的。</p>
-<pre><code></code></pre>
 </section>
 <section class="level4" data-number="6.0.2" id="多態">
 <h4 class="anchored" data-anchor-id="多態" data-number="6.0.2"><span class="header-section-number">6.0.2</span> 多态</h4>
 <p>一些类型，例如<code>List α</code>的类型由<code>α</code>决定。<code>List</code>的类型为：</p>
-<pre><code>#check List</code></pre>
+<pre class="lean"><code>#check List</code></pre>
 <p><code>Prod</code>函数的类型是：</p>
-<pre><code>#check Prod</code></pre>
+<pre class="lean"><code>#check Prod</code></pre>
 <p>显式定义多态常量的语法使用<code>universe</code>命令：</p>
-<pre><code>namespace a
+<pre class="lean"><code>namespace a
   universe u
   def F (α : Type u) : Type u := Prod α α
   #check F
 end a</code></pre>
 <p>也可以通过使用universe参数的方法来回避<code>universe</code>命令的使用：</p>
-<pre><code>namespace b
+<pre class="lean"><code>namespace b
   def F.{u} (α : Type u) : Type u := Prod α α
   #check F
 end b</code></pre>
@@ -328,35 +323,32 @@ end b</code></pre>
 <section class="level2" data-number="7" id="函數定義與求值">
 <h2 class="anchored" data-anchor-id="函數定義與求值" data-number="7"><span class="header-section-number">7</span> 函数定义与求值</h2>
 <p>Lean可以使用<code>fun</code>或<code>λ</code>关键词创建函数：</p>
-<pre><code>#check fun (x : Nat) =&gt; x + 5   -- Nat → Nat
+<pre class="lean"><code>#check fun (x : Nat) =&gt; x + 5   -- Nat → Nat
 #check λ (x : Nat) =&gt; x + 5     -- λ and fun mean the same thing
 #check fun x =&gt; x + 5     -- Nat inferred
 #check λ x =&gt; x + 5       -- Nat inferred</code></pre>
 <p>给函数传入参数即可求值：</p>
-<pre><code>#eval (λ x : Nat =&gt; x + 5) 10
+<pre class="lean"><code>#eval (λ x : Nat =&gt; x + 5) 10
 #eval (fun x : Nat =&gt; x + 5) 10</code></pre>
 <p>请注意理解这个例子：下面两个函数的类型都是<code>Nat → Bool → Nat</code></p>
-<pre><code>#check fun x : Nat =&gt; fun y : Bool =&gt; if not y then x + 1 else x + 2
+<pre class="lean"><code>#check fun x : Nat =&gt; fun y : Bool =&gt; if not y then x + 1 else x + 2
 #check fun (x : Nat) (y : Bool) =&gt; if not y then x + 1 else x + 2</code></pre>
 <p>第一个函数接收一个自然数<code>x</code>，然后返回一个函数，该函数接收一个布尔值<code>y</code>，然后返回一个自然数。因此其类型为<code>Nat → Bool → Nat</code>，本质上与第二个接收多个参数函数的类型相同。</p>
-<pre><code></code></pre>
 </section>
 <section class="level2" data-number="8" id="定義和局部定義">
 <h2 class="anchored" data-anchor-id="定義和局部定義" data-number="8"><span class="header-section-number">8</span> 定义和局部定义</h2>
 <p>定义使用<code>def</code>关键词，局部定义使用<code>let</code>关键词。我们可以在函数内使用局部定义，例如</p>
-<pre><code>def NatAdd (a : Nat) (b : Nat) :=
+<pre class="lean"><code>def NatAdd (a : Nat) (b : Nat) :=
   let f := (λ (x : Nat) =&gt; a + x)
   (f b)
 #eval NatAdd 1 2</code></pre>
 <p>上面的例子中，<code>f</code>是一个局部定义的函数，可以在<code>NatAdd</code>函数的后续计算中使用。</p>
-<pre><code></code></pre>
 </section>
 <section class="level2" data-number="9" id="歸納類型">
 <h2 class="anchored" data-anchor-id="歸納類型" data-number="9"><span class="header-section-number">9</span> 归纳类型</h2>
 <p>在Lean4中，归纳类型（inductive type）是一种通过列举构造函数定义的类型。</p>
-<pre><code></code></pre>
 <p>最简单的归纳类型是枚举类型。下面的<code>Weekdy</code>类型包含七种可能的值，对应于一周的七天。它们的区别仅在于构造函数的不同。</p>
-<pre><code>inductive Weekday where
+<pre class="lean"><code>inductive Weekday where
   | sunday : Weekday
   | monday : Weekday
   | tuesday : Weekday
@@ -367,13 +359,13 @@ end b</code></pre>
 
 #check Weekday.sunday
 #check Weekday.monday</code></pre>
-<p>作为归纳类型Weekday的构造函数，它们被定义在名为Weekday的命名空间下。</p>
-<pre><code>open Weekday
+<p>作为归纳类型Weekday的构造函数，它们被定义在名为Weekday的命名空间下。只要使用open指令打开对应的命名空间，我们就可以直接使用构造函数的名称。</p>
+<pre class="lean"><code>open Weekday
 
 #check sunday
 #check monday</code></pre>
 <p>对于归纳类型，我们可以使用match语句，对归纳类型中的每个构造函数进行匹配。</p>
-<pre><code>def numberOfDay (d : Weekday) : Nat :=
+<pre class="lean"><code>def numberOfDay (d : Weekday) : Nat :=
   match d with
   | sunday    =&gt; 1
   | monday    =&gt; 2
@@ -383,13 +375,12 @@ end b</code></pre>
   | friday    =&gt; 6
   | saturday  =&gt; 7</code></pre>
 <p>实际上自然数也可以用枚举类型表示。print指令可以打印类型的定义。</p>
-<pre><code>#print Nat</code></pre>
+<pre class="lean"><code>#print Nat</code></pre>
 <p>输出为：</p>
 <pre><code>inductive Nat
   | zero : Nat
   | succ (n : Nat) : Nat</code></pre>
 <p>可以看到实际上Nat是一种归纳类型。Nat（自然数）是这样定义的： 1. 0是一个自然数 2. 对于任意一个自然数n，<code>succ n</code>是n的“下一个数”，也是一个自然数</p>
-<pre><code></code></pre>
 <hr/>
 <p>至此，本文介绍了一些Lean语言中的基础概念。后续文章将介绍如何应用Lean语言证明一些数学定理。</p>
 </section>
