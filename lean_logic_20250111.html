@@ -154,7 +154,8 @@
 <li><a class="nav-link" data-scroll-target="#一些有用的工具" href="#一些有用的工具" id="toc-一些有用的工具"><span class="header-section-number">2.4</span> 一些有用的工具</a>
 <ul class="collapse">
 <li><a class="nav-link" data-scroll-target="#show關鍵詞" href="#show關鍵詞" id="toc-show關鍵詞"><span class="header-section-number">2.4.1</span> <code>show</code>關鍵詞</a></li>
-<li><a class="nav-link" data-scroll-target="#have關鍵詞" href="#have關鍵詞" id="toc-have關鍵詞"><span class="header-section-number">2.4.2</span> <code>have</code>關鍵詞</a></li>
+<li><a class="nav-link" data-scroll-target="#let關鍵詞" href="#let關鍵詞" id="toc-let關鍵詞"><span class="header-section-number">2.4.2</span> <code>let</code>關鍵詞</a></li>
+<li><a class="nav-link" data-scroll-target="#have關鍵詞" href="#have關鍵詞" id="toc-have關鍵詞"><span class="header-section-number">2.4.3</span> <code>have</code>關鍵詞</a></li>
 </ul></li>
 <li><a class="nav-link" data-scroll-target="#練習一" href="#練習一" id="toc-練習一"><span class="header-section-number">2.5</span> 練習一</a></li>
 <li><a class="nav-link" data-scroll-target="#練習二-經典邏輯" href="#練習二-經典邏輯" id="toc-練習二-經典邏輯"><span class="header-section-number">2.6</span> 練習二-經典邏輯</a></li>
@@ -209,7 +210,7 @@
   #check And p q -- 表示p和q都是真命題
   #check p ∧ q   -- And p q 的另一種寫法</code></pre>
 <p>上面的代碼中演示了“與”的運算，其中<code>#check</code>用於輸出算式的類型。與運算可以使用<code>And</code>或<code>∧</code>符號構造，符號<code>∧</code>可以在編輯器中用<code>\and</code>打出。</p>
-<p>類似的，下面是或運算、非運算的用法。</p>
+<p>類似的，下面是或運算、非運算等運算的用法。</p>
 <pre class="lean"><code>  #check Or     -- 或運算
   -- 輸出為：Or (a b : Prop) : Prop
   #check Or p q -- 表示p或q其中之一是真命題
@@ -263,23 +264,20 @@ end</code></pre>
 <p>上面的寫法也等價於：</p>
 <pre class="lean"><code>example (p : Prop) : ¬p ∨ ¬¬p := sorry</code></pre>
 <p>即可以將變量p的聲明與定理合併在一行。</p>
-<p>你還可以寫成：</p>
-<pre class="lean"><code>example : ¬x ∨ ¬¬x := sorry</code></pre>
-<p>儘管我們從未聲明過<code>x</code>，但Lean可以看出來<code>x</code>是一個命題。</p>
 <p>加下來我們給出如何證明。<code>p</code>是一個命題，因此<code>p</code>的否定<code>¬p</code>也是一個命題。假如我們將其應用於em公理，將會得到什麼呢？</p>
 <pre class="lean"><code>section
   variable (p : Prop)
   #check crazy_axioms.em ¬p -- crazy_axioms.em ¬p : ¬p ∨ ¬¬p
 end</code></pre>
 <p>我們得到了一個類型為<code>¬p ∨ ¬¬p</code>的實例。因此，它可以作為<code>¬p ∨ ¬¬p</code>的證明。</p>
-<pre class="lean"><code>example : ¬p ∨ ¬¬p := crazy_axioms.em ¬p</code></pre>
+<pre class="lean"><code>example {p : Prop} : ¬p ∨ ¬¬p := crazy_axioms.em ¬p</code></pre>
 <p>在Lean中，我們使用<code>theorem</code>來定義定理。<code>theorem</code>就是有名字的<code>example</code>。</p>
-<pre class="lean"><code>theorem np_or_nnp (p : Prop) : ¬p ∨ ¬¬p := crazy_axioms.em ¬p
+<pre class="lean"><code>theorem np_or_nnp {p : Prop} : ¬p ∨ ¬¬p := crazy_axioms.em ¬p
 #check np_or_nnp -- 類型為 ¬p ∨ ¬¬p</code></pre>
 <p>我們將得到的新命題命名為np_or_nnp，這實際上是一個返回類型為<code>¬p ∨ ¬¬p</code>的函數，我們用<code>crazy_axioms.em ¬p</code>作為它的返回值。</p>
 <p>綜上所述，我們這麼理解Lean中的證明過程： 一條定理實際上是一個函數。這個函數的輸入是定理使用的變量或者前提，輸出類型是定理所對應的命題，我們需要構造一個滿足類型要求的返回值作為其證明。</p>
 <p>類型的證明也並不總是需要引用公理或先前的命題。下面是一個例子。</p>
-<pre class="lean"><code>example (p q: Prop) : p → q → p := fun hp : p =&gt; fun hq : q =&gt; hp</code></pre>
+<pre class="lean"><code>example {p q: Prop} : p → q → p := fun hp : p =&gt; fun hq : q =&gt; hp</code></pre>
 <p>在這個例子中，我們需要構造一個類型為<code>p → q → p</code>的值。</p>
 <p>注意Lean中，<code>→</code>符號是右結合的，所以<code>p → q → p</code>表示的是<code>p → (q → p)</code>. 函數<code>fun hp : p =&gt; fun hq : q =&gt; hp</code>的類型恰為<code>p → q → p</code>，這就完成了證明。</p>
 <p>注意如果函數的輸入類型為<code>a</code>，輸出類型為<code>b</code>，那麼函數的類型為<code>a → b</code>，恰好對應著“<code>a</code>蘊含<code>b</code>”這一命題。</p>
@@ -303,10 +301,10 @@ end</code></pre>
 <p><code>And.left</code>的用法如下：</p>
 <div class="theorem example" id="exm-and-left">
 <p><span class="theorem-title"><strong>例 1</strong></span> <strong>And.left</strong></p>
-<pre class="lean"><code>example : p ∧ q → p := fun h : p ∧ q =&gt; h.left</code></pre>
+<pre class="lean"><code>example {p q : Prop} : p ∧ q → p := fun h : p ∧ q =&gt; h.left</code></pre>
 <p>這個例子中，<code>h</code>的類型為<code>And p q</code>，因此<code>h.left</code>的類型為<code>p</code>.</p>
 <p>上面的證明也可以寫成：</p>
-<pre class="lean"><code>example : p ∧ q → p := fun h : p ∧ q =&gt; And.left h</code></pre>
+<pre class="lean"><code>example {p q : Prop} : p ∧ q → p := fun h : p ∧ q =&gt; And.left h</code></pre>
 </div>
 <p>接下來，請仿照<code>And.left</code>的用法，使用<code>And.right</code>完成練習。</p>
 <div class="theorem exercise" id="exr-and-right">
@@ -316,13 +314,13 @@ end</code></pre>
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : p ∧ q → q := fun h =&gt; h.right</code></pre>
+<pre class="lean"><code>example {p q : Prop} : p ∧ q → q := fun h =&gt; h.right</code></pre>
 </details>
 </div>
 <div class="theorem example" id="exm-and-intro">
 <p><span class="theorem-title"><strong>例 2</strong></span> <strong>And.intro</strong></p>
 <p><code>And.intro</code>是<code>And</code>的構造函數，其用法如下：</p>
-<pre class="lean"><code>example : p → q → p ∧ q :=
+<pre class="lean"><code>example  {p q : Prop} : p → q → p ∧ q :=
   fun hp : p =&gt;
     fun hq : q =&gt;
       And.intro hp hq</code></pre>
@@ -335,7 +333,7 @@ end</code></pre>
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : p ∧ q → q ∧ p :=
+<pre class="lean"><code>example  {p q : Prop} : p ∧ q → q ∧ p :=
   fun h : p ∧ q =&gt;
     And.intro h.right h.left</code></pre>
 </details>
@@ -347,7 +345,7 @@ end</code></pre>
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : p ∧ p → p :=
+<pre class="lean"><code>example  {p : Prop} : p ∧ p → p :=
   fun h : p ∧ p =&gt;
     h.left</code></pre>
 </details>
@@ -365,7 +363,7 @@ end</code></pre>
 <p>可以看到<code>Or</code>有兩種構造函數，<code>inl</code>和<code>inr</code>。以<code>inl</code>為例，其含義為：若命題<code>a</code>成立，則命題<code>a ∨ b</code>成立。同理可知<code>inr</code>的用法。</p>
 <div class="theorem example" id="exm-or-inl">
 <p><span class="theorem-title"><strong>例 3</strong></span> <strong>Or.inl</strong></p>
-<pre class="lean"><code>example : p → p ∨ q :=
+<pre class="lean"><code>example {p q : Prop} : p → p ∨ q :=
   fun hp : p =&gt; Or.inl hp</code></pre>
 </div>
 <p>仿照這些例子，你可以完成下面的這些練習。</p>
@@ -376,7 +374,7 @@ end</code></pre>
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : q → p ∨ q :=
+<pre class="lean"><code>example {p q : Prop} : q → p ∨ q :=
   fun hq : q =&gt; Or.inr hq</code></pre>
 </details>
 </div>
@@ -392,7 +390,7 @@ end</code></pre>
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : p ∨ q → q ∨ p :=
+<pre class="lean"><code>example {p q : Prop} : p ∨ q → q ∨ p :=
   fun hpq : p ∨ q =&gt;
     Or.elim hpq
       ( -- 假如p為真
@@ -416,7 +414,7 @@ end</code></pre>
 -- def Not : Prop → Prop :=
 -- fun a =&gt; a → False</code></pre>
 <p>由Not的定義可見，非運算被定義為一個返回False命題的函數。即，如果<code>Not p</code>（或<code>¬p</code>）為真，那麼我們以<code>p</code>為前提應該能得到一個假命題。</p>
-<pre class="lean"><code>example : ¬p → ¬(p ∧ q) :=
+<pre class="lean"><code>example {p q : Prop} : ¬p → ¬(p ∧ q) :=
   -- 當前目標為證明 ¬p → ¬(p ∧ q)
   fun hnp : ¬p =&gt;
     -- 此時目標為證明¬(p ∧ q)，等同於(p ∧ q) → False
@@ -440,7 +438,7 @@ end</code></pre>
 <p>可以看到<code>Iff</code>是一個結構體，包含<code>mp</code>和<code>mpr</code>兩個字段，並且有一個構造函數<code>Iff.intro</code>.</p>
 <p><code>Iff.mp (p ↔︎ q)</code>，也可以寫成<code>(p ↔︎ q).mp</code>，表示有<code>p → q</code>成立，即<code>p</code>為真時，<code>q</code>為真。反之<code>Iff.mpr (p ↔︎ q)</code>的箭頭方向相反，表示<code>q → p</code>成立。</p>
 <p><code>Iff.intro</code>的用法如下：</p>
-<pre class="lean"><code>example : (p → q) → (q → p) → (p ↔ q) :=
+<pre class="lean"><code>example {p q : Prop} : (p → q) → (q → p) → (p ↔ q) :=
   fun hpq : (p → q) =&gt;
     fun hqp : (q → p) =&gt;
       Iff.intro hpq hqp</code></pre>
@@ -451,23 +449,32 @@ end</code></pre>
 <section class="level3" data-number="2.4.1" id="show關鍵詞">
 <h3 class="anchored" data-anchor-id="show關鍵詞" data-number="2.4.1"><span class="header-section-number">2.4.1</span> <code>show</code>關鍵詞</h3>
 <p>在Lean中，我們可以使用<code>show</code>關鍵詞來指定我們要證明的類型。例如，</p>
-<pre class="lean"><code>example : ¬p → ¬(p ∧ q) :=
+<pre class="lean"><code>example {p q : Prop} : ¬p → ¬(p ∧ q) :=
   fun hnp : ¬p =&gt;
     show p ∧ q → False from
     fun hpq : p ∧ q =&gt;
       show False from hnp hpq.left</code></pre>
 <p><code>show</code>的用處是增加我們代碼的可讀性。將當前證明目標顯式展現出來。</p>
 </section>
-<section class="level3" data-number="2.4.2" id="have關鍵詞">
-<h3 class="anchored" data-anchor-id="have關鍵詞" data-number="2.4.2"><span class="header-section-number">2.4.2</span> <code>have</code>關鍵詞</h3>
+<section class="level3" data-number="2.4.2" id="let關鍵詞">
+<h3 class="anchored" data-anchor-id="let關鍵詞" data-number="2.4.2"><span class="header-section-number">2.4.2</span> <code>let</code>關鍵詞</h3>
+<p><code>let</code>關鍵詞用於局部變量的聲明。例如，</p>
+<pre class="lean"><code>example {p q : Prop} (h : p ∧ q) : q ∧ p :=
+  let hp : p := h.left
+  let hq : q := h.right
+  show q ∧ p from And.intro hq hp</code></pre>
+<p>在這個函數中，我們定義了<code>hp</code>和<code>hq</code>這兩個局部變量。</p>
+</section>
+<section class="level3" data-number="2.4.3" id="have關鍵詞">
+<h3 class="anchored" data-anchor-id="have關鍵詞" data-number="2.4.3"><span class="header-section-number">2.4.3</span> <code>have</code>關鍵詞</h3>
 <p>在Lean中，我們可以使用<code>have</code>關鍵詞聲明和完成一些中間步驟的證明。例如，</p>
-<pre class="lean"><code>example (h : p ∧ q) : q ∧ p :=
+<pre class="lean"><code>example {p q : Prop} (h : p ∧ q) : q ∧ p :=
   have hp : p := h.left
   have hq : q := h.right
   show q ∧ p from And.intro hq hp</code></pre>
 <p>在這個例子中，<code>hp</code>和<code>hq</code>是完成最終證明所需的中間步驟。</p>
 <p>實際上<code>have</code>關鍵詞是一種語法糖。<code>have h : p := s; t</code>等價於<code>(fun (h : p) =&gt; t) s</code>. 因此，上面的代碼等價於：</p>
-<pre class="lean"><code>example (h : p ∧ q) : q ∧ p :=
+<pre class="lean"><code>example {p q : Prop} (h : p ∧ q) : q ∧ p :=
     (fun (hp : p) =&gt;
       (
         fun (hq : q) =&gt;
@@ -492,7 +499,7 @@ end</code></pre>
 <section class="level2" data-number="2.5" id="練習一">
 <h2 class="anchored" data-anchor-id="練習一" data-number="2.5"><span class="header-section-number">2.5</span> 練習一</h2>
 <p>在證明下列命題時，請不要使用排中律，即（p ∨ ¬p）。</p>
-<p>儘管在經典邏輯中，我們認為一個命題要麼為真要麼為假（排中律）；但也有一些人並不認可排中律，認為也應允許非真非假的命題存在。實際上，假如不依賴排中律，我們也能完成許多定理的證明，包括下面的這些定理。</p>
+<p>儘管在經典邏輯中，我們認為一個命題要麼為真要麼為假（排中律）；但也有一些人並不認可排中律，認為也應允許非真非假的命題存在。實際上，不依賴排中律我們也能完成許多定理的證明，包括下面這些定理。</p>
 <div class="theorem exercise" id="exr-and-or-commu">
 <p><span class="theorem-title"><strong>习题 6</strong></span>  </p>
 <strong>∧和∨的交換律：</strong> 證明<code>p ∧ q ↔︎ q ∧ p</code>和 證明<code>p ∨ q ↔︎ q ∨ p</code>
@@ -500,7 +507,7 @@ end</code></pre>
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : p ∧ q ↔ q ∧ p :=
+<pre class="lean"><code>example {p q : Prop} : p ∧ q ↔ q ∧ p :=
   Iff.intro
     (
       fun h : p ∧ q =&gt;
@@ -515,7 +522,7 @@ end</code></pre>
         And.intro hp hq
     )
 
-example : p ∨ q ↔ q ∨ p :=
+example {p q : Prop} : p ∨ q ↔ q ∨ p :=
   Iff.intro
     (
       fun h : p ∨ q =&gt;
@@ -538,7 +545,7 @@ example : p ∨ q ↔ q ∨ p :=
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : (p ∧ q) ∧ r ↔ p ∧ (q ∧ r) :=
+<pre class="lean"><code>example {p q r : Prop} : (p ∧ q) ∧ r ↔ p ∧ (q ∧ r) :=
   Iff.intro
     (
       fun h : (p ∧ q) ∧ r =&gt;
@@ -557,7 +564,7 @@ example : p ∨ q ↔ q ∨ p :=
         And.intro (And.intro hp hq) hr
     )
 
-example : (p ∨ q) ∨ r ↔ p ∨ (q ∨ r) :=
+example {p q r: Prop} : (p ∨ q) ∨ r ↔ p ∨ (q ∨ r) :=
   Iff.intro
     (
       fun h : (p ∨ q) ∨ r =&gt;
@@ -589,7 +596,7 @@ example : (p ∨ q) ∨ r ↔ p ∨ (q ∨ r) :=
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+<pre class="lean"><code>example {p q r: Prop} : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
   Iff.intro
     (
       fun h : p ∧ (q ∨ r) =&gt;
@@ -613,7 +620,7 @@ example : (p ∨ q) ∨ r ↔ p ∨ (q ∨ r) :=
             And.intro hp (Or.intro_right q hr)
           )
     )
-example: p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
+example {p q r : Prop} : p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
   Iff.intro
     (
       fun h : p ∨ (q ∧ r) =&gt;
@@ -647,7 +654,7 @@ example: p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : (p → (q → r)) ↔ (p ∧ q → r) :=
+<pre class="lean"><code>example {p q r : Prop} : (p → (q → r)) ↔ (p ∧ q → r) :=
   Iff.intro
     (
       fun hpqr : p → (q → r) =&gt;
@@ -672,7 +679,7 @@ example: p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) :=
+<pre class="lean"><code>example {p q r : Prop} : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) :=
   Iff.intro
     (
       fun hpqr : p ∨ q → r =&gt;
@@ -698,7 +705,7 @@ example: p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : ¬(p ∨ q) ↔ ¬p ∧ ¬q :=
+<pre class="lean"><code>example {p q : Prop} : ¬(p ∨ q) ↔ ¬p ∧ ¬q :=
   Iff.intro
     (
       fun hnpq : ¬(p ∨ q) =&gt;
@@ -725,7 +732,7 @@ example: p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : ¬p ∨ ¬q → ¬(p ∧ q) :=
+<pre class="lean"><code>example {p q : Prop} : ¬p ∨ ¬q → ¬(p ∧ q) :=
   fun hnpnq : ¬p ∨ ¬q =&gt;
     Or.elim hnpnq
       (fun hnp : ¬p =&gt; fun hpq : p ∧ q =&gt; hnp hpq.left)
@@ -739,7 +746,7 @@ example: p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : ¬(p ∧ ¬p) :=
+<pre class="lean"><code>example {p : Prop} : ¬(p ∧ ¬p) :=
   fun hpnp : p ∧ ¬p =&gt;
     have hp : p := hpnp.left
     have hnp: ¬p := hpnp.right
@@ -753,7 +760,7 @@ example: p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : p ∧ ¬q → ¬(p → q) :=
+<pre class="lean"><code>example {p q : Prop} : p ∧ ¬q → ¬(p → q) :=
   fun hpnq : p ∧ ¬q =&gt;
     have hp : p := hpnq.left
     have hnq : ¬q := hpnq.right
@@ -769,7 +776,7 @@ example: p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : ¬p → (p → q) :=
+<pre class="lean"><code>example {p q : Prop} : ¬p → (p → q) :=
   fun hnp : ¬p =&gt;
     fun hp : p =&gt;
       False.elim (hnp hp)</code></pre>
@@ -782,7 +789,7 @@ example: p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : (¬p ∨ q) → (p → q) :=
+<pre class="lean"><code>example {p q : Prop} : (¬p ∨ q) → (p → q) :=
   fun hnpq : ¬p ∨ q =&gt;
     fun hp : p =&gt;
       Or.elim hnpq
@@ -797,7 +804,7 @@ example: p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : p ∨ False ↔ p :=
+<pre class="lean"><code>example {p : Prop} : p ∨ False ↔ p :=
   Iff.intro
     (
       fun hpf : p ∨ False =&gt;
@@ -815,7 +822,7 @@ example: p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : p ∧ False ↔ False :=
+<pre class="lean"><code>example {p : Prop} : p ∧ False ↔ False :=
   Iff.intro
     (
       fun hpf : p ∧ False =&gt;
@@ -833,7 +840,7 @@ example: p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
 <summary>
 參考答案
 </summary>
-<pre class="lean"><code>example : (p → q) → (¬q → ¬p) :=
+<pre class="lean"><code>example {p q : Prop} : (p → q) → (¬q → ¬p) :=
   fun (hpq : p → q) (hnq : ¬q) =&gt;
     fun hp : p =&gt;
       hnq (hpq hp)</code></pre>
@@ -847,7 +854,7 @@ example: p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) :=
 <pre class="lean"><code>#check Classical.em</code></pre>
 <p>我們可以臨時地使用Classical命名空間，而不幹擾其它代碼。方法為<code>open Classical in ...</code>，例如</p>
 <pre class="lean"><code>open Classical in
-example : p ∨ ¬p := em p</code></pre>
+example {p : Prop} : p ∨ ¬p := em p</code></pre>
 <p>允許使用排中律，使得你可以分正反兩種情形分析問題。這對應<code>Classical</code>命名空間下的<code>byCases</code>定理：</p>
 <pre class="lean"><code>#check Classical.byCases
 -- Classical.byCases {p q : Prop} (hpq : p → q) (hnpq : ¬p → q) : q</code></pre>
@@ -860,7 +867,7 @@ example : p ∨ ¬p := em p</code></pre>
 參考答案
 </summary>
 <pre class="lean"><code>open Classical in
-example : (p → q ∨ r) → ((p → q) ∨ (p → r)) :=
+example {p q r : Prop} : (p → q ∨ r) → ((p → q) ∨ (p → r)) :=
   fun pqr : p → q ∨ r =&gt;
     Or.elim (em q)
     (
@@ -890,7 +897,7 @@ example : (p → q ∨ r) → ((p → q) ∨ (p → r)) :=
 參考答案
 </summary>
 <pre class="lean"><code>open Classical in
-example : ¬(p ∧ q) → ¬p ∨ ¬q :=
+example {p q : Prop} : ¬(p ∧ q) → ¬p ∨ ¬q :=
   fun hnpq : ¬(p ∧ q) =&gt;
     byCases
       (
@@ -914,7 +921,7 @@ example : ¬(p ∧ q) → ¬p ∨ ¬q :=
 參考答案
 </summary>
 <pre class="lean"><code>open Classical in
-example : (p → q) → (¬p ∨ q) :=
+example {p q : Prop} : (p → q) → (¬p ∨ q) :=
   fun hpq : (p → q) =&gt;
     byCases
       (
@@ -935,7 +942,7 @@ example : (p → q) → (¬p ∨ q) :=
 參考答案
 </summary>
 <pre class="lean"><code>open Classical in
-example : (¬q → ¬p) → (p → q) :=
+example {p q : Prop} : (¬q → ¬p) → (p → q) :=
   fun hnqnp : ¬q → ¬p =&gt;
     fun hp : p =&gt;
       Or.elim (em q)
@@ -955,7 +962,7 @@ example : (¬q → ¬p) → (p → q) :=
 參考答案
 </summary>
 <pre class="lean"><code>open Classical in
-example : (((p → q) → p) → p) :=
+example {p q : Prop} : (((p → q) → p) → p) :=
   fun hpqp : (p → q) → p =&gt;
     byCases
       (fun hp : p =&gt; hp)
@@ -972,7 +979,7 @@ example : (((p → q) → p) → p) :=
 <section class="level1" data-number="3" id="總結">
 
 <p>也許現在告訴你有點太遲，但其實一般的命題邏輯都可以由<code>tauto</code>策略自動證明。如下所示，</p>
-<pre class="lean"><code>-- example : (p → (q → r)) ↔ (p ∧ q → r) := by tauto
+<pre class="lean"><code>-- example {p q r: Prop} : (p → (q → r)) ↔ (p ∧ q → r) := by tauto
 -- 注意：使用tauto的前提是import Mathlib</code></pre>
 <p>至此，本章介紹了Lean中命題邏輯的基礎知識，希望你已經理解在Lean中如何引用定理，顯式地構造一個命題的證明，或者使用<code>tauto</code>策略自動完成命題邏輯的證明。</p>
 </section>
