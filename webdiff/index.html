@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebDiff - Text File Comparison Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>WebDiff</h1>
+        <p>Compare text files and view differences side by side</p>
+    </header>
+
+    <main>
+        <div class="input-container">
+            <div class="file-input">
+                <h2>File 1</h2>
+                <input type="file" id="file1" accept=".txt">
+                <textarea id="text1" placeholder="Or paste your text here..."></textarea>
+            </div>
+            <div class="file-input">
+                <h2>File 2</h2>
+                <input type="file" id="file2" accept=".txt">
+                <textarea id="text2" placeholder="Or paste your text here..."></textarea>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button id="compareBtn">Compare</button>
+            <button id="downloadBtn" disabled>Download PDF</button>
+            <button id="shareBtn" disabled>Share</button>
+        </div>
+
+        <div class="diff-container">
+            <div class="diff-view">
+                <div id="diffOutput"></div>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff-match-patch/1.0.5/index.min.js" integrity="sha512-s/r2YIRA8VD7KT0c9uJqKrZFrNFgKlOPeLyVXp7noa6+F8vw5LMvR+hxteawjCpp6+5A4nTYoWtwLcXEJW1YzA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
