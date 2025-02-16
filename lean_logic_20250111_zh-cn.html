@@ -203,7 +203,7 @@
 <p>以上各种陈述句或真或假，都属于命题。</p>
 <pre class="lean"><code>section
   variable (p q r : Prop)</code></pre>
-<p>在Lean中，命题的类型为<code>Prop</code>。上面的代码声明了三个命题p、q和r。</p>
+<p>在Lean中，命题的类型为<code>Prop</code>。上面的代码声明了三个参数，分别是命题p、q和r。</p>
 <p>定义在命题上的基本运算包括与运算、或运算、非运算等。在Lean中，<code>And</code>运算即命题的与运算：</p>
 <pre class="lean"><code>  #check And     -- 与运算
   -- 输出为：And (a b : Prop) : Prop
@@ -978,9 +978,10 @@ example {p q : Prop} : (((p → q) → p) → p) :=
 </section>
 <section class="level1" data-number="3" id="總結">
 
-<p>也许现在告诉你有点太迟，但其实一般的命题逻辑都可以由<code>tauto</code>策略自动证明。如下所示，</p>
+<p>也许现在告诉你有点太迟，但其实本章的所有例子和例题都可以由<code>tauto</code>策略实现一句话完成自动证明。如下所示，</p>
 <pre class="lean"><code>-- example {p q r: Prop} : (p → (q → r)) ↔ (p ∧ q → r) := by tauto
--- 注意：使用tauto的前提是import Mathlib</code></pre>
+-- 注意：使用tauto需要import Mathlib.Tactic.Tauto</code></pre>
+<p><code>tauto</code>策略可以证明各种各样的命题逻辑。我们将会在后续的文章中看到更多的证明策略，以及如何使用它们来证明更加复杂的命题。</p>
 <p>至此，本章介绍了Lean中命题逻辑的基础知识，希望你已经理解在Lean中如何引用定理，显式地构造一个命题的证明，或者使用<code>tauto</code>策略自动完成命题逻辑的证明。</p>
 </section>
 </main>
