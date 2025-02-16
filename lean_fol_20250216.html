@@ -139,12 +139,10 @@
 <nav class="toc-active" id="TOC" role="doc-toc">
 <h2 id="toc-title">目录</h2>
 <ul>
-<li><a class="nav-link active" data-scroll-target="#背景" href="#背景" id="toc-背景"><span class="header-section-number">1</span> 背景</a>
-<ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#全稱量詞" href="#全稱量詞" id="toc-全稱量詞"><span class="header-section-number">1.1</span> 全稱量詞</a></li>
-</ul></li>
-<li><a class="nav-link" data-scroll-target="#存在量詞" href="#存在量詞" id="toc-存在量詞"><span class="header-section-number">2</span> 存在量詞</a></li>
-<li><a class="nav-link" data-scroll-target="#練習" href="#練習" id="toc-練習"><span class="header-section-number">3</span> 練習</a></li>
+<li><a class="nav-link active" data-scroll-target="#背景" href="#背景" id="toc-背景"><span class="header-section-number">1</span> 背景</a></li>
+<li><a class="nav-link" data-scroll-target="#全稱量詞" href="#全稱量詞" id="toc-全稱量詞"><span class="header-section-number">2</span> 全稱量詞</a></li>
+<li><a class="nav-link" data-scroll-target="#存在量詞" href="#存在量詞" id="toc-存在量詞"><span class="header-section-number">3</span> 存在量詞</a></li>
+<li><a class="nav-link" data-scroll-target="#練習" href="#練習" id="toc-練習"><span class="header-section-number">4</span> 練習</a></li>
 </ul>
 </nav>
 </div>
@@ -173,7 +171,6 @@
 .lean {background-color: GhostWhite;}
 </style>
 </div>
-<pre class="lean"><code>import Mathlib.Data.Real.Basic</code></pre>
 <section class="level1" data-number="1" id="背景">
 
 <p>在<a href="./lean_logic_20250111.html">命題邏輯</a>中，我們討論了一些或真或假的命題之間的關係，例如我們可以記“蘋果是紅色的”為命題<code>p</code>，然後基於<code>p</code>進行一些運算。</p>
@@ -183,8 +180,9 @@
 <pre class="lean"><code>-- 本章會使用如下的變量
 variable (α : Type) (p q : α → Prop) (r : Prop)</code></pre>
 <p>接下來我們介紹全稱量詞“<span class="math inline">\(\forall\)</span>”、存在量詞“<span class="math inline">\(\exists\)</span>”。</p>
-<section class="level2" data-number="1.1" id="全稱量詞">
-<h2 class="anchored" data-anchor-id="全稱量詞" data-number="1.1"><span class="header-section-number">1.1</span> 全稱量詞</h2>
+</section>
+<section class="level1" data-number="2" id="全稱量詞">
+
 <p><code>∀ x : α, p x</code>表示對於任意<code>x : α</code>，都有<code>p x</code>成立。這裡<code>p</code>的類型為<code>α → Prop</code>，如前所述，是一個“謂詞”。</p>
 <p>在Lean語言中，對於任意的表達式<code>prop</code>，<code>∀ x : α, prop</code>都等同於<code>(x : α) → prop</code>. 前者是一個使用了全稱量詞的表達式，而後者是一個函數，但它們的含義是相同的。</p>
 <p>下面這個例子清楚的展示了這點。</p>
@@ -213,8 +211,7 @@ variable (α : Type) (p q : α → Prop) (r : Prop)</code></pre>
   show p y from (h y).left
   -- 注意h的類型為∀ x : α, p x ∧ q x. h也可以作為函數使用。</code></pre>
 </section>
-</section>
-<section class="level1" data-number="2" id="存在量詞">
+<section class="level1" data-number="3" id="存在量詞">
 
 <p><code>∃ x : α, p x</code>表示存在<code>x : α</code>使得<code>p x</code>成立，也可以寫作<code>exists x : α, p x</code>或者<code>Exists (fun x : α =&gt; p x)</code>. 從下面的證明可以看出，這幾種寫法是等價的。</p>
 <pre class="lean"><code>example : (∃ x : α, p x) ↔ exists x : α, p x := Iff.rfl
@@ -247,7 +244,7 @@ example : (∃ x : α, p x) ↔ Exists (fun x : α =&gt; p x) := Iff.rfl</code><
   match h with
   | ⟨w, hw⟩ =&gt; ⟨w, hw.right, hw.left⟩</code></pre>
 </section>
-<section class="level1" data-number="3" id="練習">
+<section class="level1" data-number="4" id="練習">
 
 <p>在這個部分的練習中，你可以使用經典邏輯。(但不是所有證明都需要使用經典邏輯，你可以自行判斷。)</p>
 <div class="theorem example" id="exm-exercise-universal-quantifiers-1">
