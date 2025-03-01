@@ -163,9 +163,9 @@
 </div>
 </div>
 </header>
-<section class="level1" data-number="1" id="前言">
-
-<p>文章<a href="https://zhimi.vercel.app/bitter_lesson_20241013_zh-cn.html">《The Bitter Lesson》</a>提出了这样的观点：能充分适应算力增长的方法能够最终脱颖而出。Transformer之于RNN，就是一种更适合利用GPU并行化训练的模型，从而在许多领域逐步取代了RNN的地位。可是在大模型广泛应用的今天，这些基于Transformer结构的模型仍然还有一些令人在意的缺点和局限性：</p>
+<section class="level2" data-number="1" id="前言">
+<h2 class="anchored" data-anchor-id="前言" data-number="1"><span class="header-section-number">1</span> 前言</h2>
+<p>文章<a href="./bitter_lesson_20241013_zh-cn.html">《The Bitter Lesson》</a>提出了这样的观点：能充分适应算力增长的方法最终能脱颖而出。Transformer之于RNN，就是一种更适合利用GPU并行化训练的模型，从而在许多领域逐步取代了RNN的地位。可是在大模型广泛应用的今天，这些基于Transformer结构的模型仍然还有一些令人在意的缺点和局限性：</p>
 <ul>
 <li>Transformer模型的每一个token的计算量随著上下文的增长而增长</li>
 <li>随著上下文越来越长，模型就越难从上下文中找到“重点”</li>
@@ -173,14 +173,14 @@
 </ul>
 <p>以上各种问题，总的来看都是关于如何管理记忆的问题。Transformer的策略是简单粗暴的：它把所有的历史token都保留下来。而理想中的AI或许应该具有这样的优点：他能够维护一个大小有限的记忆，能够选择保留重要的信息，也具备“遗忘”的能力。这就让人联想到RNN模型。</p>
 <p>当然，也许我们不能指望重新设计一个RNN模型，让他和最领先的大模型一较高下。但像这样的思考仍然是有益而且有趣的：如果我们要设计一个具有维护记忆力的能力的模型，他应该是什么样子？</p>
-<p>本文是我阅读**Transformers are RNNs”<span class="citation" data-cites="transformers_are_rnns"><sup>[<a href="#ref-transformers_are_rnns" role="doc-biblioref">1</a>]</sup></span>这篇文章的笔记。这篇文章有一些有意思的贡献：</p>
+<p>本文是我阅读<strong>Transformers are RNNs</strong><span class="citation" data-cites="transformers_are_rnns"><sup>[<a href="#ref-transformers_are_rnns" role="doc-biblioref">1</a>]</sup></span>这篇文章的笔记。这篇文章有一些有意思的贡献：</p>
 <ol type="1">
 <li>从softmax attention这个特例推广到一般的衡量query和key相似度的方法；</li>
 <li>提出线性Transformer，它既能像传统Transformer一样并行训练，也能像RNN模型那样，在推理阶段维持常数的空间复杂度和时间复杂度。</li>
 </ol>
 </section>
-<section class="level1" data-number="2" id="transformer的结构">
-
+<section class="level2" data-number="2" id="transformer的结构">
+<h2 class="anchored" data-anchor-id="transformer的结构" data-number="2"><span class="header-section-number">2</span> Transformer的结构</h2>
 <p>Transformer模型<span class="math inline">\(T\)</span>可以看做是一个类型为<span class="math inline">\(\mathbb R^{N\times F}\to \mathbb R^{N\times F}\)</span>的函数，这里<span class="math inline">\(N\)</span>是序列长度，<span class="math inline">\(F\)</span>是特征向量的维度。</p>
 <p>一个Transformer有L层，记第<span class="math inline">\(l\)</span>层为<span class="math inline">\(T_l\)</span>，其结构为 <span class="math display">\[
 T_l(x) = f_l(A_l(x) + x),
@@ -198,8 +198,8 @@ T_l(x) = f_l(A_l(x) + x),
 \mathbf V'_i = \frac{\sum_{j=1}^N \text{sim}(\mathbf Q_i, \mathbf K_j)V_j}{\sum_{j=1}^N \text{sim}(\mathbf Q_i, \mathbf K_j)}.
 \tag{2}\]</span></span> softmax函数等同于将上式中的<span class="math inline">\(\text{sim}\)</span>函数定义为<span class="math inline">\(\exp(\frac{\mathbf Q_i^T\mathbf K_j}{\sqrt D})\)</span></p>
 </section>
-<section class="level1" data-number="3" id="線性注意力">
-
+<section class="level2" data-number="3" id="線性注意力">
+<h2 class="anchored" data-anchor-id="線性注意力" data-number="3"><span class="header-section-number">3</span> 线性注意力</h2>
 <p>假设对于某<span class="math inline">\(\text{sim}\)</span>函数，存在<span class="math inline">\(\phi\)</span>函数，使得 <span class="math display">\[
 \text{sim}(\mathbf Q_i, \mathbf K_j) = \phi(\mathbf Q_i)^T \phi(\mathbf K_j)
 \]</span> 这样我们就将Attention模块线性化了。 利用矩阵乘法的结合律，上式可以改写为： <span id="eq-linear-attention"><span class="math display">\[
@@ -213,8 +213,8 @@ T_l(x) = f_l(A_l(x) + x),
 \phi(x) = \text{elu}(x) + 1
 \]</span></p>
 </section>
-<section class="level1" data-number="4" id="因果掩膜">
-
+<section class="level2" data-number="4" id="因果掩膜">
+<h2 class="anchored" data-anchor-id="因果掩膜" data-number="4"><span class="header-section-number">4</span> 因果掩膜</h2>
 <p>在训练自回归模型时，每个位置的token都不能受到未来token的影响。位置<span class="math inline">\(i\)</span>上的token受到位置<span class="math inline">\(j\)</span>上的token的影响，当且仅当<span class="math inline">\(j\leq i\)</span>. 这应用于线性Transformer，需要将<a class="quarto-xref" href="#eq-generalized-attention">公式 2</a>改为 <span id="eq-generalized-attention-with-causal-mask"><span class="math display">\[
 \mathbf V'_i=\frac{\sum_{j=1}^i \text{sim}(\mathbf Q_i, \mathbf K_j)\mathbf V_j}{\sum_{j=1}^i \text{sim}(\mathbf Q_i,\mathbf  K_j)}.
 \tag{4}\]</span></span> 类似前面的推理，上式可改写为 <span id="eq-linear-attention-with-causal-mask"><span class="math display">\[
@@ -236,8 +236,8 @@ T_l(x) = f_l(A_l(x) + x),
 }.
 \tag{6}\]</span></span> 注意<span class="math inline">\(\mathbf S_i,\mathbf  Z_i\)</span>可以由<span class="math inline">\(\mathbf S_{i-1},\mathbf  Z_{i-1}\)</span>计算得到，时间复杂度为常数。</p>
 </section>
-<section class="level1" data-number="5" id="梯度計算">
-
+<section class="level2" data-number="5" id="梯度計算">
+<h2 class="anchored" data-anchor-id="梯度計算" data-number="5"><span class="header-section-number">5</span> 梯度计算</h2>
 <p>如果根据<a class="quarto-xref" href="#eq-linear-attention-with-memory">公式 6</a>实现简单的深度学习模型，那么为了梯度计算，我们需要缓存所有的<span class="math inline">\(S_i, Z_i\)</span>，这将带来很大的空间复杂度。文章提出将对<a class="quarto-xref" href="#eq-linear-attention-with-causal-mask">公式 5</a>分子的求导实现为一种基于累加和（cumulative sum）的方法，实现前向传播和反向传播时的线性时间复杂度和常数空间复杂度。</p>
 <p><strong>为了简便，本节的推导假设<span class="math inline">\(\mathbf Q, \mathbf K\)</span>中已经包含了<span class="math inline">\(\phi\)</span>函数。</strong></p>
 <p>假设<span class="math inline">\(\overline{\mathbf V}_i\)</span>是<a class="quarto-xref" href="#eq-linear-attention-with-causal-mask">公式 5</a>的分子，即 <span id="eq-linear-attention-numerator"><span class="math display">\[
@@ -285,13 +285,13 @@ T_l(x) = f_l(A_l(x) + x),
 \end{aligned}
 \]</span> 将其整理为矩阵形式，得到<a class="quarto-xref" href="#eq-grad-V">公式 10</a></p>
 </section>
-<section class="level1" data-number="6" id="訓練和推理">
-
+<section class="level2" data-number="6" id="訓練和推理">
+<h2 class="anchored" data-anchor-id="訓練和推理" data-number="6"><span class="header-section-number">6</span> 训练和推理</h2>
 <p>训练时，完整的训练序列是已知的，这允许Transformer模型实现并行的训练；而受限于计算方式，传统的RNN模型一般难并行训练。Transformer模型的每一步推理的时间复杂度是不同的，随著上下文长度的增加而增加；而RNN模型的时间复杂度是固定的。</p>
 <p>文章提出的线性Transformer结合了两者的优点。</p>
 </section>
-<section class="level1" data-number="7" id="transformer模型是rnn模型的特例">
-
+<section class="level2" data-number="7" id="transformer模型是rnn模型的特例">
+<h2 class="anchored" data-anchor-id="transformer模型是rnn模型的特例" data-number="7"><span class="header-section-number">7</span> Transformer模型是RNN模型的特例</h2>
 <p>从本文的讨论，我们可以明显的看出，带因果掩膜的Transformer模型可以视作是RNN模型的特例，即Transformer模型可以看做是一个能维护一个内部状态（<span class="math inline">\(\mathbf S_i\)</span>和<span class="math inline">\(\mathbf Z_i\)</span>），在每次获得新输入时更新内部状态的模型。</p>
 </section>
 <div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" id="quarto-bibliography" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">参考文献</h2><div class="references csl-bib-body" data-entry-spacing="0" id="refs" role="list">
