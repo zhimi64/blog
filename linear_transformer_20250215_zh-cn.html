@@ -35,10 +35,10 @@
 
   <meta charset="utf-8">
   <!-- Site Meta Data -->
-  <title>Lean语言数学之旅——一階邏輯</title>
+  <title>Linear Transformer论文精读</title>
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="命題邏輯又被稱爲0階邏輯。而一階邏輯從更細的粒度分析“句子”。例如，我們可以引入一個“謂詞”`IsRed`來表示“是紅色的”，用`(IsRed Apple)`表示蘋果是紅色的。本文介紹Lean語言中的一階邏輯，介紹了全稱量詞、存在量詞及其相關定理，提供了一些練習和參考答案。">
+  <meta name="description" content="">
   <meta name="author" content="執迷">
 
   <link rel="shortcut icon" href="favicon.ico">
@@ -46,7 +46,7 @@
   <!-- schema.org -->
   <meta itemprop="name" content="執迷的博客">
   <meta itemprop="image" content="">
-  <meta itemprop="description" content="命題邏輯又被稱爲0階邏輯。而一階邏輯從更細的粒度分析“句子”。例如，我們可以引入一個“謂詞”`IsRed`來表示“是紅色的”，用`(IsRed Apple)`表示蘋果是紅色的。本文介紹Lean語言中的一階邏輯，介紹了全稱量詞、存在量詞及其相關定理，提供了一些練習和參考答案。">
+  <meta itemprop="description" content="">
 
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   <!-- Style Meta Data -->
@@ -63,12 +63,12 @@
   <meta name="twitter:image" content="">
   
 <meta name="twitter:creator" content="">
-<meta name="twitter:url" content="././lean_fol_20250216.html">
-<meta name="twitter:title" content="執迷的博客 ~ Lean语言数学之旅——一階邏輯">
+<meta name="twitter:url" content="././linear_transformer_20250215_zh-cn.html">
+<meta name="twitter:title" content="執迷的博客 ~ Linear Transformer论文精读">
 <meta name="twitter:description" content="">
 
 <!-- Facebook Meta Data -->
-<meta property="og:title" content="執迷的博客 ~ Lean语言数学之旅——一階邏輯" />
+<meta property="og:title" content="執迷的博客 ~ Linear Transformer论文精读" />
 <meta property="og:description" content="" />
 <meta property="og:image" content="" />
 
@@ -99,11 +99,11 @@
       <ul class="list-bare">
       
         
-          <li><a class="nav__link" href="./index.html">Blog</a></li>
+          <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
         
          
         
-          <li><a class="nav__link" href="././about.html">About</a></li>
+          <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
         
          
       </ul>
@@ -124,7 +124,7 @@
   <article>
     
 <section id="content">
-    <h2 class="post_title post_detail"><a href="././lean_fol_20250216.html" rel="bookmark" title="Permalink to Lean语言数学之旅——一階邏輯">Lean语言数学之旅——一階邏輯</a></h2>
+    <h2 class="post_title post_detail"><a href="././linear_transformer_20250215_zh-cn.html" rel="bookmark" title="Permalink to Linear Transformer论文精读">Linear Transformer论文精读</a></h2>
     
     <p>
         <span id="busuanzi_container_page_pv">
@@ -139,15 +139,13 @@
 <nav class="toc-active" id="TOC" role="doc-toc">
 <h2 id="toc-title">目录</h2>
 <ul>
-<li><a class="nav-link active" data-scroll-target="#背景" href="#背景" id="toc-背景"><span class="header-section-number">1</span> 背景</a></li>
-<li><a class="nav-link" data-scroll-target="#全稱量詞" href="#全稱量詞" id="toc-全稱量詞"><span class="header-section-number">2</span> 全稱量詞</a></li>
-<li><a class="nav-link" data-scroll-target="#存在量詞" href="#存在量詞" id="toc-存在量詞"><span class="header-section-number">3</span> 存在量詞</a></li>
-<li><a class="nav-link" data-scroll-target="#一些有空的工具" href="#一些有空的工具" id="toc-一些有空的工具"><span class="header-section-number">4</span> 一些有空的工具</a>
-<ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#自動匹配構造函數" href="#自動匹配構造函數" id="toc-自動匹配構造函數"><span class="header-section-number">4.1</span> 自動匹配構造函數</a></li>
-<li><a class="nav-link" data-scroll-target="#match關鍵詞" href="#match關鍵詞" id="toc-match關鍵詞"><span class="header-section-number">4.2</span> <code>match</code>關鍵詞</a></li>
-</ul></li>
-<li><a class="nav-link" data-scroll-target="#練習" href="#練習" id="toc-練習"><span class="header-section-number">5</span> 練習</a></li>
+<li><a class="nav-link active" data-scroll-target="#前言" href="#前言" id="toc-前言"><span class="header-section-number">1</span> 前言</a></li>
+<li><a class="nav-link" data-scroll-target="#transformer的结构" href="#transformer的结构" id="toc-transformer的结构"><span class="header-section-number">2</span> Transformer的结构</a></li>
+<li><a class="nav-link" data-scroll-target="#線性注意力" href="#線性注意力" id="toc-線性注意力"><span class="header-section-number">3</span> 线性注意力</a></li>
+<li><a class="nav-link" data-scroll-target="#因果掩膜" href="#因果掩膜" id="toc-因果掩膜"><span class="header-section-number">4</span> 因果掩膜</a></li>
+<li><a class="nav-link" data-scroll-target="#梯度計算" href="#梯度計算" id="toc-梯度計算"><span class="header-section-number">5</span> 梯度计算</a></li>
+<li><a class="nav-link" data-scroll-target="#訓練和推理" href="#訓練和推理" id="toc-訓練和推理"><span class="header-section-number">6</span> 训练和推理</a></li>
+<li><a class="nav-link" data-scroll-target="#transformer模型是rnn模型的特例" href="#transformer模型是rnn模型的特例" id="toc-transformer模型是rnn模型的特例"><span class="header-section-number">7</span> Transformer模型是RNN模型的特例</a></li>
 </ul>
 </nav>
 </div>
@@ -160,39 +158,97 @@
 <div>
 <div class="quarto-title-meta-heading">发布于</div>
 <div class="quarto-title-meta-contents">
-<p class="date">2025年2月16日</p>
+<p class="date">2025年5月15日</p>
 </div>
 </div>
 </div>
 </header>
-<div class="hidden">
-<link href="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/styles/default.min.css" rel="stylesheet"/>
-<script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
-<script src="https://unpkg.com/highlightjs-lean/dist/lean.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-  hljs.highlightAll();
-</script>
-<style>
-.lean {background-color: GhostWhite;}
-</style>
-</div>
-<section class="level1" data-number="1" id="背景">
+<section class="level1" data-number="1" id="前言">
 
-<p>在<a href="./lean_logic_20250111.html">命題邏輯</a>中，我們討論了一些或真或假的命題之間的關係，例如我們可以記“蘋果是紅色的”為命題<code>p</code>，然後基於<code>p</code>進行一些運算。</p>
-<p>命題邏輯又被稱爲0階邏輯。而一階邏輯從更細的粒度分析“句子”。例如，我們可以引入一個“謂詞”<code>IsRed</code>來表示“是紅色的”，用<code>(IsRed Apple)</code>表示蘋果是紅色的。</p>
-<p>當變量為兩個時，一階邏輯引入“關係”的概念。例如對於“馬克思和孔子是朋友”，我們可以設<code>IsFriend</code>是一個關係，用<code>(IsFriend 馬克思 孔子)</code>表示“馬克思和孔子是朋友”。</p>
-<p>一階邏輯還引入了全稱量詞“∀”和存在量詞“∃”。例如，我們可以說“所有的蘋果都是紅色的”，用<code>∀ (x : Apple), IsRed x</code>表示。我們也可以說“存在有不是紅色的蘋果”，可以表示為<code>∃ (x : Apple), ¬(IsRed x)</code>.</p>
-<pre class="lean"><code>-- 本章會使用如下的變量
-variable (α : Type) (p q : α → Prop) (r : Prop)</code></pre>
-<p>接下來我們介紹全稱量詞“<span class="math inline">\(\forall\)</span>”、存在量詞“<span class="math inline">\(\exists\)</span>”。</p>
+<p>文章<a href="https://zhimi.vercel.app/bitter_lesson_20241013_zh-cn.html">《The Bitter Lesson》</a>提出了这样的观点：能充分适应算力增长的方法能够最终脱颖而出。Transformer之于RNN，就是一种更适合利用GPU并行化训练的模型，从而在许多领域逐步取代了RNN的地位。可是在大模型广泛应用的今天，这些基于Transformer结构的模型仍然还有一些令人在意的缺点和局限性：</p>
+<ul>
+<li>Transformer模型的每一个token的计算量随著上下文的增长而增长</li>
+<li>随著上下文越来越长，模型就越难从上下文中找到“重点”</li>
+<li>如何管理模型的记忆？制作一个聊天机器人，难道要将所有的聊天记录都保存下来吗？或者需要定时对上下文做一个文本总结吗？</li>
+</ul>
+<p>以上各种问题，总的来看都是关于如何管理记忆的问题。Transformer的策略是简单粗暴的：它把所有的历史token都保留下来。而理想中的AI或许应该具有这样的优点：他能够维护一个大小有限的记忆，能够选择保留重要的信息，也具备“遗忘”的能力。这就让人联想到RNN模型。</p>
+<p>当然，也许我们不能指望重新设计一个RNN模型，让他和最领先的大模型一较高下。但像这样的思考仍然是有益而且有趣的：如果我们要设计一个具有维护记忆力的能力的模型，他应该是什么样子？</p>
+<p>本文是我阅读**Transformers are RNNs”<span class="citation" data-cites="transformers_are_rnns"><sup>[<a href="#ref-transformers_are_rnns" role="doc-biblioref">1</a>]</sup></span>这篇文章的笔记。这篇文章有一些有意思的贡献：</p>
+<ol type="1">
+<li>从softmax attention这个特例推广到一般的衡量query和key相似度的方法；</li>
+<li>提出线性Transformer，它既能像传统Transformer一样并行训练，也能像RNN模型那样，在推理阶段维持常数的空间复杂度和时间复杂度。</li>
+</ol>
 </section>
-<section class="level1" data-number="2" id="全稱量詞">
+<section class="level1" data-number="2" id="transformer的结构">
 
-<p><code>∀ x : α, p x</code>表示對於任意<code>x : α</code>，都有<code>p x</code>成立。這裡<code>p</code>的類型為<code>α → Prop</code>，如前所述，是一個“謂詞”。</p>
-<p>在Lean語言中，對於任意的表達式<code>prop</code>，<code>∀ x : α, prop</code>都等同於<code>(x : α) → prop</code>. 前者是一個使用了全稱量詞的表達式，而後者是一個函數，但它們的含義是相同的。</p>
-<p>下面這個例子清楚的展示了這點。</p>
-<pre class="lean"><code>example : (∀ x : α, p x) ↔ ((x : α) → p x) := Iff.rfl</code></pre>
-<p>上面的證明表示<code>∀ x : α, p x</code>和<code>(x : α) → p x</code>是等價的。</p>
+<p>Transformer模型<span class="math inline">\(T\)</span>可以看做是一个类型为<span class="math inline">\(\mathbb R^{N\times F}\to \mathbb R^{N\times F}\)</span>的函数，这里<span class="math inline">\(N\)</span>是序列长度，<span class="math inline">\(F\)</span>是特征向量的维度。</p>
+<p>一个Transformer有L层，记第<span class="math inline">\(l\)</span>层为<span class="math inline">\(T_l\)</span>，其结构为 <span class="math display">\[
+T_l(x) = f_l(A_l(x) + x),
+\]</span> 其中<span class="math inline">\(A_l\)</span>是Attention模块，<span class="math inline">\(f_l\)</span>是Feed-forward模块。</p>
+<p>在Attention模块<span class="math inline">\(A_l\)</span>中，<span class="math inline">\(x\)</span>先经过线性转换<span class="math inline">\(\mathbf W_Q\in \mathbb R^{F\times D},\mathbf  W_K\in \mathbb R^{F\times D},\mathbf  W_V\in \mathbb R^{F\times M}\)</span>，得到<span class="math inline">\(\mathbf Q, \mathbf K, \mathbf V\)</span>（即query、key和value向量）： <span class="math display">\[
+\begin{aligned}
+\mathbf Q &amp;= \mathbf x\mathbf  W_Q,\\
+\mathbf K &amp;= \mathbf x \mathbf W_K,\\
+\mathbf V &amp;= \mathbf x\mathbf  W_V.
+\end{aligned}
+\]</span> 接著，Attention模块的输出为 <span id="eq-attention"><span class="math display">\[
+\mathbf A_l(x) = \mathbf V' = \text{softmax}\left(\frac{\mathbf Q\mathbf K^T}{\sqrt{D}}\right)V.
+\tag{1}\]</span></span> 可以看到<span class="math inline">\(V'\)</span>实际上是<span class="math inline">\(V\)</span>的加权和，其中每个位置特征的权重由<span class="math inline">\(Q\)</span>和<span class="math inline">\(K\)</span>计算得到。</p>
+<p><a class="quarto-xref" href="#eq-attention">公式 1</a>使用softmax函数计算权重，这实际是下面的这个函数的一个特例： <span id="eq-generalized-attention"><span class="math display">\[
+\mathbf V'_i = \frac{\sum_{j=1}^N \text{sim}(\mathbf Q_i, \mathbf K_j)V_j}{\sum_{j=1}^N \text{sim}(\mathbf Q_i, \mathbf K_j)}.
+\tag{2}\]</span></span> softmax函数等同于将上式中的<span class="math inline">\(\text{sim}\)</span>函数定义为<span class="math inline">\(\exp(\frac{\mathbf Q_i^T\mathbf K_j}{\sqrt D})\)</span></p>
+</section>
+<section class="level1" data-number="3" id="線性注意力">
+
+<p>假设对于某<span class="math inline">\(\text{sim}\)</span>函数，存在<span class="math inline">\(\phi\)</span>函数，使得 <span class="math display">\[
+\text{sim}(\mathbf Q_i, \mathbf K_j) = \phi(\mathbf Q_i)^T \phi(\mathbf K_j)
+\]</span> 这样我们就将Attention模块线性化了。 利用矩阵乘法的结合律，上式可以改写为： <span id="eq-linear-attention"><span class="math display">\[
+\mathbf V'_i = \frac{
+    \phi(\mathbf Q_i)^T \sum_{j=1}^N \phi(\mathbf K_j) \mathbf V_j^T
+}{
+    \phi(\mathbf Q_i)^T \sum_{j=1}^N \phi(\mathbf K_j)
+}
+\tag{3}\]</span></span> 由于query和key两两之间都需要计算相似度，softmax-attention<span class="citation" data-cites="vaswani_attention_2017"><sup>[<a href="#ref-vaswani_attention_2017" role="doc-biblioref">2</a>]</sup></span>的时间复杂度是<span class="math inline">\(O(N^2)\)</span>；其空间复杂度同理也是<span class="math inline">\(O(N^2)\)</span>，因为需要存储注意力矩阵用于后续的反向传播。而线性注意力的时间复杂度是<span class="math inline">\(O(N)\)</span>，空间复杂度也是<span class="math inline">\(O(N)\)</span>。由<a class="quarto-xref" href="#eq-linear-attention">公式 3</a>可见，<span class="math inline">\(\sum_{j=1}^N \phi(\mathbf K_j) \mathbf V_j^T\)</span>和<span class="math inline">\(\sum_{j=1}^N \phi(\mathbf K_j)\)</span>均可以在计算时可以被缓存和复用。</p>
+<p>为了使<span class="math inline">\(\text{sim}(\cdot)\)</span>是非负的，文章取<span class="math inline">\(\phi(x)\)</span>为 <span class="math display">\[
+\phi(x) = \text{elu}(x) + 1
+\]</span></p>
+</section>
+<section class="level1" data-number="4" id="因果掩膜">
+
+<p>在训练自回归模型时，每个位置的token都不能受到未来token的影响。位置<span class="math inline">\(i\)</span>上的token受到位置<span class="math inline">\(j\)</span>上的token的影响，当且仅当<span class="math inline">\(j\leq i\)</span>. 这应用于线性Transformer，需要将<a class="quarto-xref" href="#eq-generalized-attention">公式 2</a>改为 <span id="eq-generalized-attention-with-causal-mask"><span class="math display">\[
+\mathbf V'_i=\frac{\sum_{j=1}^i \text{sim}(\mathbf Q_i, \mathbf K_j)\mathbf V_j}{\sum_{j=1}^i \text{sim}(\mathbf Q_i,\mathbf  K_j)}.
+\tag{4}\]</span></span> 类似前面的推理，上式可改写为 <span id="eq-linear-attention-with-causal-mask"><span class="math display">\[
+\mathbf V'_i = \frac{
+    \phi(\mathbf Q_i)^T \sum_{j=1}^i \phi(\mathbf K_j) \mathbf V_j^T
+}{
+    \phi(\mathbf Q_i)^T \sum_{j=1}^i \phi(\mathbf K_j)
+},
+\tag{5}\]</span></span> 引入变量<span class="math inline">\(S_i\)</span>和<span class="math inline">\(Z_i\)</span>如下： <span class="math display">\[
+\begin{aligned}
+\mathbf S_i &amp;= \sum_{j=1}^i \phi(\mathbf K_j) \mathbf V_j^T,\\
+\mathbf Z_i &amp;= \sum_{j=1}^i \phi(\mathbf K_j).
+\end{aligned}
+\]</span> <a class="quarto-xref" href="#eq-linear-attention-with-causal-mask">公式 5</a>可以改写为 <span id="eq-linear-attention-with-memory"><span class="math display">\[
+\mathbf V'_i = \frac{
+    \phi(\mathbf Q_i)^T\mathbf  S_i
+}{
+    \phi(\mathbf Q_i)^T \mathbf Z_i
+}.
+\tag{6}\]</span></span> 注意<span class="math inline">\(\mathbf S_i,\mathbf  Z_i\)</span>可以由<span class="math inline">\(\mathbf S_{i-1},\mathbf  Z_{i-1}\)</span>计算得到，时间复杂度为常数。</p>
+</section>
+<section class="level1" data-number="5" id="梯度計算">
+
+<p>如果根据<a class="quarto-xref" href="#eq-linear-attention-with-memory">公式 6</a>实现简单的深度学习模型，那么为了梯度计算，我们需要缓存所有的<span class="math inline">\(S_i, Z_i\)</span>，这将带来很大的空间复杂度。文章提出将对<a class="quarto-xref" href="#eq-linear-attention-with-causal-mask">公式 5</a>分子的求导实现为一种基于累加和（cumulative sum）的方法，实现前向传播和反向传播时的线性时间复杂度和常数空间复杂度。</p>
+<p><strong>为了简便，本节的推导假设<span class="math inline">\(\mathbf Q, \mathbf K\)</span>中已经包含了<span class="math inline">\(\phi\)</span>函数。</strong></p>
+<p>假设<span class="math inline">\(\overline{\mathbf V}_i\)</span>是<a class="quarto-xref" href="#eq-linear-attention-with-causal-mask">公式 5</a>的分子，即 <span id="eq-linear-attention-numerator"><span class="math display">\[
+\overline{\mathbf V}_i = \mathbf Q_i^T \sum_{j=1}^i \mathbf K_j \mathbf V_j^T.
+\tag{7}\]</span></span> 设<span class="math inline">\(L\)</span>为损失，已知<span class="math inline">\(\overline{\mathbf V}_i\)</span>和<span class="math inline">\(L\)</span>，则<span class="math inline">\(L\)</span>对<span class="math inline">\(\mathbf Q, \mathbf K, \mathbf V\)</span>的梯度分别为 <span id="eq-grad-Q"><span class="math display">\[
+\nabla_{\mathbf Q_i}L = (\nabla_{\overline{\mathbf V}_i} L)(\sum_{j=1}^i \mathbf K_j \mathbf V_j^T)^T,
+\tag{8}\]</span></span> <span id="eq-grad-K"><span class="math display">\[
+\nabla_{\mathbf K_i}L = \left(\sum_{j=i}^N\mathbf Q_j (\nabla_{\overline{\mathbf V}_j}L)^T\right)\mathbf V_i,
+\tag{9}\]</span></span> <span id="eq-grad-V"><span class="math display">\[
+\nabla_{\mathbf V_i}L = \left(\sum_{j=i}^N \mathbf Q_j (\nabla_{\overline{V}_j}L)^T\right)^T \mathbf K_i,
+\tag{10}\]</span></span> 其中<span class="math inline">\(\mathbf Q\in\mathbb R^{N\times D},\mathbf K\in\mathbb R^{N\times D}, \mathbf V\in \mathbb R^{N\times M}\)</span>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -203,236 +259,49 @@ variable (α : Type) (p q : α → Prop) (r : Prop)</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>這裡使用了<code>Iff.rfl</code>（自反律），表示對於任何命題<code>a</code>, <code>a ↔︎ a</code>. 我們可以用<code>check</code>指令查看<code>Iff.rfl</code>的類型：</p>
-<pre class="lean"><code>#check Iff.rfl -- Iff.rfl {a : Prop} : a ↔ a</code></pre>
+<p>文章只考虑了分子的梯度计算。分母、整个分式的梯度计算交给<code>torch</code>自动处理。</p>
 </div>
 </div>
-<p>下面這個例子很好地展示了全稱量詞和函數之間的關係：</p>
-<pre class="lean"><code>example (α : Type) (p q : α → Prop) : (∀ x : α, p x ∧ q x) → ∀ y : α, p y :=
-  fun h : ∀ x : α, p x ∧ q x =&gt;
-  -- 我們需要證明∀ y : α, p y，即函數y : α → p y
-  fun y : α =&gt;
-  -- 只需證明p y
-  show p y from (h y).left
-  -- 注意h的類型為∀ x : α, p x ∧ q x. h也可以作為函數使用。</code></pre>
+<p>以下是详细推导：</p>
+<p>首先我们考虑矩阵中每个元素的计算，将<a class="quarto-xref" href="#eq-linear-attention-numerator">公式 7</a>中的矩阵、向量记号去除，得到 <span class="math display">\[
+\overline{V}_{ie} = \sum_{d=1}^D Q_{id} \sum_{j=1}^i K_{jd} V_{je} = \sum_{d=1}^D \sum_{j=1}^i Q_{id} K_{jd} V_{je}。
+\]</span></p>
+<p>于是对于任意的<span class="math inline">\(Q_{lt}\)</span>，我们可以推导出梯度为 <span id="eq-grad-q"><span class="math display">\[
+\frac{\partial L}{\partial Q_{lt}} = \sum_{e=1}^M \frac{\partial L}{\partial \overline{V}_{le}}\frac{\partial \overline{V}_{le}}{\partial Q_{lt}} = \sum_{e=1}^M\frac{\partial L}{\partial \overline{V}{le}}(\sum_{j=1}^lK_{jt}V_{je}).
+\tag{11}\]</span></span></p>
+<p>将其整理成矩阵形式，得到<a class="quarto-xref" href="#eq-grad-Q">公式 8</a></p>
+<p>在<a class="quarto-xref" href="#eq-grad-q">公式 11</a>中，我们利用了<span class="math inline">\(\overline{\mathbf V}_l\)</span>只受<span class="math inline">\(l\)</span>位置的query（即<span class="math inline">\(\mathbf Q_l\)</span>）影响的性质。query只影响当下，而每个key和value都会对未来的计算产生影响。对于key，其梯度的计算方式为： <span class="math display">\[
+\begin{aligned}
+\frac{\partial L}{\partial K_{lt}} &amp;= \sum_{e=1}^M\sum_{i=l}^N \frac{\partial L}{\partial \overline{V}_{ie}} \frac{\partial \overline{V}_{ie}}{\partial K_{lt}} \\
+&amp;= \sum_{e=1}^M\sum_{i=l}^N \frac{\partial L}{\partial \overline{V}_{ie}} \frac{\partial(\sum_{d=1}^D\sum_{j=1}^i Q_{id}K_{jd}V_{je})}{\partial K_{lt}} \\
+&amp;= \sum_{e=1}^M\sum_{i=l}^N \frac{\partial L}{\partial \overline{V}_{ie}} Q_{it} V_{le}
+\end{aligned}
+\]</span> 将其整理为矩阵形式，得到<a class="quarto-xref" href="#eq-grad-K">公式 9</a></p>
+<p>类似的，对于value，其梯度的计算方式为： <span class="math display">\[
+\begin{aligned}
+\frac{\partial L}{\partial V_{lt}} &amp;= \sum_{e=1}^M \sum_{i=l}^N \frac{\partial L}{\partial \overline{V}_{ie}} \frac{\overline{V}_{ie}}{\partial V_{lt}} \\
+&amp;= \sum_{e=1}^M \sum_{i=l}^N \frac{\partial L}{\partial \overline{V}_{ie}} \frac{\partial (\sum_{d=1}^D \sum_{j=1}^i Q_{id} K_{jd} V_{je})}{\partial V_{lt}}\\
+&amp;= \sum_{i=l}^N \frac{\partial L}{\partial \overline{V}_{it}} \sum_{d=1}^D Q_{id}K_{ld}
+\end{aligned}
+\]</span> 将其整理为矩阵形式，得到<a class="quarto-xref" href="#eq-grad-V">公式 10</a></p>
 </section>
-<section class="level1" data-number="3" id="存在量詞">
+<section class="level1" data-number="6" id="訓練和推理">
 
-<p><code>∃ x : α, p x</code>表示存在<code>x : α</code>使得<code>p x</code>成立，也可以寫作<code>exists x : α, p x</code>或者<code>Exists (fun x : α =&gt; p x)</code>. 從下面的證明可以看出，這幾種寫法是等價的。</p>
-<pre class="lean"><code>example : (∃ x : α, p x) ↔ exists x : α, p x := Iff.rfl
-example : (∃ x : α, p x) ↔ Exists (fun x : α =&gt; p x) := Iff.rfl</code></pre>
-<p>關於存在量詞的兩條重要規則是<code>Exists.intro</code>（引入）和<code>Exists.elim</code>（消去）。</p>
-<pre class="lean"><code>#check Exists.intro
--- Exists.intro.{u} {α : Sort u} {p : α → Prop} (w : α) (h : p w) : Exists p</code></pre>
-<p><code>Exists.intro</code>表明如果存在<code>w : α</code>且<code>h : p a</code>成立，那麼<code>⟨a, h⟩</code>就構成<code>∃ x : α, p x</code>的證明.</p>
-<p>下面這個例子是關於“存在大於零的自然數”的證明：</p>
-<pre class="lean"><code>example : ∃ x : Nat, x &gt; 0 :=
-  -- 首先，我們先舉例說明，1就是一個大於零的自然數。將這個證明命名為`h`.
-  have h : 1 &gt; 0 := Nat.zero_lt_succ 0
-  -- 那麼，⟨1, h⟩就是一個對於該命題的證明
-  Exists.intro 1 h</code></pre>
-<p>接下來介紹<code>Exists.elim</code>：</p>
-<pre class="lean"><code>#check Exists.elim
--- Exists.elim.{u} {α : Sort u} {p : α → Prop} {b : Prop} (h₁ : ∃ x, p x) (h₂ : ∀ (a : α), p a → b) : b</code></pre>
-<p><code>Exists.elim</code>表明如果<code>∃ x, p x</code>成立，且<code>∀ (a : α), p a → b</code>，那麼命題<code>b</code>成立。</p>
-<p>之前說過，<code>∀ (a : α), p a → b</code>等價於<code>(a : α) → (p a → b)</code>，因此在實際使用中，我們需要構造一個類型為<code>(a : α) → (p a → b)</code>的函數</p>
-<pre class="lean"><code>example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
-  Exists.elim h
-    -- 接下來我們需要證明∀ (w : α), p w ∧ q w → ∃ x, q x ∧ p x
-    (fun w =&gt;
-     fun hw : p w ∧ q w =&gt;
-     -- 已知 p w ∧ q w ，只需證明∃ x, q x ∧ p x
-     show ∃ x, q x ∧ p x from Exists.intro w (And.intro hw.right hw.left))</code></pre>
+<p>训练时，完整的训练序列是已知的，这允许Transformer模型实现并行的训练；而受限于计算方式，传统的RNN模型一般难并行训练。Transformer模型的每一步推理的时间复杂度是不同的，随著上下文长度的增加而增加；而RNN模型的时间复杂度是固定的。</p>
+<p>文章提出的线性Transformer结合了两者的优点。</p>
 </section>
-<section class="level1" data-number="4" id="一些有空的工具">
+<section class="level1" data-number="7" id="transformer模型是rnn模型的特例">
 
-<section class="level2" data-number="4.1" id="自動匹配構造函數">
-<h2 class="anchored" data-anchor-id="自動匹配構造函數" data-number="4.1"><span class="header-section-number">4.1</span> 自動匹配構造函數</h2>
-<p>在Lean中，<code>⟨⟩</code>能自動匹配改造函數的類型和參數。</p>
-<pre class="lean"><code>example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
-  Exists.elim h
-    -- 接下來我們需要證明∀ (w : α), p w ∧ q w → ∃ x, q x ∧ p x
-    (fun w =&gt;
-     fun hw : p w ∧ q w =&gt;
-     -- 已知 p w ∧ q w ，只需證明∃ x, q x ∧ p x
-     show ∃ x, q x ∧ p x from ⟨w, hw.right, hw.left⟩
-    )</code></pre>
-<p>上面的例子的末位使用了<code>⟨w, hw.right, hw.left⟩</code>來構造<code>∃ x, q x ∧ p x</code>，這是因為<code>⟨⟩</code>能自動匹配改造函數的類型和參數。<code>⟨⟩</code>的輸入方式是在編輯器中依次輸入<code>\&lt;&gt;</code>。</p>
+<p>从本文的讨论，我们可以明显的看出，带因果掩膜的Transformer模型可以视作是RNN模型的特例，即Transformer模型可以看做是一个能维护一个内部状态（<span class="math inline">\(\mathbf S_i\)</span>和<span class="math inline">\(\mathbf Z_i\)</span>），在每次获得新输入时更新内部状态的模型。</p>
 </section>
-<section class="level2" data-number="4.2" id="match關鍵詞">
-<h2 class="anchored" data-anchor-id="match關鍵詞" data-number="4.2"><span class="header-section-number">4.2</span> <code>match</code>關鍵詞</h2>
-<p>你還可以結合<code>match</code>語句進一步簡化上面的證明：</p>
-<pre class="lean"><code>example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
-  match h with
-  | ⟨w, hw⟩ =&gt; ⟨w, hw.right, hw.left⟩</code></pre>
-</section>
-</section>
-<section class="level1" data-number="5" id="練習">
-
-<p>在這個部分的練習中，你可以使用經典邏輯。(但不是所有證明都需要使用經典邏輯，你可以自行判斷。)</p>
-<div class="theorem exercise" id="exr-exercise-universal-quantifiers-1">
-<p><span class="theorem-title"><strong>习题 1</strong></span>  </p>
-證明：<code>(∀ x, p x ∧ q x) ↔︎ (∀ x, p x) ∧ (∀ x, q x)</code>
-<details>
-<summary>
-參考答案
-</summary>
-<pre class="lean"><code>example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) :=
-  Iff.intro
-    (
-      fun h : (∀ x, p x ∧ q x) =&gt;
-        And.intro
-          (fun x =&gt; (h x).left)
-          (fun x =&gt; (h x).right)
-    )
-    (
-      fun h : (∀ x, p x) ∧ (∀ x, q x) =&gt;
-        (
-          fun x =&gt;
-            And.intro (h.left x) (h.right x)
-        )
-    )</code></pre>
-</details>
+<div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" id="quarto-bibliography" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">参考文献</h2><div class="references csl-bib-body" data-entry-spacing="0" id="refs" role="list">
+<div class="csl-entry" id="ref-transformers_are_rnns" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">KATHAROPOULOS A, VYAS A, PAPPAS N, 等. Transformers are RNNs: fast autoregressive transformers with linear attention[C]//Proceedings of the 37th International Conference on Machine Learning. JMLR.org.</div>
 </div>
-<div class="theorem exercise" id="exr-exercise-universal-quantifiers-2">
-<p><span class="theorem-title"><strong>习题 2</strong></span>  </p>
-證明：<code>(∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x)</code>
-<details>
-<summary>
-參考答案
-</summary>
-<pre class="lean"><code>example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) :=
-  fun (h1 : ∀ x, p x → q x) (h2 : ∀ x, p x) =&gt;
-    fun x =&gt;
-      have px : (p x) := (h2 x)
-      show q x from h1 x px</code></pre>
-</details>
+<div class="csl-entry" id="ref-vaswani_attention_2017" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">VASWANI A, SHAZEER N, PARMAR N, 等. <a href="http://arxiv.org/abs/1706.03762">Attention <span>Is</span> <span>All</span> <span>You</span> <span>Need</span></a>[J]. arXiv:1706.03762 [cs], 2017.</div>
 </div>
-<div class="theorem exercise" id="exr-exercise-universal-quantifiers-3">
-<p><span class="theorem-title"><strong>习题 3</strong></span>  </p>
-證明：<code>(∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x</code>
-<details>
-<summary>
-參考答案
-</summary>
-<pre class="lean"><code>example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x :=
-  fun h :( ∀ x, p x) ∨ (∀ x, q x) =&gt;
-    fun x =&gt;
-      Or.elim h
-        (
-          fun hxpx : (∀ x, p x) =&gt;
-            Or.intro_left (q x) (hxpx x)
-        )
-        (
-          fun hxqx : (∀ x, q x) =&gt;
-            Or.intro_right (p x) (hxqx x)
-        )</code></pre>
-</details>
-</div>
-<div class="theorem exercise" id="exr-exercise-quantifiers-4">
-<p><span class="theorem-title"><strong>习题 4</strong></span> 證明<code>(∃ x : α, r) → r</code></p>
-<details>
-<summary>
-參考答案
-</summary>
-<pre class="lean"><code>example : (∃ x : α, r) → r :=
-  fun h : (∃ x : α, r) =&gt;
-    Exists.elim h
-      (
-        fun (w : α) (hr : r)=&gt;
-          hr
-      )</code></pre>
-</details>
-</div>
-<div class="theorem exercise" id="exr-exercise-quantifiers-5">
-<p><span class="theorem-title"><strong>习题 5</strong></span> 證明<code>(a : α) : r → (∃ x : α, r)</code></p>
-<details>
-<summary>
-參考答案
-</summary>
-<pre class="lean"><code>example (a : α) : r → (∃ x : α, r) :=
-  fun (h : r) =&gt;
-    Exists.intro a h</code></pre>
-</details>
-</div>
-<div class="theorem exercise" id="exr-exercise-quantifiers-6">
-<p><span class="theorem-title"><strong>习题 7</strong></span> 證明：<code>(∃ x, p x ∧ r) ↔︎ (∃ x, p x) ∧ r</code></p>
-<details>
-<summary>
-參考答案
-</summary>
-<pre class="lean"><code>example : (∃ x, p x ∧ r) ↔ (∃ x, p x) ∧ r :=
-  Iff.intro
-    (
-      fun h : (∃ x, p x ∧ r) =&gt;
-        Exists.elim h
-          (
-            fun w (hpwr : p w ∧ r) =&gt;
-              And.intro
-                (Exists.intro w hpwr.left)
-                hpwr.right
-          )
-    )
-    (
-      fun h : (∃ x, p x) ∧ r =&gt;
-        Exists.elim h.left
-          (
-            fun w (hpw : p w) =&gt;
-              Exists.intro w (And.intro hpw h.right)
-          )
-    )</code></pre>
-</details>
-<div class="theorem exercise" id="exr-exercise-quantifiers-6">
-<p><span class="theorem-title"><strong>习题 6</strong></span>  </p>
-<details>
-<summary>
-參考答案
-</summary>
-<pre class="lean"><code>example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) :=
-  Iff.intro
-    (
-      fun h : (∃ x, p x ∨ q x) =&gt;
-        Exists.elim h
-          (
-            fun w (hpwqw : p w ∨ q w) =&gt;
-              Or.elim hpwqw
-                (
-                  fun hpw : p w =&gt;
-                    Or.intro_left (∃ x, q x)
-                      (Exists.intro w hpw)
-                )
-                (
-                  fun hqw : q w =&gt;
-                    Or.intro_right (∃ x, p x)
-                      (Exists.intro w hqw)
-                )
-          )
-    )
-    (
-      fun h : (∃ x, p x) ∨ (∃ x, q x) =&gt;
-        Or.elim h
-          (
-            fun hpw : (∃ x, p x) =&gt;
-              Exists.elim hpw
-                (
-                  fun w (hpw : p w) =&gt;
-                    Exists.intro w (Or.intro_left (q w) hpw)
-                )
-          )
-          (
-            fun hqw : (∃ x, q x) =&gt;
-              Exists.elim hqw
-                (
-                  fun w (hqw : q w) =&gt;
-                    Exists.intro w (Or.intro_right (p w) hqw)
-                )
-          )
-    )</code></pre>
-</details>
-</div>
-</div>
-</section>
-</main>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -858,32 +727,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         <span>By </span>
         <a href="./">@執迷</a>
         <span> in </span>
-        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to Lean 4">[ Lean 4 ]</a></span>
-        <span class="post_date">2025-02-16</span>
+        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 自然語言處理">[ 自然語言處理 ]</a></span>
+        <span class="post_date">2025-03-01</span>
         <div><span>Tags : </span>
             
             
-            <span><a href="./">#Lean, </a></span>
+            <span><a href="./">#Transformer, </a></span>
             
-            <span><a href="./">#自動證明器, </a></span>
+            <span><a href="./">#Linear Transformer, </a></span>
             
-            <span><a href="./">#數學, </a></span>
+            <span><a href="./">#線性Transformer, </a></span>
             
-            <span><a href="./">#一階邏輯, </a></span>
+            <span><a href="./">#RNN, </a></span>
             
             
         </div>
 
         <div class="entry-social">
-            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././lean_fol_20250216.html&text=Lean语言数学之旅——一階邏輯&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././linear_transformer_20250215_zh-cn.html&text=Linear Transformer论文精读&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
 
-            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././lean_fol_20250216.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././linear_transformer_20250215_zh-cn.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
 
-            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././lean_fol_20250216.html&t=Lean语言数学之旅——一階邏輯"><img src="./theme/images/icons/facebook-s.png"></a></span>
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././linear_transformer_20250215_zh-cn.html&t=Linear Transformer论文精读"><img src="./theme/images/icons/facebook-s.png"></a></span>
 
-            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././lean_fol_20250216.html&title=Lean语言数学之旅——一階邏輯" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././linear_transformer_20250215_zh-cn.html&title=Linear Transformer论文精读" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
 
-            <span class="mail"><a href="mailto:?subject=Lean语言数学之旅——一階邏輯&amp;body=Viens découvrir un article à propos de [Lean语言数学之旅——一階邏輯] sur le site de 執迷. ././lean_fol_20250216.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+            <span class="mail"><a href="mailto:?subject=Linear Transformer论文精读&amp;body=Viens découvrir un article à propos de [Linear Transformer论文精读] sur le site de 執迷. ././linear_transformer_20250215_zh-cn.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
         </div>
     </div>
     

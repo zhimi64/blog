@@ -142,7 +142,12 @@
 <li><a class="nav-link active" data-scroll-target="#背景" href="#背景" id="toc-背景"><span class="header-section-number">1</span> 背景</a></li>
 <li><a class="nav-link" data-scroll-target="#全稱量詞" href="#全稱量詞" id="toc-全稱量詞"><span class="header-section-number">2</span> 全称量词</a></li>
 <li><a class="nav-link" data-scroll-target="#存在量詞" href="#存在量詞" id="toc-存在量詞"><span class="header-section-number">3</span> 存在量词</a></li>
-<li><a class="nav-link" data-scroll-target="#練習" href="#練習" id="toc-練習"><span class="header-section-number">4</span> 练习</a></li>
+<li><a class="nav-link" data-scroll-target="#一些有空的工具" href="#一些有空的工具" id="toc-一些有空的工具"><span class="header-section-number">4</span> 一些有空的工具</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#自動匹配構造函數" href="#自動匹配構造函數" id="toc-自動匹配構造函數"><span class="header-section-number">4.1</span> 自动匹配构造函数</a></li>
+<li><a class="nav-link" data-scroll-target="#match關鍵詞" href="#match關鍵詞" id="toc-match關鍵詞"><span class="header-section-number">4.2</span> <code>match</code>关键词</a></li>
+</ul></li>
+<li><a class="nav-link" data-scroll-target="#練習" href="#練習" id="toc-練習"><span class="header-section-number">5</span> 练习</a></li>
 </ul>
 </nav>
 </div>
@@ -237,18 +242,36 @@ example : (∃ x : α, p x) ↔ Exists (fun x : α =&gt; p x) := Iff.rfl</code><
     (fun w =&gt;
      fun hw : p w ∧ q w =&gt;
      -- 已知 p w ∧ q w ，只需证明∃ x, q x ∧ p x
-     show ∃ x, q x ∧ p x from ⟨w, hw.right, hw.left⟩)</code></pre>
-<p>上面的例子使用了<code>⟨w, hw.right, hw.left⟩</code>来构造<code>∃ x, q x ∧ p x</code>，这是因为<code>⟨⟩</code>能自动匹配改造函数的类型和参数。<code>⟨⟩</code>的输入方式是在编辑器中依次输入<code>\&lt;&gt;</code>。</p>
+     show ∃ x, q x ∧ p x from Exists.intro w (And.intro hw.right hw.left))</code></pre>
+</section>
+<section class="level1" data-number="4" id="一些有空的工具">
+
+<section class="level2" data-number="4.1" id="自動匹配構造函數">
+<h2 class="anchored" data-anchor-id="自動匹配構造函數" data-number="4.1"><span class="header-section-number">4.1</span> 自动匹配构造函数</h2>
+<p>在Lean中，<code>⟨⟩</code>能自动匹配改造函数的类型和参数。</p>
+<pre class="lean"><code>example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
+  Exists.elim h
+    -- 接下来我们需要证明∀ (w : α), p w ∧ q w → ∃ x, q x ∧ p x
+    (fun w =&gt;
+     fun hw : p w ∧ q w =&gt;
+     -- 已知 p w ∧ q w ，只需证明∃ x, q x ∧ p x
+     show ∃ x, q x ∧ p x from ⟨w, hw.right, hw.left⟩
+    )</code></pre>
+<p>上面的例子的末位使用了<code>⟨w, hw.right, hw.left⟩</code>来构造<code>∃ x, q x ∧ p x</code>，这是因为<code>⟨⟩</code>能自动匹配改造函数的类型和参数。<code>⟨⟩</code>的输入方式是在编辑器中依次输入<code>\&lt;&gt;</code>。</p>
+</section>
+<section class="level2" data-number="4.2" id="match關鍵詞">
+<h2 class="anchored" data-anchor-id="match關鍵詞" data-number="4.2"><span class="header-section-number">4.2</span> <code>match</code>关键词</h2>
 <p>你还可以结合<code>match</code>语句进一步简化上面的证明：</p>
 <pre class="lean"><code>example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
   match h with
   | ⟨w, hw⟩ =&gt; ⟨w, hw.right, hw.left⟩</code></pre>
 </section>
-<section class="level1" data-number="4" id="練習">
+</section>
+<section class="level1" data-number="5" id="練習">
 
 <p>在这个部分的练习中，你可以使用经典逻辑。(但不是所有证明都需要使用经典逻辑，你可以自行判断。)</p>
-<div class="theorem example" id="exm-exercise-universal-quantifiers-1">
-<p><span class="theorem-title"><strong>例 1</strong></span>  </p>
+<div class="theorem exercise" id="exr-exercise-universal-quantifiers-1">
+<p><span class="theorem-title"><strong>习题 1</strong></span>  </p>
 证明：<code>(∀ x, p x ∧ q x) ↔︎ (∀ x, p x) ∧ (∀ x, q x)</code>
 <details>
 <summary>
@@ -271,8 +294,8 @@ example : (∃ x : α, p x) ↔ Exists (fun x : α =&gt; p x) := Iff.rfl</code><
     )</code></pre>
 </details>
 </div>
-<div class="theorem example" id="exm-exercise-universal-quantifiers-2">
-<p><span class="theorem-title"><strong>例 2</strong></span>  </p>
+<div class="theorem exercise" id="exr-exercise-universal-quantifiers-2">
+<p><span class="theorem-title"><strong>习题 2</strong></span>  </p>
 证明：<code>(∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x)</code>
 <details>
 <summary>
@@ -285,8 +308,8 @@ example : (∃ x : α, p x) ↔ Exists (fun x : α =&gt; p x) := Iff.rfl</code><
       show q x from h1 x px</code></pre>
 </details>
 </div>
-<div class="theorem example" id="exm-exercise-universal-quantifiers-3">
-<p><span class="theorem-title"><strong>例 3</strong></span>  </p>
+<div class="theorem exercise" id="exr-exercise-universal-quantifiers-3">
+<p><span class="theorem-title"><strong>习题 3</strong></span>  </p>
 证明：<code>(∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x</code>
 <details>
 <summary>
@@ -306,8 +329,8 @@ example : (∃ x : α, p x) ↔ Exists (fun x : α =&gt; p x) := Iff.rfl</code><
         )</code></pre>
 </details>
 </div>
-<div class="theorem example" id="exm-exercise-quantifiers-4">
-<p><span class="theorem-title"><strong>例 4</strong></span> 证明<code>(∃ x : α, r) → r</code></p>
+<div class="theorem exercise" id="exr-exercise-quantifiers-4">
+<p><span class="theorem-title"><strong>习题 4</strong></span> 证明<code>(∃ x : α, r) → r</code></p>
 <details>
 <summary>
 参考答案
@@ -321,8 +344,8 @@ example : (∃ x : α, p x) ↔ Exists (fun x : α =&gt; p x) := Iff.rfl</code><
       )</code></pre>
 </details>
 </div>
-<div class="theorem example" id="exm-exercise-quantifiers-5">
-<p><span class="theorem-title"><strong>例 5</strong></span> 证明<code>(a : α) : r → (∃ x : α, r)</code></p>
+<div class="theorem exercise" id="exr-exercise-quantifiers-5">
+<p><span class="theorem-title"><strong>习题 5</strong></span> 证明<code>(a : α) : r → (∃ x : α, r)</code></p>
 <details>
 <summary>
 参考答案
@@ -332,8 +355,8 @@ example : (∃ x : α, p x) ↔ Exists (fun x : α =&gt; p x) := Iff.rfl</code><
     Exists.intro a h</code></pre>
 </details>
 </div>
-<div class="theorem example" id="exm-exercise-quantifiers-6">
-<p><span class="theorem-title"><strong>例 6</strong></span> 证明：<code>(∃ x, p x ∧ r) ↔︎ (∃ x, p x) ∧ r</code></p>
+<div class="theorem exercise" id="exr-exercise-quantifiers-6">
+<p><span class="theorem-title"><strong>习题 7</strong></span> 证明：<code>(∃ x, p x ∧ r) ↔︎ (∃ x, p x) ∧ r</code></p>
 <details>
 <summary>
 参考答案
@@ -359,6 +382,54 @@ example : (∃ x : α, p x) ↔ Exists (fun x : α =&gt; p x) := Iff.rfl</code><
           )
     )</code></pre>
 </details>
+<div class="theorem exercise" id="exr-exercise-quantifiers-6">
+<p><span class="theorem-title"><strong>习题 6</strong></span>  </p>
+<details>
+<summary>
+参考答案
+</summary>
+<pre class="lean"><code>example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) :=
+  Iff.intro
+    (
+      fun h : (∃ x, p x ∨ q x) =&gt;
+        Exists.elim h
+          (
+            fun w (hpwqw : p w ∨ q w) =&gt;
+              Or.elim hpwqw
+                (
+                  fun hpw : p w =&gt;
+                    Or.intro_left (∃ x, q x)
+                      (Exists.intro w hpw)
+                )
+                (
+                  fun hqw : q w =&gt;
+                    Or.intro_right (∃ x, p x)
+                      (Exists.intro w hqw)
+                )
+          )
+    )
+    (
+      fun h : (∃ x, p x) ∨ (∃ x, q x) =&gt;
+        Or.elim h
+          (
+            fun hpw : (∃ x, p x) =&gt;
+              Exists.elim hpw
+                (
+                  fun w (hpw : p w) =&gt;
+                    Exists.intro w (Or.intro_left (q w) hpw)
+                )
+          )
+          (
+            fun hqw : (∃ x, q x) =&gt;
+              Exists.elim hqw
+                (
+                  fun w (hqw : q w) =&gt;
+                    Exists.intro w (Or.intro_right (p w) hqw)
+                )
+          )
+    )</code></pre>
+</details>
+</div>
 </div>
 </section>
 </main>
