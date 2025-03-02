@@ -165,13 +165,13 @@
 </header>
 <section class="level2" data-number="1" id="前言">
 <h2 class="anchored" data-anchor-id="前言" data-number="1"><span class="header-section-number">1</span> 前言</h2>
-<p>文章<a href="./bitter_lesson_20241013_zh-cn.html">《The Bitter Lesson》</a>提出了这样的观点：能充分适应算力增长的方法最终能脱颖而出。Transformer之于RNN，就是一种更适合利用GPU并行化训练的模型，从而在许多领域逐步取代了RNN的地位。可是在大模型广泛应用的今天，这些基于Transformer结构的模型仍然还有一些令人在意的缺点和局限性：</p>
+<p>文章<a href="./bitter_lesson_20241013_zh-cn.html">《The Bitter Lesson》</a>提出了这样的观点：能充分适应算力增长的方法最终能脱颖而出。Transformer之所以能在很多领域取代RNN，就是因为前者更适合并行训练。可是在大模型广泛应用的今天，这些基于Transformer结构的模型仍然还有一些令人在意的缺点和局限性：</p>
 <ul>
-<li>Transformer模型的每一个token的计算量随著上下文的增长而增长</li>
+<li>每一个token的计算量随著上下文的增长而增长</li>
 <li>随著上下文越来越长，模型就越难从上下文中找到“重点”</li>
 <li>如何管理模型的记忆？制作一个聊天机器人，难道要将所有的聊天记录都保存下来吗？或者需要定时对上下文做一个文本总结吗？</li>
 </ul>
-<p>以上各种问题，总的来看都是关于如何管理记忆的问题。Transformer的策略是简单粗暴的：它把所有的历史token都保留下来。而理想中的AI或许应该具有这样的优点：他能够维护一个大小有限的记忆，能够选择保留重要的信息，也具备“遗忘”的能力。这就让人联想到RNN模型。</p>
+<p>这些问题，总而言之是如何管理记忆的问题。在这方面Transformer的策略是简单粗暴的：它把所有的历史token都保留下来。而理想中的AI或许应该具有这样的特性：他能够维护一个大小有限的记忆，能够选择保留重要的信息，也具备“遗忘”的能力。这就让人联想到RNN模型。</p>
 <p>当然，也许我们不能指望重新设计一个RNN模型，让他和最领先的大模型一较高下。但像这样的思考仍然是有益而且有趣的：如果我们要设计一个具有维护记忆力的能力的模型，他应该是什么样子？</p>
 <p>本文是我阅读<strong>Transformers are RNNs</strong><span class="citation" data-cites="transformers_are_rnns"><sup>[<a href="#ref-transformers_are_rnns" role="doc-biblioref">1</a>]</sup></span>这篇文章的笔记。这篇文章有一些有意思的贡献：</p>
 <ol type="1">
