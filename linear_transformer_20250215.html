@@ -165,7 +165,7 @@
 </header>
 <section class="level2" data-number="1" id="前言">
 <h2 class="anchored" data-anchor-id="前言" data-number="1"><span class="header-section-number">1</span> 前言</h2>
-<p>文章<a href="./bitter_lesson_20241013_zh-cn.html">《The Bitter Lesson》</a>提出了這樣的觀點：能充分適應算力增長的方法最終能脫穎而出。Transformer之所以能在很多領域取代RNN，就是因為前者更適合並行訓練。可是在大模型廣泛應用的今天，這些基於Transformer結構的模型仍然還有一些令人在意的缺點和局限性：</p>
+<p><a href="./bitter_lesson_20241013_zh-cn.html"><em>The Bitter Lesson</em></a>提出了這樣的觀點：能充分適應算力增長的方法最終能脫穎而出。Transformer之所以能在很多領域取代RNN，就是因為前者更適合並行訓練。可是在大模型廣泛應用的今天，這些基於Transformer結構的模型仍然還有一些令人在意的缺點和局限性：</p>
 <ul>
 <li>每一個token的計算量隨著上下文的增長而增長</li>
 <li>隨著上下文越來越長，模型就越難從上下文中找到“重點”</li>
@@ -173,7 +173,7 @@
 </ul>
 <p>這些問題，總而言之是如何管理記憶的問題。在這方面Transformer的策略是簡單粗暴的：它把所有的歷史token都保留下來。而理想中的AI或許應該具有這樣的特性：他能夠維護一個大小有限的記憶，能夠選擇保留重要的信息，也具備“遺忘”的能力。這就讓人聯想到RNN模型。</p>
 <p>當然，也許我們不能指望重新設計一個RNN模型，讓他和最領先的大模型一較高下。但像這樣的思考仍然是有益而且有趣的：如果我們要設計一個具有維護記憶力的能力的模型，他應該是什麼樣子？</p>
-<p>本文是我閱讀<strong>Transformers are RNNs</strong><span class="citation" data-cites="transformers_are_rnns"><sup>[<a href="#ref-transformers_are_rnns" role="doc-biblioref">1</a>]</sup></span>這篇文章的筆記。這篇文章有一些有意思的貢獻：</p>
+<p>本文是我閱讀<em>Transformers are RNNs</em><span class="citation" data-cites="transformers_are_rnns"><sup>[<a href="#ref-transformers_are_rnns" role="doc-biblioref">1</a>]</sup></span>這篇文章的筆記。這篇文章有一些有意思的貢獻：</p>
 <ol type="1">
 <li>從softmax attention這個特例推廣到一般的衡量query和key相似度的方法；</li>
 <li>提出線性Transformer，它既能像傳統Transformer一樣並行訓練，也能像RNN模型那樣，在推理階段維持常數的空間複雜度和時間複雜度。</li>
