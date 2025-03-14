@@ -133,8 +133,20 @@
     </p>
     
     <div class="entry-content blog-post">
-        <div class="fullcontent">
+        <div>
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+<nav class="toc-active" id="TOC" role="doc-toc">
+<h2 id="toc-title">Table of contents</h2>
+<ul>
+<li><a class="nav-link active" data-scroll-target="#背景" href="#背景" id="toc-背景"><span class="header-section-number">1</span> 背景</a></li>
+<li><a class="nav-link" data-scroll-target="#顺序无关性" href="#顺序无关性" id="toc-顺序无关性"><span class="header-section-number">2</span> 顺序无关性</a></li>
+<li><a class="nav-link" data-scroll-target="#手写einsum" href="#手写einsum" id="toc-手写einsum"><span class="header-section-number">3</span> 手写einsum</a></li>
+<li><a class="nav-link" data-scroll-target="#einsum函数的梯度" href="#einsum函数的梯度" id="toc-einsum函数的梯度"><span class="header-section-number">4</span> einsum函数的梯度</a></li>
+<li><a class="nav-link" data-scroll-target="#總結" href="#總結" id="toc-總結"><span class="header-section-number">5</span> 总结</a></li>
+</ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 <header class="quarto-title-block default" id="title-block-header">
 <div class="quarto-title">
@@ -143,12 +155,12 @@
 <div class="quarto-title-meta">
 </div>
 </header>
-<section class="level2" id="背景">
-<h2 class="anchored" data-anchor-id="背景">背景</h2>
+<section class="level2" data-number="1" id="背景">
+<h2 class="anchored" data-anchor-id="背景" data-number="1"><span class="header-section-number">1</span> 背景</h2>
 <p>pyTorch和numpy等库都提供了<code>einsum</code>函数函数。einsum，全称Einstein summation convention（爱因斯坦求和约定），是一个方便而强大的工具。</p>
 <p>我们熟悉的矩阵乘法、转置、求矩阵的迹等操作都可视为einsum的特例。除此之外，它还可以表示更复杂的运算，例如将矩阵乘法、转置等操作复合在一起表示为一个操作。</p>
 <p>先从矩阵乘法说起。我们可以这样用einsum表示矩阵乘法，</p>
-<div class="cell" data-execution_count="1" id="ab7a2333">
+<div class="cell" data-execution_count="1" id="0c3a58ca">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>a <span class="op">=</span> torch.rand(<span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a>b <span class="op">=</span> torch.rand(<span class="dv">2</span>, <span class="dv">2</span>)</span>
@@ -156,7 +168,7 @@
 </div>
 <p>在<code>ij,jk-&gt;ik</code>这个式子中，<code>j</code>在<code>-&gt;</code>左侧重复使用，且没有出现在<code>-&gt;</code>右侧，因此我们需要对<code>j</code>求和。由此可知<code>einsum('ij,jk-&gt;ik', a, b)</code>的实际含义为<span class="math inline">\(c_{ik}=\sum_j a_{ij} b_{jk}\)</span>，等同于矩阵乘法。</p>
 <p>下面我们简单验证一下计算的正确性。</p>
-<div class="cell" data-execution_count="2" id="a29d0905">
+<div class="cell" data-execution_count="2" id="75d6aaf6">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>eps <span class="op">=</span> <span class="fl">1e-5</span> </span>
 <span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a><span class="cf">assert</span> (c <span class="op">-</span> a <span class="op">@</span> b).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps</span>
 <span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'检查通过'</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
@@ -164,6 +176,7 @@
 <pre><code>检查通过</code></pre>
 </div>
 </div>
+<p>上面的代码中，<code>a @ b</code>是pytorch中计算<code>a</code>和<code>b</code>矩阵乘法时的一般写法。可以看到我们用einsum得到的计算结果与标准写法的计算结果是一致的。</p>
 <p>代码<code>torch.einsum('ij,jk-&gt;ik', a, b)</code>使用了<code>-&gt;</code>符号分隔输入和输出。这被称为<strong>显式的einsum</strong>。你也可以不使用<code>-&gt;</code>，只给出输入的索引，这被称为<strong>隐式的einsum</strong>。例如<code>torch.einsum('ij,jk', a, b)</code>. 注意因为隐式的einsum不指定输出的索引，因此输出的索引将会按字母表顺序排列。</p>
 <p>为了简便起见。这篇文章里我只讨论显式的einsum。基于以上介绍的基础规则，我想在这篇文章中分享一些有趣的发现和思考：</p>
 <ol type="1">
@@ -172,12 +185,12 @@
 <li><strong>einsum的梯度</strong>：einsum函数的梯度仍然可以用einsum表示；</li>
 </ol>
 </section>
-<section class="level2" id="顺序无关性">
-<h2 class="anchored" data-anchor-id="顺序无关性">顺序无关性</h2>
+<section class="level2" data-number="2" id="顺序无关性">
+<h2 class="anchored" data-anchor-id="顺序无关性" data-number="2"><span class="header-section-number">2</span> 顺序无关性</h2>
 <p>einsum函数的要点是：1. 根据索引从输入参数中取数，计算累积的乘积；2. 对重名的，在输出中没有出现的索引求和。</p>
 <p><strong>可以看到einsum的规则和输入参数的顺序没有关系。</strong>因此，einsum函数的输入参数是可以交换顺序的。</p>
 <p>例如，虽然矩阵乘法没有交换律，但是基于einsum计算矩阵乘法时，你可以交换参数的顺序。</p>
-<div class="cell" data-execution_count="3" id="9388c51b">
+<div class="cell" data-execution_count="3" id="5f02fa56">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>):</span>
 <span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    a <span class="op">=</span> torch.rand(<span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>    b <span class="op">=</span> torch.rand(<span class="dv">2</span>, <span class="dv">2</span>)</span>
@@ -190,11 +203,11 @@
 </div>
 </div>
 </section>
-<section class="level2" id="手写einsum">
-<h2 class="anchored" data-anchor-id="手写einsum">手写einsum</h2>
+<section class="level2" data-number="3" id="手写einsum">
+<h2 class="anchored" data-anchor-id="手写einsum" data-number="3"><span class="header-section-number">3</span> 手写einsum</h2>
 <p>einsum函数的计算是这样一个过程：一个遍历所有索引，计算输入元素的乘积，然后求和的过程。如果我们有一个函数能够遍历所有的索引，那会很方便。</p>
 <p>我们先来实现这样的一个函数<code>iter_elements</code>：</p>
-<div class="cell" data-execution_count="4" id="d9e13ff4">
+<div class="cell" data-execution_count="4" id="f8633d51">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="im">import</span> torch </span>
 <span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a></span>
 <span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a><span class="kw">def</span> iter_elements(sizes):</span>
@@ -217,7 +230,7 @@
 </div>
 </div>
 <p>上面的代码实现了一个遍历所有可能索引的函数<code>iter_elements</code>. 对于尺寸为<span class="math inline">\(2\times 3\)</span>的矩阵，这个函数输出了所有可能的六个索引。这是一个非常方便的函数。接下来我们就基于它在einsum函数中遍历每一个元素。</p>
-<div class="cell" data-execution_count="5" id="80914d3f">
+<div class="cell" data-execution_count="5" id="366218f4">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="kw">def</span> einsum_forward(equation, <span class="op">*</span>operands): </span>
 <span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>    input_dims, output_dim <span class="op">=</span> equation.split(<span class="st">'-&gt;'</span>)</span>
 <span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>    input_dims <span class="op">=</span> input_dims.split(<span class="st">','</span>)</span>
@@ -251,7 +264,7 @@
 <span id="cb8-31"><a aria-hidden="true" href="#cb8-31" tabindex="-1"></a>    <span class="cf">return</span> output </span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>接下来我们编写一些测试用例，检查<code>einsum_forward</code>和<code>torch.einsum</code>的计算结果是否一致。</p>
-<div class="cell" data-execution_count="6" id="d783234e">
+<div class="cell" data-execution_count="6" id="4a60ae69">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="co"># 矩阵乘法</span></span>
 <span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>a <span class="op">=</span> torch.rand((<span class="dv">5</span>, <span class="dv">4</span>))</span>
 <span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>b <span class="op">=</span> torch.rand((<span class="dv">4</span>, <span class="dv">5</span>))</span>
@@ -280,8 +293,8 @@
 </div>
 </div>
 </section>
-<section class="level2" id="einsum函数的梯度">
-<h2 class="anchored" data-anchor-id="einsum函数的梯度">einsum函数的梯度</h2>
+<section class="level2" data-number="4" id="einsum函数的梯度">
+<h2 class="anchored" data-anchor-id="einsum函数的梯度" data-number="4"><span class="header-section-number">4</span> einsum函数的梯度</h2>
 <p>举一个简单的例子。假设<span class="math inline">\(c_{ik} = \sum_{j} a_{ij} b_{jk}\)</span>. 对于任意的<span class="math inline">\(i,j\)</span>，导数<span class="math inline">\(\frac{\partial L}{\partial c_{ik}}\)</span>都已知，问如何计算<span class="math inline">\(\frac{\partial L}{\partial a_{ij}}\)</span>和<span class="math inline">\(\frac{\partial L}{\partial b_{jk}}\)</span>？</p>
 <p>显然 <span class="math display">\[
 \frac{\partial L}{\partial a_{ij}} = \sum_k \frac{\partial L}{\partial c_{ik}}b_{jk},
@@ -290,18 +303,18 @@
 \]</span> 可以看到，在这个例子中，不论是前向的计算还是梯度的计算都可以表示为一系列乘积的和。</p>
 <p>如果你仔细地观察和理解了einsum函数的计算方式，不难得出更一般的结论，一个由einsum函数定义的表达式，其对任意一个输入参数的梯度同样可以表示为einsum函数的形式。</p>
 <p>现在假设<code>a, b, c</code>是某个einsum操作的输入，经过操作我们得到输出<code>d</code>，如下所示：</p>
-<div class="cell" data-execution_count="7" id="8889d5bf">
+<div class="cell" data-execution_count="7" id="92a26cf5">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>a <span class="op">=</span> torch.rand((<span class="dv">2</span>, <span class="dv">2</span>), requires_grad<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>b <span class="op">=</span> torch.rand((<span class="dv">2</span>, <span class="dv">2</span>), requires_grad<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>c <span class="op">=</span> torch.rand((<span class="dv">2</span>, <span class="dv">2</span>), requires_grad<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>d <span class="op">=</span> torch.einsum(<span class="st">'ij,jk,kl-&gt;il'</span>, a, b, c)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>假设<span class="math inline">\(L\)</span>是<span class="math inline">\(d\)</span>经过某个函数计算得到的实数，<span class="math inline">\(\frac{\partial L}{\partial d}\)</span>已知，记为<code>grad_d</code>：</p>
-<div class="cell" data-execution_count="8" id="9942cc91">
+<div class="cell" data-execution_count="8" id="b1e25dbf">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>grad_d <span class="op">=</span> torch.rand(d.shape)  <span class="co"># 随机初始化grad_d，假设它就是梯度</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>pytorch能很方便地帮我们分别算出<code>a, b, c</code>的梯度。</p>
-<div class="cell" data-execution_count="9" id="7aa7b8a1">
+<div class="cell" data-execution_count="9" id="1fbce764">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a>d.backward(grad_d)</span>
 <span id="cb13-2"><a aria-hidden="true" href="#cb13-2" tabindex="-1"></a><span class="bu">print</span>(a.grad.shape, b.grad.shape, c.grad.shape)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -310,24 +323,24 @@
 </div>
 <p>但是如前所述，einsum函数的梯度仍然可以组织成einsum的形式。让我们来验证这一点。</p>
 <p>首先是<code>a</code>的梯度<span class="math inline">\(\frac{\partial L}{\partial a}\)</span></p>
-<div class="cell" data-execution_count="10" id="f6e67469">
+<div class="cell" data-execution_count="10" id="1634f377">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a>grad_a <span class="op">=</span> torch.einsum(<span class="st">'il,jk,kl-&gt;ij'</span>, grad_d, b, c)</span>
 <span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a><span class="cf">assert</span> torch.mean(torch.<span class="bu">abs</span>(a.grad <span class="op">-</span> grad_a)) <span class="op">&lt;</span> eps </span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>接著是<code>b</code>的梯度：</p>
-<div class="cell" data-execution_count="11" id="d8329973">
+<div class="cell" data-execution_count="11" id="0544d41e">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a aria-hidden="true" href="#cb16-1" tabindex="-1"></a>grad_b <span class="op">=</span> torch.einsum(<span class="st">'il,ij,kl-&gt;jk'</span>, grad_d, a, c)</span>
 <span id="cb16-2"><a aria-hidden="true" href="#cb16-2" tabindex="-1"></a><span class="cf">assert</span> torch.mean(torch.<span class="bu">abs</span>(b.grad <span class="op">-</span> grad_b)) <span class="op">&lt;</span> eps </span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>c</code>的梯度：</p>
-<div class="cell" data-execution_count="12" id="506ee291">
+<div class="cell" data-execution_count="12" id="71a407fd">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a aria-hidden="true" href="#cb17-1" tabindex="-1"></a>grad_c <span class="op">=</span> torch.einsum(<span class="st">'il,ij,jk-&gt;kl'</span>, grad_d, a, b)</span>
 <span id="cb17-2"><a aria-hidden="true" href="#cb17-2" tabindex="-1"></a><span class="cf">assert</span> torch.mean(torch.<span class="bu">abs</span>(c.grad <span class="op">-</span> grad_c)) <span class="op">&lt;</span> eps </span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>至此，我们验证了<code>a, b, c</code>三个参数的梯度计算方式，它们都可以用einsum函数表示，而且计算结果和pytorch的计算结果一致！</p>
 </section>
-<section class="level2" id="總結">
-<h2 class="anchored" data-anchor-id="總結">总结</h2>
+<section class="level2" data-number="5" id="總結">
+<h2 class="anchored" data-anchor-id="總結" data-number="5"><span class="header-section-number">5</span> 总结</h2>
 <p>最近在实现自己的深度学习模型时，我设计了一个简单的模块，其中一部分用到了einsum。为了加速这个模块在梯度反传阶段的计算，我作了详细的推导，发现einsum有一些有趣的性质，于是就记录下来，形成了这篇文章。</p>
 <p>仔细分析可以发现，其实einsum本质上是计算元素间乘积的和的过程。尽管einsum的使用方式多种多样，但只要把握这个本质，其性质也就不难理解了。</p>
 </section>
