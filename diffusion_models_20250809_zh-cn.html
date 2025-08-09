@@ -1,0 +1,1149 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
+
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="./_vercel/insights/script.js"></script>
+  
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
+
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
+
+
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>【论文精读】从一个统一的视角理解扩散模型</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="./theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="././diffusion_models_20250809_zh-cn.html">
+<meta name="twitter:title" content="執迷的博客 ~ 【论文精读】从一个统一的视角理解扩散模型">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ 【论文精读】从一个统一的视角理解扩散模型" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+
+<!-- MathJax -->
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>執迷的博客</h1>
+    
+      <p>做一個有趣的人！</p>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
+        
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+      
+      
+      
+    </p>
+
+    <!--
+    
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+    
+<section id="content">
+    <h2 class="post_title post_detail"><a href="././diffusion_models_20250809_zh-cn.html" rel="bookmark" title="Permalink to 【论文精读】从一个统一的视角理解扩散模型">【论文精读】从一个统一的视角理解扩散模型</a></h2>
+    
+    <p>
+        <span id="busuanzi_container_page_pv">
+            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+        </span>
+    </p>
+    
+    <div class="entry-content blog-post">
+        <div class="fullcontent">
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<main class="content" id="quarto-document-content"><header class="quarto-title-block" id="title-block-header"></header>
+<div class="hidden">
+<p><span class="math display">\[
+\def \vec#1{{\boldsymbol{#1}}}
+\def \mat#1{{\mathbf{#1}}}
+\def \argmax#1{\underset{#1}{\operatorname{argmax}}}
+\def \argmin#1{\underset{#1}{\operatorname{argmin}}}
+\]</span></p>
+<script>
+  MathJax = {
+    tex: {
+      tags: 'ams'  // should be 'ams', 'none', or 'all'
+    }
+  };
+</script>
+<p><span class="math display">\[
+\def \vx{{\vec x}}
+\def \vtheta{{\vec \theta}}
+\def \mI{{\mat I}}
+\def \mZero{{\mat 0}}
+\def \mSigma{{\mat \Sigma}}
+\def \E{{\mathbb E}}
+\]</span></p>
+</div>
+<section class="level2" data-number="1" id="前言">
+<h2 class="anchored" data-anchor-id="前言" data-number="1"><span class="header-section-number">1</span> 前言</h2>
+<p>扩散模型的出现让我眼前一亮。它的原理与GAN截然不同，生成质量的天花板似乎更高，而且背后的原理啃起来也很费劲。</p>
+<p>这次分享下我阅读<em>Understanding Diffusion Models: A Unified Perspective</em>这篇文章的笔记。这篇文章尝试从一个统一的视角分析扩散模型，介绍了扩散模型、VAE、基于分数的生成模型之间的联系。文章的数学推理很详细，基本没有跳步，很适合数学基础一般的同学。</p>
+<p>本文基本上是原论文的大致翻译和概括。笔记难免存在一些信息上的简略，感兴趣的读者可以阅读原文。</p>
+</section>
+<section class="level2" data-number="2" id="背景">
+<h2 class="anchored" data-anchor-id="背景" data-number="2"><span class="header-section-number">2</span> 背景</h2>
+<section class="level3" data-number="2.1" id="什麽是生成式模型">
+<h3 class="anchored" data-anchor-id="什麽是生成式模型" data-number="2.1"><span class="header-section-number">2.1</span> 什么是生成式模型</h3>
+<p>给定一个样本<span class="math inline">\(\vec x\)</span>，生成式模型的目标是学习样本的真实分布<span class="math inline">\(p(\vec x)\)</span>.</p>
+<p>这里<span class="math inline">\(\vec x\)</span>可以是图像、语音、文本等。</p>
+<p>一旦<span class="math inline">\(p(\vec x)\)</span>被学习，我们就可以用<span class="math inline">\(p(\vec x)\)</span>来生成新的样本。</p>
+</section>
+<section class="level3" data-number="2.2" id="生成式模型的分類">
+<h3 class="anchored" data-anchor-id="生成式模型的分類" data-number="2.2"><span class="header-section-number">2.2</span> 生成式模型的分类</h3>
+<ul>
+<li>GAN（Generative Adversarial Networks）模型通过对抗的方式，使生成模型产生与真实样本难以区分的样本。GAN属于隐式生成模型（implicit generative model），不直接建模数据的概率分布。</li>
+<li>基于似然度的模型（likelihood-based model），通过最大化似然度来学习样本的分布。属于显式生成模型（explicit generative model）。常见方法包括：自回归模型、VAE（Variational Autoencoder）模型、normalizing flow等。</li>
+<li>energy-based model，EBM，基于能量的模型。EBM定义一个能量函数，输入为样本<span class="math inline">\(\vec x\)</span>，输出为一个标量能量值。模型的目标是让真实样本的能量值低、假样本（或无关样本）的能量值高。</li>
+<li>score-based generative model 使用神经网络模型学习energy-based model的分数。</li>
+</ul>
+<p>diffusion model既可以视为likelihood-based，也可以视为score-based。</p>
+</section>
+<section class="level3" data-number="2.3" id="柏拉圖的洞窟寓言">
+<h3 class="anchored" data-anchor-id="柏拉圖的洞窟寓言" data-number="2.3"><span class="header-section-number">2.3</span> 柏拉图的洞窟寓言</h3>
+<p>在生成式模型中，常常认为<span class="math inline">\(\vec x\)</span>是从隐变量<span class="math inline">\(\vec z\)</span>生成的。</p>
+<p>柏拉图洞窟寓言中，一些奴隶被用锁链拘束，终身囚禁于一个山洞中，面朝洞内。他们只能看见自己在洞壁的影子。那么他们看到的二维影像（<span class="math inline">\(\vec x\)</span>），就是从他们无法看见的三维事物（<span class="math inline">\(\vec z\)</span>）生成的。</p>
+<p>类似的，在生成式模型中，样本可能是从某个高级表示产生的。奴隶们虽然只能看见影子，但他们可以努力推理三维空间可能的样子。我们也可以尝试近似出我们观测样本的高级表示。</p>
+<p>但是这个类比<strong>不恰当</strong>的地方在于，生成式模型通常从低维预测高维，学习高维样本的低维表示（即一种压缩），与洞窟寓言是相反的。这是因为如果没有很强的先验，那么从低维样本学习高维表示将是徒劳的。</p>
+</section>
+</section>
+<section class="level2" data-number="3" id="證據下界">
+<h2 class="anchored" data-anchor-id="證據下界" data-number="3"><span class="header-section-number">3</span> 证据下界</h2>
+<p>样本和隐变量构成联合分布<span class="math inline">\(p(\vec x, \vec z)\)</span>。在基于似然度的方法中，我们希望用模型最大化所有观测样本<span class="math inline">\(\vec x\)</span>的似然度<span class="math inline">\(p(\vec x)\)</span>。</p>
+<p>我们可以利用证据下界（Evidence Lower Bound，ELBO）： <span id="eq-elbo"><span class="math display">\[
+\mathbb E_{q_\phi(\vec z|\vec x)}\left[\log \frac{p(\vec x, \vec z)}{q_\phi(\vec z|\vec x)}\right]
+\tag{1}\]</span></span> 我们称<span class="math inline">\(\log p(\vec x)\)</span>为证据（的大小），证据下界和证据的关系是： <span class="math display">\[
+\log p(\vec x) \geq \mathbb E _{q_\phi(\vec z|\vec x)} \left[\log \frac{p(\vec x, \vec z)}{q_\phi(\vec z| \vec x)}\right]
+\]</span> 其中<span class="math inline">\(q_\phi(\vec z| \vec x)\)</span>就是需要我们优化的将观测样本<span class="math inline">\(\vec x\)</span>映射到隐变量<span class="math inline">\(\vec z\)</span>的编码器，是对真实后验<span class="math inline">\(p(\vec z|\vec x)\)</span>的近似，而<span class="math inline">\(\phi\)</span>是其参数。</p>
+<p>后面我们将会看到，我们通过优化参数<span class="math inline">\(\phi\)</span>，最大化<a class="quarto-xref" href="#eq-elbo">公式 1</a>，就能获得取得真实样本的数据分布，并能从中采样。</p>
+<p>现在让我们理清为什么要最大化ELBO。 <span id="eq-elbo-prove-1"><span class="math display">\[
+\begin{aligned}
+\log p(\vec x) &amp;= \log \int p(\vec x, \vec z) d\vec z &amp; \text{对联合分布的边缘化} \\
+&amp;= \log \int \frac{p(\vec x, \vec z)q_\phi(\vec z|\vec x)}{q_\phi(\vec z|\vec x)} dz &amp; \text{分子分母乘以同一个数} \\
+&amp;= \log \mathbb E _{q_\phi(\vec z|\vec x)} \left[\frac{p(\vec x, \vec z)}{q_\phi(\vec z|\vec x)}\right] &amp; \text{期望的定义} \\
+&amp;\geq \mathbb E _{q_\phi(\vec z|\vec x)}\left[ \log \frac{p(\vec x, \vec z)}{q_\phi(\vec z|\vec x)} \right] &amp; \text{Jensen不等式}
+\end{aligned}
+\tag{2}\]</span></span> 以上是一种利用Jensen不等式的推导方式。还有一种证明方式，稍显冗长，但是能提供更多为何使用ELBO的直觉。</p>
+<p><span id="eq-elbo-prove-2"><span class="math display">\[
+\begin{aligned}
+\log p(\vec x) &amp;= \log p(\vec x) \int q_\phi(\vec z|\vec x) dz &amp; \text{乘以}1 = \int q_\phi(\vec z| \vec x)d\vec z\\
+&amp;= \int q_\phi(\vec z|\vec x)(\log p(\vec x)) d\vec z &amp; \log p(\vec x)\text{移到积分符号后} \\
+&amp;= \mathbb E _{q_\phi(\vec z|\vec x)} \left[\log p(\vec x)\right] &amp; \text{期望的定义}\\
+&amp;= \mathbb E _{q_\phi(\vec z|\vec x)}\left[\log\frac{p(\vec x, \vec z)}{p(\vec z|\vec x)}\right] &amp; \text{链式法则}\\
+&amp;= \mathbb E _{q_\phi(\vec z|\vec x)} \left[\log\frac{p(\vec x, \vec z)q_\phi(\vec z|\vec x)}{p(\vec z|\vec x)q_\phi(\vec z|\vec x)}\right] &amp; \text{分子分母同乘以一个数}\\
+&amp;= \mathbb E _{q_\phi(\vec z|\vec x)} \left[\log\frac{p(\vec x,\vec z)}{q_\phi(\vec z|\vec x)}\right] + \mathbb E_{q_\phi(\vec z|\vec x)}\left[\log\frac{q_\phi(\vec z|\vec x)}{p(\vec z|\vec x)}\right] &amp; \text{期望的拆分}\\
+&amp;= \mathbb E _{q_\phi(\vec z|\vec x)} \left[\log \frac{p(\vec x, \vec z)}{q_\phi(\vec z|\vec x)}\right] + D_\text{KL} (q_\phi(\vec z|\vec x)\Vert p(\vec z|\vec x)) &amp; \text{KL散度的定义} \\
+&amp;\geq \mathbb E _{q_\phi(\vec z|\vec x)} \left[\log \frac{p(\vec x, \vec z)}{q_\phi(\vec z|\vec x)}\right] &amp; \text{KL散度非负}
+\end{aligned}
+\tag{3}\]</span></span></p>
+<p>虽然<a class="quarto-xref" href="#eq-elbo-prove-1">公式 2</a>和<a class="quarto-xref" href="#eq-elbo-prove-2">公式 3</a>都证明了ELBO是证据下界，但是对于<a class="quarto-xref" href="#eq-elbo-prove-2">公式 3</a>的理解是更关键的，即：</p>
+<ol type="1">
+<li>两者的差值恰好为<span class="math inline">\(q_\phi(\vec z|\vec x)\)</span>和<span class="math inline">\(p(\vec z|\vec x)\)</span>的KL散度</li>
+<li><a class="quarto-xref" href="#eq-elbo-prove-2">公式 3</a>的左边实际上是一个常数，这个常数等于ELBO与KL散度的和。</li>
+<li>进一步的，最大化ELBO的过程也就是最小化<span class="math inline">\(q_\phi(\vec z|\vec x)\)</span>和<span class="math inline">\(p(\vec z|\vec x)\)</span>的KL散度的过程。由于我们不知道<span class="math inline">\(p(\vec z|\vec x)\)</span>的真值，所以我们无法直接最小化KL散度，但是ELBO允许我们间接实现这项优化。</li>
+<li>一旦训练完毕，ELBO可以用于估计生成样本的似然度。因为ELBO的优化目标是逼近<span class="math inline">\(\log p(\vec x)\)</span>。</li>
+</ol>
+</section>
+<section class="level2" data-number="4" id="變分自動編碼器">
+<h2 class="anchored" data-anchor-id="變分自動編碼器" data-number="4"><span class="header-section-number">4</span> 变分自动编码器</h2>
+<p>变分自动编码器（Variational Autoencoder，VAE）的名字中有“变分”两个字，是因为它的目标是从所有可能的后验分布中寻找最优的<span class="math inline">\(q_phi(\vec z|\vec x)\)</span>。它被称为编码器，是因为它具备传统编码器模型的特质，即它尝试将输入数据压缩为低维向量然后试图再还原为原来的输入。</p>
+<p>VAE的目标是直接最大化ELBO。为了更清楚地分析VAE，我们继续拆解分析ELBO： <span id="eq-elbo-dissect"><span class="math display">\[
+\begin{aligned}
+\mathbb E_{q_\phi(\vec z|\vec x)} \left[\log\frac{p(\vec x, \vec z)}{q_\phi(\vec z|\vec x)}\right] &amp;= \mathbb E_{q_\phi(\vec z|\vec x)} \left[\log\frac{p_\theta(\vec x|\vec z)p(\vec z)}{q_\phi(\vec z|\vec x)}\right] &amp; \text{链式法则}\\
+&amp;= \mathbb E_{q_\phi(\vec z|\vec x)}\left[\log p_\theta(\vec x|\vec z)\right] + \mathbb E_{q_\phi(\vec z|\vec x)}\left[\log \frac{p(\vec z)}{q_\phi(\vec z|\vec x)}\right] &amp; \text{期望的拆分}\\
+&amp;= \underbrace{\mathbb E_{q_\phi(\vec z|\vec x)}\left[\log p_\theta(\vec x|\vec z)\right]}_{重构项} - \underbrace{D_\text{KL}(q_\phi(\vec z|\vec x)\Vert p(\vec z))}_{先验匹配项} &amp; \text{KL散度的定义}
+\end{aligned}
+\tag{4}\]</span></span> 在这个公式中，<span class="math inline">\(q_\phi(\vec z|\vec x)\)</span>被称为编码器（encoder），<span class="math inline">\(p_\theta(\vec x|\vec z)\)</span>被称为解码器（decoder）。</p>
+<p><a class="quarto-xref" href="#eq-elbo-dissect">公式 4</a>被拆分成两项，其中重构项度量了学习到的样本分布是否建模了真正的分布，而先验匹配项学习到的隐变量是否服从预设的先验分布。</p>
+<p>在VAE模型中，encoder通常选择将隐变量设置为服从具有对角协方差矩阵的多元高斯分布，将先验分布设置为标准正态分布： <span class="math display">\[
+\begin{aligned}
+q_\phi(\vec z|\vec x) &amp;= \mathcal N(\vec z; \vec \mu_{\vec\phi}(\vec x), \vec \sigma^2_{\vec \phi}(\vec x) \vec I)\\
+p(\vec z) &amp;= \mathcal N(\vec z; \vec 0, \vec I)
+\end{aligned}
+\]</span></p>
+<p>在这样的设置下，先验匹配项中的KL散度是可以解析计算的，重构项可以通过蒙特卡洛估计方法近似。优化目标可以重写为： <span class="math display">\[
+\argmax{\vec \phi, \vec \theta}{\mathbb E _{q_\phi(\vec z|\vec x)}}\left[\log p_{\vec \theta}(\vec x|\vec z)\right] - D_{KL}(q_{\vec \phi}(\vec z|\vec x)\Vert p(\vec z)) \approx \argmax{\vec \phi, \vec \theta} \sum_{l=1}^L \log p_{\vec \theta}(\vec x|\vec z^{(l)}) - D_{KL}(q_{\vec \phi}(\vec z|\vec x) \Vert p(\vec z))
+\]</span></p>
+<p>其中<span class="math inline">\(\left\{\vec z^{(l)}\right\}_{l=1}^L\)</span>是对于每个数据集中的样本<span class="math inline">\(\vec x\)</span>从<span class="math inline">\(q_\phi(\vec z|\vec x)\)</span>中采样的<span class="math inline">\(L\)</span>个隐变量。这其中随机采样的过程通常是不可微的，幸运的是我们可以采用以下的“重参数化”技巧： <span class="math display">\[
+\vec z = \vec \mu_\pi(\vec x) + \vec \sigma_\phi(\vec x) \odot \vec \epsilon, \text{with} \vec\epsilon \sim \mathcal N(\vec \epsilon; \vec 0, \vec I)
+\]</span> 其中<span class="math inline">\(\odot\)</span>表示逐元素乘积。得益于重参数化方法，我们可以实现损失函数对<span class="math inline">\(\vec \phi\)</span>和<span class="math inline">\(\vec \theta\)</span>的求导。</p>
+</section>
+<section class="level2" data-number="5" id="分層的變分自動編碼器">
+<h2 class="anchored" data-anchor-id="分層的變分自動編碼器" data-number="5"><span class="header-section-number">5</span> 分层的变分自动编码器</h2>
+<p>分层变分自动编码器（Hierarchical Variational Autoencoder，HVAE）将VAE推广到具有多层隐变量的情形。每一层的隐变量都以前一层隐变量为条件生成。论文讨论了HVAE的特例，马尔科夫HVAE（Markovian HVAE，MHVAE）。在MHVAE中，<span class="math inline">\(\vec z_t\)</span>的生成只依赖<span class="math inline">\(\vec z_{t+1}\)</span>，而不用考虑<span class="math inline">\(\vec z_{t+2}\)</span>。MHVAE的联合分布和后验分布是： <span id="eq-mhvae-joint-distribution"><span class="math display">\[
+p(\vec x, \vec z_{1:T})=p(\vec z_T)p_{\vec \theta}(\vec x|\vec z_1)\prod_{t=2}^T p_{\vec \theta}(\vec z_{t-1}|\vec z_t)
+\tag{5}\]</span></span> <span id="eq-mhvae-posterior-distribution"><span class="math display">\[
+q_{\vec \phi} (\vec z_{1:T}\vert \vec x)=q_\phi(\vec z_1|\vec x)\prod_{t=2}^T q_{\vec \phi}(\vec z_t\vert z_{t-1})
+\tag{6}\]</span></span> 这时ELBO公式可以写为 <span class="math display">\[
+\begin{aligned}
+\log p(\vec x) &amp;= \log \int p(\vec x, \vec z_{1:T}) d \vec z_{1:T} &amp; \text{对联合分布的边缘化}\\
+&amp;= \log \int \frac{p(\vec x, \vec z_{1:T})q_{\vec \phi}(\vec z_{1:T}\vert \vec x)}{q_{\vec \phi}(\vec z_{1:T}\vert \vec x)} d\vec z_{1:T} &amp; \text{分子分母乘以同一个数} \\
+&amp;= \log \mathbb E_{q_{\vec \phi}(\vec z_{1:T}\vert \vec x)} \left[\frac{p(\vec x, \vec z_{1:T})}{q_{\vec \phi}(\vec z_{1:T}\vert \vec x)}\right]  &amp;\text{期望的定义} \\
+&amp;\geq \mathbb E _{q_{\vec \phi}(\vec z_{1:T}\vert \vec x)} \left[\log \frac{p(\vec x, \vec z_{1:T})}{q_{\vec \phi}(\vec z_{1:T} \vert \vec x)}\right] &amp; \text{Jensen不等式}
+\end{aligned}
+\]</span> 然后再将联合分布<a class="quarto-xref" href="#eq-mhvae-joint-distribution">公式 5</a>和后验分布<a class="quarto-xref" href="#eq-mhvae-posterior-distribution">公式 6</a>代入得到 <span class="math display">\[
+\mathbb E _{q_{\vec \phi}(\vec z_{1:T}\vert \vec x)} \left[\log \frac{p(\vec x, \vec z_{1:T})}{q_{\vec \phi}(\vec z_{1:T} \vert \vec x)}\right] = \mathbb E_{q_{\vec \phi}(\vec z_{q:T}\vert \vec x)} \left[
+\log \frac{
+  p(\vec z_T)p_{\vec \theta}(\vec x|\vec z_1)\prod_{t=2}^T p_{\vec \theta}(\vec z_{t-1}|\vec z_t)
+}{
+  q_\phi(\vec z_1|\vec x)\prod_{t=2}^T q_{\vec \phi}(\vec z_t\vert z_{t-1})
+}
+\right]
+\]</span></p>
+<p>后面我们将会看到，在讨论变分扩散模型时，这个目标函数将可以分解为更多可解释的部件。</p>
+</section>
+<section class="level2" data-number="6" id="變分擴散模型">
+<h2 class="anchored" data-anchor-id="變分擴散模型" data-number="6"><span class="header-section-number">6</span> 变分扩散模型</h2>
+<p>变分扩散模型（Variational Diffusion Model，VDM）可以视为施加了以下三个条件的MHVAE：</p>
+<ol type="1">
+<li>隐变量的维度大小总是和样本数据的维度大小一样</li>
+<li>每一步的encoder不是可学习的，而是预定义的线性高斯模型</li>
+<li>每一步的encoder的参数随著步骤<span class="math inline">\(t\)</span>变化，使得最后一层的隐变量最终服从标准正态分布。</li>
+</ol>
+<p>因为有第一条限制，所以我们可以引入符号<span class="math inline">\(\vec x_t\)</span>同时表示隐变量和原始数据。当<span class="math inline">\(t=0\)</span>时，它代表原始数据，当<span class="math inline">\(t\in[1, T]\)</span>时，它代表第<span class="math inline">\(t\)</span>层的隐变量。</p>
+<p>于是VDM的后验分布可以重写为： <span class="math display">\[
+q(\vec x_{1:T}\vert \vec x_0) = \prod_{t=1}^Tq(\vec x_t \vert x_{t-1})
+\]</span> 与普通的MHVAE不同，VDM的encoder不是可学习的（条件2），而是被通常被定义为均值<span class="math inline">\(\mu_t(\vec x_t)=\sqrt{\alpha_t} \vec x_{t-1}\)</span>，协方差矩阵<span class="math inline">\(\Sigma_t(\vec x_t) = (1 - \alpha_t)\mat I\)</span>. <!-- TODO: figure out what is "variance preserving" --> 这里<span class="math inline">\(\alpha_t\)</span>是随层级<span class="math inline">\(t\)</span>变化的参数，可以是预设的，或者是可学习的。</p>
+<p>编码器的模型可以记为： <span class="math display">\[
+q(\vec x_t|\vec x_{t-1}) =\mathcal N(\vec x_t;\sqrt{a_t}\vec x_{t-1}, (1- \alpha_t) \mat I)
+\]</span> 根据条件3，经过若干层这样的编码器，最终的<span class="math inline">\(p(\vec x_T)\)</span>将会服从标准正态分布。于是MHVAE的联合分布<a class="quarto-xref" href="#eq-mhvae-joint-distribution">公式 5</a>变为 <span class="math display">\[
+p(\vec x_{0:T}) = p(\vec x_T)\prod_{t=1}^T p_{\vec \theta}(\vec x_{t-1}|\vec x_t)
+\]</span> 其中 <span class="math display">\[
+p(\vec x_T) = \mathcal N(\vec x_T; \mat 0, \mat I)
+\]</span> 总的来说，VDM假设的几个条件要求每一步“编码”都是持续增加噪声，直到数据成为完全的高斯噪声的过程。</p>
+<p>在VDM中，<span class="math inline">\(q(\vec x_t|\vec x_{t-1})\)</span>是完全固定的，因此我们关系的就只剩<span class="math inline">\(p_{\vec \theta}(\vec x_{t-1}|\vec x_t)\)</span>的学习了。</p>
+<p>如果你已经完成了一个VDM的训练，那么从模型中采样图片的过程就是从<span class="math inline">\(p(\vec x_T)\)</span>中随机采样一个数据，然后迭代地运行<span class="math inline">\(p_{\vec \theta}(\vec x_{t-1}|\vec x_t)\)</span>，直到生成<span class="math inline">\(\vec x_0\)</span>.</p>
+<p>与其它HVAE相似，VDM同样可以用ELBO作为优化目标： <span class="math display">\[
+\begin{aligned}
+\log p(\vec x) &amp;= \log \int p(\vec x_{0:T} d\vec x_{1:T}) &amp;\text{对联合分布的边缘化}\\
+&amp;= \log \int \frac{p(\vec x_{0:T})q(\vec x_{1:T}|\vec x_0)}{q(\vec x_{1:T}|\vec x_0)} d\vec x_{1:T}  &amp; \text{分子分母乘以同一个数} \\
+&amp;= \log \E _{q(\vec x_{1:T}|\vec x_0)} \left[\frac{p(\vec x_{0:T})}{q(\vec x_{1:T}|\vec x_0)}\right] &amp;\text{期望的定义}\\
+&amp;\geq \mathbb E_{q(\vec x_{1:T}|\vec x_0)}\left[\log \frac{p(\vec x_{0:T})}{q(\vec x_{1:T}|\vec x_0)}\right] &amp; \text{Jensen不等式}\\
+&amp;= \mathbb E_{q(\vec x_{1:T}|\vec x_0)}\left[\log\frac{p(\vec x_T)\prod_{t=1}^Tp_{\vec \theta}(\vec x_{t-1}|\vec x_t)}{\prod_{t=1}^T q(\vec x_t|\vec x_{t-1})}\right] &amp; \text{链式法则、马尔科夫性质}\\
+&amp;= \mathbb E_{q(\vec x_{1:T}|\vec x_0)} \left[\log\frac{p(\vec x_T)p_{\vec \theta}(\vec x_0|\vec x_1)\prod_{t=2}^Tp_{\vec\theta}(\vec x_{t-1}|\vec x_t)}{q(\vec x_T|\vec x_{T-1})\prod_{t=1}^{T-1}q(\vec x_t|\vec x_{t-1})}\right] \\
+&amp;= \mathbb E_{q(\vec x_{1:T}|\vec x_0)} \left[\log\frac{p(\vec x_T)p_{\vec \theta}(\vec x_0|\vec x_1)\prod_{t=1}^{T-1}p_{\vec\theta}(\vec x_t|\vec x_{t+1})}{q(\vec x_T|\vec x_{T-1})\prod_{t=1}^{T-1}q(\vec x_t|\vec x_{t-1})}\right] \\
+&amp;=  \mathbb E_{q(\vec x_{1:T}|\vec x_0)} \left[\log\frac{p(\vec x_T)p_{\vec \theta}(\vec x_0|\vec x_1)}{q(\vec x_T|\vec x_{T-1})}\right]+  \mathbb E_{q(\vec x_{1:T}|\vec x_0)} \left[\log\prod_{t=1}^{T-1}\frac{p_{\vec \theta}(\vec x_t|\vec x_{t+1})}{q(\vec x_t|\vec x_{t-1})}\right] &amp; \text{数学期望有线性性质} \\
+&amp;= \mathbb E_{q(\vec x_{1:T}|\vec x_0)} \left[\log p_{\vec\theta}(\vec x_0|\vec x_1)\right]+ \mathbb E_{q(\vec x_{1:T}|\vec x_0)} \left[\log\frac{p(\vec x_T)}{q(\vec x_T | \vec x_{T-1})}\right] + \mathbb E_{q(\vec x_{1:T}|\vec x_0)} \left[\sum_{t=1}^{T-1}\log \frac{p_{\vec\theta}(\vec x_t|\vec x_{t+1})}{q(\vec x_t|\vec x_{t-1})}\right] \\
+&amp;= \mathbb E_{q(\vec x_{1:T}|\vec x_0)} \left[\log p_{\vec\theta}(\vec x_0|\vec x_1)\right]+ \mathbb E_{q(\vec x_{1:T}|\vec x_0)} \left[\log\frac{p(\vec x_T)}{q(\vec x_T | \vec x_{T-1})}\right] + \sum_{t=1}^{T-1}\mathbb E_{q(\vec x_{1:T}|\vec x_0)}\left[\log\frac{p_\vtheta(\vec x_t|\vec x_{t+1})}{q(\vx_t|\vx_{t-1})}\right] \\
+&amp;= \E_{q(\vx_1|\vx_0)} \left[\log p_{\vec\theta}(\vec x_0|\vec x_1)\right] + \E_{q(\vx_{T-1},\vx_T|\vx_0)}\left[\log\frac{p(\vec x_T)}{q(\vec x_T | \vec x_{T-1})}\right] + \sum_{t=1}^{T-1}\E_{q(\vx_{t-1}, \vx_t,\vx_{t+1}|\vx_0)} \left[\log\frac{p_\vtheta(\vec x_t|\vec x_{t+1})}{q(\vx_t|\vx_{t-1})}\right] \\
+&amp; \text{按数学期望的定义展开} \\
+&amp;= \underbrace{\E_{q(\vx_1|\vx_0)} \left[\log p_{\vec\theta}(\vec x_0|\vec x_1)\right]}_{重构项} + \int \int \log \frac{p(\vx_T)}{q(\vx_T|\vx_{T-1})} q(\vx_{T-1}, \vx_T|\vx_0)d\vx_{T}d\vx_{T-1} +  \sum_{t=1}^{T-1}\E_{q(\vx_{t-1}, \vx_t,\vx_{t+1}|\vx_0)} \left[\log\frac{p_\vtheta(\vec x_t|\vec x_{t+1})}{q(\vx_t|\vx_{t-1})}\right] \\
+&amp;= \underbrace{\E_{q(\vx_1|\vx_0)} \left[\log p_{\vec\theta}(\vec x_0|\vec x_1)\right]}_{重构项} + \int \left( \int \log \frac{p(\vx_T)}{q(\vx_T|\vx_{T-1})} q(\vx_{T}|\vx_{T-1})d\vx_{T}\right)q(\vx_{T-1}|\vx_0)d\vx_{T-1} +  \sum_{t=1}^{T-1}\E_{q(\vx_{t-1}, \vx_t,\vx_{t+1}|\vx_0)} \left[\log\frac{p_\vtheta(\vec x_t|\vec x_{t+1})}{q(\vx_t|\vx_{t-1})}\right] \\
+&amp; \text{应用KL散度的定义} \\
+&amp;= \underbrace{\E_{q(\vx_1|\vx_0)} \left[\log p_{\vec\theta}(\vec x_0|\vec x_1)\right]}_{重构项} + \int \Big(-
+  D_\text{KL}\left(q(\vx_T\vert \vx_{T-1})\Vert p(\vx_T)\right)\Big)q(\vx_{T-1}|\vx_0)d\vx_{T-1} +  \sum_{t=1}^{T-1}\E_{q(\vx_{t-1}, \vx_t,\vx_{t+1}|\vx_0)} \left[\log\frac{p_\vtheta(\vec x_t|\vec x_{t+1})}{q(\vx_t|\vx_{t-1})}\right] \\
+&amp; \text{期望的定义} \\
+&amp;= \underbrace{\E_{q(\vx_1|\vx_0)} \left[\log p_{\vec\theta}(\vec x_0|\vec x_1)\right]}_{重构项} - \mathbb E_{q(\vx_{T-1}|\vx_0)} \left[
+  D_\text{KL}\left(q(\vx_T\vert \vx_{T-1})\Vert p(\vx_T)\right)\right] +  \sum_{t=1}^{T-1}\E_{q(\vx_{t-1}, \vx_t,\vx_{t+1}|\vx_0)} \left[\log\frac{p_\vtheta(\vec x_t|\vec x_{t+1})}{q(\vx_t|\vx_{t-1})}\right] \\
+&amp; \text{对于最后一项也是同理}\\
+&amp;= \underbrace{\E_{q(\vx_1|\vx_0)} \left[\log p_{\vec\theta}(\vec x_0|\vec x_1)\right]}_{重构项} - \underbrace{\mathbb E_{q(\vx_{T-1}|\vx_0)} \left[
+  D_\text{KL}\left(q(\vx_T\vert \vx_{T-1})\Vert p(\vx_T)\right)\right]}_{先验匹配项} - \sum_{t=1}^{T-1}\underbrace{\E_{q(\vx_{t-1},\vx_{t+1}|\vx_0)} \left[D_\text{KL}(q(\vx_t|\vx_{t-1})\Vert p_\vtheta (\vx_t|\vx_{t+1}))\right]}_{一致性约束项} \\
+\end{aligned}
+\]</span></p>
+<p>可以看到ELBO可以拆解为三项：</p>
+<ol type="1">
+<li>重构项要求用第一层隐变量恢复原始数据的似然度最大化；</li>
+<li>先验匹配项要求最终的隐变量接近高斯先验分布。这一项其实不会体现在损失函数里，因为这一步没有任何可训练参数。实践中我们会通过一些设计和参数选择，使得最后一层隐变量接近高斯先验；</li>
+<li>一致性约束项要求隐变量在前向加噪和逆向去噪的两个方向产生的隐变量分布一致。</li>
+</ol>
+<p>那么VDM下，ELBO的所有项都可以用蒙特卡洛采样的方式优化。但是注意到最后一项涉及到两个随机变量的采样<span class="math inline">\(\{\vx_{t-1}, \vx_{t+1}\}\)</span>，这可能导致估计结果的方差偏大。为了优化这个问题，我们可以考虑重新推导ELBO，写出一个一次只需采样一个随机变量的版本。</p>
+<p>注意到由于马尔科夫链的性质，有 <span class="math display">\[
+q(\vx_t|\vx_{t-1}, \vx_0) = \frac{
+  q(\vx_{t-1}|\vx_t,\vx_0) q(\vx_t|\vx_0)
+}
+{
+  q(\vx_{t-1}|\vx_0)
+},
+\]</span> 利用这个式子，我们可以重新推导ELBO： <span id="eq-vdm-elbo"><span class="math display">\[
+\begin{aligned}
+\log p(\vx) &amp;\geq \E _{q(\vx_{1:T}|\vx_0)}\left[\log\frac{p(\vx_{0:T})}{q(\vx_{1:T}|\vx_0)}\right] \\
+&amp;= \mathbb E_{q(\vec x_{1:T}|\vec x_0)}\left[\log\frac{p(\vec x_T)\prod_{t=1}^Tp_{\vec \theta}(\vec x_{t-1}|\vec x_t)}{\prod_{t=1}^T q(\vec x_t|\vec x_{t-1})}\right] &amp; \text{链式法则、马尔科夫性质}\\
+&amp;= \mathbb E_{q(\vec x_{1:T}|\vec x_0)}\left[\log \frac{p(\vx_T)p_\vtheta (\vx_0|\vx_1)\prod_{t=2}^T p_\vtheta (\vx_{t-1}|\vx_t)}{q(\vx_1|\vx_0)\prod_{t=2}^Tq(\vx_t|\vx_{t-1})}\right] \\
+&amp;= \mathbb E_{q(\vec x_{1:T}|\vec x_0)}\left[\log \frac{p(\vx_T)p_\vtheta (\vx_0|\vx_1)\prod_{t=2}^T p_\vtheta (\vx_{t-1}|\vx_t)}{q(\vx_1|\vx_0)\prod_{t=2}^Tq(\vx_t|\vx_{t-1}, \vx_0)}\right] &amp; \text{应用马尔科夫链的性质} \\
+&amp;= \mathbb E_{q(\vec x_{1:T}|\vec x_0)}\left[\log \frac{p(\vx_T)p_\vtheta (\vx_0|\vx_1)}{q(\vx_1|\vx_0)} + \log \prod_{t=2}^T\frac{ p_\vtheta (\vx_{t-1}|\vx_t)}{q(\vx_t|\vx_{t-1}, \vx_0)}\right]  \\
+&amp;= \mathbb E_{q(\vec x_{1:T}|\vec x_0)}\left[\log \frac{p(\vx_T)p_\vtheta (\vx_0|\vx_1)}{q(\vx_1|\vx_0)} + \log \prod_{t=2}^T\frac{ p_\vtheta (\vx_{t-1}|\vx_t)}{\frac{q(\vx_{t-1}|\vx_t,\vx_0)\textcolor{red}{q(\vx_t|\vx_0)}}{\textcolor{red}{q(\vx_{t-1}|\vx_0)}}}\right]  &amp; \text{贝叶斯定理}\\
+&amp; \text{红色部分在连乘的相邻项间被抵消} \\
+&amp;=\E _{q(\vx_{1:T}|\vx_0)}\left[\log \frac{p(\vx_T)p_\vtheta(\vx_0|\vx_1)}{\cancel{q(\vx_1|\vx_0)}} + \log \frac{\cancel{q(\vx_1|\vx_0)}}{q(\vx_T|\vx_0)}+\log\prod_{t=2}^T \frac{p_\vtheta(\vx_{t-1}|\vx_t)}{q(\vx_{t-1}|\vx_t, \vx_0)}\right] \\
+&amp;=\E _{q(\vx_{1:T}|\vx_0)}\left[\log \frac{p(\vx_T)p_\vtheta(\vx_0|\vx_1)}{q(\vx_T|\vx_0)}+\sum_{t=2}^T \log \frac{p_\vtheta(\vx_{t-1}|\vx_t)}{q(\vx_{t-1}|\vx_t, \vx_0)}\right] \\
+&amp;=\E _{q(\vx_{1:T}|\vx_0)}[\log p_\vtheta(\vx_0|\vx_1)] + \E _{q(\vx_{1:T}|\vx_0)}\left[ \log\frac{p(\vx_T)}{q(\vx_T|\vx_0)} \right] + \sum_{t=2}^T\E _{q(\vx_{1:T}|\vx_0)} \left[\log\frac{p_\vtheta(\vx_{t-1}|\vx_t)}{q(\vx_{t-1}|\vx_t, \vx_0)}\right] \\
+&amp;=\E_{q(\vx_1|\vx_0)}[\log p_\vtheta(\vx_0|\vx_1)] + \E_{q(\vx_T|\vx_0)}\left[\log\frac{p(\vx_T)}{q(\vx_T|\vx_0)}\right] + \sum_{t=2}^T \E_{q(\vx_t, \vx_{t-1}|\vx_0)}\left[\log\frac{p_\vtheta(\vx_{t-1}|\vx_t)}{q(\vx_{t-1}|\vx_t, \vx_0)}\right] \\
+&amp;=\underbrace{\E_{q(\vx_1|\vx_0)}[\log p_\vtheta(\vx_0|\vx_1)]}_{重构项} - \underbrace{D_\text{KL}(q(\vx_T|\vx_0)\Vert p(\vx_T))}_{先验匹配项} - \sum_{t=2}^T \underbrace{\E_{q(\vx_t|\vx_0)}[D_\text{KL}(q(\vx_{t-1} | \vx_t, \vx_0)\Vert p_\vtheta (\vx_{t-1}|\vx_t))]}_{去噪匹配项}
+\end{aligned}  
+\tag{7}\]</span></span> 经过这样的推导，我们将ELBO拆解为3项：</p>
+<ol type="1">
+<li>重构项：可以用蒙特卡洛方法采样估计</li>
+<li>先验匹配项：不包含可训练参数。由于VDM的假设，这一项的值为0</li>
+<li>去噪匹配项：在这一项中，<span class="math inline">\(q(\vx_{t-1}|\vx_t, \vx_0)\)</span>为ground-truth信号，它定义了已知真实样本<span class="math inline">\(\vx_0\)</span>时，从<span class="math inline">\(\vx_t\)</span>到<span class="math inline">\(\vx_{t-1}\)</span>的去噪过程是怎么样的。我们用<span class="math inline">\(p_\vtheta(\vx_{t-1}|\vx_t)\)</span>去近似它。</li>
+</ol>
+<p>注意到由于我们没有应用马尔科夫性质以外的假设，所以其实以上推导对于任意MHVAE都是适用的。也适用于<span class="math inline">\(T=1\)</span>时的MHVAE，这时MHVAE退化成普通的VAE。</p>
+<p>ELBO中，<span class="math inline">\(D_\text{KL}(q(\vx_{t-1} | \vx_t, \vx_0)\Vert p_\vtheta (\vx_{t-1}|\vx_t))\)</span>是优化的重点。在一般的MHVAE中，由于encoder可能是可学习的任意的函数，这个优化很难实现。而在VDM中，我们将encoder设置为固定的线性高斯模型，应用重参数化技巧，encoder过程可以重写为： <span class="math display">\[
+\vx_t = \sqrt{\alpha_t} \vx_{t-1} + \sqrt{1 - \alpha_t} \vec\epsilon, \text{其中}\vec\epsilon \sim \mathcal N(\vec\epsilon; \mZero, \mI)
+\]</span> 这是一个递归的过程。那么对于任意的<span class="math inline">\(t\)</span>，<span class="math inline">\(\vx_t\sim q(\vx_t|\vx_0)\)</span>可以写为（式子中所有的<span class="math inline">\(\vec \epsilon\)</span>都独立同分布地采样于<span class="math inline">\(\mathcal N(\vec \epsilon;\mZero, \mI)\)</span>）： <span id="eq-xt-reparam"><span class="math display">\[
+\begin{aligned}
+\vx_t &amp;= \sqrt{\alpha_t} \vx_{t-1} + \sqrt{1 - \alpha_t} \vec\epsilon^*_{t-1} \\
+&amp;= \sqrt{\alpha_t}(\sqrt{\alpha_{t-1}}\vx_{t-2} + \sqrt{1 - \alpha_{t-1}}\vec\epsilon^*_{t-2}) + \sqrt{1 - \alpha_t} \vec\epsilon^*_{t-1}\\
+&amp;= \sqrt{\alpha_t\alpha_{t-1}} \vx_{t-2} + \sqrt{\alpha_t - \alpha_t \alpha_{t-1}} \vec\epsilon^*_{t-2} + \sqrt{1 - \alpha_t}\vec\epsilon^*_{t-1} \\
+&amp;\text{两个高斯变量相加} \\
+&amp;= \sqrt{\alpha_t\alpha_{t-1}} \vx_{t-2} + \sqrt{\sqrt{\alpha_t - \alpha_t \alpha_{t-1}}^2 + \sqrt{1 - \alpha_t}^2} \vec\epsilon_{t-2} \\
+&amp;= \sqrt{\alpha_t\alpha_{t-1}} \vx_{t-2} + \sqrt{\alpha_t - \alpha_t\alpha_{t-1} + 1 - \alpha_t}\vec\epsilon_{t-2} \\
+&amp;= \sqrt{\alpha_t \alpha_{t-1}} \vx_{t-2} + \sqrt{1 - \alpha_t\alpha_{t-1}} \vec\epsilon_{t-2} \\
+&amp;= \dots \\
+&amp;= \sqrt{\prod_{i=1}^t \alpha_i} \vx_0 + \sqrt{1 - \prod_{i=1}^t\alpha_i}\vec\epsilon_0 \\
+&amp;= \sqrt{\bar{\alpha}_t} \vx_0 + \sqrt{1 - \bar{\alpha}_t} \vec\epsilon_0 \\
+&amp;\sim \mathcal N(\vx_t; \sqrt{\bar\alpha_t} \vx_0, (1 - \bar\alpha_t)\mI)
+\end{aligned}
+\tag{8}\]</span></span> 这里应用了“两个独立高斯随机变量之和仍服从高斯分布，其均值为原分布均值之和，方差为原分布方差之和”这个知识点。</p>
+<p>这样，我们就发现<span class="math inline">\(q(\vx_{t}|\vx_0)\)</span>也服从高斯分布，知道了它的表达式。我们也可由此得知<span class="math inline">\(q(\vx_{t-1}|\vx_0)\)</span>的表达式。</p>
+<p>接下来的工作就是得到<span class="math inline">\(q(\vx_{t-1}|\vx_t, \vx_0)\)</span>： <span id="eq-vdm-gt-denoise"><span class="math display">\[
+\begin{aligned}
+q(\vx_{t-1}|\vx_t, \vx_0) &amp;= \frac{q(\vx_t|\vx_{t-1}, \vx_0) q(\vx_{t-1}|\vx_0)}{q(\vx_t|\vx_0)} \\
+&amp;= \frac{\mathcal N(\vx_t; \sqrt{\alpha_t}\vx_{t-1}, (1 - \alpha_t)\mI)\mathcal N(\vx_{t-1}; \sqrt{\bar{\alpha}_{t-1}}\vx_0, (1 - \bar\alpha_{t-1})\mI)}{\mathcal N(\vx_t;\sqrt{\bar\alpha_t}\vx_0, (1 - \bar\alpha_t)\mI)} \\
+&amp;\propto \exp\left\{-\left[ \frac{(\vx_t - \sqrt{\alpha_t}\vx_{t-1})^2}{2(1 - \alpha_t)} + \frac{(\vx_{t-1} - \sqrt{\bar\alpha_{t-1}}\vx_0)^2}{2(1 - \bar\alpha_{t-1})} - \frac{(\vx_t - \sqrt{\bar\alpha_t}\vx_0)^2}{2(1 - \bar\alpha_t)} \right] \right\} \\
+&amp;= \exp\left\{-\frac{1}{2}\left[ \frac{(\vx_t - \sqrt{\alpha_t}\vx_{t-1})^2}{1 - \alpha_t} + \frac{(\vx_{t-1} - \sqrt{\bar\alpha_{t-1}}\vx_0)^2}{1 - \bar\alpha_{t-1}} - \frac{(\vx_t - \sqrt{\bar\alpha_t}\vx_0)^2}{1 - \bar\alpha_t} \right] \right\} \\
+&amp; \text{把与}\vx_t,\vx_0\text{有关的常数项摘出来} \\
+&amp;= \exp\left\{ -\frac{1}{2}\left[\frac{-2\sqrt{\alpha_t} \vx_t \vx_{t-1} + \alpha_t \vx^2_{t-1}}{1 - \alpha_t} + \frac{\vx^2_{t-1} - 2\sqrt{\bar\alpha_{t-1}}\vx_{t-1}\vx_0}{1 - \bar\alpha_{t-1}} + C(\vx_t, \vx_0)\right] \right\} \\
+&amp;\propto \exp\left\{-\frac{1}{2} \left[ -\frac{2\sqrt{\alpha_t}\vx_t\vx_{t-1}}{1 - \alpha_t} + \frac{\alpha_t\vx^2_{t-1}}{1 - \alpha_t} + \frac{\vx_{t-1}^2}{1 - \bar\alpha_{t-1}} - \frac{2\sqrt{\bar\alpha_{t-1}}\vx_{t-1}\vx_0}{1 - \bar\alpha_{t-1}} \right]\right\} \\
+&amp;= \exp\left\{-\frac{1}{2} \left[(\frac{\alpha_t}{1 - \alpha_t} + \frac{1}{1 - \bar\alpha_{t-1}})\vx^2_{t-1} - 2 \left(\frac{\sqrt{\alpha_t}\vx_t}{1 - \alpha_t} + \frac{\sqrt{\bar\alpha_{t-1}}\vx_0}{1 - \bar\alpha_{t-1}}\right)\vx_{t-1}\right] \right\}\\
+&amp;= \exp\left\{-\frac{1}{2} \left[\frac{\alpha_t(1 - \bar\alpha_{t-1}) + 1 - \alpha_t}{(1 - \alpha_t)(1 - \bar\alpha_{t-1})}\vx^2_{t-1} - 2 \left(\frac{\sqrt{\alpha_t}\vx_t}{1 - \alpha_t} + \frac{\sqrt{\bar\alpha_{t-1}}\vx_0}{1 - \bar\alpha_{t-1}}\right)\vx_{t-1}\right] \right\}\\
+&amp;\text{注意}\alpha_t \bar\alpha_{t-1} = \bar\alpha_t \\
+&amp;= \exp\left\{-\frac{1}{2} \left[\frac{1 - \bar\alpha_t}{(1 - \alpha_t)(1 - \bar\alpha_{t-1})}\vx^2_{t-1} - 2 \left(\frac{\sqrt{\alpha_t}\vx_t}{1 - \alpha_t} + \frac{\sqrt{\bar\alpha_{t-1}}\vx_0}{1 - \bar\alpha_{t-1}}\right)\vx_{t-1}\right] \right\}\\
+&amp;= \exp\left\{ -\frac{1}{2} \left(\frac{1 - \bar\alpha_t}{(1 - \alpha_t)(1 - \bar\alpha_{t-1})}\right)\left[\vx_{t-1}^2 - 2 \frac{ \left(\frac{\sqrt{\alpha_t}\vx_t}{1 - \alpha_t} + \frac{\sqrt{\bar\alpha_{t-1}}\vx_0}{1 - \bar\alpha_{t-1}}\right)}{\frac{1 - \bar\alpha_t}{(1 - \alpha_t)(1 - \bar\alpha_{t-1})}}\vx_{t-1}\right] \right\}\\
+&amp;= \exp\left\{ -\frac{1}{2} \left(\frac{1 - \bar\alpha_t}{(1 - \alpha_t)(1 - \bar\alpha_{t-1})}\right)\left[\vx_{t-1}^2 - 2 \frac{ \left(\frac{\sqrt{\alpha_t}\vx_t}{1 - \alpha_t} + \frac{\sqrt{\bar\alpha_{t-1}}\vx_0}{1 - \bar\alpha_{t-1}}\right)(1 - \alpha_t)(1 - \bar\alpha_{t-1})}{1 - \bar\alpha_t}\vx_{t-1}\right] \right\}\\
+&amp;= \exp\left\{ -\frac{1}{2} \left(\frac{1}{\frac{(1 - \alpha_t)(1 - \bar\alpha_{t-1})}{1 - \bar\alpha_t}}\right)\left[\vx_{t-1}^2 - 2 \frac{\sqrt{\alpha_t}(1-\bar\alpha_{t-1})\vx_t + \sqrt{\bar\alpha_{t-1}}(1 - \alpha_t)\vx_0}{1 - \bar\alpha_t}\vx_{t-1}\right] \right\}\\
+&amp;\propto \mathcal N(\vx_{t-1}; \underbrace{\frac{\sqrt{\alpha_t}(1 - \bar\alpha_{t-1})\vx_t + \sqrt{\bar\alpha_{t-1}}(1 - \alpha_t)\vx_0}{1 - \bar\alpha_t}}_{\vec\mu_q(\vx_t, \vx_0)},\underbrace{\frac{(1 - \alpha_t)(1 - \bar\alpha_{t-1})}{1 - \bar\alpha_t}\mI}_{\mathbf\Sigma_q(t)})
+\end{aligned}
+\tag{9}\]</span></span></p>
+<p>于是我们可以看到<span class="math inline">\(\vx_{t-1}\sim q(\vx_{t-1}\vert\vx_t,\vx_0)\)</span>服从正态分布。<span class="math inline">\(\vec\mu_q(\vx_t, \vx_0)\)</span>是<span class="math inline">\(\vx_t,\vx_0\)</span>的函数，而<span class="math inline">\(\mathbf \Sigma_q(t)\)</span>是<span class="math inline">\(\alpha\)</span>参数的函数。</p>
+<p>设<span class="math inline">\(\mathbf \Sigma_q(t)=\sigma^2_q(t)\mI\)</span>，其中 <span id="eq-gt-variance"><span class="math display">\[
+\sigma^2_q(t)= \frac{(1 - \alpha_t)(1 - \bar\alpha_{t-1})}{1 - \bar\alpha_t}
+\tag{10}\]</span></span></p>
+<p>我们要让<span class="math inline">\(p_\vtheta(\vx_{t-1}|\vx_t)\)</span>尽可能接近<span class="math inline">\(q(\vx_{t-1}|\vx_t,\vx_0)\)</span>。既然<span class="math inline">\(q(\vx_{t-1}|\vx_t,\vx_0)\)</span>是高斯分布，我们也可以用高斯分布建模<span class="math inline">\(p_\vtheta(\vx_{t-1}|\vx_t)\)</span>。不妨让它的协方差矩阵也为<span class="math inline">\(\mathbf \Sigma_q(t)=\sigma^2_q(t)\mI\)</span>，均值则设为<span class="math inline">\(\vec\mu_\vtheta(\vx_t, t)\)</span>，是<span class="math inline">\(\vx_t\)</span>的函数，但不依赖<span class="math inline">\(\vx_0\)</span>，毕竟decoder无法获得<span class="math inline">\(\vx_0\)</span>的真值。</p>
+<p>要让两个高斯分布相近，需要考虑它们的KL散度： <span class="math display">\[
+D_{\text{KL}} (\mathcal N(\vx;\vec\mu_\vx, \mathbf\Sigma_x)\Vert \mathcal N(\vec y;\vec\mu_y,\mathbf \Sigma_y)) = \frac{1}{2}\left[
+  \log \frac{|\mathbf \Sigma_y|}{|\mathbf \Sigma_x|} - d + \text{tr}(\mathbf \Sigma_y^{-1}\mathbf \Sigma_x) + (\vec\mu_y-\vec\mu_x)^T\mathbf \Sigma_y^{-1}(\vec\mu_y-\vec\mu_x)
+\right]
+\]</span> 这里<span class="math inline">\(d\)</span>是数据的维度。</p>
+<p>因为我们将协方差矩阵设置为相同的，因此上式将只与均值的差有关。 <span class="math display">\[
+\begin{aligned}
+&amp;\argmin{\vtheta} D_\text{KL}(q(\vx_{t-1}|\vx_t,\vx_0)\Vert p_\vtheta(\vx_{t-1}|\vx_t)) \\
+=~&amp; \argmin{\vtheta} D_\text{KL}(\mathcal N(\vx_{t-1};\vec\mu_q,\mathbf\Sigma_q(t))\Vert\mathcal N(\vx_{t-1}; \vec\mu_\vtheta, \mathbf\Sigma_q(t))) \\
+=~&amp;\argmin{\vtheta} \frac{1}{2} \left[\log\frac{|\mSigma_q(t)|}{|\mSigma_q(t)|} - d + \text{tr}(\mSigma_q(t)^{-1}\mSigma_q(t)) + (\vec\mu_\vtheta -\vec\mu_q)^T\mSigma_q(t)^{-1}(\vec\mu_\vtheta -\vec\mu_q)\right]\\
+=~&amp; \argmin{\vtheta} \frac{1}{2}[\log 1 - d + d+ (\vec\mu_\vtheta - \vec\mu_q)^T\mSigma_q(t)^{-1}(\vec\mu_\vtheta -\vec\mu_q)]\\
+=~&amp;\argmin{\vtheta} \frac{1}{2}\left[ (\vec\mu_\vtheta - \vec\mu_q)^T\mSigma_q(t)^{-1}(\vec\mu_\vtheta -\vec\mu_q) \right]\\
+=~&amp;\argmin{\vtheta} \frac{1}{2} \left[(\vec\mu_\vtheta - \vec\mu_q)^T(\sigma_q^2(t)\mI)^{-1}(\vec\mu_\vtheta -\vec\mu_q) \right] \\
+=~&amp;\argmin{\vtheta} \frac{1}{2\sigma^2(t)}\left[\left\Vert \vec\mu_\vtheta - \vec\mu_q \right\Vert_2^2\right]
+\end{aligned}
+\]</span> 上面的式子中，<span class="math inline">\(\vec\mu_\vtheta\)</span>是<span class="math inline">\(\vec\mu_q(\vec x_t, \vx_0)\)</span>的缩写， <span class="math display">\[
+\vec\mu_q(\vx_t,\vx_0)=\frac{\sqrt{\alpha_t}(1 - \bar\alpha_{t-1})\vx_t + \sqrt{\bar\alpha_{t-1}}(1 - \alpha_t)\vx_0}{1 - \bar\alpha_t}
+\]</span></p>
+<p>而<span class="math inline">\(\vec\mu_\vtheta\)</span>是<span class="math inline">\(\vec\mu_\vtheta (\vx_t, t)\)</span>的缩写。为了让<span class="math inline">\(\vec\mu_\vtheta\)</span>趋近<span class="math inline">\(\vec\mu_q\)</span>，可以这样设计： <span class="math display">\[
+\vec\mu_\vtheta(\vx_t, t) = \frac{\sqrt{\alpha_t}(1 - \bar\alpha_{t-1})\vx_t + \sqrt{\bar\alpha_{t-1}}(1 - \alpha_t)\hat \vx_\vtheta(\vx_t, t)}{1 - \bar\alpha_t}
+\]</span> 其中<span class="math inline">\(\vx_\vtheta(\vx_t, t)\)</span>是基于<span class="math inline">\(\vx_t\)</span>和<span class="math inline">\(t\)</span>对<span class="math inline">\(\vx_0\)</span>做出的预测。综合以上推理，优化问题变为： <span id="eq-vdm-objective"><span class="math display">\[
+\begin{aligned}
+&amp;\argmin \vtheta D_\text{KL} (q(\vx_{t-1}|\vx_t, \vx_0) \Vert p_\vtheta(\vx_{t-1}|\vx_t)) \\
+=~&amp;\argmin \vtheta D_\text{KL} (\mathcal N(\vx_{t-1}; \vec\mu_q, \mSigma_q(t)) \Vert \mathcal N(\vx_{t-1}; \vec\mu_\vtheta, \mSigma_q(t)))\\
+=~&amp;\argmin \vtheta \frac{1}{2\sigma_q^2(t)}\left[\left\Vert {\sqrt{\alpha_t}(1 - \bar\alpha_{t-1})\vx_t + \sqrt{\bar\alpha_{t-1}}(1 - \alpha_t)\hat\vx_\vtheta(\vx_t, t) \over 1 - \bar\alpha_t} - {\sqrt{\alpha_t} (1 - \bar\alpha_{t-1})\vx_t + \sqrt{\bar\alpha_{t-1}}(1 - \alpha_t)\vx_0\over 1 - \bar\alpha_t}\right\Vert_2^2\right] \\
+=~&amp;\argmin \vtheta \frac{1}{2\sigma_q^2(t)} \left[\left\Vert {\sqrt{\bar\alpha_{t-1}}(1 - \alpha_t)\hat\vx_\vtheta(\vx_t, t) \over 1 - \bar\alpha_t} - {\sqrt{\bar\alpha_{t-1}(1 - \alpha_t)\vx_0 \over 1 - \bar\alpha_t}} \right\Vert_2^2 \right]\\
+=~&amp;\argmin\vtheta  \frac{1}{2\sigma_q^2(t)} \left[\left\Vert {\sqrt{\bar\alpha_{t-1}}(1 - \alpha_t)\over 1 - \bar\alpha_t}(\hat\vx_\vtheta(\vx_t, t) - \vx_0) \right\Vert_2^2\right]\\
+=~&amp;\argmin\vtheta \frac{1}{2\sigma_q^2(t)} {{\bar\alpha_{t-1}}(1 - \alpha_t)^2\over (1 - \bar\alpha_t)^2} \left[\left\Vert \hat\vx_\vtheta(\vx_t, t) - \vx_0 \right\Vert_2^2\right]
+\end{aligned}
+\tag{11}\]</span></span> 于是，VDM的优化问题可以归结为用一个神经网络从带噪声的图像中恢复原始图像。</p>
+<p>对<a class="quarto-xref" href="#eq-vdm-elbo">公式 7</a>中的求和项的优化可以近似为对在所有时间步<span class="math inline">\(t\)</span>上如下期望值的优化： <span class="math display">\[
+\argmin\vtheta \E _{t\sim U\left\{2, T\right\}}\left[
+  \E_{q(\vx_t|\vx_0)} \left[
+    D_\text{KL}(q(\vx_{t-1}|\vx_t, \vx_0)\Vert p_\vtheta(\vx_{t-1}|\vx_t))  
+  \right]  
+\right]
+\]</span></p>
+</section>
+<section class="level2" data-number="7" id="學習噪聲的參數">
+<h2 class="anchored" data-anchor-id="學習噪聲的參數" data-number="7"><span class="header-section-number">7</span> 学习噪声的参数</h2>
+<p>本节讨论影响VDM噪声的参数<span class="math inline">\(\alpha_t\)</span>要如何学习得到。比较容易想到的办法是使用以<span class="math inline">\(\vec\eta\)</span>为参数的模型<span class="math inline">\(\hat \alpha_{\vec\eta}(t)\)</span>作预测。这样做是低效的，因为推理时，你需要在每一步<span class="math inline">\(t\)</span>都预测对应的<span class="math inline">\(\bar\alpha_t\)</span>。当然你可以提前把计算结果存下来。但是下文将介绍另一种方法。</p>
+<p>将<a class="quarto-xref" href="#eq-gt-variance">公式 10</a>带入<a class="quarto-xref" href="#eq-vdm-objective">公式 11</a>，我们得到： <span id="eq-noise-param-deriv"><span class="math display">\[
+\begin{aligned}
+\frac{1}{2\sigma^2_q(t)}\frac{\bar\alpha_{t-1}(1 - \alpha_t)^2}{(1 - \bar\alpha_t)^2}\left[\left\Vert \hat\vx_\vtheta(\vx_t, t) - \vx_0\right\Vert_2^2\right] &amp;= \frac{1}{2\frac{(1 - \alpha_t)(1- \bar\alpha_{t-1})}{1 - \bar\alpha_t}} \frac{\bar\alpha_{t-1}(1 - \alpha_t)^2}{(1 - \bar\alpha_t)^2} \left[\left\Vert \hat\vx_\vtheta(\vx_t, t) - \vx_0\right\Vert_2^2\right] \\
+&amp;= \frac{1}{2} \frac{1 - \bar\alpha_t}{(1 - \alpha_t)(1 - \bar\alpha_{t-1})} \frac{\bar\alpha_{t-1}(1 - \alpha_t)^2}{(1 - \bar\alpha_t)^2} \left[\Vert \hat\vx_\vtheta(\vx_t, t) - \vx_0\Vert_2^2\right] \\
+&amp;= \frac{1}{2} \frac{\bar\alpha_{t-1}(1 - \alpha_t)}{(1 - \bar\alpha_{t-1})(1 - \bar\alpha_t)}  \left[\Vert \hat\vx_\vtheta(\vx_t, t) - \vx_0\Vert_2^2\right]\\
+&amp;= \frac{1}{2} \frac{\bar\alpha_{t-1} - \bar\alpha_t}{(1 - \bar\alpha_{t-1})(1 - \bar\alpha_t)}  \left[\Vert \hat\vx_\vtheta(\vx_t, t) - \vx_0\Vert_2^2\right] \\
+&amp;= \frac{1}{2} \frac{\bar\alpha_{t-1} -\bar\alpha_{t-1}\bar\alpha_t +\bar\alpha_{t-1}\bar\alpha_t - \bar\alpha_t}{(1 - \bar\alpha_{t-1})(1 - \bar\alpha_t)}  \left[\Vert \hat\vx_\vtheta(\vx_t, t) - \vx_0\Vert_2^2\right] \\
+&amp;= \frac{1}{2} \frac{\bar\alpha_{t-1}(1 - \bar\alpha_t) - \bar\alpha_t(1 - \bar\alpha_{t-1})}{(1 - \bar\alpha_{t-1})(1 - \bar\alpha_t)}  \left[\Vert \hat\vx_\vtheta(\vx_t, t) - \vx_0\Vert_2^2\right] \\
+&amp;= \frac{1}{2} \left(\frac{\bar\alpha_{t-1}}{1 - \bar\alpha_{t-1}} - \frac{\bar\alpha_t}{1 - \bar\alpha_t}\right) \left[\Vert \hat\vx_\vtheta(\vx_t, t) - \vx_0\Vert_2^2\right] \\
+\end{aligned}
+\tag{12}\]</span></span></p>
+<p>回想起<span class="math inline">\(q(\vx_t|\vx_0)\)</span>是形为<span class="math inline">\(\mathcal N(\vx_t; \sqrt{\bar\alpha_t}\vx_0, (1 - \bar\alpha_t)\mI)\)</span>，根据SNR（信噪比）的定义，<span class="math inline">\(\text{SNR} = \frac{\mu^2}{\sigma^2}\)</span>，时间步<span class="math inline">\(t\)</span>的SNR为： <span class="math display">\[
+\text{SNR}(t) = \frac{\bar\alpha_t}{1 - \bar\alpha_t}
+\]</span> 那么<a class="quarto-xref" href="#eq-noise-param-deriv">公式 12</a>可以进一步简化为： <span class="math display">\[
+\frac{1}{2\sigma^2_q(t)}\frac{\bar\alpha_{t-1}(1 - \alpha_t)^2}{(1 - \bar\alpha_t)^2}\left[\left\Vert \hat\vx_\vtheta(\vx_t, t) - \vx_0\right\Vert_2^2\right]  = \frac{1}{2}(\text{SNR}(t-1)-\text{SNR}(t))
+\left[\Vert \hat\vx_\vtheta(\vx_t, t) - \vx_0\Vert_2^2\right]
+\]</span> 在VDM中，SNR应该随著时间步<span class="math inline">\(t\)</span>增加而增加，因为<span class="math inline">\(\vx_t\)</span>会随著<span class="math inline">\(t\)</span>增加，从原图逐渐变成标准正态分布。</p>
+<p>那么不妨将SNR函数设计为 <span class="math display">\[
+\text{SNR}(t) = \frac{\bar\alpha_t}{1 - \bar\alpha_t}= \exp(-\omega_{\vec\eta}(t))
+\]</span> 所以 <span class="math display">\[
+\bar\alpha_t = \text{sigmoid}(-\omega_\vec\eta(t))
+\]</span> 其中<span class="math inline">\(\vec\eta\)</span>是可学习的模型参数。</p>
+</section>
+<section class="level2" data-number="8" id="vdm的三種等效形式">
+<h2 class="anchored" data-anchor-id="vdm的三種等效形式" data-number="8"><span class="header-section-number">8</span> VDM的三种等效形式</h2>
+<p>如前文所述，VDM可以设计为从<span class="math inline">\(\vx_t\)</span>预测<span class="math inline">\(\vx_0\)</span>的模型。但是，VDM还有两种其它等效形式。</p>
+<p>重写<a class="quarto-xref" href="#eq-xt-reparam">公式 8</a>的重参数化技巧，得到： <span class="math display">\[
+\vx_0 = \frac{\vx_t - \sqrt{1 - \bar\alpha_t}\vec\epsilon_0}{\sqrt{\bar\alpha_t}}
+\]</span> 代入<a class="quarto-xref" href="#eq-vdm-gt-denoise">公式 9</a>中得到的<span class="math inline">\(\vec\mu_q(\vx_t, \vx_0)\)</span>，得到 <span class="math display">\[
+\begin{aligned}
+\vec\mu_q(\vx_t, \vx_0) &amp;= \frac{\sqrt{\alpha_t}(1 - \bar\alpha_{t-1})\vx_t + \sqrt{\bar\alpha_{t-1}}(1 - \alpha_t)\vx_0}{1 - \bar\alpha_t} \\
+&amp;= \frac{\sqrt{\alpha_t}(1 - \bar\alpha_{t-1})\vx_t + \sqrt{\bar\alpha_{t-1}}(1 - \alpha_t) \frac{\vx_t - \sqrt{1 - \bar\alpha_t}\vec\epsilon_0}{\sqrt{\bar\alpha_t}}}{1 - \bar\alpha_t} \\
+&amp;= \frac{\sqrt{\alpha_t}(1 - \bar\alpha_{t-1})\vx_t + (1 - \alpha_t) \frac{\vx_t - \sqrt{1 - \bar\alpha_t}\vec\epsilon_0}{\sqrt{\alpha_t}}}{1 - \bar\alpha_t} \\
+&amp;= \frac{\sqrt{\alpha_t}(1 - \bar\alpha_{t-1})\vx_t}{1 - \bar\alpha_t} + \frac{(1 - \alpha_t)\vx_t}{(1 - \bar\alpha_t)\sqrt{\alpha_t}} - \frac{(1 - \alpha_t)\sqrt{1 - \bar\alpha_t}\vec\epsilon_0}{(1 - \bar\alpha_t)\sqrt{\alpha_t}} \\
+&amp;= \left(\frac{\sqrt{\alpha_t}(1 - \bar\alpha_{t-1})}{1 - \bar\alpha_t} + \frac{(1 - \alpha_t)}{(1 - \bar\alpha_t)\sqrt{\alpha_t}}\right)\vx_t - \frac{(1 - \alpha_t)\sqrt{1 - \bar\alpha_t}}{(1 - \bar\alpha_t)\sqrt{\alpha_t}} \vec\epsilon_0\\
+&amp;= \left(\frac{\alpha_t(1 - \bar\alpha_{t-1})}{(1 - \bar\alpha_t)\sqrt{\alpha_t}} + \frac{(1 - \alpha_t)}{(1 - \bar\alpha_t)\sqrt{\alpha_t}}\right)\vx_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar\alpha_t}\sqrt{\alpha_t}} \vec\epsilon_0\\
+&amp;= \frac{1 - \bar\alpha_t}{(1 - \bar\alpha_t)\sqrt{\alpha_t}}\vx_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar\alpha_t}\sqrt{\alpha_t}} \vec\epsilon_0\\
+&amp;= \frac{1}{\sqrt{\alpha_t}}\vx_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar\alpha_t}\sqrt{\alpha_t}} \vec\epsilon_0\\
+\end{aligned}
+\]</span> 因此，另一种<span class="math inline">\(\vec\mu_\vtheta(\vx_t, t)\)</span>的等效设计是： <span class="math display">\[
+\vec\mu_\vtheta(\vx_t, t) = \frac{1}{\sqrt{\alpha_t}} \vx_t - \frac{1-\alpha_t}{\sqrt{1 - \bar\alpha_t}\sqrt{\alpha_t}}\hat{\vec\epsilon}_\vtheta(\vx_t, t)
+\]</span> 对应的，优化问题就变为： <span class="math display">\[
+\begin{aligned}
+&amp;\argmin \vtheta D_\text{KL} (q(\vx_{t-1}|\vx_t, \vx_0)\Vert p_\vtheta(\vx_{t-1}|\vx_t)) \\
+=~&amp;\argmin\vtheta D_\text{KL}(\mathcal N(\vx_{t-1};\vec\mu_q, \mat\Sigma_q(t))\Vert \mathcal N(\vx_{t-1};\vec \mu_\vtheta, \mat\Sigma_q(t)))\\
+=~&amp;\argmin\vtheta \frac{1}{2\sigma_q^2(t)}\left[\left\Vert \frac{1}{\sqrt{\alpha_t}}\vx_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar\alpha_t}\sqrt{\alpha_t}} \hat{\vec\epsilon}_\vtheta(\vx_t, t) - \frac{1}{\sqrt{\alpha_t}}\vx_t + \frac{1 - \alpha_t}{\sqrt{1 - \bar\alpha_t}\sqrt{\alpha_t}}\vec\epsilon_0\right\Vert_2^2\right] \\
+=~&amp;\argmin\vtheta \frac{1}{2\sigma_q^2(t)}\left[\left\Vert  \frac{1 - \alpha_t}{\sqrt{1 - \bar\alpha_t}\sqrt\alpha_t}\vec\epsilon_0 - \frac{1 - \alpha_t}{\sqrt{1 - \bar\alpha_t}\sqrt{\alpha_t}}\hat{\vec\epsilon}_\vtheta(\vx_t, t)\right\Vert_2^2\right] \\
+=~&amp;\argmin\vtheta \frac{1}{2\sigma_q^2(t)}\left[\left\Vert  \frac{1 - \alpha_t}{\sqrt{1 - \bar\alpha_t}\sqrt\alpha_t}(\vec\epsilon_0 - \hat{\vec\epsilon}_\vtheta(\vx_t, t))\right\Vert_2^2\right] \\
+=~&amp;\argmin\vtheta \frac{1}{2\sigma_q^2(t)}\frac{(1 - \alpha_t)^2}{(1 - \bar\alpha_t)\alpha_t}\left[\left\Vert \vec\epsilon_0 - \hat{\vec\epsilon}_\vtheta(\vx_t, t)\right\Vert_2^2\right] \\
+\end{aligned}
+\]</span> 式子中<span class="math inline">\(\hat{\vec\epsilon}_\vtheta\)</span>是用于预测噪声<span class="math inline">\(\vec\epsilon_0\sim\mathcal N(\vec\epsilon; \vec 0, \mI)\)</span>，从而将<span class="math inline">\(\vec x_t\)</span>恢复为<span class="math inline">\(\vec x_0\)</span>的模型。</p>
+<p>这样，我们看到理论上预测噪声和预测原始图像在理论上是等价的。但是许多工作表明实际上预测噪声效果更好。</p>
+<p>第三种等价形式的推导要用到特威迪公式（Tweedies’s Formula）。对于高斯变量<span class="math inline">\(\vec z\sim \mathcal N(\vec z; \vec \mu_z, \mat \Sigma_z)\)</span>，特威迪公式表明： <span class="math display">\[
+\E[\vec\mu_{\vec z}|\vec z] = \vec z + \Sigma_z\nabla_{\vec z}\log p(\vec z)
+\]</span> 已知<span class="math inline">\(q(\vec x_t|\vec x_0)=\mathcal N(\vec x_t; \sqrt{\bar\alpha_t} \vec x_0, (1 - \bar\alpha_t)\mI)\)</span>，那么，根据特威迪公式有 <span class="math display">\[
+\E[\vec\mu_{\vx_t}|\vx_t] = \vx_t + (1 - \bar\alpha_t)\nabla_{\vx_t}\log p(\vx_t)
+\]</span> 后面为了方便，将<span class="math inline">\(\nabla_{\vx_t} \log p(\vx_t)\)</span>简写为<span class="math inline">\(\nabla \log p(\vx_t)\)</span>. 已知<span class="math inline">\(\vec\mu_{\vx_t}=\sqrt{\bar\alpha_t} \vx_0\)</span>，因此 <span class="math display">\[
+\begin{aligned}
+\sqrt{\bar\alpha_t}\vx_0 = \vx_t + (1 - \bar\alpha_t)\nabla\log p(\vx_t)\\
+\therefore \vx_0 = \frac{\vx_t + (1 - \bar\alpha_t)\nabla\log p(\vx_t)}{\sqrt{\bar\alpha_t}}
+\end{aligned}
+\]</span> 再次将<span class="math inline">\(\vx_0\)</span>代入ground-truth的去噪过程<a class="quarto-xref" href="#eq-vdm-gt-denoise">公式 9</a>，得到： <span class="math display">\[
+\begin{aligned}
+\vec\mu_q(\vx_t, \vx_0) &amp;= \frac{\sqrt{\alpha_t}(1 - \bar\alpha_{t-1})\vx_t + \sqrt{\bar\alpha_{t-1}}(1 - \alpha_t)\vx_0}{1 - \bar\alpha_t}\\
+&amp;= \frac{\sqrt{\alpha_t}(1 - \bar\alpha_{t-1})\vx_t + \sqrt{\bar\alpha_{t-1}}(1 - \alpha_t)\frac{\vx_t + (1 - \bar\alpha_t)\nabla\log p(\vx_t)}{\sqrt{\bar\alpha_t}}}{1 - \bar\alpha_t}\\
+&amp;= \frac{\sqrt{\alpha_t}(1 - \bar\alpha_{t-1})\vx_t +(1 - \alpha_t)\frac{\vx_t + (1 - \bar\alpha_t)\nabla\log p(\vx_t)}{\sqrt{\alpha_t}}}{1 - \bar\alpha_t}\\
+&amp;= \frac{\sqrt{\alpha_t}(1 - \bar\alpha_{t-1})\vx_t }{1 - \bar\alpha_t} + \frac{(1 - \alpha_t)\vx_t}{(1 - \bar\alpha_t)\sqrt{\alpha_t}} + \frac{(1 - \alpha_t)(1 - \bar\alpha_t)\nabla\log p(\vx_t)}{(1 - \bar\alpha_t)\sqrt{\alpha_t}}\\
+&amp;= \left(  \frac{\sqrt{\alpha_t}(1 - \bar\alpha_{t-1}) }{1 - \bar\alpha_t} + \frac{(1 - \alpha_t)}{(1 - \bar\alpha_t)\sqrt{\alpha_t}} \right)\vx_t + \frac{1 - \alpha_t}{\sqrt{\alpha_t}}\nabla\log p(\vx_t)\\
+&amp;= \left(  \frac{\alpha_t(1 - \bar\alpha_{t-1}) }{(1 - \bar\alpha_t)\sqrt{\alpha_t}} + \frac{(1 - \alpha_t)}{(1 - \bar\alpha_t)\sqrt{\alpha_t}} \right)\vx_t + \frac{1 - \alpha_t}{\sqrt{\alpha_t}}\nabla\log p(\vx_t)\\
+&amp;= \frac{1 - \bar\alpha_t}{(1 - \bar\alpha_t)\sqrt{\alpha_t}} \vx_t + \frac{1 - \alpha_t}{\sqrt{\alpha_t}}\nabla\log p(\vx_t)\\
+&amp;= \frac{1}{\sqrt{\alpha_t}} \vx_t + \frac{1 - \alpha_t}{\sqrt{\alpha_t}}\nabla\log p(\vx_t) \\
+\end{aligned}
+\]</span> 再一次，类似的将<span class="math inline">\(\vec\mu_\vtheta(\vx_t, t)\)</span>设计为： <span class="math display">\[
+\vec\mu_\vtheta(\vx_t, t)=\frac{1}{\sqrt{\alpha_t}} \vx_t + \frac{1 - \alpha_t}{\sqrt{\alpha_t}} \vec s_\vtheta(\vx_t, t)
+\]</span> 对应的优化过程变成： <span id="eq-vdm-score"><span class="math display">\[
+\begin{aligned}
+&amp;\argmin \vtheta D_\text{KL} (q(\vx_{t-1}|\vx_t, \vx_0)\Vert p_\vtheta(\vx_{t-1}\vert \vx_t))\\
+=~&amp; \argmin\vtheta D_\text{KL}(\mathcal N(\vx_{t-1}; \vec \mu_q, \mSigma_q(t))\Vert \mathcal N(\vx_{t-1};\vec\mu_\vtheta, \mSigma_a(t))) \\
+=~&amp; \argmin\vtheta \frac{1}{2\sigma_q^2(t)} \left[\left\Vert \frac{1}{\sqrt{\alpha_t}} \vx_t + \frac{1 - \alpha_t}{\sqrt{\alpha_t}} \vec s_\vtheta(\vx_t, t) - \frac{1}{\sqrt{\alpha_t}} \vx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t}}\nabla\log p(\vx_t) \right\Vert_2^2\right] \\
+=~&amp; \argmin\vtheta \frac{1}{2\sigma_q^2(t)} \left[\left\Vert \frac{1 - \alpha_t}{\sqrt{\alpha_t}} \left(\vec s_\vtheta(\vx_t, t) - \nabla\log p(\vx_t) \right) \right\Vert_2^2\right] \\
+=~&amp; \argmin\vtheta \frac{1}{2\sigma_q^2(t)} \frac{(1 - \alpha_t)^2}{\alpha_t} \left[\Vert \vec s_\vtheta(\vx_t, t) - \nabla\log p(\vx_t) \Vert_2^2\right]
+\end{aligned}
+\tag{13}\]</span></span> 式子中<span class="math inline">\(\vec s_\vtheta(\vx_t, t)\)</span>是一个预测分数函数（score function）<span class="math inline">\(\nabla \log p(\vx_t)\)</span>的模型，本质上是在时间步<span class="math inline">\(t\)</span>对于<span class="math inline">\(\vx_t\)</span>的梯度。</p>
+<p>分数函数<span class="math inline">\(\nabla \log p(\vx_t)\)</span>与噪声<span class="math inline">\(\vec\epsilon_0\)</span>显然很相似。不难看出 <span class="math display">\[
+\begin{aligned}
+&amp; \vx_0 = \frac{\vx_t + (1 - \bar\alpha_t)\nabla\log p(\vx_t)}{\sqrt{\bar\alpha_t}} = \frac{\vx_t - \sqrt{1 - \bar\alpha_t}\vec\epsilon_0}{\sqrt{\bar\alpha_t}}\\
+&amp;  \therefore \nabla \log p(\vx_t) = -\frac{1}{\sqrt{1 - \bar\alpha_t}}\vec\epsilon_0
+\end{aligned}
+\]</span> 结果显示分数函数和噪声的区别在于一个由<span class="math inline">\(t\)</span>决定的系数。直觉上，噪声是施加于原图像使其变得 随机的过程，而我们证明了分数函数通过建模反方向的噪声来恢复图像。</p>
+<p>总的来看，我们得到了三种等价的优化目标：直接预测<span class="math inline">\(\vx_0\)</span>, 预测噪声<span class="math inline">\(\vec \epsilon_0\)</span>，预测分数<span class="math inline">\(\nabla \log p(\vx_t)\)</span>.</p>
+</section>
+<section class="level2" data-number="9" id="基於分數的生成式模型">
+<h2 class="anchored" data-anchor-id="基於分數的生成式模型" data-number="9"><span class="header-section-number">9</span> 基于分数的生成式模型</h2>
+<p>我们展示了VDM可以通过优化<span class="math inline">\(\vec s_\vtheta(\vx_t, t)\)</span>，预测<span class="math inline">\(\nabla \log p(\vx_t)\)</span>来实现。然而这个基于特威迪公式的推导没有充分展示出设计背后的信息。分数函数（score function）到底是什么呢。为什么它值得我们去建模呢。幸运的是我们可以学习另一类生成式模型，基于分数的生成模型（Score-based Generative Models），了解分数函数的意义。我们会看到VDM可以解释为一种基于分数的生成模型。</p>
+<p>在此之前我们先大概了解一下基于能量的模型（energy-based model）。首先，任意概率分布可以重写为这样的形式： <span class="math display">\[
+p_\vtheta(x) = \frac{1}{Z_\vtheta}e^{-f_\vtheta(\vx)},
+\]</span> 其中<span class="math inline">\(f_\vtheta(\vx)\)</span>就是能量函数。<span class="math inline">\(Z_\vtheta\)</span>是用于使得<span class="math inline">\(\int p_\vtheta(\vx)d\vx=1\)</span>成立的系数。<span class="math inline">\(Z_\vtheta=\int e^{-f_\vtheta(\vx)}d\vx\)</span>并不一定容易计算。如果<span class="math inline">\(f_\vtheta(\vx)\)</span>很复杂，<span class="math inline">\(Z_\vtheta\)</span>就容易变得不可解。</p>
+<p>一种避免建模<span class="math inline">\(Z_\vtheta\)</span>的方法是使用<span class="math inline">\(\vec s_\vtheta(\vx)\)</span>来学习分数函数<span class="math inline">\(\nabla \log p(\vx)\)</span>。注意到， <span class="math display">\[
+\begin{aligned}
+\nabla_\vx\log p_\vtheta(\vx) &amp;= \nabla_\vx \log(\frac{1}{Z_\vtheta}e^{-f_\vtheta(\vx)}) \\
+&amp;= \nabla_\vx\log\frac{1}{Z_\vtheta} + \nabla_\vx \log e^{-f_\vtheta(\vx)}\\
+&amp;=-\nabla_\vx f_\vtheta(\vx) \\
+&amp;\approx \vec s_\vtheta(\vx)
+\end{aligned}
+\]</span></p>
+<p>因此<span class="math inline">\(\nabla_\vx \log p_\vtheta(\vx)\)</span>可以用一个神经网络近似。分数函数可以通过最小化费雪散度（Fisher Divergence）学习： <span id="eq-score-based-objective"><span class="math display">\[
+\mathbb E_{p(x)}\left[
+\Vert
+\vec s_\vtheta(\vx) - \nabla \log p(\vx)
+\Vert_2^2   
+\right]
+\tag{14}\]</span></span> 分数函数表示的是样本<span class="math inline">\(\vx\)</span>在数据空间中往哪个方向移动能最大化其对数似然。</p>
+<p>一旦学到了这样的分数函数，我们就可以用如下的过程来生成样本： <span class="math display">\[
+\vx_{i+1}\leftarrow \vx_i + c \nabla \log p(\vx_i) + \sqrt{2c}\vec\epsilon, ~ i=0,1,\dots,K,
+\]</span> 其中<span class="math inline">\(\vx_0\)</span>是空间中随机采样的一点，噪声<span class="math inline">\(\vec\epsilon\sim\mathcal N(\vec\epsilon;\mZero,\mI)\)</span>的作用是防止采样总是收敛于同一模式。这个采样过程被称为朗之万动力学。</p>
+<p>目标函数<a class="quarto-xref" href="#eq-score-based-objective">公式 14</a>需要我们得到真实的分数函数，但在建模复杂分布（比如真实图像）的时候是做不到的。score matching技术允许我们在不知道真实分布的情况下最小化费雪散度。</p>
+<p>这就是基于分数的生成式模型的原理。但是原始的基于分数的生成模型有几个问题：</p>
+<ol type="1">
+<li>如果数据是高维空间中的低维流形时，分数函数不是良定义的。如果一个点落在低维流形外，这个点的概率为0，对数函数在此无定义。而自然图像就被认为是一种高维空间中的低维流形。</li>
+<li>学习到的分数函数在数据的低密度区域可能不准确。因为我们训练<a class="quarto-xref" href="#eq-score-based-objective">公式 14</a>时，对于见得少或者没见过的数据，模型收不到很多监督信号。而采样却是从空间中的随机点开始的，不准确的分数函数将导致采样结果落在非最优点</li>
+<li>朗之万动力学采样不支持对混合分布的采样。例如对于 <span class="math display">\[
+p(\vx) = c_1 p_1(\vx) + c_2 p_2(\vx)
+\]</span> 从特定位置初始化的采样点，可能会以均等的机会落到两个分布中，即使<span class="math inline">\(c_1 != c_2\)</span>.</li>
+</ol>
+<p>而以上几个缺点可以同时用VDM的方法解决——往数据里加不同大小的噪声：</p>
+<ol type="1">
+<li>高斯噪声的加入将使得空间中每一点的概率都不为0.</li>
+<li>高斯噪声的增大使得空间中每一点在训练中被采样到的几率变得更加均匀。流形的低密度区能得到更好的训练。</li>
+<li>逐步加强的高斯噪声能形成一种“中间态”的分布，允许我们的采样能够遵循分布的混合系数。具体的，我们可以定义不同时间步下不同的噪声等级<span class="math inline">\(\left\{\sigma_t\right\}_{t=1}^T\)</span>，并定义每个时间步<span class="math inline">\(t\)</span>的数据分布 <span class="math display">\[
+p_{\sigma_t}(\vx_t) = \int p(\vx) \mathcal N(\vx_t; \vx, \sigma_t^2\mI) d\vx
+\]</span></li>
+</ol>
+<p>神经网络<span class="math inline">\(\vec s_\vtheta(\vx, t)\)</span>将学习不同时间步下的分数函数： <span id="eq-score-based-objective-2"><span class="math display">\[
+\argmin \vtheta \sum_{t=1}^T \lambda(t)\mathbb E_{p_{\sigma_t}(\vx_t)} \left[
+\Vert
+\vec s_\vtheta(\vx, t) - \nabla \log p_{\sigma_t}(\vx_t)
+\Vert_2^2
+\right],
+\tag{15}\]</span></span> 其中<span class="math inline">\(\lambda(t)\geq 0\)</span>是权重系数。在噪声大的时候，上面的目标函数使模型能够学习不同分布模式的比例；在噪声小的时候，模式逐渐分离，分数函数更精准地学到每个模式的细节。在采样时，对于每个<span class="math inline">\(t=T, T-1, \dots, 2, 1\)</span>，我们先从高噪音模式开始，然后逐渐降低噪音，直到样本收敛于某个具体模式。</p>
+<p>注意到<a class="quarto-xref" href="#eq-score-based-objective-2">公式 15</a>和<a class="quarto-xref" href="#eq-vdm-score">公式 13</a>的形式一致。至此，我们建立起了VDM和基于分数的生成模型之间的联系。</p>
+<p>从基于分数的生成模型的视角出发，我们还可以发现当MHVAE的时间步数<span class="math inline">\(T\rightarrow \infty\)</span>时，相当于将离散的随机过程变为连续的随机过程，这时可以用SDE（stochastic differential equation）来描述这个过程，而采样可以通过求逆向的SDE来完成。</p>
+</section>
+<section class="level2" data-number="10" id="引導信息">
+<h2 class="anchored" data-anchor-id="引導信息" data-number="10"><span class="header-section-number">10</span> 引导信息</h2>
+<p>前文只讨论了<span class="math inline">\(p(x)\)</span>. 但我们有时会希望用引导信息控制生成的图像，需要条件概率<span class="math inline">\(p(\vx|y)\)</span>. 这是图像超分辨率、文生图模型的基石。</p>
+<p>一种自然的方式是在每一时间步加上条件信息，将公式 <span class="math display">\[
+p(\vx_{0:T}) = p(\vx_T)\prod_{t=1}^T p_\vtheta(\vx_{t-1}|\vx_t)
+\]</span> 转变为 <span class="math display">\[
+p(\vx_{0:T}|y) = p(\vx_T)\prod_{t=1}^T p_\vtheta(\vx_{t-1}|\vx_t, y)
+\]</span> 然后我们可以预测<span class="math inline">\(\hat \vx_\vtheta(\vx_t, t, y)\approx \vx_0\)</span>，或者<span class="math inline">\(\hat{\vec\epsilon}_\vtheta(\vx_t, t, y)\approx \vec\epsilon_0\)</span>，或者<span class="math inline">\(\vec s_\vtheta(\vx_t, t, y)\approx \nabla \log p(\vx_t|y)\)</span>，从而构造一个VDM。</p>
+<p>这种方法可能的缺点是，模型可能忽略或者不充分重视条件信息。</p>
+<p>为了解决这个问题，可以使用一些引导技巧。两种常见的引导技巧包括分类器引导和免分类器引导。</p>
+<section class="level3" data-number="10.1" id="分類器引導">
+<h3 class="anchored" data-anchor-id="分類器引導" data-number="10.1"><span class="header-section-number">10.1</span> 分类器引导</h3>
+<p>让我们从基于分数的生成器的视角来看，我们的目标是学习<span class="math inline">\(\nabla \log p(\vx_t|y)\)</span>. 根据贝叶斯公式， <span id="eq-classifier-based-guidance"><span class="math display">\[
+\begin{aligned}
+\nabla \log p(\vx_t|y) &amp;= \nabla \log \left(\frac{p(\vx_t)p(y|\vx_t)}{p(y)}   \right)\\
+&amp;= \nabla \log p(\vx_t) + \nabla \log p(y|\vx_t) - \nabla \log p(y) \\
+&amp;= \underbrace{\nabla \log p(\vx_t)}_{无条件的分数}+ \underbrace{\nabla \log p(y|\vx_t)}_{对抗梯度}
+\end{aligned}
+\tag{16}\]</span></span> 前面说过<span class="math inline">\(\nabla\)</span>是<span class="math inline">\(\nabla_{\vx_t}\)</span>的简写，所以<span class="math inline">\(\nabla \log p(y)=0\)</span>.</p>
+<p>根据推导的结果，一个由类别为条件的生成模型可以分解为一个无条件生成模型，搭配一个分类器模型。其中分类器用于提供“对抗梯度”，将采样过程引导到对应类别。</p>
+<p>为了更精细地控制采样，我们可以加一个系数控制对抗梯度的强度，像这样： <span id="eq-classifier-based-guidance-with-gamma"><span class="math display">\[
+\nabla \log p(\vx_t|y) = \nabla \log p(\vx_t) + \gamma \nabla \log p(y|\vx_t)
+\tag{17}\]</span></span></p>
+<p>这个引导方法的缺点在于它需要一个额外的分类器。一般的分类器还不行，这个分类器还得适应带噪声的输入。</p>
+</section>
+<section class="level3" data-number="10.2" id="無需分類器的引導技巧">
+<h3 class="anchored" data-anchor-id="無需分類器的引導技巧" data-number="10.2"><span class="header-section-number">10.2</span> 无需分类器的引导技巧</h3>
+<p>为了推导出免分类器的引导方法，可以重新整理<a class="quarto-xref" href="#eq-classifier-based-guidance">公式 16</a>，得到 <span class="math display">\[
+\nabla \log p(y|\vx_t) = \nabla \log p(\vx_t | y) - \nabla \log p(\vx_t),
+\]</span> 将其代入<a class="quarto-xref" href="#eq-classifier-based-guidance-with-gamma">公式 17</a>，得到 <span class="math display">\[
+\begin{aligned}
+\nabla \log p(\vx_t|y) &amp;= \nabla \log p(\vx_t) + \gamma(\nabla \log p(\vx_t|y) - \nabla \log p(\vx_t)) \\
+&amp;= \nabla \log p(\vx_t) + \gamma \nabla \log p(\vx_t| y) - \gamma \nabla \log p(\vx_t)\\
+&amp;= \underbrace{\gamma\nabla \log p(\vx_t|y)}_{条件分数} + \underbrace{(1 - \gamma)\nabla\log p(\vx_t)}_{无条件分数}
+\end{aligned}
+\]</span> 同样可以获得一个使用系数控制梯度方向的方法。实践中，可以用同一个模型同时学习无条件生成和条件生成，然后在推理时，用上面的式子控制梯度方向。</p>
+</section>
+</section>
+<section class="level2" data-number="11" id="總結">
+<h2 class="anchored" data-anchor-id="總結" data-number="11"><span class="header-section-number">11</span> 总结</h2>
+<ol type="1">
+<li>VAE模型是MHVAE的一个特例</li>
+<li>介绍了VDM的三种等效优化目标：</li>
+</ol>
+<ul>
+<li>预测原始图像</li>
+<li>预测噪声</li>
+<li>预测分数函数</li>
+</ul>
+<ol start="3" type="1">
+<li>VDM有以下缺点，值得进一步思考</li>
+</ol>
+<ul>
+<li>VDM没有遵循或者模拟人类通常生成数据的方式</li>
+<li>VDM不产生可解释的隐变量。而VAE则有可能产生一些有意义的隐变量。</li>
+<li>隐变量和原始数据的尺寸被限定为相同的，因此无法学到压缩的、有意义的隐变量。</li>
+<li>采样过程比较昂贵，需要采样多步。</li>
+</ul>
+</section>
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+</div>
+    </div>
+    <div class="post_list">
+        <span>By </span>
+        <a href="./">@執迷</a>
+        <span> in </span>
+        <span class="post_category"><a href="./" rel="bookmark" title="Permalink to 計算機視覺">[ 計算機視覺 ]</a></span>
+        <span class="post_date">2025-08-09</span>
+        <div><span>Tags : </span>
+            
+            
+            <span><a href="./">#Diffusion Model, </a></span>
+            
+            <span><a href="./">#Score-based Generation Model, </a></span>
+            
+            <span><a href="./">#VAE, </a></span>
+            
+            <span><a href="./">#Variational Autoencoder, </a></span>
+            
+            <span><a href="./">#Generative Model, </a></span>
+            
+            <span><a href="./">#Variational Diffusion Model, </a></span>
+            
+            
+        </div>
+
+        <div class="entry-social">
+            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././diffusion_models_20250809_zh-cn.html&text=【论文精读】从一个统一的视角理解扩散模型&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+
+            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././diffusion_models_20250809_zh-cn.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
+
+            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././diffusion_models_20250809_zh-cn.html&t=【论文精读】从一个统一的视角理解扩散模型"><img src="./theme/images/icons/facebook-s.png"></a></span>
+
+            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././diffusion_models_20250809_zh-cn.html&title=【论文精读】从一个统一的视角理解扩散模型" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+
+            <span class="mail"><a href="mailto:?subject=【论文精读】从一个统一的视角理解扩散模型&amp;body=Viens découvrir un article à propos de [【论文精读】从一个统一的视角理解扩散模型] sur le site de 執迷. ././diffusion_models_20250809_zh-cn.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+        </div>
+    </div>
+    
+
+</section>
+
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
+</body>
+</html>

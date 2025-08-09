@@ -146,6 +146,7 @@
 <li><a class="nav-link" data-scroll-target="#梯度計算" href="#梯度計算" id="toc-梯度計算"><span class="header-section-number">5</span> 梯度計算</a></li>
 <li><a class="nav-link" data-scroll-target="#訓練和推理" href="#訓練和推理" id="toc-訓練和推理"><span class="header-section-number">6</span> 訓練和推理</a></li>
 <li><a class="nav-link" data-scroll-target="#transformer模型是rnn模型的特例" href="#transformer模型是rnn模型的特例" id="toc-transformer模型是rnn模型的特例"><span class="header-section-number">7</span> Transformer模型是RNN模型的特例</a></li>
+<li><a class="nav-link" data-scroll-target="#推薦閲讀" href="#推薦閲讀" id="toc-推薦閲讀"><span class="header-section-number">8</span> 推薦閲讀</a></li>
 </ul>
 </nav>
 </div>
@@ -165,14 +166,9 @@
 </header>
 <section class="level2" data-number="1" id="前言">
 <h2 class="anchored" data-anchor-id="前言" data-number="1"><span class="header-section-number">1</span> 前言</h2>
-<p><a href="./bitter_lesson_20241013_zh-cn.html"><em>The Bitter Lesson</em></a>提出了這樣的觀點：能充分適應算力增長的方法最終能脫穎而出。Transformer之所以能在很多領域取代RNN，就是因為前者更適合並行訓練。可是在大模型廣泛應用的今天，這些基於Transformer結構的模型仍然還有一些令人在意的缺點和局限性：</p>
-<ul>
-<li>每一個token的計算量隨著上下文的增長而增長</li>
-<li>隨著上下文越來越長，模型就越難從上下文中找到“重點”</li>
-<li>如何管理模型的記憶？製作一個聊天機器人，難道要將所有的聊天記錄都保存下來嗎？或者需要定時對上下文做一個文本總結嗎？</li>
-</ul>
-<p>這些問題，總而言之是如何管理記憶的問題。在這方面Transformer的策略是簡單粗暴的：它把所有的歷史token都保留下來。而理想中的AI或許應該具有這樣的特性：他能夠維護一個大小有限的記憶，能夠選擇保留重要的信息，也具備“遺忘”的能力。這就讓人聯想到RNN模型。</p>
-<p>當然，也許我們不能指望重新設計一個RNN模型，讓他和最領先的大模型一較高下。但像這樣的思考仍然是有益而且有趣的：如果我們要設計一個具有維護記憶力的能力的模型，他應該是什麼樣子？</p>
+<p>Transformer模型相較於傳統的RNN模型更適合并行訓練，因此得以在NLP領域得到廣汎應用。但是<span class="math inline">\(O(n^2)\)</span>空間和時間複雜度是導致Transformer模型消耗顯存和算力的痛點。這是第一個問題。</p>
+<p>有一個觀點是“壓縮即智能”。但是我們在Transformer上沒有看到任何“記憶壓縮”的影子。它只是將所有token的特徵排列在那裏，可供後續隨時取用。這是第二個問題，也是我最近常常思考的問題。</p>
+<p>從上面兩點出發，我最近著手調研（或者也可以説是考古吧😀）和實驗一些綫性Transformer的工作。</p>
 <p>本文是我閱讀<em>Transformers are RNNs</em><span class="citation" data-cites="transformers_are_rnns"><sup>[<a href="#ref-transformers_are_rnns" role="doc-biblioref">1</a>]</sup></span>這篇文章的筆記。這篇文章有一些有意思的貢獻：</p>
 <ol type="1">
 <li>從softmax attention這個特例推廣到一般的衡量query和key相似度的方法；</li>
@@ -293,6 +289,12 @@ T_l(x) = f_l(A_l(x) + x),
 <section class="level2" data-number="7" id="transformer模型是rnn模型的特例">
 <h2 class="anchored" data-anchor-id="transformer模型是rnn模型的特例" data-number="7"><span class="header-section-number">7</span> Transformer模型是RNN模型的特例</h2>
 <p>從本文的討論，我們可以明顯的看出，帶因果掩膜的Transformer模型可以視作是RNN模型的特例，即Transformer模型可以看做是一個能維護一個內部狀態（<span class="math inline">\(\mathbf S_i\)</span>和<span class="math inline">\(\mathbf Z_i\)</span>），在每次獲得新輸入時更新內部狀態的模型。</p>
+</section>
+<section class="level2" data-number="8" id="推薦閲讀">
+<h2 class="anchored" data-anchor-id="推薦閲讀" data-number="8"><span class="header-section-number">8</span> 推薦閲讀</h2>
+<ul>
+<li><a href="https://www.spaces.ac.cn/archives/7546">《线性Attention的探索：Attention必须有个Softmax吗？》</a>。蘇劍林的文章，非常好的總結分享了各種各樣的綫性Attention，甚至提出了自己的新設計。</li>
+</ul>
 </section>
 <div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" id="quarto-bibliography" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">参考文献</h2><div class="references csl-bib-body" data-entry-spacing="0" id="refs" role="list">
 <div class="csl-entry" id="ref-transformers_are_rnns" role="listitem">
