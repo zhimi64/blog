@@ -1,0 +1,197 @@
+
+<rss version="2.0">
+    <channel>
+        <title>執迷的博客</title>
+        <link>.</link>
+        <description>做一個有趣的人！</description>
+        <language>zh-CN</language>
+        <pubDate>2025-08-24</pubDate>
+        <generator>Eureka</generator>
+
+        
+        <item>
+            <title>从DDPM到DDIM：一些扩散模型的必学基础</title>
+            <link>././ddpm_ddim_20250824_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././ddpm_ddim_20250824_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>【论文精读】从一个统一的视角理解扩散模型</title>
+            <link>././diffusion_models_20250809_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././diffusion_models_20250809_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>对torch中einsum函数的一些分析</title>
+            <link>././einsum_20250315_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././einsum_20250315_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>【论文精读】Linear Transformer</title>
+            <link>././linear_transformer_20250215_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././linear_transformer_20250215_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>Lean语言数学之旅——一阶逻辑</title>
+            <link>././lean_fol_20250216_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././lean_fol_20250216_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>Lean语言数学之旅——命题逻辑</title>
+            <link>././lean_logic_20250111_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././lean_logic_20250111_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>Lean语言数学之旅——环境配置和一些基础概念</title>
+            <link>././lean_basics_20250109_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././lean_basics_20250109_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>记录一些端口映射的配置命令：iptables、ssh和netsh</title>
+            <link>././port_mapping_20241201_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././port_mapping_20241201_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>Sutton的The Bitter Lesson阅读笔记</title>
+            <link>././bitter_lesson_20241013_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././bitter_lesson_20241013_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>生成式模型的Beam Search采样原理</title>
+            <link>././beam_search_20240902_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././beam_search_20240902_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>浅谈MinHash：求文档的交并比</title>
+            <link>././minhash_exp_20240717_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././minhash_exp_20240717_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>大模型算法工程师面试经验</title>
+            <link>././llm_interview_exp_20240711_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././llm_interview_exp_20240711_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>用numpy实现神经网络梯度下降</title>
+            <link>././gradient_descent_20240629_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././gradient_descent_20240629_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>游戏王小世界现象一卡的检索链分析</title>
+            <link>././yugioh_small_world_20240502_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././yugioh_small_world_20240502_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>批归一化（Batch Normalization）原理分析和代码实现</title>
+            <link>././bn_20240318_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././bn_20240318_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>手写Multi-Head Attention：从公式到代码实现</title>
+            <link>././multi_head_20240311_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././multi_head_20240311_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>导向滤波原理及其Python实现</title>
+            <link>././guided_filter_20240202_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././guided_filter_20240202_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>基于PID控制器的循迹小车简单演示</title>
+            <link>././pid_demo_20240129_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././pid_demo_20240129_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>Softmax函数的性质</title>
+            <link>././softmax20240109_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././softmax20240109_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>五度相生律和十二平均律的计算</title>
+            <link>././temperament20240104_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././temperament20240104_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>相机模型和相机标定</title>
+            <link>././calibration_20220222_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././calibration_20220222_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>前景分割任务和ViBe算法</title>
+            <link>././vibe_20220218_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././vibe_20220218_zh-cn.html</guid>
+        </item>
+        
+        <item>
+            <title>最小二乘法求解直线拟合问题</title>
+            <link>././least_squares_20220104_zh-cn.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>././least_squares_20220104_zh-cn.html</guid>
+        </item>
+        
+    </channel>
+</rss>

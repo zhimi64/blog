@@ -56,6 +56,8 @@
   <!-- Feed Meta Data -->
   
   
+    <link href="././feeds/rss.xml" type="application/atom+xml" rel="alternate" title="執迷的博客 RSS Feed" />
+  
 
   <!-- Twitter Feed -->
   <meta name="twitter:card" content="summary">
@@ -112,6 +114,9 @@
     <p class="social">
       
       
+      
+      <a href="././feeds/rss.xml" rel="alternate">
+        <img src="./theme/images/icons/rss.png"></a>
       
     </p>
 
@@ -537,16 +542,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             
         </div>
 
-        <div class="entry-social">
-            <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././guided_filter_20240202.html&text=導向濾波原理及其Python實現&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
-
-            <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=././guided_filter_20240202.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/google-s.png"></a></span>
-
-            <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=././guided_filter_20240202.html&t=導向濾波原理及其Python實現"><img src="./theme/images/icons/facebook-s.png"></a></span>
-
-            <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././guided_filter_20240202.html&title=導向濾波原理及其Python實現" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
-
-            <span class="mail"><a href="mailto:?subject=導向濾波原理及其Python實現&amp;body=Viens découvrir un article à propos de [導向濾波原理及其Python實現] sur le site de 執迷. ././guided_filter_20240202.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+        <div class="entry-social-container" style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
+            
+            
+            <div class="entry-social" style="text-align: center;">
+                <span class="social-text">分享本文</span><br>
+                <div class="social-icons" style="display: flex; gap: 10px; justify-content: center;">
+                    <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=././guided_filter_20240202.html&text=導向濾波原理及其Python實現&via="><img src="./theme/images/icons/twitter-s.png"></a></span>
+                    <a target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=././guided_filter_20240202.html&title=導向濾波原理及其Python實現" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="./theme/images/icons/linkedin-s.png"></a>
+                    <span class="mail"><a href="mailto:?subject=導向濾波原理及其Python實現&amp;body=Viens découvrir un article à propos de [導向濾波原理及其Python實現] sur le site de 執迷. ././guided_filter_20240202.html" title="Share by Email" target="_blank"><img src="./theme/images/icons/mail-s.png"></a></span>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
     
