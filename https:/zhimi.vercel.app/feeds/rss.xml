@@ -1,0 +1,197 @@
+
+<rss version="2.0">
+    <channel>
+        <title>執迷的博客</title>
+        <link>https://zhimi.vercel.app</link>
+        <description>做一個有趣的人！</description>
+        <language>zh-Hant</language>
+        <pubDate>2025-08-24</pubDate>
+        <generator>Eureka</generator>
+
+        
+        <item>
+            <title>從DDPM到DDIM：一些擴散模型的必學基礎</title>
+            <link>https://zhimi.vercel.app/./ddpm_ddim_20250824.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./ddpm_ddim_20250824.html</guid>
+        </item>
+        
+        <item>
+            <title>【論文精讀】從一個統一的視角理解擴散模型</title>
+            <link>https://zhimi.vercel.app/./diffusion_models_20250809.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./diffusion_models_20250809.html</guid>
+        </item>
+        
+        <item>
+            <title>對torch中einsum函數的一些分析</title>
+            <link>https://zhimi.vercel.app/./einsum_20250315.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./einsum_20250315.html</guid>
+        </item>
+        
+        <item>
+            <title>【論文精讀】Linear Transformer</title>
+            <link>https://zhimi.vercel.app/./linear_transformer_20250215.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./linear_transformer_20250215.html</guid>
+        </item>
+        
+        <item>
+            <title>Lean语言数学之旅——一階邏輯</title>
+            <link>https://zhimi.vercel.app/./lean_fol_20250216.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./lean_fol_20250216.html</guid>
+        </item>
+        
+        <item>
+            <title>Lean语言数学之旅——命題邏輯</title>
+            <link>https://zhimi.vercel.app/./lean_logic_20250111.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./lean_logic_20250111.html</guid>
+        </item>
+        
+        <item>
+            <title>Lean语言数学之旅——环境配置和一些基础概念</title>
+            <link>https://zhimi.vercel.app/./lean_basics_20250109.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./lean_basics_20250109.html</guid>
+        </item>
+        
+        <item>
+            <title>記錄一些端口映射的配置命令：iptables、ssh和netsh</title>
+            <link>https://zhimi.vercel.app/./port_mapping_20241201.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./port_mapping_20241201.html</guid>
+        </item>
+        
+        <item>
+            <title>Sutton的The Bitter Lesson閱讀筆記</title>
+            <link>https://zhimi.vercel.app/./bitter_lesson_20241013.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./bitter_lesson_20241013.html</guid>
+        </item>
+        
+        <item>
+            <title>生成式模型的Beam Search採樣原理</title>
+            <link>https://zhimi.vercel.app/./beam_search_20240902.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./beam_search_20240902.html</guid>
+        </item>
+        
+        <item>
+            <title>淺談MinHash：求文檔的交並比</title>
+            <link>https://zhimi.vercel.app/./minhash_exp_20240717.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./minhash_exp_20240717.html</guid>
+        </item>
+        
+        <item>
+            <title>大模型算法工程師面試經驗</title>
+            <link>https://zhimi.vercel.app/./llm_interview_exp_20240711.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./llm_interview_exp_20240711.html</guid>
+        </item>
+        
+        <item>
+            <title>用numpy實現神經網絡梯度下降</title>
+            <link>https://zhimi.vercel.app/./gradient_descent_20240629.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./gradient_descent_20240629.html</guid>
+        </item>
+        
+        <item>
+            <title>遊戲王小世界現象一卡的檢索鏈分析</title>
+            <link>https://zhimi.vercel.app/./yugioh_small_world_20240502.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./yugioh_small_world_20240502.html</guid>
+        </item>
+        
+        <item>
+            <title>批歸一化（Batch Normalization）原理分析和代碼實現</title>
+            <link>https://zhimi.vercel.app/./bn_20240318.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./bn_20240318.html</guid>
+        </item>
+        
+        <item>
+            <title>手寫Multi-Head Attention：從公式到代碼實現</title>
+            <link>https://zhimi.vercel.app/./multi_head_20240311.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./multi_head_20240311.html</guid>
+        </item>
+        
+        <item>
+            <title>導向濾波原理及其Python實現</title>
+            <link>https://zhimi.vercel.app/./guided_filter_20240202.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./guided_filter_20240202.html</guid>
+        </item>
+        
+        <item>
+            <title>基於PID控制器的循跡小車簡單演示</title>
+            <link>https://zhimi.vercel.app/./pid_demo_20240129.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./pid_demo_20240129.html</guid>
+        </item>
+        
+        <item>
+            <title>Softmax函數的性質</title>
+            <link>https://zhimi.vercel.app/./softmax20240109.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./softmax20240109.html</guid>
+        </item>
+        
+        <item>
+            <title>五度相生律和十二平均律的計算</title>
+            <link>https://zhimi.vercel.app/./temperament20240104.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./temperament20240104.html</guid>
+        </item>
+        
+        <item>
+            <title>相機模型和相機標定</title>
+            <link>https://zhimi.vercel.app/./calibration_20220222.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./calibration_20220222.html</guid>
+        </item>
+        
+        <item>
+            <title>前景分割任務和ViBe算法</title>
+            <link>https://zhimi.vercel.app/./vibe_20220218.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./vibe_20220218.html</guid>
+        </item>
+        
+        <item>
+            <title>最小二乘法求解直線擬合問題</title>
+            <link>https://zhimi.vercel.app/./least_squares_20220104.html</link>
+            <description></description>
+            <pubDate></pubDate>
+            <guid>https://zhimi.vercel.app/./least_squares_20220104.html</guid>
+        </item>
+        
+    </channel>
+</rss>
