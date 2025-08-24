@@ -38,7 +38,7 @@
   <title>從DDPM到DDIM：一些擴散模型的必學基礎</title>
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
+  <meta name="description" content="文章回顧兩篇重要工作。一個是DDPM，另一個是DDIM. DDPM展現了擴散模型的強大生成能力，圖像質量可與當時主流GAN媲美。它逐步添加噪聲將圖像轉化為噪聲，再訓練神經網絡學習逆向去噪過程。DDPM原本需要上千步迭代生成圖像，效率較低。後續提出的DDIM通過調整採樣軌跡將推理步數壓縮到50-100步，大幅提升實用性。本文會梳理從DDPM到DDIM的關鍵推導過程，統一兩篇文章的數學符號，讓推理過程更加清晰容易理解。">
   <meta name="author" content="執迷">
 
   <link rel="shortcut icon" href="favicon.ico">
@@ -46,7 +46,7 @@
   <!-- schema.org -->
   <meta itemprop="name" content="執迷的博客">
   <meta itemprop="image" content="">
-  <meta itemprop="description" content="">
+  <meta itemprop="description" content="文章回顧兩篇重要工作。一個是DDPM，另一個是DDIM. DDPM展現了擴散模型的強大生成能力，圖像質量可與當時主流GAN媲美。它逐步添加噪聲將圖像轉化為噪聲，再訓練神經網絡學習逆向去噪過程。DDPM原本需要上千步迭代生成圖像，效率較低。後續提出的DDIM通過調整採樣軌跡將推理步數壓縮到50-100步，大幅提升實用性。本文會梳理從DDPM到DDIM的關鍵推導過程，統一兩篇文章的數學符號，讓推理過程更加清晰容易理解。">
 
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   <!-- Style Meta Data -->
@@ -145,11 +145,6 @@
 <div class="quarto-title">
 
 </div>
-<div>
-<div class="description">
-    文章回顧兩篇重要工作。一個是DDPM，另一個是DDIM. DDPM展現了擴散模型的強大生成能力，圖像質量可與當時主流GAN媲美。它逐步添加噪聲將圖像轉化為噪聲，再訓練神經網絡學習逆向去噪過程。 DDPM原本需要上千步迭代生成圖像，效率較低。後續提出的DDIM通過調整採樣軌跡將推理步數壓縮到50-100步，大幅提升實用性。 本文會梳理從DDPM到DDIM的關鍵推導過程，統一兩篇文章的數學符號，讓推理過程更加清晰容易理解。
-  </div>
-</div>
 <div class="quarto-title-meta">
 </div>
 </header>
@@ -203,7 +198,7 @@
 <p>首先看一下DDPM。設初始圖像為<span class="math inline">\(\vx_0\)</span>，擴散模型會在每一步<span class="math inline">\(t=1,2,3,4,\dots,T\)</span>添加噪聲，將<span class="math inline">\(\vx_{t-1}\)</span>變成<span class="math inline">\(\vx_t\)</span>，最終得到<span class="math inline">\(\vx_T\)</span>. 這個逐步加噪聲的過程叫作前向過程。</p>
 <p>根據這個定義，前向過程是馬爾科夫過程，即<span class="math inline">\(q(\vx_t|\vx_0, \vx_1, \dots, \vx_{t-1}) = q(\vx_t|\vx_{t-1})\)</span>.</p>
 <p>在本文中，我會用Python代碼做一些簡單的演示和實驗。下面的代碼將T設為1000.</p>
-<div class="cell" data-execution_count="1" id="d5f3f430">
+<div class="cell" data-execution_count="1" id="d8ad72bf">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="im">import</span> torch </span>
 <span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
 <span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>T <span class="op">=</span> <span class="dv">1000</span> </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
@@ -256,14 +251,14 @@ q(\vx_t|\vx_{t-1}):=\N (\vx_{t}; \sqrt{\alpha_t}\vx_{t-1}, (1 - \alpha_t) \mI)
 \vx_t = \sqrt{\bar\alpha_t}\vx_0 + \sqrt{1 - \bar\alpha_t}\vec\epsilon, ~~\text{其中}\vec\epsilon \sim \N(\mZero,\mI)
 \tag{4}\]</span></span></p>
 <p>讓我們從一個簡單的情況開始分析。假設我們的樣本空間是一維實數。設<span class="math inline">\(\vx_0\)</span>的先驗分佈是：有一定的概率是<span class="math inline">\(-3\)</span>，有一定的概率是<span class="math inline">\(3\)</span>. 代碼實現是：</p>
-<div class="cell" data-execution_count="2" id="505b5e82">
+<div class="cell" data-execution_count="2" id="34df9982">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="kw">def</span> sample_from_prior():</span>
 <span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    <span class="cf">if</span> np.random.rand() <span class="op">&lt;</span> <span class="fl">0.2</span>: <span class="cf">return</span> <span class="op">-</span><span class="dv">3</span></span>
 <span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">3</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </div>
 <p>雖然它很簡單，但是方便我們畫圖，展示擴散的過程。 同時它也是非常貼切的：在無數像素的組合中，只有少數的特定組合排列在人類看來是有意義的；對應到我們的這個例子，在<span class="math inline">\((-\infty,\infty)\)</span>這個無窮長的數軸上，合理的樣本點只有<span class="math inline">\(-3\)</span>和<span class="math inline">\(3\)</span>. 圖像生成任務的挑戰性就在於，我們要在無窮的組合中盡可能貼近那些少數的組合，偏離一點都會讓人覺得不真實。</p>
 <p>根據<a class="quarto-xref" href="#eq-forward-step">式 1</a>、<a class="quarto-xref" href="#eq-forward-x0-xt">式 2</a>，擴散過程的代碼可以寫爲：</p>
-<div class="cell" data-execution_count="3" id="a1a76f8c">
+<div class="cell" data-execution_count="3" id="11d12301">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>beta <span class="op">=</span> torch.linspace(<span class="fl">1e-4</span>, <span class="fl">0.02</span>, T <span class="op">+</span> <span class="dv">1</span>) </span>
 <span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>alpha <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> beta </span>
 <span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>alpha_bar <span class="op">=</span> torch.cumprod(alpha, dim<span class="op">=</span><span class="dv">0</span>)</span>
@@ -280,7 +275,7 @@ q(\vx_t|\vx_{t-1}):=\N (\vx_{t}; \sqrt{\alpha_t}\vx_{t-1}, (1 - \alpha_t) \mI)
 <span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a>    <span class="cf">return</span> xt  </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </div>
 <p>現在我們畫圖看看，看樣本在擴散模型的前向過程中是如何擴散的。</p>
-<div class="cell" data-execution_count="4" id="109975bb">
+<div class="cell" data-execution_count="4" id="c8835ceb">
 <details class="code-fold">
 <summary>繪圖代碼</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
@@ -381,7 +376,7 @@ q(\vx_{t-1}|\vx_t, \vx_0) &amp;= \frac{q(\vx_t|\vx_{t-1}, \vx_0) q(\vx_{t-1}|\vx
 \]</span> 將上式中的<span class="math inline">\(\vepsilon\)</span>替換為模型預測的噪聲，就得到了<a class="quarto-xref" href="#eq-mu-theta">式 9</a>
 </details>
 <p>我設計了下面這樣的一個Pytorch模型來實現<a class="quarto-xref" href="#eq-mu-theta">式 9</a>。模型結構和細節是隨便拍的。</p>
-<div class="cell" data-execution_count="5" id="e72e8b18">
+<div class="cell" data-execution_count="5" id="749507ed">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn </span>
 <span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a></span>
@@ -475,7 +470,7 @@ L_{t-1} &amp;\doteq \E_{\vx_0,\vepsilon} \left[\frac{1}{2\sigma_t^2} \left\Vert 
 </div>
 <p>現在我們已經有了損失函數，那麽就開始訓練吧。</p>
 <p>因爲模型很小，問題簡單，因此訓練很快，只需要幾十秒就能完成。</p>
-<div class="cell" data-execution_count="6" id="0a1f4fd3">
+<div class="cell" data-execution_count="6" id="d0aa280f">
 <details class="code-fold">
 <summary>模型訓練</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a>loss_list <span class="op">=</span> []</span>
@@ -499,7 +494,7 @@ L_{t-1} &amp;\doteq \E_{\vx_0,\vepsilon} \left[\frac{1}{2\sigma_t^2} \left\Vert 
 <span id="cb7-19"><a aria-hidden="true" href="#cb7-19" tabindex="-1"></a>    loss_list.append(loss.item())</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-execution_count="7" id="a7a00d7a">
+<div class="cell" data-execution_count="7" id="16127307">
 <details class="code-fold">
 <summary>訓練損失曲綫</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>plt.plot(loss_list)</span>
@@ -510,7 +505,7 @@ L_{t-1} &amp;\doteq \E_{\vx_0,\vepsilon} \left[\frac{1}{2\sigma_t^2} \left\Vert 
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img class="figure-img" height="429" src="ddpm_ddim_20250824/figure-html/cell-8-output-1.png" width="597"/></p>
+<p><img class="figure-img" height="429" src="ddpm_ddim_20250824/figure-html/cell-8-output-1.png" width="589"/></p>
 </figure>
 </div>
 </div>
@@ -520,7 +515,7 @@ L_{t-1} &amp;\doteq \E_{\vx_0,\vepsilon} \left[\frac{1}{2\sigma_t^2} \left\Vert 
 <h3 class="anchored" data-anchor-id="採樣">採樣</h3>
 <p>現在我們已經訓練好了模型，接下來就可以採樣了。採樣的過程是從<span class="math inline">\(t=T\)</span>開始，利用<a class="quarto-xref" href="#eq-mu-theta">式 9</a>，逐步向<span class="math inline">\(t=0\)</span>反向推進。</p>
 <p>輸入<span class="math inline">\(\vx_t\)</span>和對噪聲的預測，計算<span class="math inline">\(\vx_{t-1}\)</span>的方式實現如下：</p>
-<div class="cell" data-execution_count="8" id="c149edf4">
+<div class="cell" data-execution_count="8" id="48cec869">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Literal </span>
 <span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a></span>
 <span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a><span class="kw">def</span> ddpm_backward(</span>
@@ -539,7 +534,7 @@ L_{t-1} &amp;\doteq \E_{\vx_0,\vepsilon} \left[\frac{1}{2\sigma_t^2} \left\Vert 
 <span id="cb9-16"><a aria-hidden="true" href="#cb9-16" tabindex="-1"></a>    <span class="cf">return</span> xt_prev </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </div>
 <p>接著我們代入我們訓練好的模型來預測噪聲，採樣鏈路就通了。</p>
-<div class="cell" data-execution_count="9" id="464e2b56">
+<div class="cell" data-execution_count="9" id="28dc4cd1">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="at">@torch.inference_mode</span>()</span>
 <span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a><span class="kw">def</span> denoise(t, batch_size, xT):</span>
 <span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>    <span class="cf">if</span> t <span class="op">==</span> T: <span class="cf">return</span> [(T, xT)]</span>
@@ -556,7 +551,7 @@ L_{t-1} &amp;\doteq \E_{\vx_0,\vepsilon} \left[\frac{1}{2\sigma_t^2} \left\Vert 
 <span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a>xT <span class="op">=</span> torch.randn(batch_size)</span>
 <span id="cb10-15"><a aria-hidden="true" href="#cb10-15" tabindex="-1"></a>sample_trace <span class="op">=</span> denoise(<span class="dv">0</span>, batch_size, xT<span class="op">=</span>xT)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="10" id="a2694a68">
+<div class="cell" data-execution_count="10" id="b58c1d32">
 <details class="code-fold">
 <summary>繪圖代碼</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="cf">for</span> b <span class="kw">in</span> <span class="bu">range</span>(batch_size):</span>
@@ -575,7 +570,7 @@ L_{t-1} &amp;\doteq \E_{\vx_0,\vepsilon} \left[\frac{1}{2\sigma_t^2} \left\Vert 
 </div>
 </div>
 </div>
-<p>用我們訓練好的模型，可以繪製出如圖所示的採樣過程。可以看到，對於從標準正態分佈中採樣的任意點，我們的模型都很好地模擬了一條反向過程，最終將這些點推到一個合適的初始點。</p>
+<p>用我們訓練好的模型，可以繪製出如圖所示的採樣過程。可以看到，出發點服從標準正態分佈。對於任意出發點，模型都很好地給出了一條反向去噪路線，最終把它們推到一個合適的終點。</p>
 </section>
 </section>
 <section class="level2" id="ddpm的採樣可以跳步嗎">
@@ -589,7 +584,7 @@ L_{t-1} &amp;\doteq \E_{\vx_0,\vepsilon} \left[\frac{1}{2\sigma_t^2} \left\Vert 
 <p>注意到公式使用了<span class="math inline">\(\alpha_t\)</span>和<span class="math inline">\(\beta_t = 1 - \alpha_t\)</span>，而<span class="math inline">\(\alpha_t = {\bar\alpha_t\over \bar\alpha_{t-1}}\)</span>.</p>
 <p>顯然，只要我們將所有的<span class="math inline">\(\alpha_t\)</span>替換為<span class="math inline">\({\bar\alpha_t \over \bar\alpha_{t-k}}\)</span>，就可以得到跳<span class="math inline">\(k\)</span>步採樣時的公式。</p>
 <p>據此，我可以寫出如下的跳步採樣邏輯（使用先前訓練好的模型，但是只在採樣的時候跳步）。</p>
-<div class="cell" data-execution_count="11" id="4c056687">
+<div class="cell" data-execution_count="11" id="43c7eb21">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="kw">def</span> ddpm_backward(</span>
 <span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a>    xt, </span>
 <span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a>    noise_pred,</span>
@@ -625,7 +620,7 @@ L_{t-1} &amp;\doteq \E_{\vx_0,\vepsilon} \left[\frac{1}{2\sigma_t^2} \left\Vert 
 <span id="cb12-33"><a aria-hidden="true" href="#cb12-33" tabindex="-1"></a>    <span class="cf">return</span> [(t, x_t), (t_next, x_next), <span class="op">*</span>history]</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </div>
 <p>下面的圖像顯示了，訓練好的DDPM模型允許我們在採樣時跳步，但不損失太多採樣質量。</p>
-<div class="cell" data-execution_count="12" id="0fb264a6">
+<div class="cell" data-execution_count="12" id="89e5ac2f">
 <details class="code-fold">
 <summary>繪圖代碼</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a><span class="kw">def</span> plot_denoise(step_size):</span>
@@ -786,7 +781,7 @@ q_{\vsigma,\vtau}(\vx_{1:T}|\vx_0) &= q_{\vsigma,\tau}(\vx_{\tau_S}|\vx_0)\prod_
 $$ -->
 <p>接下來，我們用代碼實現DDIM的採樣過程。 和前面一樣，我們會特別關注在子序列<code>tau</code>上的跳步採樣。</p>
 <p>同時，正如DDIM特地指出的，<span class="math inline">\(sigma_t\)</span>可以有各種不同的選擇。例如<span class="math inline">\(\sigma_t\)</span>可以取為0，這時候採樣過程將會完全失去隨機性。</p>
-<div class="cell" data-execution_count="13" id="af84a7a1">
+<div class="cell" data-execution_count="13" id="4a560b2c">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Literal </span>
 <span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a></span>
 <span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a><span class="kw">def</span> ddim_backward(</span>
@@ -819,7 +814,7 @@ $$ -->
 <span id="cb14-30"><a aria-hidden="true" href="#cb14-30" tabindex="-1"></a>    <span class="cf">return</span> xt_prev </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </div>
 <p>同樣地，我們基於<code>ddim_backward</code>實現一個完整的denoise過程：</p>
-<div class="cell" data-execution_count="14" id="42ce36dc">
+<div class="cell" data-execution_count="14" id="1b809c18">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a><span class="at">@torch.inference_mode</span>()</span>
 <span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a><span class="kw">def</span> denoise(t, batch_size, step_size, xT, sigma_style<span class="op">=</span><span class="st">'ddpm'</span>):</span>
 <span id="cb15-3"><a aria-hidden="true" href="#cb15-3" tabindex="-1"></a>    <span class="cf">if</span> t <span class="op">==</span> T: <span class="cf">return</span> [(T, xT)]</span>
@@ -838,7 +833,7 @@ $$ -->
 <span id="cb15-16"><a aria-hidden="true" href="#cb15-16" tabindex="-1"></a>sample_trace_1 <span class="op">=</span> denoise(<span class="dv">0</span>, batch_size, step_size<span class="op">=</span><span class="dv">1</span>, xT<span class="op">=</span>xT)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 </div>
 <p>至此我們就實現了DDIM採樣。這裡繪製一張圖來展示採樣過程。</p>
-<div class="cell" data-execution_count="15" id="44ef56da">
+<div class="cell" data-execution_count="15" id="b58f03cd">
 <details class="code-fold">
 <summary>繪圖代碼</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a aria-hidden="true" href="#cb16-1" tabindex="-1"></a><span class="kw">def</span> plot_denoise(step_size, sigma_style<span class="op">=</span><span class="st">'ddpm'</span>):</span>
@@ -870,7 +865,7 @@ $$ -->
 </div>
 </div>
 <p>這裡再重複展示一次跳步採樣。跳步採樣是DDIM論文的貢獻之一。（但是在我看來比較顯然）</p>
-<div class="cell" data-execution_count="16" id="8820a008">
+<div class="cell" data-execution_count="16" id="5a4e8cb0">
 <details class="code-fold">
 <summary>繪圖代碼</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a aria-hidden="true" href="#cb17-1" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">8</span>)) </span>
@@ -910,7 +905,7 @@ $$ -->
 <li>相比之下，在DDPM中，從任意位置出發，終點的隨機性更強。對出發點的插值沒什麼意義。</li>
 </ul></li>
 </ol>
-<div class="cell" data-execution_count="17" id="5ca094f9">
+<div class="cell" data-execution_count="17" id="534d9a95">
 <details class="code-fold">
 <summary>繪圖代碼</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a aria-hidden="true" href="#cb18-1" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">8</span>)) </span>
@@ -941,7 +936,7 @@ $$ -->
 </div>
 </div>
 <p>最後，我通過實驗驗證<span class="math inline">\(\sigma_t=0\)</span>時，反向過程失去隨機性。從下面的圖片可以看到，參數一樣，不管採樣幾次，採樣軌跡都是相同的。</p>
-<div class="cell" data-execution_count="18" id="dcd52865">
+<div class="cell" data-execution_count="18" id="efbbf6ec">
 <details class="code-fold">
 <summary>繪圖代碼</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a aria-hidden="true" href="#cb19-1" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">8</span>)) </span>
