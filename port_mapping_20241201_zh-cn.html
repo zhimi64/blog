@@ -172,13 +172,25 @@
 </div>
 </div>
 </header>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+前言
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>最近租了一台便宜的云主机。我想把云主机的公网ip上的一些端口映射到宿舍台式机上的一些服务上（例如SSH、jupyter lab），这样就可以远程登陆管理自己的台式机了。</p>
 <p>我采取的办法是</p>
 <ol type="1">
 <li>使用Zerotier组成一个局域网，使得云主机和宿舍台式机可以互相访问；</li>
 <li>使用端口映射，将宿舍台式机的服务暴露到公网ip上；</li>
 </ol>
-<p>在这个背景下，我写下这篇笔记来记录使用iptables配置端口映射的方法，同时顺带记录一下如何用ssh命令以及Windows下的netsh命令配置端口映射。这几种方法都很常用。</p>
+<p>在这个背景下，我写下这篇笔记来记录<strong>使用iptables配置端口映射的方法</strong>，同时顺带记录一下<strong>如何用ssh命令以及Windows下的netsh命令配置端口映射</strong>。这几种方法都很实用。</p>
+</div>
+</div>
 <section class="level2" data-number="1" id="前置步驟開啟linux的ip轉發功能">
 <h2 class="anchored" data-anchor-id="前置步驟開啟linux的ip轉發功能" data-number="1"><span class="header-section-number">1</span> 前置步骤：开启Linux的IP转发功能</h2>
 <p>在 Linux 系统中，IP 转发（IP Forwarding）功能允许数据包从一个网络接口转发到另一个网络接口。 默认情况下，大多数 Linux 系统将 IP 转发禁用，防止非路由器设备意外充当路由器。</p>
