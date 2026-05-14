@@ -207,19 +207,7 @@
                 <div class="fullcontent">
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <main class="content" id="quarto-document-content">
-<header class="quarto-title-block default" id="title-block-header">
-<div class="quarto-title">
 
-</div>
-<div class="quarto-title-meta">
-<div>
-<div class="quarto-title-meta-heading">Published</div>
-<div class="quarto-title-meta-contents">
-<p class="date">May 8, 2026</p>
-</div>
-</div>
-</div>
-</header>
 <style>
 .card {
   background-color: #f8f9fa;
@@ -339,12 +327,6 @@ p^*(y_1 \succ y_2|x) &amp;= \frac{
 <li>DPO的損失函數旨在拉大正負例樣本之間的距離（和對比學習還蠻像的），但是有可能造成正負例的概率同時增大或減小，從而導致最終的訓練結果不穩定。工程上一個簡單的修復策略，是在DPO損失的基礎上簡單增加一個SFT監督損失，如<span class="math inline">\(\mathcal{L}_{\text{final}} = \mathcal{L}_{\text{DPO}}(x, y_w, y_l) + \lambda \cdot \mathcal{L}_{\text{SFT}}(x, y_w)\)</span>;</li>
 <li>在一個實際項目的數據集中，正例的文本長度常常大於負例的文本長度，訓練出來的模型也偏好長文本，而且比訓練集文本的長度還長。針對這個問題，我們提出對樣本進行採樣和丟棄，使得正負例的文本長度均值接近，最終訓練出來的模型的回覆長度得以恢復正常。</li>
 </ol>
-</section>
-<section class="level2" id="思考">
-<h2 class="anchored" data-anchor-id="思考">思考</h2>
-<section class="level3" id="沒有pairwise的dpo">
-<h3 class="anchored" data-anchor-id="沒有pairwise的dpo">沒有Pairwise的DPO</h3>
-</section>
 </section>
 </main>
 <!-- /main column -->

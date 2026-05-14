@@ -207,19 +207,7 @@
                 <div class="fullcontent">
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <main class="content" id="quarto-document-content">
-<header class="quarto-title-block default" id="title-block-header">
-<div class="quarto-title">
 
-</div>
-<div class="quarto-title-meta">
-<div>
-<div class="quarto-title-meta-heading">Published</div>
-<div class="quarto-title-meta-contents">
-<p class="date">May 8, 2026</p>
-</div>
-</div>
-</div>
-</header>
 <style>
 .card {
   background-color: #f8f9fa;
@@ -339,12 +327,6 @@ p^*(y_1 \succ y_2|x) &amp;= \frac{
 <li>DPO的损失函数旨在拉大正负例样本之间的距离（和对比学习还蛮像的），但是有可能造成正负例的概率同时增大或减小，从而导致最终的训练结果不稳定。工程上一个简单的修复策略，是在DPO损失的基础上简单增加一个SFT监督损失，如<span class="math inline">\(\mathcal{L}_{\text{final}} = \mathcal{L}_{\text{DPO}}(x, y_w, y_l) + \lambda \cdot \mathcal{L}_{\text{SFT}}(x, y_w)\)</span>;</li>
 <li>在一个实际项目的数据集中，正例的文本长度常常大于负例的文本长度，训练出来的模型也偏好长文本，而且比训练集文本的长度还长。针对这个问题，我们提出对样本进行采样和丢弃，使得正负例的文本长度均值接近，最终训练出来的模型的回复长度得以恢复正常。</li>
 </ol>
-</section>
-<section class="level2" id="思考">
-<h2 class="anchored" data-anchor-id="思考">思考</h2>
-<section class="level3" id="沒有pairwise的dpo">
-<h3 class="anchored" data-anchor-id="沒有pairwise的dpo">没有Pairwise的DPO</h3>
-</section>
 </section>
 </main>
 <!-- /main column -->
