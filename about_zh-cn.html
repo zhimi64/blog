@@ -54,6 +54,8 @@
             
                 <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
             
+                <li><a class="nav__link" href="././job_wanted_zh-cn.html">Job Wanted (*^▽^*)┛</a></li>
+            
 
         </ul>
     </nav>
@@ -69,6 +71,115 @@
     
 
 </aside>
+
+<!-- Job Banner -->
+<div class="job-banner" id="job-banner">
+    <canvas id="job-banner-canvas"></canvas>
+    <div class="job-banner-content">
+        <span class="job-banner-icon">✨</span>
+        <span class="job-banner-text">本人求职中！大模型 Post-Training 方向 · 长三角、南方地区优先 · </span>如果您有兴趣，欢迎联系
+        <a class="job-banner-email" href="mailto:zhimi64@foxmail.com">zhimi64@foxmail.com</a>
+        <span class="job-banner-sep">｜</span>
+        <a class="job-banner-link" href="./job_wanted_zh-cn.html">👀 了解更多</a>
+    </div>
+</div>
+
+<script>
+(function() {
+    const banner = document.getElementById('job-banner');
+    const canvas = document.getElementById('job-banner-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let w, h, cols, rows, grid, nextGrid;
+    const CELL_SIZE = 12;
+    const ALIVE = 1, DEAD = 0;
+
+    function resize() {
+        const rect = banner.getBoundingClientRect();
+        w = canvas.width = rect.width;
+        h = canvas.height = rect.height;
+        cols = Math.ceil(w / CELL_SIZE);
+        rows = Math.ceil(h / CELL_SIZE);
+        grid = new Uint8Array(cols * rows);
+        nextGrid = new Uint8Array(cols * rows);
+        // 隨機初始化 40%
+        for (let i = 0; i < grid.length; i++) {
+            grid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
+        }
+    }
+
+    function get(x, y, g) {
+        if (x < 0 || x >= cols || y < 0 || y >= rows) return DEAD;
+        return g[y * cols + x];
+    }
+
+    function step() {
+        // 每一步隨機擾動：約 2% 的細胞被翻轉
+        for (let i = 0; i < grid.length; i++) {
+            if (Math.random() < 0.02) {
+                grid[i] = grid[i] === ALIVE ? DEAD : ALIVE;
+            }
+        }
+
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                const idx = y * cols + x;
+                let neighbors = 0;
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        if (dx === 0 && dy === 0) continue;
+                        neighbors += get(x + dx, y + dy, grid);
+                    }
+                }
+                const state = grid[idx];
+                if (state === ALIVE) {
+                    nextGrid[idx] = (neighbors === 2 || neighbors === 3) ? ALIVE : DEAD;
+                } else {
+                    nextGrid[idx] = (neighbors === 3) ? ALIVE : DEAD;
+                }
+            }
+        }
+        // 如果全部死光，重新播種
+        let alive = 0;
+        for (let i = 0; i < nextGrid.length; i++) alive += nextGrid[i];
+        if (alive === 0) {
+            for (let i = 0; i < nextGrid.length; i++) {
+                nextGrid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
+            }
+        }
+        [grid, nextGrid] = [nextGrid, grid];
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                if (grid[y * cols + x] === ALIVE) {
+                    const alpha = 0.15 + Math.random() * 0.2;  // 閃爍感
+                    ctx.fillStyle = `rgba(46, 204, 113, ${alpha})`;
+                    ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
+                }
+            }
+        }
+    }
+
+    let lastStep = 0;
+    const STEP_INTERVAL = 200; // 毫秒，原約 16ms，現放慢約 12 倍
+
+    function tick(timestamp) {
+        if (timestamp - lastStep >= STEP_INTERVAL) {
+            step();
+            draw();
+            lastStep = timestamp;
+        }
+        requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    tick();
+})();
+</script>
 
 <!-- Content -->
 <article>
