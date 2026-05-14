@@ -64,6 +64,7 @@ article section .blog-post
   margin-left: 280px;
   height: 44px;
   overflow: hidden;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 #job-banner-canvas {
