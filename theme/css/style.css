@@ -185,6 +185,7 @@ aside {
   width: 220px; height: 100%;
   position: fixed;
   top: 0; left: 0;
+  z-index: 200;
   padding: 30px;
   background-color: #2980b9;
   color: white;
