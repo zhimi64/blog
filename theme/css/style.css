@@ -61,12 +61,12 @@ body {margin: 0}
 body > article, footer {
   line-height: 1.6em;
   display: block;
-  max-width: 1500px;
+  max-width: 700px;
   margin: 40px auto auto 355px;
   padding: 20px 80px 10px;
 }
 
-article ol
+article ol.posts
 {
   padding-left: 0;
 }
@@ -107,7 +107,8 @@ a:hover { text-decoration: underline; }
 /* Code */
 .highlight pre {
   font-size: 14px;
-  overflow: scroll;
+  overflow: auto;
+  padding: 8px;
 }
 
 /* Sidebar */
@@ -200,6 +201,14 @@ aside > h2 {
 }
 
 
+.blog_roll_link 
+{
+  display: block;
+  padding: 0.33147rem 0;
+  border-bottom: 3px solid #328cc7;
+} 
+
+
 /*--------Responsive------------*/
 
 @media (max-width: 800px) {
@@ -241,6 +250,5 @@ aside > h2 {
 }
 
 img {
-  max-width: 100%; 
-  height: auto;   /* 高度自动，保持宽高比 */
+  max-width: 100%;
 }

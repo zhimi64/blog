@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="" itemscope itemtype="http://schema.org/Person">
+<head>
+    
+    
+        <meta charset="utf-8">
+        <!-- Site Meta Data -->
+        <title>DPO算法的學習和推導</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="一名普通算法工程師。找工作中……">
+        <meta name="author" content="Outlier">
+
+        <link rel="shortcut icon" href="favicon.ico">
+
+        <!-- schema.org -->
+        <meta itemprop="name" content="zhimi.vercel.com">
+        <meta itemprop="image" content="">
+        <meta itemprop="description" content="一名普通算法工程師。找工作中……">
+
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+        <!-- Style Meta Data -->
+        <link rel="stylesheet" href="./theme/css/style.css" type="text/css"/>
+        <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css"/>
+
+        <!-- Feed Meta Data -->
+        
+        
+
+        <!-- Twitter Feed -->
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="">
+        <meta name="twitter:image" content="">
+    
+    <meta name="twitter:creator" content="">
+    <meta name="twitter:url" content="././dpo_20260508.html">
+    <meta name="twitter:title" content="zhimi.vercel.com ~ DPO算法的學習和推導">
+    <meta name="twitter:description" content="">
+
+    <!-- Facebook Meta Data -->
+    <meta property="og:title" content="zhimi.vercel.com ~ DPO算法的學習和推導"/>
+    <meta property="og:description" content=""/>
+    <meta property="og:image" content=""/>
+
+</head>
+
+<body>
+<!-- Sidebar -->
+<aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+    <h1>zhimi.vercel.com</h1>
+    
+        <p>You only live once.</p>
+    
+    <br>
+
+    
+
+    <nav class="nav">
+        <ul class="list-bare">
+
+            
+                <li><a class="nav__link" href="./index.html">Blog</a></li>
+            
+
+            
+
+        </ul>
+    </nav>
+
+    <p class="social">
+        
+        
+        
+    </p>
+
+    
+
+    
+
+</aside>
+
+<!-- Content -->
+<article>
+    
+    <section id="content">
+        <article>
+            <h2 class="post_title post_detail"><a href="././dpo_20260508.html" rel="bookmark"
+                                                  title="Permalink to DPO算法的學習和推導">DPO算法的學習和推導</a></h2>
+            <div class="entry-content blog-post">
+                <div class="fullcontent">
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+
+</div>
+<div class="quarto-title-meta">
+<div>
+<div class="quarto-title-meta-heading">Published</div>
+<div class="quarto-title-meta-contents">
+<p class="date">May 8, 2026</p>
+</div>
+</div>
+</div>
+</header>
+<style>
+.card {
+  background-color: #f8f9fa;
+  border-left: 4px solid #4a90d9;
+  border-radius: 6px;
+  padding: 1em 1.2em;
+  margin: 1.2em 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  font-size: 0.95em;
+}
+.card p {
+  margin: 0.4em 0;
+}
+</style>
+<p>DPO（Direct Preference Optimization）是一種不需要顯式訓練獎勵模型、也不需要強化學習（RL）的偏好對齊方法。它直接將人類偏好信號融入策略模型的損失函數中，通過一個閉式推導繞過了傳統 RLHF 中的 PPO 步驟。</p>
+<p>本文從 Bradley-Terry 模型出發，逐步推導 DPO 的損失函數，並討論其局限性與改進方向。</p>
+<section class="level2" id="bt模型">
+<h2 class="anchored" data-anchor-id="bt模型">BT模型</h2>
+<p>Bradley-Terry模型約定人類偏好分佈可以表示為如下形式： <span class="math display">\[
+p^*(y_1 \succ y_2|x)=\frac{
+    \exp(r^*(x, y_1))
+}{
+    \exp(r^*(x, y_1)) + \exp(r^*(x, y_2 ))
+}
+\]</span> 其中<span class="math inline">\(r^*(x,y)\)</span>是一個隱式的獎勵函數。</p>
+<p>設我們訓練一個模型<span class="math inline">\(r_\phi\)</span>用於近似<span class="math inline">\(r^*\)</span>。將上面的問題視為二分類問題，可以得到如下對數似然損失： <span class="math display">\[
+\mathcal L_R(r_\phi, \mathcal D)= - \mathbb E_{(x, y_w, y_l)\sim \mathcal D}\left[ \log \sigma(r_\phi(x, y_w) - r_\phi(x, y_l)) \right]
+\]</span> 其中<span class="math inline">\(\sigma(z)=\frac{1}{1 + e^{-z}}\)</span>.</p>
+<div class="card">
+<p>注意到 <span class="math display">\[
+\begin{aligned}
+p^*(y_1 \succ y_2|x) &amp;=\frac{
+    1
+}
+{
+1 + \exp(r^*(x, y_2) - r^*(x, y_1))
+} \\
+&amp;= \sigma(r^*(x, y_1) - r^*(x, y_2))
+\end{aligned}
+\]</span> 因此<span class="math inline">\(\mathcal L_R(r_\phi, \mathcal D)\)</span>是顯然的。</p>
+</div>
+</section>
+<section class="level2" id="rl的目標函數">
+<h2 class="anchored" data-anchor-id="rl的目標函數">RL的目標函數</h2>
+<p>通常，我們考慮以下RLHF的優化目標 <span class="math display">\[
+\max_{\pi_\theta} \mathbb E_{x\sim D, y\sim \pi_\theta(y|x)}[r_\phi(x, y)]
+-\beta \mathbb D_\text{KL}\left[
+\pi_\theta(y|x) \Vert \pi_\text{ref}(y|x)
+\right]
+\]</span> 對於離散的token sampling，這個expectation無法直接用普通反向傳播對樣本做微分，故通常用policy gradient類的強化學習方法來優化它，並將獎勵函數設為 <span class="math display">\[
+r(x, y) = r_\phi(x, y) - \beta (\log \pi_\theta(y|x) - \log \pi_\text{ref}(y | x)).
+\]</span></p>
+<div class="card">
+<p><strong>小技巧：將KL項吸收到reward裡。</strong> <span class="math display">\[
+\mathbb D_\text{KL} (\pi_\theta \Vert \pi_\text{ref}) = \mathbb E_{y\sim\pi_\theta} \left[
+\log \pi_\theta(y|x) - \log \pi_\text{ref}(y|x)
+\right]
+\]</span> 所以原本的目標可以寫成： <span class="math display">\[
+\max_{\pi_\theta} \mathbb E_{y\sim\pi_\theta}\left[
+r_\phi(x, y) - \beta(\log \pi_\theta(y|x) - \log \pi_\text{ref}(y|x))    
+\right]
+\]</span> 這就實現了將KL項吸收到了reward裡。</p>
+</div>
+</section>
+<section class="level2" id="獎勵函數和最優策略之間的關係">
+<h2 class="anchored" data-anchor-id="獎勵函數和最優策略之間的關係">獎勵函數和最優策略之間的關係</h2>
+<p>在這個函數下，我們可以推導出策略模型的最優解為： <span class="math display">\[
+\pi^*(y|x) = \frac{1}{Z(x)}\pi_\text{ref}(y|x)\exp(\frac{1}{\beta} r(x, y))
+\]</span> 其中 <span class="math display">\[
+Z(x) = \sum_y \pi_\text{ref}(y|x) \exp(\frac{1}{\beta} r(x, y))
+\]</span></p>
+<div class="card">
+<p>推導過程如下： <span class="math display">\[
+\begin{aligned}
+&amp;\max_\pi \mathbb E_{x\sim\mathcal D, y\sim \pi}
+\left[r(x, y)\right] - \beta \mathbb D_\text{KL}\left[
+\pi(y|x)\Vert \pi_\text{ref}(y|x)
+\right]\\
+&amp;=\max_\pi \mathbb E_{x\sim \mathcal D} \mathbb E_{y\sim \pi(y|x)} \left[r(x, y) - \beta \log\frac{\pi(y|x)}{\pi_\text{ref}(y|x)}\right]\\
+&amp;= \min_\pi \mathbb E_{x\sim \mathcal D} \mathbb E_{y\sim \pi(y|x)} \left[ \log \frac{\pi(y|x)}{\pi_\text{ref}(y|x)} - \frac{1}{\beta}r(x, y)\right]\\
+&amp;= \min_\pi \mathbb E_{x\sim \mathcal D} \mathbb E_{y\sim \pi(y|x)} \left[\log\frac{\pi(y|x)}{\frac{1}{Z(x)} \pi_\text{ref}(y|x)\exp(\frac{1}{\beta} r(x, y))} - \log Z(x)\right]\\
+&amp;= \min_\pi \mathbb E_{x\sim \mathcal D}  \left(
+  \mathbb D_\text{KL} (\pi(y|x)\Vert\frac{1}{Z(x)} \pi_\text{ref}(y|x)\exp(\frac{1}{\beta} r(x, y))) - \log Z(x) \right)\\
+\end{aligned}
+\]</span> 這裡我們需要<span class="math inline">\(Z(x)\)</span>的取值能夠使得<span class="math inline">\(\frac{1}{Z(x)} \pi_\text{ref}(y|x)\exp(\frac{1}{\beta} r(x, y))\)</span>能夠成為一個合理的分佈，因此顯然 <span class="math display">\[
+Z(x) = \sum_y \pi_\text{ref}(y|x)\exp(\frac{1}{\beta}r(x, y)).
+\]</span> 於是可以看出令目標最小化的最優策略為 <span class="math display">\[
+\pi^*(y|x) = \frac{1}{Z(x)}\pi_\text{ref} (y|x)\exp(\frac{1}{\beta} r(x, y))
+\]</span></p>
+</div>
+<p>根據這個推導結果，<strong>如果已知獎勵函數<span class="math inline">\(r^*(x,y)\)</span>對應的最優策略<span class="math inline">\(\pi^*(y|x)\)</span>，那麼就可以反過來，用<span class="math inline">\(\pi^*\)</span>表示獎勵函數</strong>： <span class="math display">\[
+r^*(x, y) =\beta\log \frac{\pi^*(y|x)}{\pi_\text{ref}(y|x)} +\beta \log Z(x)
+\]</span></p>
+</section>
+<section class="level2" id="dpo的損失函數">
+<h2 class="anchored" data-anchor-id="dpo的損失函數">DPO的損失函數</h2>
+<p>這樣一來，就可以直接得到DPO的損失函數：</p>
+<p><span class="math display">\[
+\begin{aligned}
+p^*(y_1 \succ y_2|x) &amp;= \frac{
+\exp(r^*(x, y_1))
+}{\exp(r^*(x, y_1)) + \exp(r^*(x, y_2))}\\
+&amp;= \frac{\exp\left(\beta\log \frac{\pi^*(y_1|x)}{\pi_\text{ref}(y_1|x)} +\beta \log Z(x)\right)}{\exp\left(\beta\log \frac{\pi^*(y_1|x)}{\pi_\text{ref}(y_1|x)} +\beta \log Z(x)\right)+\exp\left(\beta\log \frac{\pi^*(y_2|x)}{\pi_\text{ref}(y_2|x)} +\beta \log Z(x)\right)} \\
+&amp;= \frac{1}{1 + \exp\left(\beta\log \frac{\pi^*(y_2|x)}{\pi_\text{ref}(y_2|x)} - \beta\log \frac{\pi^*(y_1|x)}{\pi_\text{ref}(y_1|x)}\right)} \\
+&amp;= \sigma(\beta\log \frac{\pi^*(y_1|x)}{\pi_\text{ref}(y_1|x)} - \beta\log \frac{\pi^*(y_2|x)}{\pi_\text{ref}(y_2|x)})
+\end{aligned}
+\]</span> 因此DPO的損失函數設計為 <span class="math display">\[
+\mathcal L_\text{DPO}(\pi_\theta; \pi_\text{ref}) = - \mathbb E_{(x, y_w, y_l)\sim D} \left[
+\log \sigma(\beta\log \frac{\pi_\theta(y_w|x)}{\pi_\text{ref}(y_w|x)} - \beta\log \frac{\pi_\theta(y_l|x)}{\pi_\text{ref}(y_l|x)})
+\right]
+\]</span></p>
+</section>
+<section class="level2" id="dpo的局限性和優化點">
+<h2 class="anchored" data-anchor-id="dpo的局限性和優化點">DPO的局限性和優化點</h2>
+<p>本節記錄一下我在使用DPO的過程中遇到的一些優化問題和採取的改進策略，僅供參考：</p>
+<ol type="1">
+<li>DPO的損失函數旨在拉大正負例樣本之間的距離（和對比學習還蠻像的），但是有可能造成正負例的概率同時增大或減小，從而導致最終的訓練結果不穩定。工程上一個簡單的修復策略，是在DPO損失的基礎上簡單增加一個SFT監督損失，如<span class="math inline">\(\mathcal{L}_{\text{final}} = \mathcal{L}_{\text{DPO}}(x, y_w, y_l) + \lambda \cdot \mathcal{L}_{\text{SFT}}(x, y_w)\)</span>;</li>
+<li>在一個實際項目的數據集中，正例的文本長度常常大於負例的文本長度，訓練出來的模型也偏好長文本，而且比訓練集文本的長度還長。針對這個問題，我們提出對樣本進行採樣和丟棄，使得正負例的文本長度均值接近，最終訓練出來的模型的回覆長度得以恢復正常。</li>
+</ol>
+</section>
+<section class="level2" id="思考">
+<h2 class="anchored" data-anchor-id="思考">思考</h2>
+<section class="level3" id="沒有pairwise的dpo">
+<h3 class="anchored" data-anchor-id="沒有pairwise的dpo">沒有Pairwise的DPO</h3>
+</section>
+</section>
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+</div>
+            </div>
+            <div class="post_list">
+                <span>By </span>
+                <a href="./">@Outlier</a>
+                <span> in </span>
+                <span class="post_category"><a href="./" rel="bookmark"
+                                               title="Permalink to 算法">[ 算法 ]</a></span>
+                <span class="post_date">2026-05-08</span>
+                <div><span>Tags : </span>
+                    
+                </div>
+
+                <div class="entry-social">
+                    <span class="twitter"><a target="_blank" rel="nofollow"
+                                             onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;"
+                                             title="Twitter"
+                                             href="https://twitter.com/share?url=././dpo_20260508.html&text=DPO算法的學習和推導&via="><img
+                            src="./theme/images/icons/twitter-s.png"></a></span>
+
+                    <span class="gplus"><a target="_blank" title="Google +"
+                                           href="https://plus.google.com/share?url=././dpo_20260508.html&hl=fr"
+                                           rel="nofollow"
+                                           onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
+                            src="./theme/images/icons/google-s.png"></a></span>
+
+                    <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow"
+                                              onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;"
+                                              href="https://www.facebook.com/sharer.php?u=././dpo_20260508.html&t=DPO算法的學習和推導"><img
+                            src="./theme/images/icons/facebook-s.png"></a></span>
+
+                    <a target="_blank" title="Linkedin"
+                       href="https://www.linkedin.com/shareArticle?mini=true&url=././dpo_20260508.html&title=DPO算法的學習和推導"
+                       rel="nofollow"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
+                            src="./theme/images/icons/linkedin-s.png"></a>
+
+                    <span class="mail"><a
+                            href="mailto:?subject=DPO算法的學習和推導&amp;body=Viens découvrir un article à propos de [DPO算法的學習和推導] sur le site de Outlier. ././dpo_20260508.html"
+                            title="Share by Email" target="_blank"><img
+                            src="./theme/images/icons/mail-s.png"></a></span>
+                </div>
+            </div>
+            
+        </article>
+    </section>
+
+</article>
+
+<!-- Footer -->
+
+    <footer>
+        <p>
+            Blog powered by <a href="http://getpelican.com/">Pelican</a>,
+            which takes great advantage of <a href="http://python.org">Python</a>.
+            Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a
+                href="https://parbhatpuri.com/">@parbhat</a>.
+        </p>
+    </footer>
+
+
+
+
+</body>
+</html>
