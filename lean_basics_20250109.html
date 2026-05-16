@@ -218,24 +218,35 @@
 
 <section class="level2" id="前言">
 <h2 class="anchored" data-anchor-id="前言">前言</h2>
-<p>第一次聽聞Lean語言，是瀏覽到一則關於數學家陶哲軒的報導——他藉助Lean語言糾正了自己在論文中犯下的錯誤。</p>
-<p>雖然數學是嚴謹的，但是承載著數學知識的自然語言並不嚴謹，這使得錯誤的發生難以避免。就算像陶哲軒一樣的數學家，也偶有疏失。</p>
+<p>雖然數學是嚴謹的，但是承載著數學知識的自然語言並不嚴謹。</p>
 <p>編寫計算機程序並通過編譯，就好比編寫數學證明並通過程序的檢查。使用編程語言作為數學證明的載體，就能允許引入對證明過程的形式化檢查，減少出錯的可能。Lean語言就是這樣一種能夠對數學證明進行形式化檢查的編程語言。</p>
-<p>就我個人而言，我感覺Lean語言的學習過程比學習Python、C、C++要更難一些。因此我想將我的學習體驗和經驗借本文分享給讀者。希望後來者能夠更順利地體會到Lean語言和數學定理形式化的有趣之處。</p>
+<p>因為對“形式化證明”這一概念感興趣，我花了一些時間，學習了Lean語言，在這個過程中也遇到了許多困難。我想將我的學習體驗和經驗借本文分享給讀者。希望後來者能夠更順利地體會到Lean語言和數學定理形式化的有趣之處。</p>
 <p>Lean語言難在哪裡呢？</p>
 <ol type="1">
 <li><strong>對數學知識有一定要求：</strong> 正常來說，人們是先學會 <span class="math inline">\(1+1=2\)</span>，然後才學習阿貝爾群；先學習微積分、概率論，然後才學習測度論。使用常見的數學工具並不需要你掌握更深層的數學知識。但做數學定理的形式化時，總需要用戶對一些更底層的理論有所了解。</li>
 <li><strong>一個嚴格的證明可能會很冗長：</strong> 數學理論的形式化往往是一個查找API手冊的過程，你得翻一翻Mathlib文檔，看看這個定理可能是什麼名字，是不是在Mathlib中有現成可用的證明。你編寫的形式化證明可能會比自然語言更冗長，可讀性差。</li>
 </ol>
-<p>儘管Lean語言的學習有這樣那樣的困難，但我還是一步一步克服，也進步了很多。總的來說，這絕對是一個開拓視野的，很有啟發性的過程。也希望讀者在了解Lean語言的過程中同樣能有所收穫。</p>
+<p>我希望能夠借這篇文章，記錄下大大小小的一些“坑”，把重要的概念記錄下來，以便後來者參考。</p>
 </section>
 <section class="level2" id="環境安裝">
 <h2 class="anchored" data-anchor-id="環境安裝">環境安裝</h2>
 <p>和Python、Javascript等脚本語言不同，Lean 4並沒有内置一個交互式的REPL（Read-Eval-Print Loop）程序。官方推薦使用VSCode等編輯器來交互式地編寫Lean 4程序。推薦讀者閱讀 <a href="https://leanprover-community.github.io/get_started.html"><em>Get started with Lean</em></a>，根據文檔配置好環境。</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>如果生活在中國大陸，你可能需要先配置好代理地址，才能安裝Lean。例如，</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="bu">export</span> <span class="va">http_proxy</span><span class="op">=</span>127.0.0.1:7890</span>
 <span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="bu">export</span> <span class="va">https_proxy</span><span class="op">=</span>127.0.0.1:7890</span>
 <span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="co"># 請根據你的具體代理設置完成👆以上配置。</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+</div>
 <p>然後執行</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="fu">bash</span> <span class="at">-c</span> <span class="st">'curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:stable || (echo &amp;&amp; read -n 1 -s -r -p "Install failed, press ENTER to continue...")'</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>如果順利的話，該代碼將會下載安裝elan和lean程序，把它們放在 <code>~/.elan/bin</code>。你可能需要重新啓動shell，或者關閉重連VSCode來使用Lean。</p>
@@ -251,15 +262,23 @@
 #eval "Hello, World!"     -- 像這樣處於兩條橫桿右邊的是行內注釋</code></pre>
 <p>👆這就是Lean語言的Hello world程序。將它保存在一個以 <code>.lean</code> 為後綴的文本文件中，如果環境配置正常，你會在VsCode的Lean Infoview頁面中看到輸出。</p>
 <p>在Lean中，<code>--</code> 符號右側的文本是行內注釋；成對的 <code>/-</code> 和 <code>-/</code> 符號包裹住的是多行注釋。</p>
-</section>
-<section class="level2" id="參考資料">
-<h2 class="anchored" data-anchor-id="參考資料">參考資料</h2>
-<p>除了看本人的筆記，你也可以參考這些資料</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>你已經把環境搭好了。現在你也許可以多搜集和大概瀏覽一些參考資料。我推薦：</p>
 <ul>
 <li><em>Theorem Proving in Lean</em>：這本書比較適合那些喜歡在使用電器之前，完整地將説明書過一遍的人。</li>
-<li><em>Mathematics in Lean</em>：適合那些希望立即能將Lean用於數學問題的人。遺憾的是這本書現在還難稱完整。</li>
+<li><em>Mathematics in Lean</em>：適合那些希望立即能將Lean用於數學問題的人。遺憾的是這本書現在還難稱完整，無法完全覆蓋全部數學概念。</li>
 </ul>
-<p>本系列文章在很大程度上參考了這些文章。</p>
+</div>
+</div>
 </section>
 <section class="level2" id="自動證明策略">
 <h2 class="anchored" data-anchor-id="自動證明策略">自動證明策略</h2>
