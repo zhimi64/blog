@@ -1,255 +1,318 @@
 <!doctype html>
 <html lang="" itemscope itemtype="http://schema.org/Person">
 <head>
+    
+    
+        <meta charset="utf-8">
+        <!-- Site Meta Data -->
+        <title>【论文精读】Linear Transformer</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
+        <meta name="author" content="執迷">
 
-  
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-  
-    gtag('config', 'G-G3N739QVFZ');
-  </script>
-  
+        <link rel="shortcut icon" href="favicon.ico">
 
-  
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="./_vercel/insights/script.js"></script>
-  
+        <!-- schema.org -->
+        <meta itemprop="name" content="執迷的博客">
+        <meta itemprop="image" content="">
+        <meta itemprop="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
 
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-  
-  
-  
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+        <!-- Style Meta Data -->
+        <link rel="stylesheet" href="./theme/css/style.css" type="text/css"/>
+        <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css"/>
 
-<!-- Quarto -->
-<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
-<script src="./theme/scripts/quarto/quarto.js"></script>
+        <!-- Feed Meta Data -->
+        
+        
 
+        <!-- Twitter Feed -->
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="">
+        <meta name="twitter:image" content="">
 
-  <meta charset="utf-8">
-  <!-- Site Meta Data -->
-  <title>【论文精读】Linear Transformer</title>
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="執迷">
-
-  <link rel="shortcut icon" href="favicon.ico">
-
-  <!-- schema.org -->
-  <meta itemprop="name" content="執迷的博客">
-  <meta itemprop="image" content="">
-  <meta itemprop="description" content="">
-
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
-  <!-- Style Meta Data -->
-  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/style.css" type="text/css" />
-  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/pygments.css" type="text/css" />
-
-  <!-- Feed Meta Data -->
-  
-  
-    <link href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss_zh-cn.xml" type="application/atom+xml" rel="alternate" title="執迷的博客 RSS Feed" />
-  
-
-  <!-- Twitter Feed -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="">
-  <meta name="twitter:image" content="">
-  
-<meta name="twitter:creator" content="">
-<meta name="twitter:url" content="https://zhimi.vercel.app/./linear_transformer_20250215_zh-cn.html">
-<meta name="twitter:title" content="執迷的博客 ~ 【论文精读】Linear Transformer">
-<meta name="twitter:description" content="">
-
-<!-- Facebook Meta Data -->
-<meta property="og:title" content="執迷的博客 ~ 【论文精读】Linear Transformer" />
-<meta property="og:description" content="" />
-<meta property="og:image" content="" />
-
-
-<!-- MathJax -->
-
+        <!-- Busuanzi -->
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
+    <meta name="twitter:creator" content="">
+    <meta name="twitter:url" content="././linear_transformer_20250215_zh-cn.html">
+    <meta name="twitter:title" content="執迷的博客 ~ 【论文精读】Linear Transformer">
+    <meta name="twitter:description" content="">
 
+    <!-- Quarto -->
+    <link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+    <script src="./theme/scripts/quarto/quarto.js"></script>
 
+    <!-- AnchorJS -->
+    <script src="https://cdn.jsdelivr.net/npm/anchor-js@5/anchor.min.js"></script>
+
+    <!-- Facebook Meta Data -->
+    <meta property="og:title" content="執迷的博客 ~ 【论文精读】Linear Transformer"/>
+    <meta property="og:description" content=""/>
+    <meta property="og:image" content=""/>
+    
 
 </head>
 
 <body>
-  <!-- Sidebar -->
-  <aside>
-    <!--<center><a href="https://zhimi.vercel.app"><img id="avatar" src=""></a></center>-->
+<!-- Sidebar -->
+<aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
     <h1>執迷的博客</h1>
     
-      <p>做一個有趣的人！</p>
+        <p>用喜歡的方式，度過自己的一生。</p>
     
     <br>
 
     
 
     <nav class="nav">
-      <ul class="list-bare">
-      
-        
-          <li><a class="nav__link" href="https://zhimi.vercel.app/index_zh-cn.html">Blog</a></li>
-        
-         
-        
-          <li><a class="nav__link" href="https://zhimi.vercel.app/./about_zh-cn.html">About</a></li>
-        
-         
-      </ul>
+        <ul class="list-bare">
+
+            
+                <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
+            
+
+            
+                <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
+            
+                <li><a class="nav__link" href="././job_wanted_zh-cn.html">Job Wanted (*^▽^*)┛</a></li>
+            
+
+        </ul>
     </nav>
 
     <p class="social">
-      
-      
-      
-      <a href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss_zh-cn.xml" rel="alternate">
-        <img src="https://zhimi.vercel.app/theme/images/icons/rss.png"></a>
-      
+        
+        
+        
     </p>
 
-    <!--
     
-    -->
-  </aside>
 
-  <!-- Content -->
-  <article>
     
-<section id="content">
-    <h2 class="post_title post_detail"><a href="https://zhimi.vercel.app/./linear_transformer_20250215_zh-cn.html" rel="bookmark" title="Permalink to 【论文精读】Linear Transformer">【论文精读】Linear Transformer</a></h2>
+
+</aside>
+
+<!-- Job Banner -->
+<div class="job-banner" id="job-banner">
+    <canvas id="job-banner-canvas"></canvas>
+    <div class="job-banner-content">
+        <span class="job-banner-icon">✨</span>
+        <span class="job-banner-text">本人求职中！大模型 Post-Training 方向 · 长三角、南方地区优先 · </span>如果您有兴趣，欢迎联系
+        <a class="job-banner-email" href="mailto:zhimi64@foxmail.com">zhimi64@foxmail.com</a>
+        <span class="job-banner-sep">｜</span>
+        <a class="job-banner-link" href="./job_wanted_zh-cn.html">👀 了解更多</a>
+    </div>
+</div>
+
+<script>
+(function() {
+    const banner = document.getElementById('job-banner');
+    const canvas = document.getElementById('job-banner-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let w, h, cols, rows, grid, nextGrid;
+    const CELL_SIZE = 12;
+    const ALIVE = 1, DEAD = 0;
+
+    function resize() {
+        const rect = banner.getBoundingClientRect();
+        w = canvas.width = rect.width;
+        h = canvas.height = rect.height;
+        cols = Math.ceil(w / CELL_SIZE);
+        rows = Math.ceil(h / CELL_SIZE);
+        grid = new Uint8Array(cols * rows);
+        nextGrid = new Uint8Array(cols * rows);
+        // 隨機初始化 40%
+        for (let i = 0; i < grid.length; i++) {
+            grid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
+        }
+    }
+
+    function get(x, y, g) {
+        if (x < 0 || x >= cols || y < 0 || y >= rows) return DEAD;
+        return g[y * cols + x];
+    }
+
+    function step() {
+        // 每一步隨機擾動：約 2% 的細胞被翻轉
+        for (let i = 0; i < grid.length; i++) {
+            if (Math.random() < 0.02) {
+                grid[i] = grid[i] === ALIVE ? DEAD : ALIVE;
+            }
+        }
+
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                const idx = y * cols + x;
+                let neighbors = 0;
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        if (dx === 0 && dy === 0) continue;
+                        neighbors += get(x + dx, y + dy, grid);
+                    }
+                }
+                const state = grid[idx];
+                if (state === ALIVE) {
+                    nextGrid[idx] = (neighbors === 2 || neighbors === 3) ? ALIVE : DEAD;
+                } else {
+                    nextGrid[idx] = (neighbors === 3) ? ALIVE : DEAD;
+                }
+            }
+        }
+        // 如果全部死光，重新播種
+        let alive = 0;
+        for (let i = 0; i < nextGrid.length; i++) alive += nextGrid[i];
+        if (alive === 0) {
+            for (let i = 0; i < nextGrid.length; i++) {
+                nextGrid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
+            }
+        }
+        [grid, nextGrid] = [nextGrid, grid];
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                if (grid[y * cols + x] === ALIVE) {
+                    const alpha = 0.15 + Math.random() * 0.2;  // 閃爍感
+                    ctx.fillStyle = `rgba(46, 204, 113, ${alpha})`;
+                    ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
+                }
+            }
+        }
+    }
+
+    let lastStep = 0;
+    const STEP_INTERVAL = 200; // 毫秒，原約 16ms，現放慢約 12 倍
+
+    function tick(timestamp) {
+        if (timestamp - lastStep >= STEP_INTERVAL) {
+            step();
+            draw();
+            lastStep = timestamp;
+        }
+        requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    tick();
+})();
+</script>
+
+<!-- Content -->
+<article>
     
-    <p>
-        <span id="busuanzi_container_page_pv">
-            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
-        </span>
-    </p>
+    <section id="content">
+        <article>
+            <h2 class="post_title post_detail"><a href="././linear_transformer_20250215_zh-cn.html" rel="bookmark"
+                                                  title="Permalink to 【论文精读】Linear Transformer">【论文精读】Linear Transformer</a></h2>
+            
     
-    <div class="entry-content blog-post">
-        <div>
+            <p>
+                <span id="busuanzi_container_page_pv">
+                    本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+                </span>
+            </p>
+
+            <div class="entry-content blog-post">
+                <div class="fullcontent">
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
-<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
-<nav class="toc-active" id="TOC" role="doc-toc">
-<h2 id="toc-title">目录</h2>
-<ul>
-<li><a class="nav-link active" data-scroll-target="#前言" href="#前言" id="toc-前言"><span class="header-section-number">1</span> 前言</a></li>
-<li><a class="nav-link" data-scroll-target="#transformer的结构" href="#transformer的结构" id="toc-transformer的结构"><span class="header-section-number">2</span> Transformer的结构</a></li>
-<li><a class="nav-link" data-scroll-target="#線性注意力" href="#線性注意力" id="toc-線性注意力"><span class="header-section-number">3</span> 线性注意力</a></li>
-<li><a class="nav-link" data-scroll-target="#因果掩膜" href="#因果掩膜" id="toc-因果掩膜"><span class="header-section-number">4</span> 因果掩膜</a></li>
-<li><a class="nav-link" data-scroll-target="#梯度計算" href="#梯度計算" id="toc-梯度計算"><span class="header-section-number">5</span> 梯度计算</a></li>
-<li><a class="nav-link" data-scroll-target="#訓練和推理" href="#訓練和推理" id="toc-訓練和推理"><span class="header-section-number">6</span> 训练和推理</a></li>
-<li><a class="nav-link" data-scroll-target="#transformer模型是rnn模型的特例" href="#transformer模型是rnn模型的特例" id="toc-transformer模型是rnn模型的特例"><span class="header-section-number">7</span> Transformer模型是RNN模型的特例</a></li>
-<li><a class="nav-link" data-scroll-target="#推薦閲讀" href="#推薦閲讀" id="toc-推薦閲讀"><span class="header-section-number">8</span> 推荐阅读</a></li>
-</ul>
-</nav>
-</div>
 <main class="content" id="quarto-document-content">
-<header class="quarto-title-block default" id="title-block-header">
-<div class="quarto-title">
 
-</div>
-<div class="quarto-title-meta">
-<div>
-<div class="quarto-title-meta-heading">发布于</div>
-<div class="quarto-title-meta-contents">
-<p class="date">2025年5月15日</p>
-</div>
-</div>
-</div>
-</header>
-<section class="level2" data-number="1" id="前言">
-<h2 class="anchored" data-anchor-id="前言" data-number="1"><span class="header-section-number">1</span> 前言</h2>
-<p>Transformer模型相较于传统的RNN模型更适合并行训练，因此得以在NLP领域得到广泛应用。但是<span class="math inline">\(O(n^2)\)</span>空间和时间复杂度是导致Transformer模型消耗显存和算力的痛点。这是第一个问题。</p>
-<p>有一个观点是“压缩即智能”。但是我们在Transformer上没有看到任何“记忆压缩”的影子。它只是将所有token的特征排列在那里，可供后续随时取用。这是第二个问题，也是我最近常常思考的问题。</p>
-<p>从上面两点出发，我最近著手调研（或者也可以说是考古吧😀）和实验一些线性Transformer的工作。</p>
-<p>本文是我阅读<em>Transformers are RNNs</em><span class="citation" data-cites="transformers_are_rnns"><sup>[<a href="#ref-transformers_are_rnns" role="doc-biblioref">1</a>]</sup></span>这篇文章的笔记。这篇文章有一些有意思的贡献：</p>
+<section class="level2" id="前言">
+<h2 class="anchored" data-anchor-id="前言">前言</h2>
+<p>Transformer 模型相较于传统的 RNN 模型更适合并行训练，因此得以在 NLP 领域得到广泛应用。但是它也存在一些问题：</p>
 <ol type="1">
-<li>从softmax attention这个特例推广到一般的衡量query和key相似度的方法；</li>
-<li>提出线性Transformer，它既能像传统Transformer一样并行训练，也能像RNN模型那样，在推理阶段维持常数的空间复杂度和时间复杂度。</li>
+<li><strong>时间复杂度和空间复杂度</strong>：<span class="math inline">\(O(n^2)\)</span> 空间和时间复杂度是导致 Transformer 模型消耗显存和算力的痛点。</li>
+<li><strong>缺少对上下文的压缩</strong>：有一个观点是”压缩即智能”。但是我们在 Transformer 上没有看到任何”记忆压缩”的影子。它只是将所有 token 的特征排列在那里，可供后续随时取用。有没有一种办法，能够实现上下文的压缩，用有限的空间管理我们感兴趣的知识呢？</li>
+</ol>
+<p>出于对以上问题的兴趣，我著手调研（或者也可以说是考古吧😀）和实验一些线性 Transformer 的工作。</p>
+<p>本文是我阅读 <em>Transformers are RNNs</em> <span class="citation" data-cites="transformers_are_rnns"><a href="#ref-transformers_are_rnns" role="doc-biblioref">[1]</a></span> 这篇文章的笔记。这篇文章有一些有意思的贡献：</p>
+<ol type="1">
+<li>从 softmax attention 这个特例推广到一般的衡量 query 和 key 相似度的方法；</li>
+<li>提出线性 Transformer，它既能像传统 Transformer 一样并行训练，也能像 RNN 模型那样，在推理阶段维持常数的空间复杂度和时间复杂度。</li>
 </ol>
 </section>
-<section class="level2" data-number="2" id="transformer的结构">
-<h2 class="anchored" data-anchor-id="transformer的结构" data-number="2"><span class="header-section-number">2</span> Transformer的结构</h2>
-<p>Transformer模型<span class="math inline">\(T\)</span>可以看做是一个类型为<span class="math inline">\(\mathbb R^{N\times F}\to \mathbb R^{N\times F}\)</span>的函数，这里<span class="math inline">\(N\)</span>是序列长度，<span class="math inline">\(F\)</span>是特征向量的维度。</p>
-<p>一个Transformer有L层，记第<span class="math inline">\(l\)</span>层为<span class="math inline">\(T_l\)</span>，其结构为 <span class="math display">\[
-T_l(x) = f_l(A_l(x) + x),
-\]</span> 其中<span class="math inline">\(A_l\)</span>是Attention模块，<span class="math inline">\(f_l\)</span>是Feed-forward模块。</p>
-<p>在Attention模块<span class="math inline">\(A_l\)</span>中，<span class="math inline">\(x\)</span>先经过线性转换<span class="math inline">\(\mathbf W_Q\in \mathbb R^{F\times D},\mathbf  W_K\in \mathbb R^{F\times D},\mathbf  W_V\in \mathbb R^{F\times M}\)</span>，得到<span class="math inline">\(\mathbf Q, \mathbf K, \mathbf V\)</span>（即query、key和value向量）： <span class="math display">\[
+<section class="level2" id="transformer-的結構">
+<h2 class="anchored" data-anchor-id="transformer-的結構">Transformer 的结构</h2>
+<p>Transformer 模型 <span class="math inline">\(T\)</span> 可以看做是一个类型为 <span class="math inline">\(\mathbb R^{N\times F}\to \mathbb R^{N\times F}\)</span> 的函数，这里 <span class="math inline">\(N\)</span> 是序列长度，<span class="math inline">\(F\)</span> 是特征向量的维度。</p>
+<p>一个 Transformer 有 <span class="math inline">\(L\)</span> 层，记第 <span class="math inline">\(l\)</span> 层为 <span class="math inline">\(T_l\)</span>，其结构为</p>
+<p><span class="math display">\[ T_l(x) = f_l(A_l(x) + x), \]</span></p>
+<p>其中 <span class="math inline">\(A_l\)</span> 是 Attention 模块，<span class="math inline">\(f_l\)</span> 是 Feed-forward 模块。</p>
+<p>在 Attention 模块 <span class="math inline">\(A_l\)</span> 中，<span class="math inline">\(x\)</span> 先经过线性转换 <span class="math inline">\(\mathbf W_Q\in \mathbb R^{F\times D},\mathbf W_K\in \mathbb R^{F\times D},\mathbf W_V\in \mathbb R^{F\times M}\)</span>，得到 <span class="math inline">\(\mathbf Q, \mathbf K, \mathbf V\)</span>（即 query、key 和 value 向量）：</p>
+<p><span class="math display">\[
 \begin{aligned}
-\mathbf Q &amp;= \mathbf x\mathbf  W_Q,\\
+\mathbf Q &amp;= \mathbf x\mathbf W_Q,\\
 \mathbf K &amp;= \mathbf x \mathbf W_K,\\
-\mathbf V &amp;= \mathbf x\mathbf  W_V.
+\mathbf V &amp;= \mathbf x\mathbf W_V.
 \end{aligned}
-\]</span> 接著，Attention模块的输出为 <span id="eq-attention"><span class="math display">\[
-\mathbf A_l(x) = \mathbf V' = \text{softmax}\left(\frac{\mathbf Q\mathbf K^T}{\sqrt{D}}\right)V.
-\tag{1}\]</span></span> 可以看到<span class="math inline">\(V'\)</span>实际上是<span class="math inline">\(V\)</span>的加权和，其中每个位置特征的权重由<span class="math inline">\(Q\)</span>和<span class="math inline">\(K\)</span>计算得到。</p>
-<p><a class="quarto-xref" href="#eq-attention">公式 1</a>使用softmax函数计算权重，这实际是下面的这个函数的一个特例： <span id="eq-generalized-attention"><span class="math display">\[
-\mathbf V'_i = \frac{\sum_{j=1}^N \text{sim}(\mathbf Q_i, \mathbf K_j)V_j}{\sum_{j=1}^N \text{sim}(\mathbf Q_i, \mathbf K_j)}.
-\tag{2}\]</span></span> softmax函数等同于将上式中的<span class="math inline">\(\text{sim}\)</span>函数定义为<span class="math inline">\(\exp(\frac{\mathbf Q_i^T\mathbf K_j}{\sqrt D})\)</span></p>
+\]</span></p>
+<p>接著，Attention 模块的输出为</p>
+<p><span id="eq-attention"><span class="math display">\[ \mathbf A_l(x) = \mathbf V' = \text{softmax}\left(\frac{\mathbf Q\mathbf K^T}{\sqrt{D}}\right)V.  \tag{1}\]</span></span></p>
+<p>可以看到 <span class="math inline">\(V'\)</span> 实际上是 <span class="math inline">\(V\)</span> 的加权和，其中每个位置特征的权重由 <span class="math inline">\(Q\)</span> 和 <span class="math inline">\(K\)</span> 计算得到。</p>
+<p><a class="quarto-xref" href="#eq-attention">Equation 1</a> 使用 softmax 函数计算权重，这实际是下面的这个函数的一个特例：</p>
+<p><span id="eq-generalized-attention"><span class="math display">\[ \mathbf V'_i = \frac{\sum_{j=1}^N \text{sim}(\mathbf Q_i, \mathbf K_j)V_j}{\sum_{j=1}^N \text{sim}(\mathbf Q_i, \mathbf K_j)}.  \tag{2}\]</span></span></p>
+<p>softmax 函数等同于将上式中的 <span class="math inline">\(\text{sim}\)</span> 函数定义为 <span class="math inline">\(\exp(\frac{\mathbf Q_i^T\mathbf K_j}{\sqrt D})\)</span>。</p>
 </section>
-<section class="level2" data-number="3" id="線性注意力">
-<h2 class="anchored" data-anchor-id="線性注意力" data-number="3"><span class="header-section-number">3</span> 线性注意力</h2>
-<p>假设对于某<span class="math inline">\(\text{sim}\)</span>函数，存在<span class="math inline">\(\phi\)</span>函数，使得 <span class="math display">\[
-\text{sim}(\mathbf Q_i, \mathbf K_j) = \phi(\mathbf Q_i)^T \phi(\mathbf K_j)
-\]</span> 这样我们就将Attention模块线性化了。 利用矩阵乘法的结合律，上式可以改写为： <span id="eq-linear-attention"><span class="math display">\[
-\mathbf V'_i = \frac{
+<section class="level2" id="線性注意力">
+<h2 class="anchored" data-anchor-id="線性注意力">线性注意力</h2>
+<p>假设对于某 <span class="math inline">\(\text{sim}\)</span> 函数，存在 <span class="math inline">\(\phi\)</span> 函数，使得</p>
+<p><span class="math display">\[ \text{sim}(\mathbf Q_i, \mathbf K_j) = \phi(\mathbf Q_i)^T \phi(\mathbf K_j) \]</span></p>
+<p>这样我们就将 Attention 模块线性化了。利用矩阵乘法的结合律，上式可以改写为：</p>
+<p><span id="eq-linear-attention"><span class="math display">\[ \mathbf V'_i = \frac{
     \phi(\mathbf Q_i)^T \sum_{j=1}^N \phi(\mathbf K_j) \mathbf V_j^T
 }{
     \phi(\mathbf Q_i)^T \sum_{j=1}^N \phi(\mathbf K_j)
-}
-\tag{3}\]</span></span> 由于query和key两两之间都需要计算相似度，softmax-attention<span class="citation" data-cites="vaswani_attention_2017"><sup>[<a href="#ref-vaswani_attention_2017" role="doc-biblioref">2</a>]</sup></span>的时间复杂度是<span class="math inline">\(O(N^2)\)</span>；其空间复杂度同理也是<span class="math inline">\(O(N^2)\)</span>，因为需要存储注意力矩阵用于后续的反向传播。而线性注意力的时间复杂度是<span class="math inline">\(O(N)\)</span>，空间复杂度也是<span class="math inline">\(O(N)\)</span>。由<a class="quarto-xref" href="#eq-linear-attention">公式 3</a>可见，<span class="math inline">\(\sum_{j=1}^N \phi(\mathbf K_j) \mathbf V_j^T\)</span>和<span class="math inline">\(\sum_{j=1}^N \phi(\mathbf K_j)\)</span>均可以在计算时可以被缓存和复用。</p>
-<p>为了使<span class="math inline">\(\text{sim}(\cdot)\)</span>是非负的，文章取<span class="math inline">\(\phi(x)\)</span>为 <span class="math display">\[
-\phi(x) = \text{elu}(x) + 1
-\]</span></p>
+}  \tag{3}\]</span></span></p>
+<p>由于 query 和 key 两两之间都需要计算相似度，softmax-attention <span class="citation" data-cites="vaswani_attention_2017"><a href="#ref-vaswani_attention_2017" role="doc-biblioref">[2]</a></span> 的时间复杂度是 <span class="math inline">\(O(N^2)\)</span>；其空间复杂度同理也是 <span class="math inline">\(O(N^2)\)</span>，因为需要存储注意力矩阵用于后续的反向传播。而线性注意力的时间复杂度是 <span class="math inline">\(O(N)\)</span>，空间复杂度也是 <span class="math inline">\(O(N)\)</span>。由 <a class="quarto-xref" href="#eq-linear-attention">Equation 3</a> 可见，<span class="math inline">\(\sum_{j=1}^N \phi(\mathbf K_j) \mathbf V_j^T\)</span> 和 <span class="math inline">\(\sum_{j=1}^N \phi(\mathbf K_j)\)</span> 均可以在计算时可以被缓存和复用。</p>
+<p>为了使 <span class="math inline">\(\text{sim}(\cdot)\)</span> 是非负的，文章取 <span class="math inline">\(\phi(x)\)</span> 为</p>
+<p><span class="math display">\[ \phi(x) = \text{elu}(x) + 1 \]</span></p>
 </section>
-<section class="level2" data-number="4" id="因果掩膜">
-<h2 class="anchored" data-anchor-id="因果掩膜" data-number="4"><span class="header-section-number">4</span> 因果掩膜</h2>
-<p>在训练自回归模型时，每个位置的token都不能受到未来token的影响。位置<span class="math inline">\(i\)</span>上的token受到位置<span class="math inline">\(j\)</span>上的token的影响，当且仅当<span class="math inline">\(j\leq i\)</span>. 这应用于线性Transformer，需要将<a class="quarto-xref" href="#eq-generalized-attention">公式 2</a>改为 <span id="eq-generalized-attention-with-causal-mask"><span class="math display">\[
-\mathbf V'_i=\frac{\sum_{j=1}^i \text{sim}(\mathbf Q_i, \mathbf K_j)\mathbf V_j}{\sum_{j=1}^i \text{sim}(\mathbf Q_i,\mathbf  K_j)}.
-\tag{4}\]</span></span> 类似前面的推理，上式可改写为 <span id="eq-linear-attention-with-causal-mask"><span class="math display">\[
-\mathbf V'_i = \frac{
+<section class="level2" id="因果掩膜">
+<h2 class="anchored" data-anchor-id="因果掩膜">因果掩膜</h2>
+<p>在训练自回归模型时，每个位置的 token 都不能受到未来 token 的影响。位置 <span class="math inline">\(i\)</span> 上的 token 受到位置 <span class="math inline">\(j\)</span> 上的 token 的影响，当且仅当 <span class="math inline">\(j\leq i\)</span>。这应用于线性 Transformer，需要将 <a class="quarto-xref" href="#eq-generalized-attention">Equation 2</a> 改为</p>
+<p><span id="eq-generalized-attention-with-causal-mask"><span class="math display">\[ \mathbf V'_i=\frac{\sum_{j=1}^i \text{sim}(\mathbf Q_i, \mathbf K_j)\mathbf V_j}{\sum_{j=1}^i \text{sim}(\mathbf Q_i,\mathbf K_j)}.  \tag{4}\]</span></span></p>
+<p>类似前面的推理，上式可改写为</p>
+<p><span id="eq-linear-attention-with-causal-mask"><span class="math display">\[ \mathbf V'_i = \frac{
     \phi(\mathbf Q_i)^T \sum_{j=1}^i \phi(\mathbf K_j) \mathbf V_j^T
 }{
     \phi(\mathbf Q_i)^T \sum_{j=1}^i \phi(\mathbf K_j)
-},
-\tag{5}\]</span></span> 引入变量<span class="math inline">\(S_i\)</span>和<span class="math inline">\(Z_i\)</span>如下： <span class="math display">\[
+},  \tag{5}\]</span></span></p>
+<p>引入变量 <span class="math inline">\(S_i\)</span> 和 <span class="math inline">\(Z_i\)</span> 如下：</p>
+<p><span class="math display">\[
 \begin{aligned}
 \mathbf S_i &amp;= \sum_{j=1}^i \phi(\mathbf K_j) \mathbf V_j^T,\\
 \mathbf Z_i &amp;= \sum_{j=1}^i \phi(\mathbf K_j).
 \end{aligned}
-\]</span> <a class="quarto-xref" href="#eq-linear-attention-with-causal-mask">公式 5</a>可以改写为 <span id="eq-linear-attention-with-memory"><span class="math display">\[
-\mathbf V'_i = \frac{
-    \phi(\mathbf Q_i)^T\mathbf  S_i
+\]</span></p>
+<p><a class="quarto-xref" href="#eq-linear-attention-with-causal-mask">Equation 5</a> 可以改写为</p>
+<p><span id="eq-linear-attention-with-memory"><span class="math display">\[ \mathbf V'_i = \frac{
+    \phi(\mathbf Q_i)^T \mathbf S_i
 }{
     \phi(\mathbf Q_i)^T \mathbf Z_i
-}.
-\tag{6}\]</span></span> 注意<span class="math inline">\(\mathbf S_i,\mathbf  Z_i\)</span>可以由<span class="math inline">\(\mathbf S_{i-1},\mathbf  Z_{i-1}\)</span>计算得到，时间复杂度为常数。</p>
+}.  \tag{6}\]</span></span></p>
+<p>注意 <span class="math inline">\(\mathbf S_i, \mathbf Z_i\)</span> 可以由 <span class="math inline">\(\mathbf S_{i-1}, \mathbf Z_{i-1}\)</span> 计算得到，时间复杂度为常数。</p>
 </section>
-<section class="level2" data-number="5" id="梯度計算">
-<h2 class="anchored" data-anchor-id="梯度計算" data-number="5"><span class="header-section-number">5</span> 梯度计算</h2>
-<p>如果根据<a class="quarto-xref" href="#eq-linear-attention-with-memory">公式 6</a>实现简单的深度学习模型，那么为了梯度计算，我们需要缓存所有的<span class="math inline">\(S_i, Z_i\)</span>，这将带来很大的空间复杂度。文章提出将对<a class="quarto-xref" href="#eq-linear-attention-with-causal-mask">公式 5</a>分子的求导实现为一种基于累加和（cumulative sum）的方法，实现前向传播和反向传播时的线性时间复杂度和常数空间复杂度。</p>
-<p><strong>为了简便，本节的推导假设<span class="math inline">\(\mathbf Q, \mathbf K\)</span>中已经包含了<span class="math inline">\(\phi\)</span>函数。</strong></p>
-<p>假设<span class="math inline">\(\overline{\mathbf V}_i\)</span>是<a class="quarto-xref" href="#eq-linear-attention-with-causal-mask">公式 5</a>的分子，即 <span id="eq-linear-attention-numerator"><span class="math display">\[
-\overline{\mathbf V}_i = \mathbf Q_i^T \sum_{j=1}^i \mathbf K_j \mathbf V_j^T.
-\tag{7}\]</span></span> 设<span class="math inline">\(L\)</span>为损失，已知<span class="math inline">\(\overline{\mathbf V}_i\)</span>和<span class="math inline">\(L\)</span>，则<span class="math inline">\(L\)</span>对<span class="math inline">\(\mathbf Q, \mathbf K, \mathbf V\)</span>的梯度分别为 <span id="eq-grad-Q"><span class="math display">\[
-\nabla_{\mathbf Q_i}L = (\nabla_{\overline{\mathbf V}_i} L)(\sum_{j=1}^i \mathbf K_j \mathbf V_j^T)^T,
-\tag{8}\]</span></span> <span id="eq-grad-K"><span class="math display">\[
-\nabla_{\mathbf K_i}L = \left(\sum_{j=i}^N\mathbf Q_j (\nabla_{\overline{\mathbf V}_j}L)^T\right)\mathbf V_i,
-\tag{9}\]</span></span> <span id="eq-grad-V"><span class="math display">\[
-\nabla_{\mathbf V_i}L = \left(\sum_{j=i}^N \mathbf Q_j (\nabla_{\overline{V}_j}L)^T\right)^T \mathbf K_i,
-\tag{10}\]</span></span> 其中<span class="math inline">\(\mathbf Q\in\mathbb R^{N\times D},\mathbf K\in\mathbb R^{N\times D}, \mathbf V\in \mathbb R^{N\times M}\)</span>.</p>
+<section class="level2" id="梯度計算">
+<h2 class="anchored" data-anchor-id="梯度計算">梯度计算</h2>
+<p>如果根据 <a class="quarto-xref" href="#eq-linear-attention-with-memory">Equation 6</a> 实现简单的深度学习模型，那么为了梯度计算，我们需要缓存所有的 <span class="math inline">\(S_i, Z_i\)</span>，这将带来很大的空间复杂度。文章提出将对 <a class="quarto-xref" href="#eq-linear-attention-with-causal-mask">Equation 5</a> 分子的求导实现为一种基于累加和（cumulative sum）的方法，实现前向传播和反向传播时的线性时间复杂度和常数空间复杂度。</p>
+<p><strong>为了简便，本节的推导假设 <span class="math inline">\(\mathbf Q, \mathbf K\)</span> 中已经包含了 <span class="math inline">\(\phi\)</span> 函数。</strong></p>
+<p>假设 <span class="math inline">\(\overline{\mathbf V}_i\)</span> 是 <a class="quarto-xref" href="#eq-linear-attention-with-causal-mask">Equation 5</a> 的分子，即</p>
+<p><span id="eq-linear-attention-numerator"><span class="math display">\[ \overline{\mathbf V}_i = \mathbf Q_i^T \sum_{j=1}^i \mathbf K_j \mathbf V_j^T.  \tag{7}\]</span></span></p>
+<p>设 <span class="math inline">\(L\)</span> 为损失，已知 <span class="math inline">\(\overline{\mathbf V}_i\)</span> 和 <span class="math inline">\(L\)</span>，则 <span class="math inline">\(L\)</span> 对 <span class="math inline">\(\mathbf Q, \mathbf K, \mathbf V\)</span> 的梯度分别为</p>
+<p><span id="eq-grad-Q"><span class="math display">\[ \nabla_{\mathbf Q_i}L = (\nabla_{\overline{\mathbf V}_i} L)(\sum_{j=1}^i \mathbf K_j \mathbf V_j^T)^T,  \tag{8}\]</span></span></p>
+<p><span id="eq-grad-K"><span class="math display">\[ \nabla_{\mathbf K_i}L = \left(\sum_{j=i}^N\mathbf Q_j (\nabla_{\overline{\mathbf V}_j}L)^T\right)\mathbf V_i,  \tag{9}\]</span></span></p>
+<p><span id="eq-grad-V"><span class="math display">\[ \nabla_{\mathbf V_i}L = \left(\sum_{j=i}^N \mathbf Q_j (\nabla_{\overline{V}_j}L)^T\right)^T \mathbf K_i,  \tag{10}\]</span></span></p>
+<p>其中 <span class="math inline">\(\mathbf Q\in\mathbb R^{N\times D},\mathbf K\in\mathbb R^{N\times D}, \mathbf V\in \mathbb R^{N\times M}\)</span>。</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -260,53 +323,57 @@ T_l(x) = f_l(A_l(x) + x),
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>文章只考虑了分子的梯度计算。分母、整个分式的梯度计算交给<code>torch</code>自动处理。</p>
+<p>文章只考虑了分子的梯度计算。分母、整个分式的梯度计算交给 <code>torch</code> 自动处理。</p>
 </div>
 </div>
 <p>以下是详细推导：</p>
-<p>首先我们考虑矩阵中每个元素的计算，将<a class="quarto-xref" href="#eq-linear-attention-numerator">公式 7</a>中的矩阵、向量记号去除，得到 <span class="math display">\[
-\overline{V}_{ie} = \sum_{d=1}^D Q_{id} \sum_{j=1}^i K_{jd} V_{je} = \sum_{d=1}^D \sum_{j=1}^i Q_{id} K_{jd} V_{je}。
-\]</span></p>
-<p>于是对于任意的<span class="math inline">\(Q_{lt}\)</span>，我们可以推导出梯度为 <span id="eq-grad-q"><span class="math display">\[
-\frac{\partial L}{\partial Q_{lt}} = \sum_{e=1}^M \frac{\partial L}{\partial \overline{V}_{le}}\frac{\partial \overline{V}_{le}}{\partial Q_{lt}} = \sum_{e=1}^M\frac{\partial L}{\partial \overline{V}{le}}(\sum_{j=1}^lK_{jt}V_{je}).
-\tag{11}\]</span></span></p>
-<p>将其整理成矩阵形式，得到<a class="quarto-xref" href="#eq-grad-Q">公式 8</a></p>
-<p>在<a class="quarto-xref" href="#eq-grad-q">公式 11</a>中，我们利用了<span class="math inline">\(\overline{\mathbf V}_l\)</span>只受<span class="math inline">\(l\)</span>位置的query（即<span class="math inline">\(\mathbf Q_l\)</span>）影响的性质。query只影响当下，而每个key和value都会对未来的计算产生影响。对于key，其梯度的计算方式为： <span class="math display">\[
+<p>首先我们考虑矩阵中每个元素的计算，将 <a class="quarto-xref" href="#eq-linear-attention-numerator">Equation 7</a> 中的矩阵、向量记号去除，得到</p>
+<p><span class="math display">\[ \overline{V}_{ie} = \sum_{d=1}^D Q_{id} \sum_{j=1}^i K_{jd} V_{je} = \sum_{d=1}^D \sum_{j=1}^i Q_{id} K_{jd} V_{je}. \]</span></p>
+<p>于是对于任意的 <span class="math inline">\(Q_{lt}\)</span>，我们可以推导出梯度为</p>
+<p><span id="eq-grad-q"><span class="math display">\[ \frac{\partial L}{\partial Q_{lt}} = \sum_{e=1}^M \frac{\partial L}{\partial \overline{V}_{le}}\frac{\partial \overline{V}_{le}}{\partial Q_{lt}} = \sum_{e=1}^M\frac{\partial L}{\partial \overline{V}_{le}}(\sum_{j=1}^l K_{jt} V_{je}).  \tag{11}\]</span></span></p>
+<p>将其整理成矩阵形式，得到 <a class="quarto-xref" href="#eq-grad-Q">Equation 8</a>。</p>
+<p>在 <a class="quarto-xref" href="#eq-grad-q">Equation 11</a> 中，我们利用了 <span class="math inline">\(\overline{\mathbf V}_l\)</span> 只受 <span class="math inline">\(l\)</span> 位置的 query（即 <span class="math inline">\(\mathbf Q_l\)</span>）影响的性质。query 只影响当下，而每个 key 和 value 都会对未来的计算产生影响。对于 key，其梯度的计算方式为：</p>
+<p><span class="math display">\[
 \begin{aligned}
 \frac{\partial L}{\partial K_{lt}} &amp;= \sum_{e=1}^M\sum_{i=l}^N \frac{\partial L}{\partial \overline{V}_{ie}} \frac{\partial \overline{V}_{ie}}{\partial K_{lt}} \\
 &amp;= \sum_{e=1}^M\sum_{i=l}^N \frac{\partial L}{\partial \overline{V}_{ie}} \frac{\partial(\sum_{d=1}^D\sum_{j=1}^i Q_{id}K_{jd}V_{je})}{\partial K_{lt}} \\
 &amp;= \sum_{e=1}^M\sum_{i=l}^N \frac{\partial L}{\partial \overline{V}_{ie}} Q_{it} V_{le}
 \end{aligned}
-\]</span> 将其整理为矩阵形式，得到<a class="quarto-xref" href="#eq-grad-K">公式 9</a></p>
-<p>类似的，对于value，其梯度的计算方式为： <span class="math display">\[
+\]</span></p>
+<p>将其整理为矩阵形式，得到 <a class="quarto-xref" href="#eq-grad-K">Equation 9</a>。</p>
+<p>类似的，对于 value，其梯度的计算方式为：</p>
+<p><span class="math display">\[
 \begin{aligned}
 \frac{\partial L}{\partial V_{lt}} &amp;= \sum_{e=1}^M \sum_{i=l}^N \frac{\partial L}{\partial \overline{V}_{ie}} \frac{\overline{V}_{ie}}{\partial V_{lt}} \\
 &amp;= \sum_{e=1}^M \sum_{i=l}^N \frac{\partial L}{\partial \overline{V}_{ie}} \frac{\partial (\sum_{d=1}^D \sum_{j=1}^i Q_{id} K_{jd} V_{je})}{\partial V_{lt}}\\
 &amp;= \sum_{i=l}^N \frac{\partial L}{\partial \overline{V}_{it}} \sum_{d=1}^D Q_{id}K_{ld}
 \end{aligned}
-\]</span> 将其整理为矩阵形式，得到<a class="quarto-xref" href="#eq-grad-V">公式 10</a></p>
+\]</span></p>
+<p>将其整理为矩阵形式，得到 <a class="quarto-xref" href="#eq-grad-V">Equation 10</a>。</p>
 </section>
-<section class="level2" data-number="6" id="訓練和推理">
-<h2 class="anchored" data-anchor-id="訓練和推理" data-number="6"><span class="header-section-number">6</span> 训练和推理</h2>
-<p>训练时，完整的训练序列是已知的，这允许Transformer模型实现并行的训练；而受限于计算方式，传统的RNN模型一般难并行训练。Transformer模型的每一步推理的时间复杂度是不同的，随著上下文长度的增加而增加；而RNN模型的时间复杂度是固定的。</p>
-<p>文章提出的线性Transformer结合了两者的优点。</p>
+<section class="level2" id="訓練和推理">
+<h2 class="anchored" data-anchor-id="訓練和推理">训练和推理</h2>
+<p>训练时，完整的训练序列是已知的，这允许 Transformer 模型实现并行的训练；而受限于计算方式，传统的 RNN 模型一般难并行训练。Transformer 模型的每一步推理的时间复杂度是不同的，随著上下文长度的增加而增加；而 RNN 模型的时间复杂度是固定的。</p>
+<p>文章提出的线性 Transformer 结合了两者的优点。</p>
 </section>
-<section class="level2" data-number="7" id="transformer模型是rnn模型的特例">
-<h2 class="anchored" data-anchor-id="transformer模型是rnn模型的特例" data-number="7"><span class="header-section-number">7</span> Transformer模型是RNN模型的特例</h2>
-<p>从本文的讨论，我们可以明显的看出，带因果掩膜的Transformer模型可以视作是RNN模型的特例，即Transformer模型可以看做是一个能维护一个内部状态（<span class="math inline">\(\mathbf S_i\)</span>和<span class="math inline">\(\mathbf Z_i\)</span>），在每次获得新输入时更新内部状态的模型。</p>
+<section class="level2" id="transformer-模型是-rnn-模型的特例">
+<h2 class="anchored" data-anchor-id="transformer-模型是-rnn-模型的特例">Transformer 模型是 RNN 模型的特例</h2>
+<p>从本文的讨论，我们可以明显的看出，带因果掩膜的 Transformer 模型可以视作是 RNN 模型的特例，即 Transformer 模型可以看做是一个能维护一个内部状态（<span class="math inline">\(\mathbf S_i\)</span> 和 <span class="math inline">\(\mathbf Z_i\)</span>），在每次获得新输入时更新内部状态的模型。</p>
 </section>
-<section class="level2" data-number="8" id="推薦閲讀">
-<h2 class="anchored" data-anchor-id="推薦閲讀" data-number="8"><span class="header-section-number">8</span> 推荐阅读</h2>
+<section class="level2" id="推薦閲讀">
+<h2 class="anchored" data-anchor-id="推薦閲讀">推荐阅读</h2>
 <ul>
-<li><a href="https://www.spaces.ac.cn/archives/7546">《线性Attention的探索：Attention必须有个Softmax吗？》</a>。苏剑林的文章，非常好的总结分享了各种各样的线性Attention，甚至提出了自己的新设计。</li>
+<li><a href="https://www.spaces.ac.cn/archives/7546">《线性Attention的探索：Attention必须有个Softmax吗？》</a>。苏剑林的文章，非常好的总结分享了各种各样的线性 Attention，甚至提出了自己的新设计。</li>
 </ul>
+</section>
+<section class="level2 unnumbered" id="參考文獻">
 </section>
 <div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" id="quarto-bibliography" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">参考文献</h2><div class="references csl-bib-body" data-entry-spacing="0" id="refs" role="list">
 <div class="csl-entry" id="ref-transformers_are_rnns" role="listitem">
-<div class="csl-left-margin">[1] </div><div class="csl-right-inline">KATHAROPOULOS A, VYAS A, PAPPAS N, 等. Transformers are RNNs: fast autoregressive transformers with linear attention[C]//Proceedings of the 37th International Conference on Machine Learning. JMLR.org.</div>
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">A. Katharopoulos, A. Vyas, N. Pappas, and F. Fleuret, <span>“Transformers are <span>RNNs</span>: Fast autoregressive transformers with linear attention,”</span> in <em>Proceedings of the 37th international conference on machine learning</em>, 2020. Available: <a href="https://arxiv.org/abs/2006.16236">https://arxiv.org/abs/2006.16236</a></div>
 </div>
 <div class="csl-entry" id="ref-vaswani_attention_2017" role="listitem">
-<div class="csl-left-margin">[2] </div><div class="csl-right-inline">VASWANI A, SHAZEER N, PARMAR N, 等. <a href="http://arxiv.org/abs/1706.03762">Attention <span>Is</span> <span>All</span> <span>You</span> <span>Need</span></a>[J]. arXiv:1706.03762 [cs], 2017.</div>
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">A. Vaswani <em>et al.</em>, <span>“Attention is all you need,”</span> <em>Advances in Neural Information Processing Systems</em>, vol. 30, 2017, Available: <a href="https://arxiv.org/abs/1706.03762">https://arxiv.org/abs/1706.03762</a></div>
 </div>
 </div></section></div></main>
 <!-- /main column -->
@@ -353,12 +420,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "已复制");
+    button.setAttribute("title", "Copied!");
     let tooltip;
     if (window.bootstrap) {
       button.setAttribute("data-bs-toggle", "tooltip");
       button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "已复制");
+      button.setAttribute("data-bs-title", "Copied!");
       tooltip = new bootstrap.Tooltip(button, 
         { trigger: "manual", 
           customClass: "code-copy-button-tooltip",
@@ -392,6 +459,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -502,6 +571,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
+      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -729,83 +799,100 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 </div> <!-- /content -->
 </div>
-    </div>
-    <div class="post_list">
-        <span>By </span>
-        <a href="https://zhimi.vercel.app/">@執迷</a>
-        <span> in </span>
-        <span class="post_category"><a href="https://zhimi.vercel.app/" rel="bookmark" title="Permalink to 自然語言處理">[ 自然語言處理 ]</a></span>
-        <span class="post_date">2025-03-01</span>
-        <div><span>Tags : </span>
-            
-            
-            <span><a href="https://zhimi.vercel.app/">#Transformer, </a></span>
-            
-            <span><a href="https://zhimi.vercel.app/">#Linear Transformer, </a></span>
-            
-            <span><a href="https://zhimi.vercel.app/">#線性Transformer, </a></span>
-            
-            <span><a href="https://zhimi.vercel.app/">#RNN, </a></span>
-            
-            
-        </div>
+            </div>
+            <div class="post_list">
+                <span>By </span>
+                <a href="./">@執迷</a>
+                <span> in </span>
+                <span class="post_category"><a href="./" rel="bookmark"
+                                               title="Permalink to 算法">[ 算法 ]</a></span>
+                <span class="post_date">2025-02-15</span>
+                <div><span>Tags : </span>
+                    
+                        
+                            <span><a href="./">#Transformer, </a></span>
+                        
+                            <span><a href="./">#Linear Transformer, </a></span>
+                        
+                            <span><a href="./">#線性注意力, </a></span>
+                        
+                            <span><a href="./">#RNN, </a></span>
+                        
+                            <span><a href="./">#深度學習, </a></span>
+                        
+                    
+                </div>
 
-        <div class="entry-social-container" style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
-            
-            
-            <div class="entry-social" style="text-align: center;">
-                <span class="social-text">分享本文</span><br>
-                <div class="social-icons" style="display: flex; gap: 10px; justify-content: center;">
-                    <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=https://zhimi.vercel.app/./linear_transformer_20250215_zh-cn.html&text=【论文精读】Linear Transformer&via="><img src="https://zhimi.vercel.app/theme/images/icons/twitter-s.png"></a></span>
-                    <a target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https://zhimi.vercel.app/./linear_transformer_20250215_zh-cn.html&title=【论文精读】Linear Transformer" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="https://zhimi.vercel.app/theme/images/icons/linkedin-s.png"></a>
-                    <span class="mail"><a href="mailto:?subject=【论文精读】Linear Transformer&amp;body=Viens découvrir un article à propos de [【论文精读】Linear Transformer] sur le site de 執迷. https://zhimi.vercel.app/./linear_transformer_20250215_zh-cn.html" title="Share by Email" target="_blank"><img src="https://zhimi.vercel.app/theme/images/icons/mail-s.png"></a></span>
+                <div class="entry-social">
+                    <span class="twitter"><a target="_blank" rel="nofollow"
+                                             onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;"
+                                             title="Twitter"
+                                             href="https://twitter.com/share?url=././linear_transformer_20250215_zh-cn.html&text=【论文精读】Linear Transformer&via="><img
+                            src="./theme/images/icons/twitter-s.png"></a></span>
+
+                    <span class="gplus"><a target="_blank" title="Google +"
+                                           href="https://plus.google.com/share?url=././linear_transformer_20250215_zh-cn.html&hl=fr"
+                                           rel="nofollow"
+                                           onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
+                            src="./theme/images/icons/google-s.png"></a></span>
+
+                    <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow"
+                                              onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;"
+                                              href="https://www.facebook.com/sharer.php?u=././linear_transformer_20250215_zh-cn.html&t=【论文精读】Linear Transformer"><img
+                            src="./theme/images/icons/facebook-s.png"></a></span>
+
+                    <a target="_blank" title="Linkedin"
+                       href="https://www.linkedin.com/shareArticle?mini=true&url=././linear_transformer_20250215_zh-cn.html&title=【论文精读】Linear Transformer"
+                       rel="nofollow"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
+                            src="./theme/images/icons/linkedin-s.png"></a>
+
+                    <span class="mail"><a
+                            href="mailto:?subject=【论文精读】Linear Transformer&amp;body=Viens découvrir un article à propos de [【论文精读】Linear Transformer] sur le site de 執迷. ././linear_transformer_20250215_zh-cn.html"
+                            title="Share by Email" target="_blank"><img
+                            src="./theme/images/icons/mail-s.png"></a></span>
                 </div>
             </div>
-        </div>
-        </div>
-    </div>
-    
+            
+        </article>
+    </section>
 
-</section>
+</article>
 
-<!-- Quarto Clipboard -->
-<script type="text/javascript">
-    var clipboard = new ClipboardJS(
-        '.code-copy-button',
-        {
-            target: function(trigger) {
-                console.log("Copy texts. ", trigger);
-                return trigger.previousElementSibling;
-            }
-        }
-    );    
-    clipboard.on('success', function(e) {
-        console.info('Action:', e.action);
-        console.info('Text:', e.text);
-        console.info('Trigger:', e.trigger);
-        e.clearSelection();
-        alert('Copied!');
-    });
-    console.log("ClipboardJS loaded.");
-</script>
+<!-- Footer -->
 
-  </article>
+    <footer>
+        <p>
+            Blog powered by <a href="http://getpelican.com/">Pelican</a>,
+            which takes great advantage of <a href="http://python.org">Python</a>.
+            Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a
+                href="https://parbhatpuri.com/">@parbhat</a>.
+        </p>
+        
+        <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+        <span id="busuanzi_container_site_uv">
+            訪客數<span id="busuanzi_value_site_uv"></span>
+        </span>
+        
+    </footer>
 
-  <!-- Footer -->
-  <footer>
-    <p>
-      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
-      which takes great advantage of <a href="http://python.org">Python</a>.
-      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
-    </p>
-    
-      
-      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
-      <span id="busuanzi_container_site_uv">
-        訪客數<span id="busuanzi_value_site_uv"></span>
-      </span>
-      
-    
-  </footer>
+
+
+    <!-- Analytics -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'G-G3N739QVFZ']);
+        _gaq.push(['_trackPageview']);
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
 </body>
 </html>
