@@ -5,7 +5,7 @@
     
         <meta charset="utf-8">
         <!-- Site Meta Data -->
-        <title>大模型算法工程师面试经验</title>
+        <title>大模型算法工程师面试经验和题库</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
         <meta name="author" content="執迷">
@@ -40,7 +40,7 @@
 
     <meta name="twitter:creator" content="">
     <meta name="twitter:url" content="././llm_interview_exp_20240711_zh-cn.html">
-    <meta name="twitter:title" content="執迷的博客 ~ 大模型算法工程师面试经验">
+    <meta name="twitter:title" content="執迷的博客 ~ 大模型算法工程师面试经验和题库">
     <meta name="twitter:description" content="">
 
     <!-- Quarto -->
@@ -52,7 +52,7 @@
     <script src="https://cdn.jsdelivr.net/npm/anchor-js@5/anchor.min.js"></script>
 
     <!-- Facebook Meta Data -->
-    <meta property="og:title" content="執迷的博客 ~ 大模型算法工程师面试经验"/>
+    <meta property="og:title" content="執迷的博客 ~ 大模型算法工程师面试经验和题库"/>
     <meta property="og:description" content=""/>
     <meta property="og:image" content=""/>
     
@@ -214,7 +214,7 @@
     <section id="content">
         <article>
             <h2 class="post_title post_detail"><a href="././llm_interview_exp_20240711_zh-cn.html" rel="bookmark"
-                                                  title="Permalink to 大模型算法工程师面试经验">大模型算法工程师面试经验</a></h2>
+                                                  title="Permalink to 大模型算法工程师面试经验和题库">大模型算法工程师面试经验和题库</a></h2>
             
     
             <p>
@@ -236,16 +236,13 @@
 <li><a class="nav-link" data-scroll-target="#agent設計" href="#agent設計" id="toc-agent設計">Agent设计</a>
 <ul class="collapse">
 <li><a class="nav-link" data-scroll-target="#rag" href="#rag" id="toc-rag">RAG</a></li>
-<li><a class="nav-link" data-scroll-target="#災難性遺忘" href="#災難性遺忘" id="toc-災難性遺忘">灾难性遗忘</a></li>
 <li><a class="nav-link" data-scroll-target="#cot" href="#cot" id="toc-cot">CoT</a></li>
-<li><a class="nav-link" data-scroll-target="#多模態大模型" href="#多模態大模型" id="toc-多模態大模型">多模态大模型</a></li>
 </ul></li>
-<li><a class="nav-link" data-scroll-target="#自然語言處理" href="#自然語言處理" id="toc-自然語言處理">自然语言处理</a></li>
+<li><a class="nav-link" data-scroll-target="#多模態大模型" href="#多模態大模型" id="toc-多模態大模型">多模态大模型</a></li>
 <li><a class="nav-link" data-scroll-target="#計算機視覺相關問題" href="#計算機視覺相關問題" id="toc-計算機視覺相關問題">计算机视觉相关问题</a></li>
-<li><a class="nav-link" data-scroll-target="#深度學習相關問題" href="#深度學習相關問題" id="toc-深度學習相關問題">深度学习相关问题</a></li>
-<li><a class="nav-link" data-scroll-target="#機器學習問題" href="#機器學習問題" id="toc-機器學習問題">机器学习问题</a></li>
 <li><a class="nav-link" data-scroll-target="#算法題" href="#算法題" id="toc-算法題">算法题</a></li>
 <li><a class="nav-link" data-scroll-target="#開放性問題" href="#開放性問題" id="toc-開放性問題">开放性问题</a></li>
+<li><a class="nav-link" data-scroll-target="#拿到offer後的標準問題" href="#拿到offer後的標準問題" id="toc-拿到offer後的標準問題">拿到offer后的标准问题</a></li>
 <li><a class="nav-link" data-scroll-target="#總結" href="#總結" id="toc-總結">总结</a></li>
 <li><a class="nav-link" data-scroll-target="#附錄" href="#附錄" id="toc-附錄">附录</a>
 <ul class="collapse">
@@ -329,6 +326,30 @@ H_\text{CE}(P, Q) = D_\text{KL}(P, Q) + H(P)
 <p><strong>你知道softmax函数的上溢和下溢问题吗？如何解决这个问题。</strong></p>
 <p>进行softmax操作之前，输入数据减除自身的最大值，可以消除上溢和下溢出。</p>
 <p>具体可以阅读<a href="./softmax20240109.html">这篇文章</a>了解更多。</p>
+</div>
+<div class="card">
+<p><strong>手写K-Means</strong></p>
+<p>TODO</p>
+</div>
+<div class="card">
+<p><strong>如果特征维度很大而样本又少，应该怎么办？</strong></p>
+<p>TODO</p>
+</div>
+<div class="card">
+<p><strong>MSE和MAE分别作为损失函数会带来什么区别？</strong></p>
+</div>
+<div class="card">
+<p><strong>特征存在共线性问题会有什么影响？应当如何应对。</strong></p>
+<p>TODO</p>
+</div>
+<div class="card">
+<p><strong>在训练模型的过程中，我们经常遇到过拟合。有哪些常见的应对过拟合的方法？</strong></p>
+<ol type="1">
+<li>数据层面：增加数据量、数据增强；</li>
+<li>模型设计层面：Dropout、DropBlock、weight decay；</li>
+<li>训练策略：迁移学习、部分参数微调、early stop、辅助任务、不确定性估计；</li>
+<li>推理策略：test-time augmentation；</li>
+</ol>
 </div>
 </section>
 <section class="level2" id="llm數據工程">
@@ -464,12 +485,64 @@ H_\text{CE}(P, Q) = D_\text{KL}(P, Q) + H(P)
 </ol>
 </div>
 <div class="card">
+<p><strong>SFT过程中会出现灾难性遗忘吗？如何应对灾难性遗忘？</strong></p>
+<p>一般我们在项目中会通过SFT来获得一个面向专门领域和特定任务的模型，例如心理诊疗模型、法律咨询模型、医疗建议模型、论文修改模型。SFT的过程中大模型很容易忘记对象任务以外的知识，损失一部分通用能力。就目前的技术来看，灾难性遗忘问题是不可避免的，但可以通过以下方法缓解：<br/>
+<strong>限制偏离基模的程度</strong>：使用基模作为教师模型，引入KL散度约束，使模型的token分布不要过于偏离预训练模型。 <strong>数据重放</strong>：一种直接的做法是在SFT阶段随机地采样一部分预训练数据。（经验上看，预训练数据的采样比例在SFT阶段会起到比较大的影响。）<br/>
+<strong>部分参数微调</strong>：与全量微调不同，可考虑采用LoRA、Soft Prompt等方法，通过调控参与训练的参数量来控制SFT的拟合程度。（个人实践中还是全量微调比较多。）<br/>
+<strong>其它训练参数的调整</strong>：可以尝试调整学习率、epoch数等参数，使用early stop等技巧减少过拟合和遗忘现象。一般训练1<sub>3个epoch、损失降到0.5</sub>0.3以下就好。训练太多，训练集拟合得太厉害也不是好事。<br/>
+除了在训练阶段尽量缓解灾难性遗忘问题，去弥补训练后已经发生的遗忘也是一种可取思路。以下是一些工程上可以选择的方法：<br/>
+<strong>外部知识库/知识图谱/检索增强</strong>：实际上指望大模型记住各种各样琐碎的知识是十分困难的。相比之下，赋予大模型随时调用外部知识库是一种弥补知识缺陷的有效方法。<br/>
+<strong>一些相关的学术工作</strong>：LoRAMoE<span class="citation" data-cites="dou2024loramoe">(<a href="#ref-dou2024loramoe" role="doc-biblioref">Dou et al. 2024</a>)</span>通过冻结主干网络，迫使LoRA利用一部分世界知识来缓解灾难性遗忘。</p>
+</div>
+<div class="card">
 <p><strong>当前RLHF的流程有什么值得优化的地方？</strong></p>
 <p>这是一个开放性问题。言之有理地回答即可。</p>
 <p>个人认为可以讨论的点：</p>
 <ol type="1">
 <li>更细粒度的reward：如<em>Let’s Verify Step by Step</em><span class="citation" data-cites="lightman2023prm">(<a href="#ref-lightman2023prm" role="doc-biblioref">Lightman et al. 2023</a>)</span>一文指出的那样，偏好对齐可有更细粒度的标注，给出更准确的reward反馈。现在普遍常见的偏好数据只针对完整的回答给出标注，而不是针对每一个句子给出标注。相比于标注整个回答的偏好，仅标注出第一个有问题的句子/步骤不会增加更多的标注代价，但能够提升reward信号的精细程度。这样的细粒度偏好数据是目前比较少见的，有待建设；</li>
 <li>BT模型的优化和精细化：大多数偏好对齐方法采用了BT模型。BT模型要求reward model拉开正负样本的得分差距，但并没有考虑到正负样本间差异以及偏好程度差异的强弱问题。直觉上，对于回复相似，偏好差异不明显的情况，应该给与比较低的权重；对于回复差异大，偏好对比明显的情况，应该给与比较高的权重。一些工作<span class="citation" data-cites="Touvron_llama2 meng2024simpo">(<a href="#ref-Touvron_llama2" role="doc-biblioref">Touvron et al., n.d.</a>; <a href="#ref-meng2024simpo" role="doc-biblioref">Meng, Xia, and Chen 2024</a>)</span>尝试了人为设置规则或调整超参来调整BT model的margin，但也许还有自适应地调整BT model的margin且取得更好对齐效果的方法存在。</li>
+</ol>
+</div>
+<div class="card">
+<p><strong>旋转位置编码相对于原本的绝对位置编码有何改进？</strong></p>
+<p>TODO</p>
+</div>
+<div class="card">
+<p><strong>手写Multi-Head Attention。</strong></p>
+<p>本题答案可参考：<a href="./multi_head_20240311.html">《手写Multi-Head Attention：从公式到代码实现》</a></p>
+</div>
+<div class="card">
+<p><strong>你知道PreNorm和PostNorm的区别吗？</strong></p>
+<p>推荐阅读：</p>
+<ul>
+<li><a href="https://kexue.fm/archives/9009">为什么Pre Norm的效果不如Post Norm？</a></li>
+</ul>
+</div>
+<div class="card">
+<p><strong>为什么Transformer模型要使用LayerNorm而不是BatchNorm。</strong></p>
+<p>TODO</p>
+</div>
+<div class="card">
+<p><strong>介绍RMSNorm。</strong></p>
+<p>TODO</p>
+</div>
+<div class="card">
+<p><strong>请介绍几种你熟悉的tokenization方法。</strong></p>
+<p>TODO</p>
+</div>
+<div class="card">
+<p><strong>Encoder-Decoder结构、Prefix LM和Causal LM有什么不同？</strong></p>
+<p>T5论文的Figure 4很好地展示了三者的不同。 Encoder-Decoder结构下，Encoder的输入token间是两两互相可见的，Decoder的attention mask则是单向可见的。</p>
+<p>Prefix LM和Causal LM的结构相近，区别是Prefix LM中，前缀文本内的token是两两互相可见的，前缀文本后的token是单向可见的；而Causal LM中所有token都是单向可见的。</p>
+<p>Prefix LM和Encoder-Decoder相比是类似的，都允许一部分token之间两两完全可见，但Prefix LM好比是实现了Encoder和Decoder的参数共享，减少了参数量。</p>
+<p>当下Causal LM是被大模型广泛采用的架构。虽然Encoder-Decoder和Prefix LM的双向注意力理论上有优势，但仍然被大模型领域所”淘汰”。这就引出了另一个问题，“为什么大模型都采用Causal LM结构”</p>
+</div>
+<div class="card">
+<p><strong>为什么大模型都采用Causal LM结构？</strong></p>
+<ol type="1">
+<li>KV-Cache优化：Encoder-Decoder和Prefix LM都不易采用KV-Cache优化，而支持KV-Cache的Causal LM对推理加速更友好；</li>
+<li>训练效率：Encoder-Decoder架构模型的Pipeline Parallel难以优化。即使模型架构能带来理论上的性能优势，但是却带来昂贵的训练代价的话，那么这种模型结构就会输给那些更能充分利用算力的模型；</li>
+<li>轨迹依赖：OpenAI使用Causal LM成功实现了GPT系列大模型，这使得后来者都更倾向于采用相近的配置进行实验。</li>
 </ol>
 </div>
 <div class="card">
@@ -514,27 +587,33 @@ DCG = \sum_{i=1}^n \frac{
 <p>因此DCG这类问题的最佳排序方案就是为高权重的位置分配高价值的结果，因此<span class="math inline">\(\text{NDCG} \le 1\)</span>.</p>
 </div>
 </section>
-<section class="level3" id="災難性遺忘">
-<h3 class="anchored" data-anchor-id="災難性遺忘">灾难性遗忘</h3>
-<div class="card">
-<p><strong>例子 8</strong> ⭐<strong>SFT过程中会出现灾难性遗忘吗？如何应对灾难性遗忘？</strong></p>
-<p>一般我们在项目中会通过SFT来获得一个面向专门领域和特定任务的模型，例如心理诊疗模型、法律咨询模型、医疗建议模型、论文修改模型。SFT的过程中大模型很容易忘记对象任务以外的知识，损失一部分通用能力。就目前的技术来看，灾难性遗忘问题是不可避免的，但可以通过以下方法缓解：<br/>
-<strong>限制偏离基模的程度</strong>：使用基模作为教师模型，引入KL散度约束，使模型的token分布不要过于偏离预训练模型。 <strong>数据重放</strong>：一种直接的做法是在SFT阶段随机地采样一部分预训练数据。（经验上看，预训练数据的采样比例在SFT阶段会起到比较大的影响。）<br/>
-<strong>部分参数微调</strong>：与全量微调不同，可考虑采用LoRA、Soft Prompt等方法，通过调控参与训练的参数量来控制SFT的拟合程度。（个人实践中还是全量微调比较多。）<br/>
-<strong>其它训练参数的调整</strong>：可以尝试调整学习率、epoch数等参数，使用early stop等技巧减少过拟合和遗忘现象。一般训练1<sub>3个epoch、损失降到0.5</sub>0.3以下就好。训练太多，训练集拟合得太厉害也不是好事。<br/>
-除了在训练阶段尽量缓解灾难性遗忘问题，去弥补训练后已经发生的遗忘也是一种可取思路。以下是一些工程上可以选择的方法：<br/>
-<strong>外部知识库/知识图谱/检索增强</strong>：实际上指望大模型记住各种各样琐碎的知识是十分困难的。相比之下，赋予大模型随时调用外部知识库是一种弥补知识缺陷的有效方法。<br/>
-<strong>一些相关的学术工作</strong>：LoRAMoE<span class="citation" data-cites="dou2024loramoe">(<a href="#ref-dou2024loramoe" role="doc-biblioref">Dou et al. 2024</a>)</span>通过冻结主干网络，迫使LoRA利用一部分世界知识来缓解灾难性遗忘。</p>
-</div>
-</section>
 <section class="level3" id="cot">
 <h3 class="anchored" data-anchor-id="cot">CoT</h3>
 <div class="theorem example">
-<p><strong>例子 9</strong> ⭐<strong>你是如何构造CoT的？</strong></p>
+<p><strong>你是如何构造CoT的？</strong></p>
+<p>这个要结合实际项目作答。可供参考的简单回答：</p>
+<ol type="1">
+<li>数据层面：
+<ol type="1">
+<li>合成数据：利用商用模型搜集合成数据，生成符合特定规则的求解步骤；</li>
+<li>规则与模板引导：对于垂直领域任务，可以在prompt中设计对应规则模板；</li>
+<li>数据清洗与过滤：利用verifier或规则检查，滤除错误数据；</li>
+</ol></li>
+<li>训练层面：
+<ol type="1">
+<li>SFT：基于prompt、CoT、answer三元组构造训练数据；</li>
+<li>RL方法：可引入过程奖励提升CoT的准确率；利用可验证的任务设计和奖励设计，获得可靠的CoT；</li>
+</ol></li>
+<li>推理层面：
+<ol type="1">
+<li>采样多条CoT，利用Self-Consistency方法选出最优解，或者利用Tree of Thoughts方法进行回溯搜索。</li>
+</ol></li>
+</ol>
 </div>
 </section>
-<section class="level3" id="多模態大模型">
-<h3 class="anchored" data-anchor-id="多模態大模型">多模态大模型</h3>
+</section>
+<section class="level2" id="多模態大模型">
+<h2 class="anchored" data-anchor-id="多模態大模型">多模态大模型</h2>
 <div class="theorem example">
 <p><strong>例子 10</strong> ⭐<strong>你能列举几个常见的从视觉编码器的图像特征映射到大模型文本特征的方法吗？</strong></p>
 </div>
@@ -551,100 +630,21 @@ DCG = \sum_{i=1}^n \frac{
 <p><strong>例子 14</strong> ⭐<strong>你观察到GPT4-V有哪些问题？为什么会存在这些问题？</strong></p>
 </div>
 </section>
-</section>
-<section class="level2" id="自然語言處理">
-<h2 class="anchored" data-anchor-id="自然語言處理">自然语言处理</h2>
-<div class="theorem example">
-<p><strong>例子 15</strong> ⭐⭐⭐⭐<strong>旋转位置编码相对于原本的绝对位置编码有何改进？</strong></p>
-<p>TODO</p>
-</div>
-<div class="theorem example">
-<p><strong>例子 16</strong> 🌙🌙<strong>手写Multi-Head Attention。</strong></p>
-<p>本题答案可参考：<a href="https://zhimi.vercel.app/multi_head_20240311_zh-cn.html">《手写Multi-Head Attention：从公式到代码实现》</a></p>
-</div>
-<div class="theorem example">
-<p><strong>例子 17</strong> 🌙🌙<strong>你知道PreNorm和PostNorm的区别吗？</strong></p>
-<p>推荐阅读：</p>
-<ul>
-<li><a href="https://kexue.fm/archives/9009">为什么Pre Norm的效果不如Post Norm？</a></li>
-</ul>
-</div>
-<div class="theorem example">
-<p><strong>例子 18</strong> 🌙🌙<strong>为什么Transformer模型要使用LayerNorm而不是BatchNorm。</strong></p>
-<p>TODO</p>
-</div>
-<div class="theorem example">
-<p><strong>例子 19</strong> 🌙🌙<strong>介绍RMSNorm。</strong></p>
-<p>TODO</p>
-</div>
-<div class="theorem example">
-<p><strong>例子 20</strong> 🌙🌙<strong>请介绍几种你熟悉的tokenization方法。</strong></p>
-<p>TODO</p>
-</div>
-<div class="theorem example">
-<p><strong>例子 21</strong> <strong>Encoder-Decoder结构、Prefix LM和Causal LM有什么不同？</strong></p>
-<p>T5论文的Figure 4很好地展示了三者的不同。 Encoder-Decoder结构下，Encoder的输入token间是两两互相可见的，Decoder的attention mask则是单向可见的。</p>
-<p>Prefix LM和Causal LM的结构相近，区别是Prefix LM中，前缀文本内的token是两两互相可见的，前缀文本后的token是单向可见的；而Causal LM中所有token都是单向可见的。</p>
-<p>Prefix LM和Encoder-Decoder相比是类似的，都允许一部分token之间两两完全可见，但Prefix LM好比是实现了Encoder和Decoder的参数共享，减少了参数量。</p>
-<p>当下Causal LM是被大模型广泛采用的架构。虽然Encoder-Decoder和Prefix LM的双向注意力理论上有优势，但仍然被大模型领域所”淘汰”。这就引出了另一个问题，“为什么大模型都采用Causal LM结构”</p>
-</div>
-<div class="theorem example">
-<p><strong>例子 22</strong> ⭐⭐⭐为什么大模型都采用Causal LM结构？</p>
-<ol type="1">
-<li>KV-Cache优化：Encoder-Decoder和Prefix LM都不易采用KV-Cache优化，而支持KV-Cache的Causal LM对推理加速更友好；</li>
-<li>训练效率：Encoder-Decoder架构模型的Pipeline Parallel难以优化。即使模型架构能带来理论上的性能优势，但是却带来昂贵的训练代价的话，那么这种模型结构就会输给那些更能充分利用算力的模型；</li>
-<li>轨迹依赖：OpenAI使用Causal LM成功实现了GPT系列大模型，这使得后来者都更倾向于采用相近的配置进行实验。</li>
-</ol>
-</div>
-</section>
 <section class="level2" id="計算機視覺相關問題">
 <h2 class="anchored" data-anchor-id="計算機視覺相關問題">计算机视觉相关问题</h2>
-<div class="theorem example">
-<p><strong>例子 23</strong> <strong>为什么要对图像做预处理？</strong></p>
+<div class="card">
+<p><strong>为什么要对图像做预处理？</strong></p>
 <ol type="1">
 <li>预处理将数据变换到统一的格式，方便模型学习；</li>
 <li>通过提前提取有用的特征，裁剪出感兴趣区域来加快计算；</li>
 </ol>
 </div>
-<div class="theorem example">
-<p><strong>例子 24</strong> ⭐<strong>ViT模型中是如何对位置信息进行编码的？</strong></p>
+<div class="card">
+<p><strong>ViT模型中是如何对位置信息进行编码的？</strong></p>
 <p>TODO</p>
 </div>
-<div class="theorem example">
-<p><strong>例子 25</strong> ⭐<strong>请比较Transformer和CNN</strong></p>
-<p>TODO</p>
-</div>
-</section>
-<section class="level2" id="深度學習相關問題">
-<h2 class="anchored" data-anchor-id="深度學習相關問題">深度学习相关问题</h2>
-<div class="theorem example">
-<p><strong>例子 26</strong> ⭐<strong>在训练模型的过程中，我们经常遇到过拟合。有哪些常见的应对过拟合的方法？</strong></p>
-<ol type="1">
-<li>数据层面：增加数据量、数据增强；</li>
-<li>模型设计层面：Dropout、DropBlock、weight decay；</li>
-<li>训练策略：迁移学习、部分参数微调、early stop、辅助任务、不确定性估计；</li>
-<li>推理策略：test-time augmentation；</li>
-</ol>
-</div>
-</section>
-<section class="level2" id="機器學習問題">
-<h2 class="anchored" data-anchor-id="機器學習問題">机器学习问题</h2>
-<div class="theorem example">
-<p><strong>例子 27</strong> ⭐<strong>手写K-Means</strong></p>
-</div>
-<div class="theorem example">
-<p><strong>例子 28</strong> 🌙<strong>特征存在共线性问题会有什么影响？应当如何应对。</strong></p>
-<p>TODO</p>
-</div>
-<div class="theorem example">
-<p><strong>例子 29</strong> 🌙<strong>如果特征维度很大而样本又少，应该怎么办？</strong></p>
-<p>TODO</p>
-</div>
-<div class="theorem example">
-<p><strong>例子 30</strong> 🌙🌙<strong>MSE和MAE分别作为损失函数会带来什么区别？</strong></p>
-</div>
-<div class="theorem example">
-<p><strong>例子 31</strong> 🌙<strong>特征存在共线性问题会有什么影响？应当如何应对。</strong></p>
+<div class="card">
+<p><strong>请比较Transformer和CNN</strong></p>
 <p>TODO</p>
 </div>
 </section>
@@ -676,52 +676,74 @@ DCG = \sum_{i=1}^n \frac{
 </section>
 <section class="level2" id="開放性問題">
 <h2 class="anchored" data-anchor-id="開放性問題">开放性问题</h2>
-<div class="theorem example">
-<p><strong>例子 32</strong> ⭐<strong>在个人技术成长方面，你有什么规划？</strong></p>
+<p>这一节记录一些自己被问到的开放性问题。问题具体的答案还是需要结合自身经历才行。</p>
+<div class="card">
+<p><strong>在个人技术成长方面，你有什么规划？</strong></p>
+<p>一般可以列出自己最近感兴趣的论文和想做的方向，与团队业务相结合就好。</p>
 </div>
-<div class="theorem example">
-<p><strong>例子 33</strong> ⭐<strong>为什么想要离职？</strong></p>
-<p>仅仅是解释前东家的缺点是不够的。每个公司有每个公司的缺点，不能保证下一家没有相同的问题。一般可以将问题解释为当前公司平台无法提供更好的发展，而现在在看的机会能补充这方面的不足。最好不要表现出自己是当前工作上遇到困难而离职的，而应尽量表现出自己的事业当前处于上升期，但由于某些原因（工作地点、待遇、发展方向、职业规划）而不得不离开。这时可以顺带说说自己有多么适合这个新岗位。重要的是表现出自己与新公司是一个互相成就的关系。</p>
+<div class="card">
+<p><strong>如何平衡团队的业务目标与个人的技术成长？</strong></p>
+<p>面试官问出这个问题的时候，基本意味著这个团队是业务导向的，技术上不太强。</p>
+<p>ε=(´ο｀*)))</p>
+<p>回答“优先完成团队目标，业余也会保持对技术的关注”即可。</p>
 </div>
-<div class="theorem example">
-<p><strong>例子 34</strong> ⭐<strong>请介绍一下过往最困难的一个项目。</strong></p>
+<div class="card">
+<p><strong>为什么想要离职/看新机会？</strong></p>
+<ol type="1">
+<li><strong>仅仅是解释前东家的缺点是不够的。</strong>每个公司有每个公司的缺点，不能保证下一家没有相同的问题。一般可以将问题解释为当前公司平台无法提供更好的发展，而现在在看的机会能补充这方面的不足。最好不要表现出自己是当前工作上遇到困难而离职的，而应尽量表现出自己的事业当前处于上升期，但由于某些原因（工作地点、待遇、发展方向、职业规划）而不得不离开。这时可以顺带说说自己有多么适合这个新岗位。重要的是表现出自己与新公司是一个互相成就的关系。</li>
+<li><strong>说清楚想去哪里，比说为什么离开更重要。</strong></li>
+</ol>
 </div>
-<div class="theorem example">
-<p><strong>例子 35</strong> ⭐<strong>你当前采用的项目方案的亮点是什么？你对项目最重要的贡献是？</strong></p>
+<div class="card">
+<p><strong>请介绍一下过往最困难的一个项目。</strong></p>
 </div>
-<div class="theorem example">
-<p><strong>例子 36</strong> ⭐<strong>是什么使你在项目中具有不可替代性？或者是什么使你具备比他人更高的价值？</strong></p>
+<div class="card">
+<p><strong>你当前采用的项目方案的亮点是什么？你对项目最重要的贡献是？</strong></p>
+</div>
+<div class="card">
+<p><strong>是什么使你在项目中具有不可替代性？或者是什么使你具备比他人更高的价值？</strong></p>
 </div>
 </section>
-<section class="level2" id="總結">
-<h2 class="anchored" data-anchor-id="總結">总结</h2>
-<p>笔记的重要性：只学习不总结就容易忘。不做笔记不行啊。最好每次面试过后，立即将记录下来，时不时重新过一遍。</p>
-<p>平时多练习，多刷题，保持手感。有的公司（例如Minimax）的算法测试会期望给出最优解，面试时 即使把题目做出来了，也可以问一下需不需要继续改进，提一提能想到的改进点。</p>
+<section class="level2" id="拿到offer後的標準問題">
+<h2 class="anchored" data-anchor-id="拿到offer後的標準問題">拿到offer后的标准问题</h2>
 <p>拿到Offer后，记得问以下重点问题。可以不直接问，但也需要间接地通过各种渠道去了解。要了解的包括但不限于：</p>
 <ol type="1">
-<li>绩效的考核方式，KPI的考核情况</li>
-</ol>
+<li>绩效的考核方式，KPI的考核情况
 <ul>
 <li>有没有末位淘汰</li>
 <li>有没有轮流背D绩效</li>
 <li>绩效工资占縂工资比例</li>
 <li>绩效有没有强制分布</li>
 <li>绩效如何影响年终奖</li>
-</ul>
-<ol start="2" type="1">
-<li><p>股票和期权的行权规则</p></li>
-<li><p>竞业协议</p></li>
-</ol>
+</ul></li>
+<li>股票和期权的行权规则</li>
+<li>竞业协议
 <ul>
 <li>是否需要背竞业协议</li>
 <li>竞业协议是否与期权等权利挂钩</li>
-</ul>
+</ul></li>
+<li>工作强度：可以开门见山地询问新工作的工作强度如何</li>
+<li>总包、总包构成和职级
+<ul>
+<li>总包构成：
+<ul>
+<li>总回报预计多少</li>
+<li>其中多少是现金，多少由股票/期权构成？</li>
+<li>公积金缴纳比例</li>
+</ul></li>
+<li>职级：公司的职级是如何划分的，如何与互联网的“标准职级”对应？</li>
+</ul></li>
+</ol>
 <p>一些经验和感想：</p>
 <ol type="1">
-<li>（不是绝对的）不论是体制内还是体制外，国企还是私企，只要在国内，就不要相信955的存在。一位HR可以毫无心里负担地告诉你它是955，但它也可以随时转变为996而不受到任何约束。同理，一家企业声称它是996，那么你可以大胆推测它实际上已经是9106了。在这一点上面，猎头可能比HR更不可信。有一个猎头给我推荐了一家香港的初创公司，告诉我这是一家WLB（Work-Life Balance）的公司，但是我和创始人聊天的时候，他却笑着告诉我”初创公司不加班，还有谁敢来呀”。另一个猎头给我推荐宁德时代，告诉我那个组加班不严重。我觉得都不可不相信；</li>
-<li>竞业协议是不公平的。如果你签下了竞业协议，公司就有权阻止你入职同行业内的任何公司，并在你离职后提供一些微小的补偿。但相反的，假如你主动离职去读博、考公，主动希望公司启动竞业协议，公司却可以选择不启动竞业。主动权总是掌握在公司手上。<br/>
-一般来说，即使签订了协议，公司也不会舍得为一个初入职场的大头兵启动竞业。因此初入职场的同学不必过于担心这个问题。但不论如何，在签订新公司时还是要对竞业协议保持谨慎。某些公司，例如拼多多，有很大的概率启动竞业协议，并且在员工离职后派人调查其去向；</li>
+<li>（不是绝对的）猎头告诉你某公司不加班、965……基本不太可信，还是需要额外信息佐证。</li>
+<li>竞业协议是不公平的。如果你签了竞业协议，公司就有权阻止你入职同行业内的任何公司，并在你离职后提供一些微小的补偿。但相反的，假如你主动离职去读博、考公，主动希望公司启动竞业协议，公司却可以选择不启动竞业。主动权总是在公司手上。 某些公司，例如拼多多，有很大的概率启动竞业协议，并且在员工离职后派人调查其去向；所以这个问题一定要在入职之前了解清楚。</li>
 </ol>
+</section>
+<section class="level2" id="總結">
+<h2 class="anchored" data-anchor-id="總結">总结</h2>
+<p>笔记的重要性：只学习不总结就容易忘。不做笔记不行啊。最好每次面试过后，立即将记录下来，时不时重新过一遍。</p>
+<p>平时多练习，多刷题，保持手感。有的公司（例如Minimax）的算法测试会期望给出最优解，面试时 即使把题目做出来了，也可以问一下需不需要继续改进，提一提能想到的改进点。</p>
 </section>
 <section class="level2" id="附錄">
 <h2 class="anchored" data-anchor-id="附錄">附录</h2>
@@ -1533,7 +1555,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
                     <span class="twitter"><a target="_blank" rel="nofollow"
                                              onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;"
                                              title="Twitter"
-                                             href="https://twitter.com/share?url=././llm_interview_exp_20240711_zh-cn.html&text=大模型算法工程师面试经验&via="><img
+                                             href="https://twitter.com/share?url=././llm_interview_exp_20240711_zh-cn.html&text=大模型算法工程师面试经验和题库&via="><img
                             src="./theme/images/icons/twitter-s.png"></a></span>
 
                     <span class="gplus"><a target="_blank" title="Google +"
@@ -1544,17 +1566,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
                     <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow"
                                               onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;"
-                                              href="https://www.facebook.com/sharer.php?u=././llm_interview_exp_20240711_zh-cn.html&t=大模型算法工程师面试经验"><img
+                                              href="https://www.facebook.com/sharer.php?u=././llm_interview_exp_20240711_zh-cn.html&t=大模型算法工程师面试经验和题库"><img
                             src="./theme/images/icons/facebook-s.png"></a></span>
 
                     <a target="_blank" title="Linkedin"
-                       href="https://www.linkedin.com/shareArticle?mini=true&url=././llm_interview_exp_20240711_zh-cn.html&title=大模型算法工程师面试经验"
+                       href="https://www.linkedin.com/shareArticle?mini=true&url=././llm_interview_exp_20240711_zh-cn.html&title=大模型算法工程师面试经验和题库"
                        rel="nofollow"
                        onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
                             src="./theme/images/icons/linkedin-s.png"></a>
 
                     <span class="mail"><a
-                            href="mailto:?subject=大模型算法工程师面试经验&amp;body=Viens découvrir un article à propos de [大模型算法工程师面试经验] sur le site de 執迷. ././llm_interview_exp_20240711_zh-cn.html"
+                            href="mailto:?subject=大模型算法工程师面试经验和题库&amp;body=Viens découvrir un article à propos de [大模型算法工程师面试经验和题库] sur le site de 執迷. ././llm_interview_exp_20240711_zh-cn.html"
                             title="Share by Email" target="_blank"><img
                             src="./theme/images/icons/mail-s.png"></a></span>
                 </div>
