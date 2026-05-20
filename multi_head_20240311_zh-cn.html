@@ -228,8 +228,8 @@
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <main class="content" id="quarto-document-content">
 
-<p>自从 “Attention is All You need” <span class="citation" data-cites="vaswani_attention_2017">[@vaswani_attention_2017]</span> 这篇文章发布之后，注意力机制开始广为人知。虽然一开始注意力机制被应用于自然语言处理领域，但人们很快发现它也能够用于处理图像、点云等数据结构，并且取得非常好的效果。</p>
-<p>本文介绍如何用 PyTorch 实现文章 <span class="citation" data-cites="vaswani_attention_2017">[@vaswani_attention_2017]</span> 提出的 multi-head attention（MHA）。MHA 是 scaled dot-product attention（SDPA）<span class="citation" data-cites="vaswani_attention_2017 Bahdanau2014NeuralMT">[@vaswani_attention_2017; @Bahdanau2014NeuralMT]</span> 的改进。既然 MHA 是 SDPA 的 multi-head 版，那么也许将 SDPA 称为单头注意力会比较形象。让我们先从单头注意力开始。</p>
+<p>自从 “Attention is All You need” <span class="citation" data-cites="vaswani_attention_2017"><a href="#ref-vaswani_attention_2017" role="doc-biblioref">[1]</a></span> 这篇文章发布之后，注意力机制开始广为人知。虽然一开始注意力机制被应用于自然语言处理领域，但人们很快发现它也能够用于处理图像、点云等数据结构，并且取得非常好的效果。</p>
+<p>本文介绍如何用 PyTorch 实现文章 <span class="citation" data-cites="vaswani_attention_2017"><a href="#ref-vaswani_attention_2017" role="doc-biblioref">[1]</a></span> 提出的 multi-head attention（MHA）。MHA 是 scaled dot-product attention（SDPA）<span class="citation" data-cites="vaswani_attention_2017 Bahdanau2014NeuralMT"><a href="#ref-vaswani_attention_2017" role="doc-biblioref">[1]</a>, <a href="#ref-Bahdanau2014NeuralMT" role="doc-biblioref">[2]</a></span> 的改进。既然 MHA 是 SDPA 的 multi-head 版，那么也许将 SDPA 称为单头注意力会比较形象。让我们先从单头注意力开始。</p>
 <section class="level2" id="scaled-dot-product-attention">
 <h2 class="anchored" data-anchor-id="scaled-dot-product-attention">Scaled Dot-product Attention</h2>
 <p>SDPA 的计算公式如下：</p>
@@ -264,11 +264,11 @@
 <span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>ax.set_xticklabels([<span class="ss">f'</span><span class="sc">{</span>i<span class="sc">:.2f}</span><span class="ss">'</span> <span class="cf">for</span> s, i <span class="kw">in</span> samples])</span>
 <span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>fig.colorbar(cax)<span class="op">;</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>/tmp/ipykernel_3631103/3983590926.py:13: DeprecationWarning:
+<pre><code>/tmp/ipykernel_3636085/3983590926.py:13: DeprecationWarning:
 
 __array__ implementation doesn't accept a copy keyword, so passing copy=False failed. __array__ must implement 'dtype' and 'copy' keyword arguments. To learn more, see the migration guide https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
 
-/tmp/ipykernel_3631103/3983590926.py:19: UserWarning:
+/tmp/ipykernel_3636085/3983590926.py:19: UserWarning:
 
 set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
 </code></pre>
@@ -392,7 +392,7 @@ Figure 2: 图像的横轴为 Softmax 的输出最大值。当该数值接近最
 <p>在充分理解清楚 SDPA 的计算公式的前提下，用 PyTorch 实现它就不困难。需要注意的是 <a class="quarto-xref" href="#eq-sdpa">Equation 1</a> 中没有体现 attention mask，但我们要在代码实现中支持它。attention mask 用于在训练中阻止模型看到未来的 token，这对训练聊天机器人、机器翻译模型等生成式模型是必要的。</p>
 <p>在实现中，<code>mask</code> 矩阵的值会被加到注意力矩阵上。如果 <code>mask</code> 矩阵中有一个值非常小（接近 <span class="math inline">\(-\infty\)</span>），那么对应的注意力就会在 <code>softmax</code> 中被抑制。</p>
 <p>下列代码实现了 scaled dot-product attention：</p>
-<div class="cell" data-execution_count="3" id="ca764a75">
+<div class="cell" data-execution_count="3" id="b696023c">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
@@ -410,7 +410,7 @@ Figure 2: 图像的横轴为 Softmax 的输出最大值。当该数值接近最
 <span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>    <span class="cf">return</span> ret, attn_weights</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>让我们看看实现的 <code>my_scaled_dot_product_attention</code> 函数能不能正常运行：</p>
-<div class="cell" data-execution_count="4" id="84cbeab8">
+<div class="cell" data-execution_count="4" id="c7f01d53">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">1</span></span>
 <span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>length <span class="op">=</span> <span class="dv">2</span></span>
 <span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">4</span></span>
@@ -422,14 +422,14 @@ Figure 2: 图像的横轴为 Softmax 的输出最大值。当该数值接近最
 <span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention 操作返回结果：'</span>, ret)</span>
 <span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention 矩阵为：'</span>, attn_weights)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>attention 操作返回结果： tensor([[[0.1517, 0.4868, 0.3622, 0.5209],
-         [0.2097, 0.4212, 0.5240, 0.5255]]])
-attention 矩阵为： tensor([[[0.4420, 0.5580],
-         [0.6800, 0.3200]]])</code></pre>
+<pre><code>attention 操作返回结果： tensor([[[0.1592, 0.2905, 0.4648, 0.5226],
+         [0.1702, 0.2726, 0.4972, 0.5158]]])
+attention 矩阵为： tensor([[[0.4483, 0.5517],
+         [0.4844, 0.5156]]])</code></pre>
 </div>
 </div>
 <p>一个检查实现正确性的小技巧是，观察返回 attention 矩阵的各列之和是否为 1。如果不为 1，说明实现有问题。</p>
-<div class="cell" data-execution_count="5" id="1756688d">
+<div class="cell" data-execution_count="5" id="bb874d77">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="cf">assert</span> torch.<span class="bu">all</span>(attn_weights.<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span> <span class="op">&lt;</span> <span class="fl">1e-6</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>在准备好 scaled dot product attention 的基础上，我们便可以着手实现 multi-head attention 了。</p>
@@ -447,7 +447,7 @@ attention 矩阵为： tensor([[[0.4420, 0.5580],
 </ol>
 <p>通过在多个 head 上执行 attention，MHA 允许模型在不同的子空间收集不同位置的信息，增加了 attention 机制的表达能力。</p>
 <p>代码实现如下：</p>
-<div class="cell" data-execution_count="6" id="88f2b3d8">
+<div class="cell" data-execution_count="6" id="551b1788">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="kw">class</span> MyMultiheadAttention(nn.Module):</span>
 <span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
 <span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>        <span class="va">self</span>,</span>
@@ -491,7 +491,7 @@ attention 矩阵为： tensor([[[0.4420, 0.5580],
 <span id="cb8-41"><a aria-hidden="true" href="#cb8-41" tabindex="-1"></a>        <span class="cf">return</span> out, attn_weights</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>首先，我们先比较一下本文实现的 multi-head attention 和 torch 官方实现的参数设置。我们将会看到所有参数名称和参数尺寸都是一致的。这表明我们的 multi-head attention 与 torch 的官方实现兼容。</p>
-<div class="cell" data-execution_count="7" id="6c33cd56">
+<div class="cell" data-execution_count="7" id="d1bea707">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">2</span></span>
 <span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">16</span></span>
 <span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>num_heads <span class="op">=</span> <span class="dv">4</span></span>
@@ -516,14 +516,14 @@ out_proj.bias torch.Size([16])</code></pre>
 </div>
 </div>
 <p>接下来，我们检查我们实现的 MHA 和 torch 版本 MHA 的输出是否完全一致。在进行比较之前，我们先进行参数的复制，保持两个模块的参数完全相同。</p>
-<div class="cell" data-execution_count="8" id="06b83ab0">
+<div class="cell" data-execution_count="8" id="b10a76e1">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>my_mha_parameters <span class="op">=</span> <span class="bu">dict</span>(my_mha.named_parameters())</span>
 <span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a><span class="cf">for</span> n, p <span class="kw">in</span> torch_mha.named_parameters():</span>
 <span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>    my_mha_parameters[n].data.copy_(p)</span>
 <span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>    <span class="cf">assert</span> torch.<span class="bu">all</span>(p <span class="op">==</span> my_mha_parameters[n])</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>下列代码对函数的输出进行检查：</p>
-<div class="cell" data-execution_count="9" id="f1287978">
+<div class="cell" data-execution_count="9" id="2391b7f8">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>query <span class="op">=</span> torch.rand((length, batch_size, embed_dim))</span>
 <span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a>key <span class="op">=</span> torch.rand((length, batch_size, embed_dim))</span>
 <span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a>value <span class="op">=</span> torch.rand((length, batch_size, embed_dim))</span>
@@ -574,7 +574,7 @@ out_proj.bias torch.Size([16])</code></pre>
 <div class="callout-body-container callout-body">
 <p>MHA 的参数量与 head 的数量无关，这从代码中也能很容易看出来。</p>
 <p>实验也验证了这一点。</p>
-<div class="cell" data-execution_count="10" id="3d038e0b">
+<div class="cell" data-execution_count="10" id="97dbf0ab">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">16</span></span>
 <span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>num_heads <span class="op">=</span> <span class="dv">4</span></span>
 <span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a>mha1 <span class="op">=</span> nn.MultiheadAttention(embed_dim, num_heads)</span>
@@ -633,13 +633,22 @@ out_proj.bias torch.Size([16])</code></pre>
 <p>推荐阅读：</p>
 <ul>
 <li><a href="https://pytorch.org/docs/2.2/generated/torch.nn.functional.scaled_dot_product_attention.html#torch.nn.functional.scaled_dot_product_attention">torch 官方的 scaled dot-product attention 文档</a>中简要介绍了一种 scaled dot-product attention 的 Python 实现方式。</li>
-<li>论文 MQA <span class="citation" data-cites="Shazeer2019MQA">[@Shazeer2019MQA]</span> 中的 Background 一节对各类 Attention 有详细介绍，推荐一读。</li>
+<li>论文 MQA <span class="citation" data-cites="Shazeer2019MQA"><a href="#ref-Shazeer2019MQA" role="doc-biblioref">[3]</a></span> 中的 Background 一节对各类 Attention 有详细介绍，推荐一读。</li>
 </ul>
 </section>
-<section class="level2" id="參考文獻">
-<h2 class="anchored" data-anchor-id="參考文獻">参考文献</h2>
+<section class="level2 unnumbered" id="參考文獻">
 </section>
-</main>
+<div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" id="quarto-bibliography" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">参考文献</h2><div class="references csl-bib-body" data-entry-spacing="0" id="refs" role="list">
+<div class="csl-entry" id="ref-vaswani_attention_2017" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">A. Vaswani <em>et al.</em>, <span>“Attention is all you need,”</span> <em>Advances in Neural Information Processing Systems</em>, vol. 30, 2017, Available: <a href="https://arxiv.org/abs/1706.03762">https://arxiv.org/abs/1706.03762</a></div>
+</div>
+<div class="csl-entry" id="ref-Bahdanau2014NeuralMT" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">D. Bahdanau, K. Cho, and Y. Bengio, <span>“Neural machine translation by jointly learning to align and translate,”</span> <em>arXiv preprint arXiv:1409.0473</em>, 2014, Available: <a href="https://arxiv.org/abs/1409.0473">https://arxiv.org/abs/1409.0473</a></div>
+</div>
+<div class="csl-entry" id="ref-Shazeer2019MQA" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">N. Shazeer, <span>“Fast transformer decoding: One write-head is all you need,”</span> <em>arXiv preprint arXiv:1911.02150</em>, 2019, Available: <a href="https://arxiv.org/abs/1911.02150">https://arxiv.org/abs/1911.02150</a></div>
+</div>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
