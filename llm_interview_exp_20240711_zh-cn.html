@@ -246,7 +246,7 @@
 <li><a class="nav-link" data-scroll-target="#總結" href="#總結" id="toc-總結">总结</a></li>
 <li><a class="nav-link" data-scroll-target="#附錄" href="#附錄" id="toc-附錄">附录</a>
 <ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#例題" href="#例題" id="toc-例題">例题</a></li>
+<li><a class="nav-link" data-scroll-target="#智力題" href="#智力題" id="toc-智力題">智力题</a></li>
 </ul></li>
 <li><a class="nav-link" data-scroll-target="#references" href="#references" id="toc-references">References</a></li>
 </ul>
@@ -554,6 +554,37 @@ H_\text{CE}(P, Q) = D_\text{KL}(P, Q) + H(P)
 <li>原生多token预测支持</li>
 </ol>
 </div>
+<div class="card">
+<p><strong>讲讲MOE的原理，为什么MOE的参数量大但计算量不大？</strong></p>
+<p>核心思想是将FFN层替换为N个专家网络+门控路由器，每个token只路由到Top-k个专家（通常K=1或者2），这就实现了控制计算量，但增大参数量。</p>
+<p>路由的计算： <span class="math display">\[
+g(x) = \text{softmax}(W_g \cdot x)
+\]</span> 根据上式的结果选择Top-K个专家，加权混合。</p>
+<p>（DeepSeek-V3引入共享专家，共享专家一定会被激活，负责通用知识，路由专家由Top-K决定是否激活，负责领域知识。）</p>
+</div>
+<div class="card">
+<p><strong>MOE的负载均衡怎么做？</strong></p>
+<p>为了避免训练时路由器总是把token分给少数专家，引入Aux Loss： <span class="math display">\[
+L_\text{aux} = \alpha \cdot N \cdot \sum_{i=1}^N f_i \cdot p_i
+\]</span> 其中<span class="math inline">\(f_i\)</span>是专家<span class="math inline">\(i\)</span>被选中的token比例，<span class="math inline">\(p_i\)</span>是专家的门控概率。</p>
+<p>专家被均匀分配时，上式取得最小值，最小值为<span class="math inline">\(1\)</span>。</p>
+<p><strong>为什么不是<span class="math inline">\(p_i * p_i\)</span>，而是<span class="math inline">\(f_i * p_i\)</span>呢？</strong> 因为MOE使用Top-K选择专家，因此存在<span class="math inline">\(p_i\)</span>比较小（只是略大于没有选中的专家），但是<span class="math inline">\(f_i\)</span>很大的情况。因此需要结合实际频率<span class="math inline">\(f_i\)</span>和预测的权重<span class="math inline">\(p_i\)</span>.</p>
+<p>至于<span class="math inline">\(f_i * f_i\)</span>肯定是不行的，因为<span class="math inline">\(f_i\)</span>不可导。</p>
+</div>
+<div class="card">
+<p><strong>为什么MOE使用Top-K而不是随机采样呢？</strong></p>
+<ol type="1">
+<li>随机采样可能会导致专家“同质化”，因为每个专家都有概率在不应该被路由的时候被路由，不得不学习一些通用知识；</li>
+<li>随机性会给并行化的训练工程带来一些麻烦。</li>
+</ol>
+</div>
+<div class="card">
+<p><strong>MOE路由是batch维度的还是token维度的？</strong></p>
+<ul>
+<li>Batch维度：同一batch内所有token走同一个专家，引入了batch内的互相干扰，不合理。</li>
+<li>Token维度：合理，但是实现复杂，需要All-to-All通信。例如，先将<code>(batch_size, seq_len, hidden_dim)</code>的矩阵展平为<code>(batch_size * seq_len, hidden_dim)</code>，即不考虑batch的概念，然后分别计算每个token的去向，将输入送到对应的计算设备上。</li>
+</ul>
+</div>
 </section>
 <section class="level2" id="agent設計">
 <h2 class="anchored" data-anchor-id="agent設計">Agent设计</h2>
@@ -614,20 +645,20 @@ DCG = \sum_{i=1}^n \frac{
 </section>
 <section class="level2" id="多模態大模型">
 <h2 class="anchored" data-anchor-id="多模態大模型">多模态大模型</h2>
-<div class="theorem example">
-<p><strong>例子 10</strong> ⭐<strong>你能列举几个常见的从视觉编码器的图像特征映射到大模型文本特征的方法吗？</strong></p>
+<div class="card">
+<p><strong>你能列举几个常见的从视觉编码器的图像特征映射到大模型文本特征的方法吗？</strong></p>
 </div>
-<div class="theorem example">
-<p><strong>例子 11</strong> ⭐<strong>各种多模态融合模块的优缺点？</strong> （注意）Q-Former容易破坏visual token之间的空间关系。</p>
+<div class="card">
+<p><strong>各种多模态融合模块的优缺点？</strong> （注意）Q-Former容易破坏visual token之间的空间关系。</p>
 </div>
-<div class="theorem example">
-<p><strong>例子 12</strong> ⭐<strong>如果让你从头开始训练一个多模态大模型，你会如何设计模型结构、训练流程和项目流程？</strong></p>
+<div class="card">
+<p><strong>如果让你从头开始训练一个多模态大模型，你会如何设计模型结构、训练流程和项目流程？</strong></p>
 </div>
-<div class="theorem example">
-<p><strong>例子 13</strong> ⭐<strong>对于多模态大模型，提高图像的分辨率是十分重要的。为什么现在的大模型往往使用如256x256这类低分辨率的图像，无法做到高分辨率呢？</strong></p>
+<div class="card">
+<p><strong>对于多模态大模型，提高图像的分辨率是十分重要的。为什么现在的大模型往往使用如256x256这类低分辨率的图像，无法做到高分辨率呢？</strong></p>
 </div>
-<div class="theorem example">
-<p><strong>例子 14</strong> ⭐<strong>你观察到GPT4-V有哪些问题？为什么会存在这些问题？</strong></p>
+<div class="card">
+<p><strong>你观察到GPT4-V有哪些问题？为什么会存在这些问题？</strong></p>
 </div>
 </section>
 <section class="level2" id="計算機視覺相關問題">
@@ -747,10 +778,11 @@ DCG = \sum_{i=1}^n \frac{
 </section>
 <section class="level2" id="附錄">
 <h2 class="anchored" data-anchor-id="附錄">附录</h2>
-<section class="level3" id="例題">
-<h3 class="anchored" data-anchor-id="例題">例题</h3>
-<div class="theorem example">
-<p><strong>例子 37</strong> ⭐两个硬币的后验概率</p>
+<section class="level3" id="智力題">
+<h3 class="anchored" data-anchor-id="智力題">智力题</h3>
+<p>本节记录我收集到的一些代码题或者智力题。</p>
+<div class="card">
+<p><strong>两个硬币的后验概率</strong></p>
 <p>有两个硬币，一个硬币的两面都是正面；另一个是正常硬币：一面是正面，另一面是反面；</p>
 <p>随机选取其中一枚，抛掷五次，都是正面。问这枚硬币是正常硬币的概率是？</p>
 <p>解：设<span class="math inline">\(A=\text{抛掷五次硬币都是正面}\)</span>，<span class="math inline">\(B={这是一枚正常硬币}\)</span></p>
@@ -778,8 +810,8 @@ P(B|A) &amp;= 0.5^5 \times 0.5/ P(A) \\
 \end{aligned}
 \]</span></p>
 </div>
-<div class="theorem example">
-<p><strong>例子 38</strong> 🌙<strong>NER标注格式转换</strong></p>
+<div class="card">
+<p><strong>NER标注格式转换</strong></p>
 <p>描述: 在命名实体识别(NER)任务中,BIO标注方式是常用的标注格式之一。但在某些应用场景下,我们可能需要将BIO格式转换为start,end形式的标注。</p>
 <p>请你实现一个Python函数,将BIO格式的NER标注转换为start,end形式。</p>
 <p>函数输入:</p>
