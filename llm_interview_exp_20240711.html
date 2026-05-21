@@ -509,7 +509,10 @@ H_\text{CE}(P, Q) = D_\text{KL}(P, Q) + H(P)
 </div>
 <div class="card">
 <p><strong>手写Multi-Head Attention。</strong></p>
-<p>本題答案可參考：<a href="./multi_head_20240311.html">《手写Multi-Head Attention：从公式到代码实现》</a></p>
+<p>本題答案可參考：</p>
+<ul>
+<li><a href="./multi_head_20240311.html">《手写Multi-Head Attention：从公式到代码实现》</a></li>
+</ul>
 </div>
 <div class="card">
 <p><strong>你知道PreNorm和PostNorm的區別嗎？</strong></p>
@@ -524,7 +527,28 @@ H_\text{CE}(P, Q) = D_\text{KL}(P, Q) + H(P)
 </div>
 <div class="card">
 <p><strong>介紹RMSNorm。</strong></p>
-<p>TODO</p>
+<p>觀察到LayerNorm的成功在於縮放的穩定性，而中心化操作是可有可無的。故RMSNorm選擇只進行縮放，去除了中心化操作，減少了計算開銷；</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="kw">class</span> RMSNorm(nn.Module):</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, dim: <span class="bu">int</span>, eps: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1e-6</span>):</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>        <span class="va">self</span>.eps <span class="op">=</span> eps</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>        <span class="co"># 可學習的縮放參數 Gamma，初始化為全 1</span></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>        <span class="va">self</span>.weight <span class="op">=</span> nn.Parameter(torch.ones(dim))</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x: torch.Tensor) <span class="op">-&gt;</span> torch.Tensor:</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>        <span class="co"># x 的形狀通常是 (batch_size, seq_len, hidden_size)</span></span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>        <span class="co"># 1. 計算平方後的平均值，保留最後一個維度 (keepdim=True)</span></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>        variance <span class="op">=</span> x.<span class="bu">pow</span>(<span class="dv">2</span>).mean(<span class="op">-</span><span class="dv">1</span>, keepdim<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>        </span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>        <span class="co"># 2. 計算 1 / RMS(x)</span></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>        <span class="co"># 使用 torch.rsqrt(t) 相當於 1 / torch.sqrt(t)，計算速度更快</span></span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>        rsqrt <span class="op">=</span> torch.rsqrt(variance <span class="op">+</span> <span class="va">self</span>.eps)</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>        </span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>        <span class="co"># 3. 歸一化並乘上可學習參數</span></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>        <span class="cf">return</span> x <span class="op">*</span> rsqrt <span class="op">*</span> <span class="va">self</span>.weight</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <div class="card">
 <p><strong>請介紹幾種你熟悉的tokenization方法。</strong></p>
@@ -828,13 +852,13 @@ P(B|A) &amp;= 0.5^5 \times 0.5/ P(A) \\
 </ul>
 <p>示例：<br/>
 输入:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a>tokens <span class="op">=</span> [<span class="st">'John'</span>, <span class="st">'lives'</span>, <span class="st">'in'</span>, <span class="st">'New'</span>, <span class="st">'York'</span>, <span class="st">'.'</span>]</span>
-<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>bio_tags <span class="op">=</span> [<span class="st">'B-PER'</span>, <span class="st">'O'</span>, <span class="st">'O'</span>, <span class="st">'B-LOC'</span>, <span class="st">'I-LOC'</span>, <span class="st">'O'</span>]</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>tokens <span class="op">=</span> [<span class="st">'John'</span>, <span class="st">'lives'</span>, <span class="st">'in'</span>, <span class="st">'New'</span>, <span class="st">'York'</span>, <span class="st">'.'</span>]</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>bio_tags <span class="op">=</span> [<span class="st">'B-PER'</span>, <span class="st">'O'</span>, <span class="st">'O'</span>, <span class="st">'B-LOC'</span>, <span class="st">'I-LOC'</span>, <span class="st">'O'</span>]</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>输出:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>[</span>
-<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>    {<span class="st">'entity'</span>: <span class="st">'John'</span>, <span class="st">'start'</span>: <span class="dv">0</span>, <span class="st">'end'</span>: <span class="dv">1</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>},</span>
-<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>    {<span class="st">'entity'</span>: <span class="st">'New York'</span>, <span class="st">'start'</span>: <span class="dv">3</span>, <span class="st">'end'</span>: <span class="dv">5</span>, <span class="st">'type'</span>: <span class="st">'LOC'</span>}</span>
-<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>]</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>[</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    {<span class="st">'entity'</span>: <span class="st">'John'</span>, <span class="st">'start'</span>: <span class="dv">0</span>, <span class="st">'end'</span>: <span class="dv">1</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>},</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>    {<span class="st">'entity'</span>: <span class="st">'New York'</span>, <span class="st">'start'</span>: <span class="dv">3</span>, <span class="st">'end'</span>: <span class="dv">5</span>, <span class="st">'type'</span>: <span class="st">'LOC'</span>}</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>]</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>请实现函数<code>bio_to_span(tokens, bio_tags)</code>来完成这个转换任务。</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -851,100 +875,100 @@ Tip
 需要正确使用连续的多个词组成的实体</p>
 </div>
 </div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="kw">def</span> bio_to_span(tokens, bio_tags):</span>
-<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    tokens.append(<span class="st">'&lt;eos&gt;'</span>)</span>
-<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>    bio_tags.append(<span class="st">'O'</span>)</span>
-<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>    start <span class="op">=</span> <span class="dv">0</span> </span>
-<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>    end <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>    entity <span class="op">=</span> []</span>
-<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>    typ <span class="op">=</span> <span class="va">None</span> </span>
-<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>    ret <span class="op">=</span> []</span>
-<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>    <span class="cf">for</span> i, (t, b) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(tokens, bio_tags)):</span>
-<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>        <span class="cf">if</span> b.startswith(<span class="st">'B-'</span>):</span>
-<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>            start <span class="op">=</span> i </span>
-<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>            entity <span class="op">=</span> [t]</span>
-<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>            typ <span class="op">=</span> b[<span class="dv">2</span>:]</span>
-<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>        <span class="cf">elif</span> b.startswith(<span class="st">'I-'</span>):</span>
-<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a>            <span class="cf">assert</span> typ <span class="op">==</span> b[<span class="dv">2</span>:], <span class="st">'</span><span class="sc">{}</span><span class="st"> != </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(typ, b[<span class="dv">2</span>:])</span>
-<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a>        <span class="cf">elif</span> b <span class="op">==</span> <span class="st">'O'</span>:</span>
-<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">len</span>(entity):</span>
-<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a>                end <span class="op">=</span> i </span>
-<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a>                ret.append({</span>
-<span id="cb3-20"><a aria-hidden="true" href="#cb3-20" tabindex="-1"></a>                    <span class="st">'entity'</span>: <span class="st">''</span>.join(tokens[start:end]),</span>
-<span id="cb3-21"><a aria-hidden="true" href="#cb3-21" tabindex="-1"></a>                    <span class="st">'start'</span>: start,</span>
-<span id="cb3-22"><a aria-hidden="true" href="#cb3-22" tabindex="-1"></a>                    <span class="st">'end'</span>: end,</span>
-<span id="cb3-23"><a aria-hidden="true" href="#cb3-23" tabindex="-1"></a>                    <span class="st">'type'</span>: typ </span>
-<span id="cb3-24"><a aria-hidden="true" href="#cb3-24" tabindex="-1"></a>                })</span>
-<span id="cb3-25"><a aria-hidden="true" href="#cb3-25" tabindex="-1"></a>                entity.clear()</span>
-<span id="cb3-26"><a aria-hidden="true" href="#cb3-26" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb3-27"><a aria-hidden="true" href="#cb3-27" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">"Invalid BIO label: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(b))</span>
-<span id="cb3-28"><a aria-hidden="true" href="#cb3-28" tabindex="-1"></a>    <span class="cf">return</span> ret </span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="kw">def</span> bio_to_span(tokens, bio_tags):</span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    tokens.append(<span class="st">'&lt;eos&gt;'</span>)</span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>    bio_tags.append(<span class="st">'O'</span>)</span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    start <span class="op">=</span> <span class="dv">0</span> </span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>    end <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>    entity <span class="op">=</span> []</span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>    typ <span class="op">=</span> <span class="va">None</span> </span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a>    ret <span class="op">=</span> []</span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>    <span class="cf">for</span> i, (t, b) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(tokens, bio_tags)):</span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>        <span class="cf">if</span> b.startswith(<span class="st">'B-'</span>):</span>
+<span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a>            start <span class="op">=</span> i </span>
+<span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a>            entity <span class="op">=</span> [t]</span>
+<span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a>            typ <span class="op">=</span> b[<span class="dv">2</span>:]</span>
+<span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a>        <span class="cf">elif</span> b.startswith(<span class="st">'I-'</span>):</span>
+<span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>            <span class="cf">assert</span> typ <span class="op">==</span> b[<span class="dv">2</span>:], <span class="st">'</span><span class="sc">{}</span><span class="st"> != </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(typ, b[<span class="dv">2</span>:])</span>
+<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>        <span class="cf">elif</span> b <span class="op">==</span> <span class="st">'O'</span>:</span>
+<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">len</span>(entity):</span>
+<span id="cb4-18"><a aria-hidden="true" href="#cb4-18" tabindex="-1"></a>                end <span class="op">=</span> i </span>
+<span id="cb4-19"><a aria-hidden="true" href="#cb4-19" tabindex="-1"></a>                ret.append({</span>
+<span id="cb4-20"><a aria-hidden="true" href="#cb4-20" tabindex="-1"></a>                    <span class="st">'entity'</span>: <span class="st">''</span>.join(tokens[start:end]),</span>
+<span id="cb4-21"><a aria-hidden="true" href="#cb4-21" tabindex="-1"></a>                    <span class="st">'start'</span>: start,</span>
+<span id="cb4-22"><a aria-hidden="true" href="#cb4-22" tabindex="-1"></a>                    <span class="st">'end'</span>: end,</span>
+<span id="cb4-23"><a aria-hidden="true" href="#cb4-23" tabindex="-1"></a>                    <span class="st">'type'</span>: typ </span>
+<span id="cb4-24"><a aria-hidden="true" href="#cb4-24" tabindex="-1"></a>                })</span>
+<span id="cb4-25"><a aria-hidden="true" href="#cb4-25" tabindex="-1"></a>                entity.clear()</span>
+<span id="cb4-26"><a aria-hidden="true" href="#cb4-26" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb4-27"><a aria-hidden="true" href="#cb4-27" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">"Invalid BIO label: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(b))</span>
+<span id="cb4-28"><a aria-hidden="true" href="#cb4-28" tabindex="-1"></a>    <span class="cf">return</span> ret </span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>接下來用一些測試用例檢查給出的算法的正確性。在請求面試官檢查之前，先自己編寫一些測試用例是一個好習慣。</p>
 <details>
 <summary>
 查看測試用例
 </summary>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>test_cases <span class="op">=</span> [</span>
-<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    <span class="co"># case 1</span></span>
-<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>    {</span>
-<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>        <span class="st">"input"</span>: ([<span class="st">"我"</span>, <span class="st">"爱"</span>, <span class="st">"北京"</span>, <span class="st">"天安门"</span>], [<span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"B-LOC"</span>, <span class="st">"I-LOC"</span>]),</span>
-<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>        <span class="st">"output"</span>: [{<span class="st">'entity'</span>: <span class="st">'北京天安门'</span>, <span class="st">'type'</span>: <span class="st">'LOC'</span>, <span class="st">'start'</span>: <span class="dv">2</span>, <span class="st">'end'</span>: <span class="dv">4</span>}]</span>
-<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>    },</span>
-<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>    <span class="co"># case 2</span></span>
-<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a>    {</span>
-<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>        <span class="st">"input"</span>: ([<span class="st">"他"</span>, <span class="st">"是"</span>, <span class="st">"一位"</span>, <span class="st">"来自"</span>, <span class="st">"中国"</span>, <span class="st">"的"</span>, <span class="st">"医生"</span>, <span class="st">"，"</span>, <span class="st">"名叫"</span>, <span class="st">"张伟"</span>], </span>
-<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>                  [<span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"B-LOC"</span>, <span class="st">"O"</span>, <span class="st">"B-PROF"</span>, <span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"B-PER"</span>]),</span>
-<span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a>        <span class="st">"output"</span>: [{<span class="st">'entity'</span>: <span class="st">'中国'</span>, <span class="st">'type'</span>: <span class="st">'LOC'</span>, <span class="st">'start'</span>: <span class="dv">4</span>, <span class="st">'end'</span>: <span class="dv">5</span>}, </span>
-<span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a>                   {<span class="st">'entity'</span>: <span class="st">'医生'</span>, <span class="st">'type'</span>: <span class="st">'PROF'</span>, <span class="st">'start'</span>: <span class="dv">6</span>, <span class="st">'end'</span>: <span class="dv">7</span>}, </span>
-<span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a>                   {<span class="st">'entity'</span>: <span class="st">'张伟'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">9</span>, <span class="st">'end'</span>: <span class="dv">10</span>}]</span>
-<span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a>    },</span>
-<span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>    <span class="co"># case 3 (空实体)</span></span>
-<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>    {</span>
-<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>        <span class="st">"input"</span>: ([<span class="st">"今天"</span>, <span class="st">"天气"</span>, <span class="st">"真好"</span>], [<span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"O"</span>]),</span>
-<span id="cb4-18"><a aria-hidden="true" href="#cb4-18" tabindex="-1"></a>        <span class="st">"output"</span>: []</span>
-<span id="cb4-19"><a aria-hidden="true" href="#cb4-19" tabindex="-1"></a>    },</span>
-<span id="cb4-20"><a aria-hidden="true" href="#cb4-20" tabindex="-1"></a>    <span class="co"># case 4 </span></span>
-<span id="cb4-21"><a aria-hidden="true" href="#cb4-21" tabindex="-1"></a>    {</span>
-<span id="cb4-22"><a aria-hidden="true" href="#cb4-22" tabindex="-1"></a>        <span class="st">'input'</span>: (</span>
-<span id="cb4-23"><a aria-hidden="true" href="#cb4-23" tabindex="-1"></a>            [<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="st">'d'</span>, <span class="st">'e'</span>, <span class="st">'f'</span>, <span class="st">'g'</span>, <span class="st">'h'</span>, <span class="st">'i'</span>, <span class="st">'j'</span>], </span>
-<span id="cb4-24"><a aria-hidden="true" href="#cb4-24" tabindex="-1"></a>            [<span class="st">'O'</span>, <span class="st">'B-PER'</span>, <span class="st">'I-PER'</span>, <span class="st">'O'</span>, <span class="st">'B-ORG'</span>, <span class="st">'I-ORG'</span>, <span class="st">'I-ORG'</span>, <span class="st">'O'</span>, <span class="st">'B-LOC'</span>, <span class="st">'O'</span>]</span>
-<span id="cb4-25"><a aria-hidden="true" href="#cb4-25" tabindex="-1"></a>        ),</span>
-<span id="cb4-26"><a aria-hidden="true" href="#cb4-26" tabindex="-1"></a>        <span class="st">'output'</span>: [{<span class="st">'entity'</span>: <span class="st">'bc'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">1</span>, <span class="st">'end'</span>: <span class="dv">3</span>},</span>
-<span id="cb4-27"><a aria-hidden="true" href="#cb4-27" tabindex="-1"></a>            {<span class="st">'entity'</span>: <span class="st">'efg'</span>, <span class="st">'type'</span>: <span class="st">'ORG'</span>, <span class="st">'start'</span>: <span class="dv">4</span>, <span class="st">'end'</span>: <span class="dv">7</span>},</span>
-<span id="cb4-28"><a aria-hidden="true" href="#cb4-28" tabindex="-1"></a>            {<span class="st">'entity'</span>: <span class="st">'i'</span>, <span class="st">'type'</span>: <span class="st">'LOC'</span>, <span class="st">'start'</span>: <span class="dv">8</span>, <span class="st">'end'</span>: <span class="dv">9</span>}]</span>
-<span id="cb4-29"><a aria-hidden="true" href="#cb4-29" tabindex="-1"></a>    },</span>
-<span id="cb4-30"><a aria-hidden="true" href="#cb4-30" tabindex="-1"></a>    <span class="co"># case 5 (空序列)</span></span>
-<span id="cb4-31"><a aria-hidden="true" href="#cb4-31" tabindex="-1"></a>    {</span>
-<span id="cb4-32"><a aria-hidden="true" href="#cb4-32" tabindex="-1"></a>        <span class="st">'input'</span>: (</span>
-<span id="cb4-33"><a aria-hidden="true" href="#cb4-33" tabindex="-1"></a>            [], []</span>
-<span id="cb4-34"><a aria-hidden="true" href="#cb4-34" tabindex="-1"></a>        ),</span>
-<span id="cb4-35"><a aria-hidden="true" href="#cb4-35" tabindex="-1"></a>        <span class="st">'output'</span>: []</span>
-<span id="cb4-36"><a aria-hidden="true" href="#cb4-36" tabindex="-1"></a>    },</span>
-<span id="cb4-37"><a aria-hidden="true" href="#cb4-37" tabindex="-1"></a>    <span class="co"># case 6 (只有O标签)</span></span>
-<span id="cb4-38"><a aria-hidden="true" href="#cb4-38" tabindex="-1"></a>    {</span>
-<span id="cb4-39"><a aria-hidden="true" href="#cb4-39" tabindex="-1"></a>        <span class="st">'input'</span>: ([<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>], [<span class="st">'O'</span>, <span class="st">'O'</span>, <span class="st">'O'</span>]),</span>
-<span id="cb4-40"><a aria-hidden="true" href="#cb4-40" tabindex="-1"></a>        <span class="st">'output'</span>: []</span>
-<span id="cb4-41"><a aria-hidden="true" href="#cb4-41" tabindex="-1"></a>    },</span>
-<span id="cb4-42"><a aria-hidden="true" href="#cb4-42" tabindex="-1"></a>    <span class="co"># case 7 </span></span>
-<span id="cb4-43"><a aria-hidden="true" href="#cb4-43" tabindex="-1"></a>    {</span>
-<span id="cb4-44"><a aria-hidden="true" href="#cb4-44" tabindex="-1"></a>        <span class="st">'input'</span>: (</span>
-<span id="cb4-45"><a aria-hidden="true" href="#cb4-45" tabindex="-1"></a>            [<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="st">'d'</span>, <span class="st">'e'</span>, <span class="st">'f'</span>, <span class="st">'g'</span>, <span class="st">'h'</span>],</span>
-<span id="cb4-46"><a aria-hidden="true" href="#cb4-46" tabindex="-1"></a>            [<span class="st">'B-PER'</span>, <span class="st">'I-PER'</span>, <span class="st">'O'</span>, <span class="st">'B-PER'</span>, <span class="st">'O'</span>, <span class="st">'B-PER'</span>, <span class="st">'I-PER'</span>, <span class="st">'I-PER'</span>]</span>
-<span id="cb4-47"><a aria-hidden="true" href="#cb4-47" tabindex="-1"></a>        ),</span>
-<span id="cb4-48"><a aria-hidden="true" href="#cb4-48" tabindex="-1"></a>        <span class="st">'output'</span>: [{<span class="st">'entity'</span>: <span class="st">'ab'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">0</span>, <span class="st">'end'</span>: <span class="dv">2</span>},</span>
-<span id="cb4-49"><a aria-hidden="true" href="#cb4-49" tabindex="-1"></a>            {<span class="st">'entity'</span>: <span class="st">'d'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">3</span>, <span class="st">'end'</span>: <span class="dv">4</span>},</span>
-<span id="cb4-50"><a aria-hidden="true" href="#cb4-50" tabindex="-1"></a>            {<span class="st">'entity'</span>: <span class="st">'fgh'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">5</span>, <span class="st">'end'</span>: <span class="dv">8</span>}]</span>
-<span id="cb4-51"><a aria-hidden="true" href="#cb4-51" tabindex="-1"></a>    }</span>
-<span id="cb4-52"><a aria-hidden="true" href="#cb4-52" tabindex="-1"></a>]</span>
-<span id="cb4-53"><a aria-hidden="true" href="#cb4-53" tabindex="-1"></a></span>
-<span id="cb4-54"><a aria-hidden="true" href="#cb4-54" tabindex="-1"></a><span class="cf">for</span> test_case <span class="kw">in</span> test_cases: </span>
-<span id="cb4-55"><a aria-hidden="true" href="#cb4-55" tabindex="-1"></a>    out <span class="op">=</span> bio_to_span(<span class="op">*</span>test_case[<span class="st">'input'</span>])</span>
-<span id="cb4-56"><a aria-hidden="true" href="#cb4-56" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(out) <span class="op">==</span> <span class="bu">len</span>(test_case[<span class="st">'output'</span>]), <span class="st">'Length inqueal! </span><span class="sc">{}</span><span class="st"> != </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(out, test_case[<span class="st">'output'</span>])</span>
-<span id="cb4-57"><a aria-hidden="true" href="#cb4-57" tabindex="-1"></a>    <span class="cf">for</span> o1, o2 <span class="kw">in</span> <span class="bu">zip</span>(out, test_case[<span class="st">'output'</span>]):</span>
-<span id="cb4-58"><a aria-hidden="true" href="#cb4-58" tabindex="-1"></a>        <span class="cf">for</span> k <span class="kw">in</span> o2.keys():</span>
-<span id="cb4-59"><a aria-hidden="true" href="#cb4-59" tabindex="-1"></a>            <span class="cf">assert</span> o1[k] <span class="op">==</span> o2[k], <span class="st">'</span><span class="sc">{}</span><span class="st"> != </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(o1, o2)</span>
-<span id="cb4-60"><a aria-hidden="true" href="#cb4-60" tabindex="-1"></a></span>
-<span id="cb4-61"><a aria-hidden="true" href="#cb4-61" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'所有測試用例均通過。'</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>test_cases <span class="op">=</span> [</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>    <span class="co"># case 1</span></span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>    {</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>        <span class="st">"input"</span>: ([<span class="st">"我"</span>, <span class="st">"爱"</span>, <span class="st">"北京"</span>, <span class="st">"天安门"</span>], [<span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"B-LOC"</span>, <span class="st">"I-LOC"</span>]),</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>        <span class="st">"output"</span>: [{<span class="st">'entity'</span>: <span class="st">'北京天安门'</span>, <span class="st">'type'</span>: <span class="st">'LOC'</span>, <span class="st">'start'</span>: <span class="dv">2</span>, <span class="st">'end'</span>: <span class="dv">4</span>}]</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>    },</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>    <span class="co"># case 2</span></span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>    {</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>        <span class="st">"input"</span>: ([<span class="st">"他"</span>, <span class="st">"是"</span>, <span class="st">"一位"</span>, <span class="st">"来自"</span>, <span class="st">"中国"</span>, <span class="st">"的"</span>, <span class="st">"医生"</span>, <span class="st">"，"</span>, <span class="st">"名叫"</span>, <span class="st">"张伟"</span>], </span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>                  [<span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"B-LOC"</span>, <span class="st">"O"</span>, <span class="st">"B-PROF"</span>, <span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"B-PER"</span>]),</span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>        <span class="st">"output"</span>: [{<span class="st">'entity'</span>: <span class="st">'中国'</span>, <span class="st">'type'</span>: <span class="st">'LOC'</span>, <span class="st">'start'</span>: <span class="dv">4</span>, <span class="st">'end'</span>: <span class="dv">5</span>}, </span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a>                   {<span class="st">'entity'</span>: <span class="st">'医生'</span>, <span class="st">'type'</span>: <span class="st">'PROF'</span>, <span class="st">'start'</span>: <span class="dv">6</span>, <span class="st">'end'</span>: <span class="dv">7</span>}, </span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>                   {<span class="st">'entity'</span>: <span class="st">'张伟'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">9</span>, <span class="st">'end'</span>: <span class="dv">10</span>}]</span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a>    },</span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a>    <span class="co"># case 3 (空实体)</span></span>
+<span id="cb5-16"><a aria-hidden="true" href="#cb5-16" tabindex="-1"></a>    {</span>
+<span id="cb5-17"><a aria-hidden="true" href="#cb5-17" tabindex="-1"></a>        <span class="st">"input"</span>: ([<span class="st">"今天"</span>, <span class="st">"天气"</span>, <span class="st">"真好"</span>], [<span class="st">"O"</span>, <span class="st">"O"</span>, <span class="st">"O"</span>]),</span>
+<span id="cb5-18"><a aria-hidden="true" href="#cb5-18" tabindex="-1"></a>        <span class="st">"output"</span>: []</span>
+<span id="cb5-19"><a aria-hidden="true" href="#cb5-19" tabindex="-1"></a>    },</span>
+<span id="cb5-20"><a aria-hidden="true" href="#cb5-20" tabindex="-1"></a>    <span class="co"># case 4 </span></span>
+<span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a>    {</span>
+<span id="cb5-22"><a aria-hidden="true" href="#cb5-22" tabindex="-1"></a>        <span class="st">'input'</span>: (</span>
+<span id="cb5-23"><a aria-hidden="true" href="#cb5-23" tabindex="-1"></a>            [<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="st">'d'</span>, <span class="st">'e'</span>, <span class="st">'f'</span>, <span class="st">'g'</span>, <span class="st">'h'</span>, <span class="st">'i'</span>, <span class="st">'j'</span>], </span>
+<span id="cb5-24"><a aria-hidden="true" href="#cb5-24" tabindex="-1"></a>            [<span class="st">'O'</span>, <span class="st">'B-PER'</span>, <span class="st">'I-PER'</span>, <span class="st">'O'</span>, <span class="st">'B-ORG'</span>, <span class="st">'I-ORG'</span>, <span class="st">'I-ORG'</span>, <span class="st">'O'</span>, <span class="st">'B-LOC'</span>, <span class="st">'O'</span>]</span>
+<span id="cb5-25"><a aria-hidden="true" href="#cb5-25" tabindex="-1"></a>        ),</span>
+<span id="cb5-26"><a aria-hidden="true" href="#cb5-26" tabindex="-1"></a>        <span class="st">'output'</span>: [{<span class="st">'entity'</span>: <span class="st">'bc'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">1</span>, <span class="st">'end'</span>: <span class="dv">3</span>},</span>
+<span id="cb5-27"><a aria-hidden="true" href="#cb5-27" tabindex="-1"></a>            {<span class="st">'entity'</span>: <span class="st">'efg'</span>, <span class="st">'type'</span>: <span class="st">'ORG'</span>, <span class="st">'start'</span>: <span class="dv">4</span>, <span class="st">'end'</span>: <span class="dv">7</span>},</span>
+<span id="cb5-28"><a aria-hidden="true" href="#cb5-28" tabindex="-1"></a>            {<span class="st">'entity'</span>: <span class="st">'i'</span>, <span class="st">'type'</span>: <span class="st">'LOC'</span>, <span class="st">'start'</span>: <span class="dv">8</span>, <span class="st">'end'</span>: <span class="dv">9</span>}]</span>
+<span id="cb5-29"><a aria-hidden="true" href="#cb5-29" tabindex="-1"></a>    },</span>
+<span id="cb5-30"><a aria-hidden="true" href="#cb5-30" tabindex="-1"></a>    <span class="co"># case 5 (空序列)</span></span>
+<span id="cb5-31"><a aria-hidden="true" href="#cb5-31" tabindex="-1"></a>    {</span>
+<span id="cb5-32"><a aria-hidden="true" href="#cb5-32" tabindex="-1"></a>        <span class="st">'input'</span>: (</span>
+<span id="cb5-33"><a aria-hidden="true" href="#cb5-33" tabindex="-1"></a>            [], []</span>
+<span id="cb5-34"><a aria-hidden="true" href="#cb5-34" tabindex="-1"></a>        ),</span>
+<span id="cb5-35"><a aria-hidden="true" href="#cb5-35" tabindex="-1"></a>        <span class="st">'output'</span>: []</span>
+<span id="cb5-36"><a aria-hidden="true" href="#cb5-36" tabindex="-1"></a>    },</span>
+<span id="cb5-37"><a aria-hidden="true" href="#cb5-37" tabindex="-1"></a>    <span class="co"># case 6 (只有O标签)</span></span>
+<span id="cb5-38"><a aria-hidden="true" href="#cb5-38" tabindex="-1"></a>    {</span>
+<span id="cb5-39"><a aria-hidden="true" href="#cb5-39" tabindex="-1"></a>        <span class="st">'input'</span>: ([<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>], [<span class="st">'O'</span>, <span class="st">'O'</span>, <span class="st">'O'</span>]),</span>
+<span id="cb5-40"><a aria-hidden="true" href="#cb5-40" tabindex="-1"></a>        <span class="st">'output'</span>: []</span>
+<span id="cb5-41"><a aria-hidden="true" href="#cb5-41" tabindex="-1"></a>    },</span>
+<span id="cb5-42"><a aria-hidden="true" href="#cb5-42" tabindex="-1"></a>    <span class="co"># case 7 </span></span>
+<span id="cb5-43"><a aria-hidden="true" href="#cb5-43" tabindex="-1"></a>    {</span>
+<span id="cb5-44"><a aria-hidden="true" href="#cb5-44" tabindex="-1"></a>        <span class="st">'input'</span>: (</span>
+<span id="cb5-45"><a aria-hidden="true" href="#cb5-45" tabindex="-1"></a>            [<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="st">'d'</span>, <span class="st">'e'</span>, <span class="st">'f'</span>, <span class="st">'g'</span>, <span class="st">'h'</span>],</span>
+<span id="cb5-46"><a aria-hidden="true" href="#cb5-46" tabindex="-1"></a>            [<span class="st">'B-PER'</span>, <span class="st">'I-PER'</span>, <span class="st">'O'</span>, <span class="st">'B-PER'</span>, <span class="st">'O'</span>, <span class="st">'B-PER'</span>, <span class="st">'I-PER'</span>, <span class="st">'I-PER'</span>]</span>
+<span id="cb5-47"><a aria-hidden="true" href="#cb5-47" tabindex="-1"></a>        ),</span>
+<span id="cb5-48"><a aria-hidden="true" href="#cb5-48" tabindex="-1"></a>        <span class="st">'output'</span>: [{<span class="st">'entity'</span>: <span class="st">'ab'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">0</span>, <span class="st">'end'</span>: <span class="dv">2</span>},</span>
+<span id="cb5-49"><a aria-hidden="true" href="#cb5-49" tabindex="-1"></a>            {<span class="st">'entity'</span>: <span class="st">'d'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">3</span>, <span class="st">'end'</span>: <span class="dv">4</span>},</span>
+<span id="cb5-50"><a aria-hidden="true" href="#cb5-50" tabindex="-1"></a>            {<span class="st">'entity'</span>: <span class="st">'fgh'</span>, <span class="st">'type'</span>: <span class="st">'PER'</span>, <span class="st">'start'</span>: <span class="dv">5</span>, <span class="st">'end'</span>: <span class="dv">8</span>}]</span>
+<span id="cb5-51"><a aria-hidden="true" href="#cb5-51" tabindex="-1"></a>    }</span>
+<span id="cb5-52"><a aria-hidden="true" href="#cb5-52" tabindex="-1"></a>]</span>
+<span id="cb5-53"><a aria-hidden="true" href="#cb5-53" tabindex="-1"></a></span>
+<span id="cb5-54"><a aria-hidden="true" href="#cb5-54" tabindex="-1"></a><span class="cf">for</span> test_case <span class="kw">in</span> test_cases: </span>
+<span id="cb5-55"><a aria-hidden="true" href="#cb5-55" tabindex="-1"></a>    out <span class="op">=</span> bio_to_span(<span class="op">*</span>test_case[<span class="st">'input'</span>])</span>
+<span id="cb5-56"><a aria-hidden="true" href="#cb5-56" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(out) <span class="op">==</span> <span class="bu">len</span>(test_case[<span class="st">'output'</span>]), <span class="st">'Length inqueal! </span><span class="sc">{}</span><span class="st"> != </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(out, test_case[<span class="st">'output'</span>])</span>
+<span id="cb5-57"><a aria-hidden="true" href="#cb5-57" tabindex="-1"></a>    <span class="cf">for</span> o1, o2 <span class="kw">in</span> <span class="bu">zip</span>(out, test_case[<span class="st">'output'</span>]):</span>
+<span id="cb5-58"><a aria-hidden="true" href="#cb5-58" tabindex="-1"></a>        <span class="cf">for</span> k <span class="kw">in</span> o2.keys():</span>
+<span id="cb5-59"><a aria-hidden="true" href="#cb5-59" tabindex="-1"></a>            <span class="cf">assert</span> o1[k] <span class="op">==</span> o2[k], <span class="st">'</span><span class="sc">{}</span><span class="st"> != </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(o1, o2)</span>
+<span id="cb5-60"><a aria-hidden="true" href="#cb5-60" tabindex="-1"></a></span>
+<span id="cb5-61"><a aria-hidden="true" href="#cb5-61" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'所有測試用例均通過。'</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="theorem example">
