@@ -77,7 +77,6 @@
 
 <!-- MathJax -->
 
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 
@@ -186,7 +185,6 @@ MathJax = {
   }
 };
 </script> -->
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script async="" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <p>在一個雙目立體視覺項目中，我從一位師兄那裏瞭解到了導向濾波算法（guided image filtering）<span class="citation" data-cites="he_guided_2013"><sup>[<a href="#ref-he_guided_2013" role="doc-biblioref">1</a>]</sup></span>。引入這個算法來平滑雙目圖像的匹配代價后，在僅使用非常基本的立體匹配算法的前提下，輸出的深度圖質量立竿見影地有了提高。就像何凱明的ResNet、Mask R-CNN等工作一樣，他的導向濾波算法也給我留下了非常好的印象。</p>
 <p>本文記錄了我對該算法的理解，並提供了一份簡單的Python代碼實現。</p>

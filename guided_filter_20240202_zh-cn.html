@@ -77,7 +77,6 @@
 
 <!-- MathJax -->
 
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 
@@ -186,7 +185,6 @@ MathJax = {
   }
 };
 </script> -->
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script async="" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <p>在一个双目立体视觉项目中，我从一位师兄那里了解到了导向滤波算法（guided image filtering）<span class="citation" data-cites="he_guided_2013"><sup>[<a href="#ref-he_guided_2013" role="doc-biblioref">1</a>]</sup></span>。引入这个算法来平滑双目图像的匹配代价后，在仅使用非常基本的立体匹配算法的前提下，输出的深度图质量立竿见影地有了提高。就像何凯明的ResNet、Mask R-CNN等工作一样，他的导向滤波算法也给我留下了非常好的印象。</p>
 <p>本文记录了我对该算法的理解，并提供了一份简单的Python代码实现。</p>

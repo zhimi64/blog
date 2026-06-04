@@ -1,292 +1,223 @@
 <!doctype html>
 <html lang="" itemscope itemtype="http://schema.org/Person">
 <head>
-    
-    
-        <meta charset="utf-8">
-        <!-- Site Meta Data -->
-        <title>对 torch 中 einsum 函数的一些分析</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
-        <meta name="author" content="執迷">
 
-        <link rel="shortcut icon" href="favicon.ico">
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
 
-        <!-- schema.org -->
-        <meta itemprop="name" content="執迷的博客">
-        <meta itemprop="image" content="">
-        <meta itemprop="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="./_vercel/insights/script.js"></script>
+  
 
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
-        <!-- Style Meta Data -->
-        <link rel="stylesheet" href="./theme/css/style.css" type="text/css"/>
-        <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css"/>
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
 
-        <!-- Feed Meta Data -->
-        
-        
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
 
-        <!-- Twitter Feed -->
-        <meta name="twitter:card" content="summary">
-        <meta name="twitter:site" content="">
-        <meta name="twitter:image" content="">
 
-        <!-- Busuanzi -->
-        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    
-    
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>对torch中einsum函数的一些分析</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="这篇文章中分享了一些关于einsum函数的有趣发现和思考：1. **顺序无关性**：einsum的输入参数的顺序是可交换的；2. **手写einsum函数**：如何基于python实现一个基础的einsum函数；3. **einsum的梯度**：einsum函数的梯度仍然可以用einsum表示；">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="这篇文章中分享了一些关于einsum函数的有趣发现和思考：1. **顺序无关性**：einsum的输入参数的顺序是可交换的；2. **手写einsum函数**：如何基于python实现一个基础的einsum函数；3. **einsum的梯度**：einsum函数的梯度仍然可以用einsum表示；">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+    <link href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss_zh-cn.xml" type="application/atom+xml" rel="alternate" title="執迷的博客 RSS Feed" />
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="https://zhimi.vercel.app/./einsum_20250315_zh-cn.html">
+<meta name="twitter:title" content="執迷的博客 ~ 对torch中einsum函数的一些分析">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ 对torch中einsum函数的一些分析" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+
+<!-- MathJax -->
+
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <meta name="twitter:creator" content="">
-    <meta name="twitter:url" content="././einsum_20250315_zh-cn.html">
-    <meta name="twitter:title" content="執迷的博客 ~ 对 torch 中 einsum 函数的一些分析">
-    <meta name="twitter:description" content="">
 
-    <!-- Quarto -->
-    <link href="./theme/css/quarto/quarto.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
-    <script src="./theme/scripts/quarto/quarto.js"></script>
 
-    <!-- AnchorJS -->
-    <script src="https://cdn.jsdelivr.net/npm/anchor-js@5/anchor.min.js"></script>
-
-    <!-- Facebook Meta Data -->
-    <meta property="og:title" content="執迷的博客 ~ 对 torch 中 einsum 函数的一些分析"/>
-    <meta property="og:description" content=""/>
-    <meta property="og:image" content=""/>
-    
 
 </head>
 
 <body>
-<!-- Sidebar -->
-<aside>
-    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="https://zhimi.vercel.app"><img id="avatar" src=""></a></center>-->
     <h1>執迷的博客</h1>
     
-        <p>用喜歡的方式，度過自己的一生。</p>
+      <p>做一個有趣的人！</p>
     
     <br>
 
     
 
     <nav class="nav">
-        <ul class="list-bare">
-
-            
-                <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
-            
-
-            
-                <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
-            
-                <li><a class="nav__link" href="././job_wanted_zh-cn.html">Job Wanted (*^▽^*)┛</a></li>
-            
-
-        </ul>
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="https://zhimi.vercel.app/index_zh-cn.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="https://zhimi.vercel.app/./about_zh-cn.html">About</a></li>
+        
+         
+      </ul>
     </nav>
 
     <p class="social">
-        
-        
-        
+      
+      
+      
+      <a href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss_zh-cn.xml" rel="alternate">
+        <img src="https://zhimi.vercel.app/theme/images/icons/rss.png"></a>
+      
     </p>
 
+    <!--
     
+    -->
+  </aside>
 
+  <!-- Content -->
+  <article>
     
-
-</aside>
-
-<!-- Job Banner -->
-<div class="job-banner" id="job-banner">
-    <canvas id="job-banner-canvas"></canvas>
-    <div class="job-banner-content">
-        <span class="job-banner-icon">✨</span>
-        <span class="job-banner-text">本人求职中！大模型 Post-Training 方向 · 长三角、南方地区优先 · </span>如果您有兴趣，欢迎联系
-        <a class="job-banner-email" href="mailto:zhimi64@foxmail.com">zhimi64@foxmail.com</a>
-        <span class="job-banner-sep">｜</span>
-        <a class="job-banner-link" href="./job_wanted_zh-cn.html">👀 了解更多</a>
-    </div>
-</div>
-
-<script>
-(function() {
-    const banner = document.getElementById('job-banner');
-    const canvas = document.getElementById('job-banner-canvas');
-    const ctx = canvas.getContext('2d');
-
-    let w, h, cols, rows, grid, nextGrid;
-    const CELL_SIZE = 12;
-    const ALIVE = 1, DEAD = 0;
-
-    function resize() {
-        const rect = banner.getBoundingClientRect();
-        w = canvas.width = rect.width;
-        h = canvas.height = rect.height;
-        cols = Math.ceil(w / CELL_SIZE);
-        rows = Math.ceil(h / CELL_SIZE);
-        grid = new Uint8Array(cols * rows);
-        nextGrid = new Uint8Array(cols * rows);
-        // 隨機初始化 40%
-        for (let i = 0; i < grid.length; i++) {
-            grid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
-        }
-    }
-
-    function get(x, y, g) {
-        if (x < 0 || x >= cols || y < 0 || y >= rows) return DEAD;
-        return g[y * cols + x];
-    }
-
-    function step() {
-        // 每一步隨機擾動：約 2% 的細胞被翻轉
-        for (let i = 0; i < grid.length; i++) {
-            if (Math.random() < 0.02) {
-                grid[i] = grid[i] === ALIVE ? DEAD : ALIVE;
-            }
-        }
-
-        for (let y = 0; y < rows; y++) {
-            for (let x = 0; x < cols; x++) {
-                const idx = y * cols + x;
-                let neighbors = 0;
-                for (let dy = -1; dy <= 1; dy++) {
-                    for (let dx = -1; dx <= 1; dx++) {
-                        if (dx === 0 && dy === 0) continue;
-                        neighbors += get(x + dx, y + dy, grid);
-                    }
-                }
-                const state = grid[idx];
-                if (state === ALIVE) {
-                    nextGrid[idx] = (neighbors === 2 || neighbors === 3) ? ALIVE : DEAD;
-                } else {
-                    nextGrid[idx] = (neighbors === 3) ? ALIVE : DEAD;
-                }
-            }
-        }
-        // 如果全部死光，重新播種
-        let alive = 0;
-        for (let i = 0; i < nextGrid.length; i++) alive += nextGrid[i];
-        if (alive === 0) {
-            for (let i = 0; i < nextGrid.length; i++) {
-                nextGrid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
-            }
-        }
-        [grid, nextGrid] = [nextGrid, grid];
-    }
-
-    function draw() {
-        ctx.clearRect(0, 0, w, h);
-        for (let y = 0; y < rows; y++) {
-            for (let x = 0; x < cols; x++) {
-                if (grid[y * cols + x] === ALIVE) {
-                    const alpha = 0.15 + Math.random() * 0.2;  // 閃爍感
-                    ctx.fillStyle = `rgba(46, 204, 113, ${alpha})`;
-                    ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
-                }
-            }
-        }
-    }
-
-    let lastStep = 0;
-    const STEP_INTERVAL = 200; // 毫秒，原約 16ms，現放慢約 12 倍
-
-    function tick(timestamp) {
-        if (timestamp - lastStep >= STEP_INTERVAL) {
-            step();
-            draw();
-            lastStep = timestamp;
-        }
-        requestAnimationFrame(tick);
-    }
-
-    window.addEventListener('resize', resize);
-    resize();
-    tick();
-})();
-</script>
-
-<!-- Content -->
-<article>
+<section id="content">
+    <h2 class="post_title post_detail"><a href="https://zhimi.vercel.app/./einsum_20250315_zh-cn.html" rel="bookmark" title="Permalink to 对torch中einsum函数的一些分析">对torch中einsum函数的一些分析</a></h2>
     
-    <section id="content">
-        <article>
-            <h2 class="post_title post_detail"><a href="././einsum_20250315_zh-cn.html" rel="bookmark"
-                                                  title="Permalink to 对 torch 中 einsum 函数的一些分析">对 torch 中 einsum 函数的一些分析</a></h2>
-            
+    <p>
+        <span id="busuanzi_container_page_pv">
+            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+        </span>
+    </p>
     
-            <p>
-                <span id="busuanzi_container_page_pv">
-                    本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
-                </span>
-            </p>
-
-            <div class="entry-content blog-post">
-                <div class="fullcontent">
+    <div class="entry-content blog-post">
+        <div>
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+<nav class="toc-active" id="TOC" role="doc-toc">
+<h2 id="toc-title">Table of contents</h2>
+<ul>
+<li><a class="nav-link active" data-scroll-target="#背景" href="#背景" id="toc-背景"><span class="header-section-number">1</span> 背景</a></li>
+<li><a class="nav-link" data-scroll-target="#顺序无关性" href="#顺序无关性" id="toc-顺序无关性"><span class="header-section-number">2</span> 顺序无关性</a></li>
+<li><a class="nav-link" data-scroll-target="#手写einsum" href="#手写einsum" id="toc-手写einsum"><span class="header-section-number">3</span> 手写einsum</a></li>
+<li><a class="nav-link" data-scroll-target="#einsum函数的梯度" href="#einsum函数的梯度" id="toc-einsum函数的梯度"><span class="header-section-number">4</span> einsum函数的梯度</a></li>
+<li><a class="nav-link" data-scroll-target="#總結" href="#總結" id="toc-總結"><span class="header-section-number">5</span> 总结</a></li>
+</ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
 
-<section class="level2" id="背景">
-<h2 class="anchored" data-anchor-id="背景">背景</h2>
-<p>PyTorch 和 NumPy 等库都提供了 <code>einsum</code> 函数。einsum，全称 Einstein summation convention（爱因斯坦求和约定），是一个方便而强大的工具。</p>
-<p>我们熟悉的矩阵乘法、转置、求矩阵的迹等操作都可视为 einsum 的特例。除此之外，它还可以表示更复杂的运算，例如将矩阵乘法、转置等操作复合在一起表示为一个操作。</p>
-<p>先从矩阵乘法说起。我们可以这样用 einsum 表示矩阵乘法：</p>
-<div class="cell" data-execution_count="1" id="49b499c2">
+</div>
+<div class="quarto-title-meta">
+</div>
+</header>
+<section class="level2" data-number="1" id="背景">
+<h2 class="anchored" data-anchor-id="背景" data-number="1"><span class="header-section-number">1</span> 背景</h2>
+<p>pyTorch和numpy等库都提供了<code>einsum</code>函数函数。einsum，全称Einstein summation convention（爱因斯坦求和约定），是一个方便而强大的工具。</p>
+<p>我们熟悉的矩阵乘法、转置、求矩阵的迹等操作都可视为einsum的特例。除此之外，它还可以表示更复杂的运算，例如将矩阵乘法、转置等操作复合在一起表示为一个操作。</p>
+<p>先从矩阵乘法说起。我们可以这样用einsum表示矩阵乘法，</p>
+<div class="cell" data-execution_count="1" id="0c3a58ca">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>a <span class="op">=</span> torch.rand(<span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a>b <span class="op">=</span> torch.rand(<span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a>c <span class="op">=</span> torch.einsum(<span class="st">'ij,jk-&gt;ik'</span>, a, b)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
-<p>在 <code>ij,jk-&gt;ik</code> 这个式子中，<code>j</code> 在 <code>-&gt;</code> 左侧重复使用，且没有出现在 <code>-&gt;</code> 右侧，因此我们需要对 <code>j</code> 求和。由此可知 <code>einsum('ij,jk-&gt;ik', a, b)</code> 的实际含义为 <span class="math inline">\(c_{ik}=\sum_j a_{ij} b_{jk}\)</span>，等同于矩阵乘法。</p>
+<p>在<code>ij,jk-&gt;ik</code>这个式子中，<code>j</code>在<code>-&gt;</code>左侧重复使用，且没有出现在<code>-&gt;</code>右侧，因此我们需要对<code>j</code>求和。由此可知<code>einsum('ij,jk-&gt;ik', a, b)</code>的实际含义为<span class="math inline">\(c_{ik}=\sum_j a_{ij} b_{jk}\)</span>，等同于矩阵乘法。</p>
 <p>下面我们简单验证一下计算的正确性。</p>
-<div class="cell" data-execution_count="2" id="cffb6143">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>eps <span class="op">=</span> <span class="fl">1e-5</span></span>
+<div class="cell" data-execution_count="2" id="75d6aaf6">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>eps <span class="op">=</span> <span class="fl">1e-5</span> </span>
 <span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a><span class="cf">assert</span> (c <span class="op">-</span> a <span class="op">@</span> b).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps</span>
 <span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'检查通过'</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>检查通过</code></pre>
 </div>
 </div>
-<p>上面的程式码中，<code>a @ b</code> 是 PyTorch 中计算 <code>a</code> 和 <code>b</code> 矩阵乘法时的一般写法。可以看到我们用 einsum 得到的计算结果与标准写法的计算结果是一致的。</p>
-<p>程式码 <code>torch.einsum('ij,jk-&gt;ik', a, b)</code> 使用了 <code>-&gt;</code> 符号分隔输入和输出。这被称为<strong>显式的 einsum</strong>。你也可以不使用 <code>-&gt;</code>，只给出输入的索引，这被称为<strong>隐式的 einsum</strong>。例如 <code>torch.einsum('ij,jk', a, b)</code>。注意因为隐式的 einsum 不指定输出的索引，因此输出的索引将会按字母表顺序排列。</p>
-<p>为了简便起见，这篇文章里我只讨论显式的 einsum。基于以上介绍的基础规则，我想在这篇文章中分享一些有趣的发现和思考：</p>
+<p>上面的代码中，<code>a @ b</code>是pytorch中计算<code>a</code>和<code>b</code>矩阵乘法时的一般写法。可以看到我们用einsum得到的计算结果与标准写法的计算结果是一致的。</p>
+<p>代码<code>torch.einsum('ij,jk-&gt;ik', a, b)</code>使用了<code>-&gt;</code>符号分隔输入和输出。这被称为<strong>显式的einsum</strong>。你也可以不使用<code>-&gt;</code>，只给出输入的索引，这被称为<strong>隐式的einsum</strong>。例如<code>torch.einsum('ij,jk', a, b)</code>. 注意因为隐式的einsum不指定输出的索引，因此输出的索引将会按字母表顺序排列。</p>
+<p>为了简便起见。这篇文章里我只讨论显式的einsum。基于以上介绍的基础规则，我想在这篇文章中分享一些有趣的发现和思考：</p>
 <ol type="1">
-<li><strong>顺序无关性</strong>：einsum 的输入参数的顺序是可交换的；</li>
-<li><strong>手写 einsum 函数</strong>：如何基于 Python 实现一个基础的 einsum 函数；</li>
-<li><strong>einsum 的梯度</strong>：einsum 函数的梯度仍然可以用 einsum 表示；</li>
+<li><strong>顺序无关性</strong>：einsum的输入参数的顺序是可交换的；</li>
+<li><strong>手写einsum函数</strong>：如何基于python实现一个基础的einsum函数；</li>
+<li><strong>einsum的梯度</strong>：einsum函数的梯度仍然可以用einsum表示；</li>
 </ol>
 </section>
-<section class="level2" id="順序無關性">
-<h2 class="anchored" data-anchor-id="順序無關性">顺序无关性</h2>
-<p>einsum 函数的要点是：1. 根据索引从输入参数中取数，计算累积的乘积；2. 对重名的，在输出中没有出现的索引求和。</p>
-<p><strong>可以看到 einsum 的规则和输入参数的顺序没有关系。</strong> 因此，einsum 函数的输入参数是可以交换顺序的。</p>
-<p>例如，虽然矩阵乘法没有交换律，但是基于 einsum 计算矩阵乘法时，你可以交换参数的顺序。</p>
-<div class="cell" data-execution_count="3" id="cdacc7a3">
+<section class="level2" data-number="2" id="顺序无关性">
+<h2 class="anchored" data-anchor-id="顺序无关性" data-number="2"><span class="header-section-number">2</span> 顺序无关性</h2>
+<p>einsum函数的要点是：1. 根据索引从输入参数中取数，计算累积的乘积；2. 对重名的，在输出中没有出现的索引求和。</p>
+<p><strong>可以看到einsum的规则和输入参数的顺序没有关系。</strong>因此，einsum函数的输入参数是可以交换顺序的。</p>
+<p>例如，虽然矩阵乘法没有交换律，但是基于einsum计算矩阵乘法时，你可以交换参数的顺序。</p>
+<div class="cell" data-execution_count="3" id="5f02fa56">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>):</span>
 <span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    a <span class="op">=</span> torch.rand(<span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>    b <span class="op">=</span> torch.rand(<span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    c <span class="op">=</span> torch.einsum(<span class="st">'ij,jk-&gt;ik'</span>, a, b)  <span class="co"># 正序</span></span>
 <span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>    d <span class="op">=</span> torch.einsum(<span class="st">'jk,ij-&gt;ik'</span>, b, a)  <span class="co"># 反序</span></span>
-<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>    <span class="cf">assert</span> (c <span class="op">-</span> d).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps</span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>    <span class="cf">assert</span> (c <span class="op">-</span> d).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps </span>
 <span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'检查通过'</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>检查通过</code></pre>
 </div>
 </div>
 </section>
-<section class="level2" id="手寫-einsum">
-<h2 class="anchored" data-anchor-id="手寫-einsum">手写 einsum</h2>
-<p>einsum 函数的计算是这样一个过程：一个遍历所有索引，计算输入元素的乘积，然后求和的过程。如果我们有一个函数能够遍历所有的索引，那会很方便。</p>
-<p>我们先来实现这样的一个函数 <code>iter_elements</code>：</p>
-<div class="cell" data-execution_count="4" id="1e13f781">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="im">import</span> torch</span>
+<section class="level2" data-number="3" id="手写einsum">
+<h2 class="anchored" data-anchor-id="手写einsum" data-number="3"><span class="header-section-number">3</span> 手写einsum</h2>
+<p>einsum函数的计算是这样一个过程：一个遍历所有索引，计算输入元素的乘积，然后求和的过程。如果我们有一个函数能够遍历所有的索引，那会很方便。</p>
+<p>我们先来实现这样的一个函数<code>iter_elements</code>：</p>
+<div class="cell" data-execution_count="4" id="f8633d51">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="im">import</span> torch </span>
 <span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a></span>
 <span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a><span class="kw">def</span> iter_elements(sizes):</span>
-<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(sizes) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(sizes) <span class="op">==</span> <span class="dv">0</span>: </span>
 <span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a>        <span class="cf">yield</span> []</span>
-<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a>        <span class="cf">return</span> </span>
 <span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(sizes[<span class="dv">0</span>]):</span>
 <span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> iter_elements(sizes[<span class="dv">1</span>:]):</span>
 <span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a>            <span class="cf">yield</span> (i, <span class="op">*</span>j)</span>
@@ -302,9 +233,9 @@
 (1, 2)</code></pre>
 </div>
 </div>
-<p>上面的程式码实现了一个遍历所有可能索引的函数 <code>iter_elements</code>。对于尺寸为 <span class="math inline">\(2\times 3\)</span> 的矩阵，这个函数输出了所有可能的六个索引。这是一个非常方便的函数。接下来我们就基于它在 einsum 函数中遍历每一个元素。</p>
-<div class="cell" data-execution_count="5" id="1aa6814f">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="kw">def</span> einsum_forward(equation, <span class="op">*</span>operands):</span>
+<p>上面的代码实现了一个遍历所有可能索引的函数<code>iter_elements</code>. 对于尺寸为<span class="math inline">\(2\times 3\)</span>的矩阵，这个函数输出了所有可能的六个索引。这是一个非常方便的函数。接下来我们就基于它在einsum函数中遍历每一个元素。</p>
+<div class="cell" data-execution_count="5" id="366218f4">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="kw">def</span> einsum_forward(equation, <span class="op">*</span>operands): </span>
 <span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>    input_dims, output_dim <span class="op">=</span> equation.split(<span class="st">'-&gt;'</span>)</span>
 <span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>    input_dims <span class="op">=</span> input_dims.split(<span class="st">','</span>)</span>
 <span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a></span>
@@ -315,108 +246,107 @@
 <span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a>    <span class="cf">for</span> shape, tensor <span class="kw">in</span> <span class="bu">zip</span>(input_dims, operands):</span>
 <span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a>        <span class="cf">for</span> index_name, size <span class="kw">in</span> <span class="bu">zip</span>(shape, tensor.shape):</span>
 <span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a>            <span class="cf">assert</span> sizes[index_names.index(index_name)] <span class="op">==</span> <span class="op">-</span><span class="dv">1</span> <span class="kw">or</span> <span class="op">\</span></span>
-<span id="cb8-12"><a aria-hidden="true" href="#cb8-12" tabindex="-1"></a>                sizes[index_names.index(index_name)] <span class="op">==</span> size</span>
-<span id="cb8-13"><a aria-hidden="true" href="#cb8-13" tabindex="-1"></a>            sizes[index_names.index(index_name)] <span class="op">=</span> size</span>
-<span id="cb8-14"><a aria-hidden="true" href="#cb8-14" tabindex="-1"></a></span>
+<span id="cb8-12"><a aria-hidden="true" href="#cb8-12" tabindex="-1"></a>                sizes[index_names.index(index_name)] <span class="op">==</span> size </span>
+<span id="cb8-13"><a aria-hidden="true" href="#cb8-13" tabindex="-1"></a>            sizes[index_names.index(index_name)] <span class="op">=</span> size </span>
+<span id="cb8-14"><a aria-hidden="true" href="#cb8-14" tabindex="-1"></a>    </span>
 <span id="cb8-15"><a aria-hidden="true" href="#cb8-15" tabindex="-1"></a>    <span class="co"># 计算输出矩阵的尺寸</span></span>
 <span id="cb8-16"><a aria-hidden="true" href="#cb8-16" tabindex="-1"></a>    output_size <span class="op">=</span> [sizes[index_names.index(name)] <span class="cf">for</span> name <span class="kw">in</span> output_dim]</span>
-<span id="cb8-17"><a aria-hidden="true" href="#cb8-17" tabindex="-1"></a>    <span class="co"># 将输出矩阵用 0 初始化</span></span>
+<span id="cb8-17"><a aria-hidden="true" href="#cb8-17" tabindex="-1"></a>    <span class="co"># 将输出矩阵用0初始化</span></span>
 <span id="cb8-18"><a aria-hidden="true" href="#cb8-18" tabindex="-1"></a>    output <span class="op">=</span> operands[<span class="dv">0</span>].new_zeros(output_size)</span>
 <span id="cb8-19"><a aria-hidden="true" href="#cb8-19" tabindex="-1"></a>    <span class="co"># 遍历所有的索引</span></span>
-<span id="cb8-20"><a aria-hidden="true" href="#cb8-20" tabindex="-1"></a>    <span class="cf">for</span> idx <span class="kw">in</span> iter_elements(sizes):</span>
+<span id="cb8-20"><a aria-hidden="true" href="#cb8-20" tabindex="-1"></a>    <span class="cf">for</span> idx <span class="kw">in</span> iter_elements(sizes): </span>
 <span id="cb8-21"><a aria-hidden="true" href="#cb8-21" tabindex="-1"></a>        <span class="co"># 映射到输出矩阵的索引</span></span>
 <span id="cb8-22"><a aria-hidden="true" href="#cb8-22" tabindex="-1"></a>        idx_output <span class="op">=</span> <span class="bu">tuple</span>(idx[index_names.index(name)] <span class="cf">for</span> name <span class="kw">in</span> output_dim)</span>
-<span id="cb8-23"><a aria-hidden="true" href="#cb8-23" tabindex="-1"></a>        prod <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb8-23"><a aria-hidden="true" href="#cb8-23" tabindex="-1"></a>        prod <span class="op">=</span> <span class="dv">1</span> </span>
 <span id="cb8-24"><a aria-hidden="true" href="#cb8-24" tabindex="-1"></a>        <span class="cf">for</span> input_dim, tensor <span class="kw">in</span> <span class="bu">zip</span>(input_dims, operands):</span>
-<span id="cb8-25"><a aria-hidden="true" href="#cb8-25" tabindex="-1"></a>            <span class="co"># 对于每一个输入 tensor，取得对应的索引</span></span>
+<span id="cb8-25"><a aria-hidden="true" href="#cb8-25" tabindex="-1"></a>            <span class="co"># 对于每一个输入tensor，取得对应的索引</span></span>
 <span id="cb8-26"><a aria-hidden="true" href="#cb8-26" tabindex="-1"></a>            idx_input <span class="op">=</span> <span class="bu">tuple</span>(idx[index_names.index(name)] <span class="cf">for</span> name <span class="kw">in</span> input_dim)</span>
 <span id="cb8-27"><a aria-hidden="true" href="#cb8-27" tabindex="-1"></a>            <span class="co"># 计算累积的乘积</span></span>
 <span id="cb8-28"><a aria-hidden="true" href="#cb8-28" tabindex="-1"></a>            prod <span class="op">=</span> prod <span class="op">*</span> tensor[idx_input]</span>
 <span id="cb8-29"><a aria-hidden="true" href="#cb8-29" tabindex="-1"></a>        <span class="co"># 求和</span></span>
-<span id="cb8-30"><a aria-hidden="true" href="#cb8-30" tabindex="-1"></a>        output[idx_output] <span class="op">+=</span> prod</span>
-<span id="cb8-31"><a aria-hidden="true" href="#cb8-31" tabindex="-1"></a>    <span class="cf">return</span> output</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<span id="cb8-30"><a aria-hidden="true" href="#cb8-30" tabindex="-1"></a>        output[idx_output] <span class="op">+=</span> prod </span>
+<span id="cb8-31"><a aria-hidden="true" href="#cb8-31" tabindex="-1"></a>    <span class="cf">return</span> output </span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
-<p>接下来我们编写一些测试用例，检查 <code>einsum_forward</code> 和 <code>torch.einsum</code> 的计算结果是否一致。</p>
-<div class="cell" data-execution_count="6" id="f2386404">
+<p>接下来我们编写一些测试用例，检查<code>einsum_forward</code>和<code>torch.einsum</code>的计算结果是否一致。</p>
+<div class="cell" data-execution_count="6" id="4a60ae69">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="co"># 矩阵乘法</span></span>
 <span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>a <span class="op">=</span> torch.rand((<span class="dv">5</span>, <span class="dv">4</span>))</span>
 <span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>b <span class="op">=</span> torch.rand((<span class="dv">4</span>, <span class="dv">5</span>))</span>
 <span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a>c <span class="op">=</span> einsum_forward(<span class="st">'ij,jk-&gt;ik'</span>, a, b)</span>
 <span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a>c2 <span class="op">=</span> torch.einsum(<span class="st">'ij,jk-&gt;ik'</span>, a, b)</span>
-<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a>c3 <span class="op">=</span> a <span class="op">@</span> b</span>
-<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a><span class="cf">assert</span> (c <span class="op">-</span> c2).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps</span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a>c3 <span class="op">=</span> a <span class="op">@</span> b </span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a><span class="cf">assert</span> (c <span class="op">-</span> c2).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps </span>
 <span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a><span class="cf">assert</span> (c <span class="op">-</span> c3).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps</span>
 <span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a><span class="co"># 矩阵转置</span></span>
 <span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a>a <span class="op">=</span> torch.rand((<span class="dv">5</span>, <span class="dv">4</span>))</span>
 <span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a>b <span class="op">=</span> einsum_forward(<span class="st">'ij-&gt;ji'</span>, a)</span>
 <span id="cb9-12"><a aria-hidden="true" href="#cb9-12" tabindex="-1"></a>b2 <span class="op">=</span> torch.einsum(<span class="st">'ij-&gt;ji'</span>, a)</span>
-<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a>b3 <span class="op">=</span> a.T</span>
-<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a><span class="cf">assert</span> (b <span class="op">-</span> b2).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps</span>
-<span id="cb9-15"><a aria-hidden="true" href="#cb9-15" tabindex="-1"></a><span class="cf">assert</span> (b <span class="op">-</span> b3).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps</span>
+<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a>b3 <span class="op">=</span> a.T </span>
+<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a><span class="cf">assert</span> (b <span class="op">-</span> b2).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps </span>
+<span id="cb9-15"><a aria-hidden="true" href="#cb9-15" tabindex="-1"></a><span class="cf">assert</span> (b <span class="op">-</span> b3).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps </span>
 <span id="cb9-16"><a aria-hidden="true" href="#cb9-16" tabindex="-1"></a><span class="co"># 矩阵的迹</span></span>
 <span id="cb9-17"><a aria-hidden="true" href="#cb9-17" tabindex="-1"></a>a <span class="op">=</span> torch.rand((<span class="dv">5</span>, <span class="dv">5</span>))</span>
 <span id="cb9-18"><a aria-hidden="true" href="#cb9-18" tabindex="-1"></a>b <span class="op">=</span> einsum_forward(<span class="st">'ii-&gt;'</span>, a)</span>
 <span id="cb9-19"><a aria-hidden="true" href="#cb9-19" tabindex="-1"></a>b2 <span class="op">=</span> torch.einsum(<span class="st">'ii-&gt;'</span>, a)</span>
 <span id="cb9-20"><a aria-hidden="true" href="#cb9-20" tabindex="-1"></a>b3 <span class="op">=</span> torch.trace(a)</span>
-<span id="cb9-21"><a aria-hidden="true" href="#cb9-21" tabindex="-1"></a><span class="cf">assert</span> (b <span class="op">-</span> b2).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps</span>
-<span id="cb9-22"><a aria-hidden="true" href="#cb9-22" tabindex="-1"></a><span class="cf">assert</span> (b <span class="op">-</span> b3).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps</span>
+<span id="cb9-21"><a aria-hidden="true" href="#cb9-21" tabindex="-1"></a><span class="cf">assert</span> (b <span class="op">-</span> b2).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps </span>
+<span id="cb9-22"><a aria-hidden="true" href="#cb9-22" tabindex="-1"></a><span class="cf">assert</span> (b <span class="op">-</span> b3).<span class="bu">abs</span>().mean() <span class="op">&lt;</span> eps </span>
 <span id="cb9-23"><a aria-hidden="true" href="#cb9-23" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'全部检查通过。'</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>全部检查通过。</code></pre>
 </div>
 </div>
 </section>
-<section class="level2" id="einsum-函數的梯度">
-<h2 class="anchored" data-anchor-id="einsum-函數的梯度">einsum 函数的梯度</h2>
-<p>举一个简单的例子。假设 <span class="math inline">\(c_{ik} = \sum_{j} a_{ij} b_{jk}\)</span>。对于任意的 <span class="math inline">\(i,j\)</span>，导数 <span class="math inline">\(\frac{\partial L}{\partial c_{ik}}\)</span> 都已知，问如何计算 <span class="math inline">\(\frac{\partial L}{\partial a_{ij}}\)</span> 和 <span class="math inline">\(\frac{\partial L}{\partial b_{jk}}\)</span>？</p>
+<section class="level2" data-number="4" id="einsum函数的梯度">
+<h2 class="anchored" data-anchor-id="einsum函数的梯度" data-number="4"><span class="header-section-number">4</span> einsum函数的梯度</h2>
+<p>举一个简单的例子。假设<span class="math inline">\(c_{ik} = \sum_{j} a_{ij} b_{jk}\)</span>. 对于任意的<span class="math inline">\(i,j\)</span>，导数<span class="math inline">\(\frac{\partial L}{\partial c_{ik}}\)</span>都已知，问如何计算<span class="math inline">\(\frac{\partial L}{\partial a_{ij}}\)</span>和<span class="math inline">\(\frac{\partial L}{\partial b_{jk}}\)</span>？</p>
 <p>显然 <span class="math display">\[
-\frac{\partial L}{\partial a_{ij}} = \sum_k \frac{\partial L}{\partial c_{ik}} b_{jk},
+\frac{\partial L}{\partial a_{ij}} = \sum_k \frac{\partial L}{\partial c_{ik}}b_{jk},
 \]</span> <span class="math display">\[
 \frac{\partial L}{\partial b_{jk}} = \sum_i \frac{\partial L}{\partial c_{ik}} a_{ij}.
-\]</span></p>
-<p>可以看到，在这个例子中，不论是前向的计算还是梯度的计算都可以表示为一系列乘积的和。</p>
-<p>如果你仔细地观察和理解了 einsum 函数的计算方式，不难得出更一般的结论，一个由 einsum 函数定义的表达式，其对任意一个输入参数的梯度同样可以表示为 einsum 函数的形式。</p>
-<p>现在假设 <code>a, b, c</code> 是某个 einsum 操作的输入，经过操作我们得到输出 <code>d</code>，如下所示：</p>
-<div class="cell" data-execution_count="7" id="13b60af3">
+\]</span> 可以看到，在这个例子中，不论是前向的计算还是梯度的计算都可以表示为一系列乘积的和。</p>
+<p>如果你仔细地观察和理解了einsum函数的计算方式，不难得出更一般的结论，一个由einsum函数定义的表达式，其对任意一个输入参数的梯度同样可以表示为einsum函数的形式。</p>
+<p>现在假设<code>a, b, c</code>是某个einsum操作的输入，经过操作我们得到输出<code>d</code>，如下所示：</p>
+<div class="cell" data-execution_count="7" id="92a26cf5">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>a <span class="op">=</span> torch.rand((<span class="dv">2</span>, <span class="dv">2</span>), requires_grad<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>b <span class="op">=</span> torch.rand((<span class="dv">2</span>, <span class="dv">2</span>), requires_grad<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>c <span class="op">=</span> torch.rand((<span class="dv">2</span>, <span class="dv">2</span>), requires_grad<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>d <span class="op">=</span> torch.einsum(<span class="st">'ij,jk,kl-&gt;il'</span>, a, b, c)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
-<p>假设我们已经知道了 <code>d</code> 的梯度 <code>grad_d</code>：</p>
-<div class="cell" data-execution_count="8" id="d2a2bc27">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>grad_d <span class="op">=</span> torch.rand(d.shape)  <span class="co"># 随机初始化 grad_d，假设它就是梯度</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<p>假设<span class="math inline">\(L\)</span>是<span class="math inline">\(d\)</span>经过某个函数计算得到的实数，<span class="math inline">\(\frac{\partial L}{\partial d}\)</span>已知，记为<code>grad_d</code>：</p>
+<div class="cell" data-execution_count="8" id="b1e25dbf">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>grad_d <span class="op">=</span> torch.rand(d.shape)  <span class="co"># 随机初始化grad_d，假设它就是梯度</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
-<p>PyTorch 能很方便地帮我们分别算出 <code>a, b, c</code> 的梯度。</p>
-<div class="cell" data-execution_count="9" id="2abb8410">
+<p>pytorch能很方便地帮我们分别算出<code>a, b, c</code>的梯度。</p>
+<div class="cell" data-execution_count="9" id="1fbce764">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a>d.backward(grad_d)</span>
 <span id="cb13-2"><a aria-hidden="true" href="#cb13-2" tabindex="-1"></a><span class="bu">print</span>(a.grad.shape, b.grad.shape, c.grad.shape)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>torch.Size([2, 2]) torch.Size([2, 2]) torch.Size([2, 2])</code></pre>
 </div>
 </div>
-<p>但是如前所述，einsum 函数的梯度仍然可以组织成 einsum 的形式。让我们来验证这一点。</p>
-<p>首先是 <code>a</code> 的梯度 <span class="math inline">\(\frac{\partial L}{\partial a}\)</span>：</p>
-<div class="cell" data-execution_count="10" id="91303aab">
+<p>但是如前所述，einsum函数的梯度仍然可以组织成einsum的形式。让我们来验证这一点。</p>
+<p>首先是<code>a</code>的梯度<span class="math inline">\(\frac{\partial L}{\partial a}\)</span></p>
+<div class="cell" data-execution_count="10" id="1634f377">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a>grad_a <span class="op">=</span> torch.einsum(<span class="st">'il,jk,kl-&gt;ij'</span>, grad_d, b, c)</span>
-<span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a><span class="cf">assert</span> torch.mean(torch.<span class="bu">abs</span>(a.grad <span class="op">-</span> grad_a)) <span class="op">&lt;</span> eps</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a><span class="cf">assert</span> torch.mean(torch.<span class="bu">abs</span>(a.grad <span class="op">-</span> grad_a)) <span class="op">&lt;</span> eps </span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
-<p>接著是 <code>b</code> 的梯度：</p>
-<div class="cell" data-execution_count="11" id="2f08d560">
+<p>接著是<code>b</code>的梯度：</p>
+<div class="cell" data-execution_count="11" id="0544d41e">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a aria-hidden="true" href="#cb16-1" tabindex="-1"></a>grad_b <span class="op">=</span> torch.einsum(<span class="st">'il,ij,kl-&gt;jk'</span>, grad_d, a, c)</span>
-<span id="cb16-2"><a aria-hidden="true" href="#cb16-2" tabindex="-1"></a><span class="cf">assert</span> torch.mean(torch.<span class="bu">abs</span>(b.grad <span class="op">-</span> grad_b)) <span class="op">&lt;</span> eps</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<span id="cb16-2"><a aria-hidden="true" href="#cb16-2" tabindex="-1"></a><span class="cf">assert</span> torch.mean(torch.<span class="bu">abs</span>(b.grad <span class="op">-</span> grad_b)) <span class="op">&lt;</span> eps </span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
-<p><code>c</code> 的梯度：</p>
-<div class="cell" data-execution_count="12" id="e9d94cbd">
+<p><code>c</code>的梯度：</p>
+<div class="cell" data-execution_count="12" id="71a407fd">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a aria-hidden="true" href="#cb17-1" tabindex="-1"></a>grad_c <span class="op">=</span> torch.einsum(<span class="st">'il,ij,jk-&gt;kl'</span>, grad_d, a, b)</span>
-<span id="cb17-2"><a aria-hidden="true" href="#cb17-2" tabindex="-1"></a><span class="cf">assert</span> torch.mean(torch.<span class="bu">abs</span>(c.grad <span class="op">-</span> grad_c)) <span class="op">&lt;</span> eps</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<span id="cb17-2"><a aria-hidden="true" href="#cb17-2" tabindex="-1"></a><span class="cf">assert</span> torch.mean(torch.<span class="bu">abs</span>(c.grad <span class="op">-</span> grad_c)) <span class="op">&lt;</span> eps </span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
-<p>至此，我们验证了 <code>a, b, c</code> 三个参数的梯度计算方式，它们都可以用 einsum 函数表示，而且计算结果和 PyTorch 的计算结果一致！</p>
+<p>至此，我们验证了<code>a, b, c</code>三个参数的梯度计算方式，它们都可以用einsum函数表示，而且计算结果和pytorch的计算结果一致！</p>
 </section>
-<section class="level2" id="總結">
-<h2 class="anchored" data-anchor-id="總結">总结</h2>
-<p>最近在实现自己的深度学习模型时，我设计了一个简单的模块，其中一部分用到了 einsum。为了加速这个模块在梯度反传阶段的计算，我作了详细的推导，发现 einsum 有一些有趣的性质，于是就记录下来，形成了这篇文章。</p>
-<p>仔细分析可以发现，其实 einsum 本质上是计算元素间乘积的和的过程。尽管 einsum 的使用方式多种多样，但只要把握这个本质，其性质也就不难理解了。</p>
+<section class="level2" data-number="5" id="總結">
+<h2 class="anchored" data-anchor-id="總結" data-number="5"><span class="header-section-number">5</span> 总结</h2>
+<p>最近在实现自己的深度学习模型时，我设计了一个简单的模块，其中一部分用到了einsum。为了加速这个模块在梯度反传阶段的计算，我作了详细的推导，发现einsum有一些有趣的性质，于是就记录下来，形成了这篇文章。</p>
+<p>仔细分析可以发现，其实einsum本质上是计算元素间乘积的和的过程。尽管einsum的使用方式多种多样，但只要把握这个本质，其性质也就不难理解了。</p>
 </section>
 </main>
 <!-- /main column -->
@@ -502,8 +432,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -614,7 +542,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -842,94 +769,81 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 </div> <!-- /content -->
 </div>
-            </div>
-            <div class="post_list">
-                <span>By </span>
-                <a href="./">@執迷</a>
-                <span> in </span>
-                <span class="post_category"><a href="./" rel="bookmark"
-                                               title="Permalink to 算法">[ 算法 ]</a></span>
-                <span class="post_date">2025-03-15</span>
-                <div><span>Tags : </span>
-                    
-                        
-                            <span><a href="./">#torch, </a></span>
-                        
-                            <span><a href="./">#einsum, </a></span>
-                        
-                    
-                </div>
-
-                <div class="entry-social">
-                    <span class="twitter"><a target="_blank" rel="nofollow"
-                                             onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;"
-                                             title="Twitter"
-                                             href="https://twitter.com/share?url=././einsum_20250315_zh-cn.html&text=对 torch 中 einsum 函数的一些分析&via="><img
-                            src="./theme/images/icons/twitter-s.png"></a></span>
-
-                    <span class="gplus"><a target="_blank" title="Google +"
-                                           href="https://plus.google.com/share?url=././einsum_20250315_zh-cn.html&hl=fr"
-                                           rel="nofollow"
-                                           onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
-                            src="./theme/images/icons/google-s.png"></a></span>
-
-                    <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow"
-                                              onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;"
-                                              href="https://www.facebook.com/sharer.php?u=././einsum_20250315_zh-cn.html&t=对 torch 中 einsum 函数的一些分析"><img
-                            src="./theme/images/icons/facebook-s.png"></a></span>
-
-                    <a target="_blank" title="Linkedin"
-                       href="https://www.linkedin.com/shareArticle?mini=true&url=././einsum_20250315_zh-cn.html&title=对 torch 中 einsum 函数的一些分析"
-                       rel="nofollow"
-                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
-                            src="./theme/images/icons/linkedin-s.png"></a>
-
-                    <span class="mail"><a
-                            href="mailto:?subject=对 torch 中 einsum 函数的一些分析&amp;body=Viens découvrir un article à propos de [对 torch 中 einsum 函数的一些分析] sur le site de 執迷. ././einsum_20250315_zh-cn.html"
-                            title="Share by Email" target="_blank"><img
-                            src="./theme/images/icons/mail-s.png"></a></span>
-                </div>
-            </div>
+    </div>
+    <div class="post_list">
+        <span>By </span>
+        <a href="https://zhimi.vercel.app/">@執迷</a>
+        <span> in </span>
+        <span class="post_category"><a href="https://zhimi.vercel.app/" rel="bookmark" title="Permalink to 數學">[ 數學 ]</a></span>
+        <span class="post_date">2025-03-15</span>
+        <div><span>Tags : </span>
             
-        </article>
-    </section>
+            
+            <span><a href="https://zhimi.vercel.app/">#torch, </a></span>
+            
+            <span><a href="https://zhimi.vercel.app/">#einsum, </a></span>
+            
+            <span><a href="https://zhimi.vercel.app/">#einsum的梯度, </a></span>
+            
+            
+        </div>
 
-</article>
+        <div class="entry-social-container" style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
+            
+            
+            <div class="entry-social" style="text-align: center;">
+                <span class="social-text">分享本文</span><br>
+                <div class="social-icons" style="display: flex; gap: 10px; justify-content: center;">
+                    <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=https://zhimi.vercel.app/./einsum_20250315_zh-cn.html&text=对torch中einsum函数的一些分析&via="><img src="https://zhimi.vercel.app/theme/images/icons/twitter-s.png"></a></span>
+                    <a target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https://zhimi.vercel.app/./einsum_20250315_zh-cn.html&title=对torch中einsum函数的一些分析" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="https://zhimi.vercel.app/theme/images/icons/linkedin-s.png"></a>
+                    <span class="mail"><a href="mailto:?subject=对torch中einsum函数的一些分析&amp;body=Viens découvrir un article à propos de [对torch中einsum函数的一些分析] sur le site de 執迷. https://zhimi.vercel.app/./einsum_20250315_zh-cn.html" title="Share by Email" target="_blank"><img src="https://zhimi.vercel.app/theme/images/icons/mail-s.png"></a></span>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    
 
-<!-- Footer -->
+</section>
 
-    <footer>
-        <p>
-            Blog powered by <a href="http://getpelican.com/">Pelican</a>,
-            which takes great advantage of <a href="http://python.org">Python</a>.
-            Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a
-                href="https://parbhatpuri.com/">@parbhat</a>.
-        </p>
-        
-        <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
-        <span id="busuanzi_container_site_uv">
-            訪客數<span id="busuanzi_value_site_uv"></span>
-        </span>
-        
-    </footer>
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
 
+  </article>
 
-
-    <!-- Analytics -->
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'G-G3N739QVFZ']);
-        _gaq.push(['_trackPageview']);
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
-
-
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
 </body>
 </html>

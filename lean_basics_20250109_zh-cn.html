@@ -1,342 +1,252 @@
 <!doctype html>
 <html lang="" itemscope itemtype="http://schema.org/Person">
 <head>
-    
-    
-        <meta charset="utf-8">
-        <!-- Site Meta Data -->
-        <title>Lean语言数学之旅——环境配置和一些基础概念</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
-        <meta name="author" content="執迷">
 
-        <link rel="shortcut icon" href="favicon.ico">
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-G3N739QVFZ');
+  </script>
+  
 
-        <!-- schema.org -->
-        <meta itemprop="name" content="執迷的博客">
-        <meta itemprop="image" content="">
-        <meta itemprop="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="./_vercel/insights/script.js"></script>
+  
 
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
-        <!-- Style Meta Data -->
-        <link rel="stylesheet" href="./theme/css/style.css" type="text/css"/>
-        <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css"/>
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  
+  
 
-        <!-- Feed Meta Data -->
-        
-        
+<!-- Quarto -->
+<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+<script src="./theme/scripts/quarto/quarto.js"></script>
 
-        <!-- Twitter Feed -->
-        <meta name="twitter:card" content="summary">
-        <meta name="twitter:site" content="">
-        <meta name="twitter:image" content="">
 
-        <!-- Busuanzi -->
-        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    
-    
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>Lean语言数学之旅——环境配置和一些基础概念</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="作为Lean 4系列笔记的第一篇，本文介绍了Lean 4语言的基础特性、自动证明工具的基本概念，安装和配置Lean 4过程中的注意事项等。">
+  <meta name="author" content="執迷">
+
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="執迷的博客">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="作为Lean 4系列笔记的第一篇，本文介绍了Lean 4语言的基础特性、自动证明工具的基本概念，安装和配置Lean 4过程中的注意事项等。">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+  
+  
+    <link href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss_zh-cn.xml" type="application/atom+xml" rel="alternate" title="執迷的博客 RSS Feed" />
+  
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+  
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="https://zhimi.vercel.app/./lean_basics_20250109_zh-cn.html">
+<meta name="twitter:title" content="執迷的博客 ~ Lean语言数学之旅——环境配置和一些基础概念">
+<meta name="twitter:description" content="">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="執迷的博客 ~ Lean语言数学之旅——环境配置和一些基础概念" />
+<meta property="og:description" content="" />
+<meta property="og:image" content="" />
+
+
+<!-- MathJax -->
+
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <meta name="twitter:creator" content="">
-    <meta name="twitter:url" content="././lean_basics_20250109_zh-cn.html">
-    <meta name="twitter:title" content="執迷的博客 ~ Lean语言数学之旅——环境配置和一些基础概念">
-    <meta name="twitter:description" content="">
 
-    <!-- Quarto -->
-    <link href="./theme/css/quarto/quarto.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
-    <script src="./theme/scripts/quarto/quarto.js"></script>
 
-    <!-- AnchorJS -->
-    <script src="https://cdn.jsdelivr.net/npm/anchor-js@5/anchor.min.js"></script>
-
-    <!-- Facebook Meta Data -->
-    <meta property="og:title" content="執迷的博客 ~ Lean语言数学之旅——环境配置和一些基础概念"/>
-    <meta property="og:description" content=""/>
-    <meta property="og:image" content=""/>
-    
 
 </head>
 
 <body>
-<!-- Sidebar -->
-<aside>
-    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="https://zhimi.vercel.app"><img id="avatar" src=""></a></center>-->
     <h1>執迷的博客</h1>
     
-        <p>用喜歡的方式，度過自己的一生。</p>
+      <p>做一個有趣的人！</p>
     
     <br>
 
     
 
     <nav class="nav">
-        <ul class="list-bare">
-
-            
-                <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
-            
-
-            
-                <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
-            
-                <li><a class="nav__link" href="././job_wanted_zh-cn.html">Job Wanted (*^▽^*)┛</a></li>
-            
-
-        </ul>
+      <ul class="list-bare">
+      
+        
+          <li><a class="nav__link" href="https://zhimi.vercel.app/index_zh-cn.html">Blog</a></li>
+        
+         
+        
+          <li><a class="nav__link" href="https://zhimi.vercel.app/./about_zh-cn.html">About</a></li>
+        
+         
+      </ul>
     </nav>
 
     <p class="social">
-        
-        
-        
+      
+      
+      
+      <a href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss_zh-cn.xml" rel="alternate">
+        <img src="https://zhimi.vercel.app/theme/images/icons/rss.png"></a>
+      
     </p>
 
+    <!--
     
+    -->
+  </aside>
 
+  <!-- Content -->
+  <article>
     
-
-</aside>
-
-<!-- Job Banner -->
-<div class="job-banner" id="job-banner">
-    <canvas id="job-banner-canvas"></canvas>
-    <div class="job-banner-content">
-        <span class="job-banner-icon">✨</span>
-        <span class="job-banner-text">本人求职中！大模型 Post-Training 方向 · 长三角、南方地区优先 · </span>如果您有兴趣，欢迎联系
-        <a class="job-banner-email" href="mailto:zhimi64@foxmail.com">zhimi64@foxmail.com</a>
-        <span class="job-banner-sep">｜</span>
-        <a class="job-banner-link" href="./job_wanted_zh-cn.html">👀 了解更多</a>
-    </div>
-</div>
-
-<script>
-(function() {
-    const banner = document.getElementById('job-banner');
-    const canvas = document.getElementById('job-banner-canvas');
-    const ctx = canvas.getContext('2d');
-
-    let w, h, cols, rows, grid, nextGrid;
-    const CELL_SIZE = 12;
-    const ALIVE = 1, DEAD = 0;
-
-    function resize() {
-        const rect = banner.getBoundingClientRect();
-        w = canvas.width = rect.width;
-        h = canvas.height = rect.height;
-        cols = Math.ceil(w / CELL_SIZE);
-        rows = Math.ceil(h / CELL_SIZE);
-        grid = new Uint8Array(cols * rows);
-        nextGrid = new Uint8Array(cols * rows);
-        // 隨機初始化 40%
-        for (let i = 0; i < grid.length; i++) {
-            grid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
-        }
-    }
-
-    function get(x, y, g) {
-        if (x < 0 || x >= cols || y < 0 || y >= rows) return DEAD;
-        return g[y * cols + x];
-    }
-
-    function step() {
-        // 每一步隨機擾動：約 2% 的細胞被翻轉
-        for (let i = 0; i < grid.length; i++) {
-            if (Math.random() < 0.02) {
-                grid[i] = grid[i] === ALIVE ? DEAD : ALIVE;
-            }
-        }
-
-        for (let y = 0; y < rows; y++) {
-            for (let x = 0; x < cols; x++) {
-                const idx = y * cols + x;
-                let neighbors = 0;
-                for (let dy = -1; dy <= 1; dy++) {
-                    for (let dx = -1; dx <= 1; dx++) {
-                        if (dx === 0 && dy === 0) continue;
-                        neighbors += get(x + dx, y + dy, grid);
-                    }
-                }
-                const state = grid[idx];
-                if (state === ALIVE) {
-                    nextGrid[idx] = (neighbors === 2 || neighbors === 3) ? ALIVE : DEAD;
-                } else {
-                    nextGrid[idx] = (neighbors === 3) ? ALIVE : DEAD;
-                }
-            }
-        }
-        // 如果全部死光，重新播種
-        let alive = 0;
-        for (let i = 0; i < nextGrid.length; i++) alive += nextGrid[i];
-        if (alive === 0) {
-            for (let i = 0; i < nextGrid.length; i++) {
-                nextGrid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
-            }
-        }
-        [grid, nextGrid] = [nextGrid, grid];
-    }
-
-    function draw() {
-        ctx.clearRect(0, 0, w, h);
-        for (let y = 0; y < rows; y++) {
-            for (let x = 0; x < cols; x++) {
-                if (grid[y * cols + x] === ALIVE) {
-                    const alpha = 0.15 + Math.random() * 0.2;  // 閃爍感
-                    ctx.fillStyle = `rgba(46, 204, 113, ${alpha})`;
-                    ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
-                }
-            }
-        }
-    }
-
-    let lastStep = 0;
-    const STEP_INTERVAL = 200; // 毫秒，原約 16ms，現放慢約 12 倍
-
-    function tick(timestamp) {
-        if (timestamp - lastStep >= STEP_INTERVAL) {
-            step();
-            draw();
-            lastStep = timestamp;
-        }
-        requestAnimationFrame(tick);
-    }
-
-    window.addEventListener('resize', resize);
-    resize();
-    tick();
-})();
-</script>
-
-<!-- Content -->
-<article>
+<section id="content">
+    <h2 class="post_title post_detail"><a href="https://zhimi.vercel.app/./lean_basics_20250109_zh-cn.html" rel="bookmark" title="Permalink to Lean语言数学之旅——环境配置和一些基础概念">Lean语言数学之旅——环境配置和一些基础概念</a></h2>
     
-    <section id="content">
-        <article>
-            <h2 class="post_title post_detail"><a href="././lean_basics_20250109_zh-cn.html" rel="bookmark"
-                                                  title="Permalink to Lean语言数学之旅——环境配置和一些基础概念">Lean语言数学之旅——环境配置和一些基础概念</a></h2>
-            
+    <p>
+        <span id="busuanzi_container_page_pv">
+            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+        </span>
+    </p>
     
-            <p>
-                <span id="busuanzi_container_page_pv">
-                    本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
-                </span>
-            </p>
-
-            <div class="entry-content blog-post">
-                <div>
+    <div class="entry-content blog-post">
+        <div>
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
 <nav class="toc-active" id="TOC" role="doc-toc">
-<h2 id="toc-title">Table of contents</h2>
+<h2 id="toc-title">目录</h2>
 <ul>
-<li><a class="nav-link active" data-scroll-target="#前言" href="#前言" id="toc-前言">前言</a></li>
-<li><a class="nav-link" data-scroll-target="#環境安裝" href="#環境安裝" id="toc-環境安裝">环境安装</a></li>
-<li><a class="nav-link" data-scroll-target="#自動證明策略" href="#自動證明策略" id="toc-自動證明策略">自动证明策略</a></li>
-<li><a class="nav-link" data-scroll-target="#基礎類型" href="#基礎類型" id="toc-基礎類型">基础类型</a></li>
-<li><a class="nav-link" data-scroll-target="#類型的組合" href="#類型的組合" id="toc-類型的組合">类型的组合</a>
-<ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#函數的類型" href="#函數的類型" id="toc-函數的類型">函数的类型</a></li>
-<li><a class="nav-link" data-scroll-target="#多態" href="#多態" id="toc-多態">多态</a></li>
-</ul></li>
-<li><a class="nav-link" data-scroll-target="#函數定義與求值" href="#函數定義與求值" id="toc-函數定義與求值">函数定义与求值</a></li>
-<li><a class="nav-link" data-scroll-target="#定義和局部定義" href="#定義和局部定義" id="toc-定義和局部定義">定义和局部定义</a></li>
-<li><a class="nav-link" data-scroll-target="#歸納類型" href="#歸納類型" id="toc-歸納類型">归纳类型</a></li>
+<li><a class="nav-link active" data-scroll-target="#前言" href="#前言" id="toc-前言"><span class="header-section-number">1</span> 前言</a></li>
+<li><a class="nav-link" data-scroll-target="#環境安裝" href="#環境安裝" id="toc-環境安裝"><span class="header-section-number">2</span> 环境安装</a></li>
+<li><a class="nav-link" data-scroll-target="#參考資料" href="#參考資料" id="toc-參考資料"><span class="header-section-number">3</span> 参考资料</a></li>
+<li><a class="nav-link" data-scroll-target="#自動證明器" href="#自動證明器" id="toc-自動證明器"><span class="header-section-number">4</span> 自动证明器</a></li>
+<li><a class="nav-link" data-scroll-target="#基礎類型" href="#基礎類型" id="toc-基礎類型"><span class="header-section-number">5</span> 基础类型</a></li>
+<li><a class="nav-link" data-scroll-target="#類型的組合" href="#類型的組合" id="toc-類型的組合"><span class="header-section-number">6</span> 类型的组合</a></li>
+<li><a class="nav-link" data-scroll-target="#函數定義與求值" href="#函數定義與求值" id="toc-函數定義與求值"><span class="header-section-number">7</span> 函数定义与求值</a></li>
+<li><a class="nav-link" data-scroll-target="#定義和局部定義" href="#定義和局部定義" id="toc-定義和局部定義"><span class="header-section-number">8</span> 定义和局部定义</a></li>
+<li><a class="nav-link" data-scroll-target="#歸納類型" href="#歸納類型" id="toc-歸納類型"><span class="header-section-number">9</span> 归纳类型</a></li>
 </ul>
 </nav>
 </div>
 <main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
 
-<section class="level2" id="前言">
-<h2 class="anchored" data-anchor-id="前言">前言</h2>
-<p>虽然数学是严谨的，但是承载著数学知识的自然语言并不严谨。</p>
+</div>
+<div class="quarto-title-meta">
+<div>
+<div class="quarto-title-meta-heading">发布于</div>
+<div class="quarto-title-meta-contents">
+<p class="date">2025年1月9日</p>
+</div>
+</div>
+</div>
+</header>
+<div class="hidden">
+<link href="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/styles/default.min.css" rel="stylesheet"/>
+<script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+<script src="https://unpkg.com/highlightjs-lean/dist/lean.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+  hljs.highlightAll();
+</script>
+<style>
+.lean {background-color: GhostWhite;}
+</style>
+</div>
+<section class="level2" data-number="1" id="前言">
+<h2 class="anchored" data-anchor-id="前言" data-number="1"><span class="header-section-number">1</span> 前言</h2>
+<p>第一次听闻Lean语言，是浏览到一则关于数学家陶哲轩的报导————他借助Lean语言纠正了自己在论文中犯下的错误。</p>
+<p>虽然数学是严谨的，但是承载著数学知识的自然语言并不严谨，这使得错误的发生难以避免。就算像陶哲轩一样的数学家，也偶有疏失。</p>
 <p>编写计算机程序并通过编译，就好比编写数学证明并通过程序的检查。使用编程语言作为数学证明的载体，就能允许引入对证明过程的形式化检查，减少出错的可能。Lean语言就是这样一种能够对数学证明进行形式化检查的编程语言。</p>
-<p>因为对“形式化证明”这一概念感兴趣，我花了一些时间，学习了Lean语言，在这个过程中也遇到了许多困难。我想将我的学习体验和经验借本文分享给读者。希望后来者能够更顺利地体会到Lean语言和数学定理形式化的有趣之处。</p>
-<p>Lean语言难在哪里呢？</p>
-<ol type="1">
-<li><strong>对数学知识有一定要求：</strong> 正常来说，人们是先学会 <span class="math inline">\(1+1=2\)</span>，然后才学习阿贝尔群；先学习微积分、概率论，然后才学习测度论。使用常见的数学工具并不需要你掌握更深层的数学知识。但做数学定理的形式化时，总需要用户对一些更底层的理论有所了解。</li>
-<li><strong>一个严格的证明可能会很冗长：</strong> 数学理论的形式化往往是一个查找API手册的过程，你得翻一翻Mathlib文档，看看这个定理可能是什么名字，是不是在Mathlib中有现成可用的证明。你编写的形式化证明可能会比自然语言更冗长，可读性差。</li>
-</ol>
-<p>我希望能够借这篇文章，记录下大大小小的一些“坑”，把重要的概念记录下来，以便后来者参考。</p>
+<p>就我个人而言，我感觉Lean语言的学习过程比学习Python、C、C++要更难一些。因此我想将我的学习体验和经验借本文分享给读者。希望后来者能够更顺利地体会到Lean语言和数学定理形式化的有趣之处。</p>
+<p>Lean语言难在哪里呢？ 1. <strong>对数学知识有一定要求：</strong>正常来说，人们是先学会<span class="math inline">\(1+1=2\)</span>，然后才学习阿贝尔群；先学习微积分、概率论，然后才学习测度论。使用常见的数学工具并不需要你掌握更深层的数学知识。但做数学定理的形式化时，总需要用户对一些更底层的理论有所了解。 2. <strong>一个严格的证明可能会很冗长：</strong>数学理论的形式化往往是一个查找API手册的过程，你得翻一翻Mathlib文档，看看这个定理可能是什么名字，是不是在Mathlib中有现成可用的证明。你编写的形式化证明可能会比自然语言更冗长，可读性差。</p>
+<p>尽管Lean语言的学习有这样那样的困难，但我还是一步一步克服，也进步了很多。总的来说，这绝对是一个开拓视野的，很有启发性的过程。也希望读者在了解Lean语言的过程中同样能有所收获。</p>
 </section>
-<section class="level2" id="環境安裝">
-<h2 class="anchored" data-anchor-id="環境安裝">环境安装</h2>
-<p>和Python、Javascript等脚本语言不同，Lean 4并没有内置一个交互式的REPL（Read-Eval-Print Loop）程序。官方推荐使用VSCode等编辑器来交互式地编写Lean 4程序。推荐读者阅读 <a href="https://leanprover-community.github.io/get_started.html"><em>Get started with Lean</em></a>，根据文档配置好环境。</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>如果生活在中国大陆，你可能需要先配置好代理地址，才能安装Lean。例如，</p>
+<section class="level2" data-number="2" id="環境安裝">
+<h2 class="anchored" data-anchor-id="環境安裝" data-number="2"><span class="header-section-number">2</span> 环境安装</h2>
+<p>和Python、Javascript等脚本语言不同，Lean 4并没有内置一个交互式的REPL（Read-Eval-Print Loop）程序。官方推荐使用VSCode等编辑器来交互式地编写Lean 4程序。推荐读者阅读<a href="https://leanprover-community.github.io/get_started.html"><em>Get started with Lean</em></a>，根据文档配置好环境。</p>
+<p>如果生活在中国大陆，你可能需要先配置好代理地址，才能安装Lean。 例如，</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="bu">export</span> <span class="va">http_proxy</span><span class="op">=</span>127.0.0.1:7890</span>
 <span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="bu">export</span> <span class="va">https_proxy</span><span class="op">=</span>127.0.0.1:7890</span>
-<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="co"># 请根据你的具体代理设置完成👆以上配置。</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
-</div>
-</div>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="co"># 请根据你的具体代理设置完成👆以上配置。</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <p>然后执行</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="fu">bash</span> <span class="at">-c</span> <span class="st">'curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:stable || (echo &amp;&amp; read -n 1 -s -r -p "Install failed, press ENTER to continue...")'</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
-<p>如果顺利的话，该代码将会下载安装elan和lean程序，把它们放在 <code>~/.elan/bin</code>。你可能需要重新启动shell，或者关闭重连VSCode来使用Lean。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="fu">bash</span> <span class="at">-c</span> <span class="st">'curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:stable || (echo &amp;&amp; read -n 1 -s -r -p "Install failed, press ENTER to continue...")'</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<p>如果顺利的话，该代码将会下载安装elan和lean程序，把它们放在<code>~/.elan/bin</code>. 你可能需要重新启动shell，或者关闭重连VSCode来使用Lean。</p>
 <p>执行以下命令</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="ex">lean</span> <span class="at">--version</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="ex">lean</span> <span class="at">--version</span></span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <p>如果你看到程序打印了Lean的版本，说明Lean的安装成功了。 如果elan下载的lean不是你需要的版本，你可以执行</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="ex">elan</span> toolchain install leanprover/lean4:v4.15.0</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="ex">elan</span> toolchain install leanprover/lean4:v4.15.0</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <p>这里假设4.15.0是你想要的版本。</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="ex">elan</span> default leanprover/lean4:v4.15.0</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="ex">elan</span> default leanprover/lean4:v4.15.0</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
 <p>执行上面这条语句可以将指定的版本设置为默认。</p>
-<pre class="lean"><code>#eval Lean.versionString  -- 请检查你的Lean版本，看看是否和预期的一致。
+<pre><code>#eval Lean.versionString  -- 请检查你的Lean版本，看看是否和预期的一致。
 
 #eval "Hello, World!"     -- 像这样处于两条横杆右边的是行内注释</code></pre>
-<p>👆这就是Lean语言的Hello world程序。将它保存在一个以 <code>.lean</code> 为后缀的文本文件中，如果环境配置正常，你会在VsCode的Lean Infoview页面中看到输出。</p>
-<p>在Lean中，<code>--</code> 符号右侧的文本是行内注释；成对的 <code>/-</code> 和 <code>-/</code> 符号包裹住的是多行注释。</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>你已经把环境搭好了。现在你也许可以多搜集和大概浏览一些参考资料。我推荐：</p>
+<p>👆这就是Lean语言的Hello world程序。将它保存在一个以<code>.lean</code>为后缀的文本文件中，如果环境配置正常，你会在VsCode的Lean Infoview页面中看到输出。</p>
+<p>在Lean中，–符号右侧的文本是行内注释；成对的/-和-/符号包裹住的是多行注释。</p>
+</section>
+<section class="level2" data-number="3" id="參考資料">
+<h2 class="anchored" data-anchor-id="參考資料" data-number="3"><span class="header-section-number">3</span> 参考资料</h2>
+<p>除了看本人的笔记，你也可以参考这些资料</p>
 <ul>
 <li><em>Theorem Proving in Lean</em>：这本书比较适合那些喜欢在使用电器之前，完整地将说明书过一遍的人。</li>
-<li><em>Mathematics in Lean</em>：适合那些希望立即能将Lean用于数学问题的人。遗憾的是这本书现在还难称完整，无法完全覆盖全部数学概念。</li>
+<li><em>Methematics in Lean</em>：适合那些希望立即能将Lean用于数学问题的人。遗憾的是这本书现在还难称完整。</li>
 </ul>
-</div>
-</div>
+<p>本系列文章在很大程度上参考了这些文章。</p>
 </section>
-<section class="level2" id="自動證明策略">
-<h2 class="anchored" data-anchor-id="自動證明策略">自动证明策略</h2>
+<section class="level2" data-number="4" id="自動證明器">
+<h2 class="anchored" data-anchor-id="自動證明器" data-number="4"><span class="header-section-number">4</span> 自动证明器</h2>
 <p>虽然Lean也可以作为通用编程语言来使用，但其核心功能和设计目标主要还是作为数学领域的自动证明器。</p>
 <p>下面的例子展示了自动证明器的工作。</p>
 <pre class="lean"><code>example : 1 + 1 = 2 := by simp  -- 证明了1 + 1 = 2</code></pre>
-<p>在上面的例子中，<code>simp</code> 是Lean的自动证明策略，能辅助我们完成一些简单证明。</p>
+<p>在上面的例子中，<code>simp</code>是Lean的自动证明策略，能辅助我们完成一些简单证明。</p>
 <p>除了使用自动证明器，我们也可以显式地引用现有的命题来构造证明。例如：</p>
 <pre class="lean"><code>example : 1 = 1 := rfl -- 引用`rfl`命题</code></pre>
-<p>这里我们引用了 <code>rfl</code>，即自反律。自反律表明任何值都于自身相等。</p>
+<p>这里我们引用了<code>rfl</code>，即自反律。自反律表明任何值都于自身相等。</p>
 <p>在深入介绍自动证明技巧之前，我们先认识一下Lean语言中的一些基础概念。</p>
 </section>
-<section class="level2" id="基礎類型">
-<h2 class="anchored" data-anchor-id="基礎類型">基础类型</h2>
+<section class="level2" data-number="5" id="基礎類型">
+<h2 class="anchored" data-anchor-id="基礎類型" data-number="5"><span class="header-section-number">5</span> 基础类型</h2>
 <p>在类型理论中，每个表达式都有对应的类型（type）。</p>
-<p>Lean的 <code>Nat</code> 类型是一个具有<strong>无限精度</strong>的无符号整数类型。当你在Lean中写下一个正整数但不指定类型时，<code>Nat</code> 是默认类型。</p>
+<p>Lean的<code>Nat</code>类型是一个具有<strong>无限精度</strong>的无符号整数类型。当你在Lean中写下一个正整数但不指定类型时，<code>Nat</code>是默认类型。</p>
 <pre class="lean"><code>#eval 1 - 2  -- 0
 #check 1 - 2 -- Nat</code></pre>
-<p>在上面的代码中，<code>#eval</code> 指令用于求值，而 <code>#check</code> 指令检查值的类型。注意当计算 <code>1 - 2</code> 时，因为使用的是 <code>Nat</code> 类型，所以返回值会被截断为 <code>0</code>。</p>
-<p><code>Nat</code> 类型能存储任意大的自然数：</p>
+<p>在上面的代码中，<code>eval</code>指令用于求值，而<code>check</code>指令检查值的类型。注意当计算<code>1 - 2</code>时，因为使用的是<code>Nat</code>类型，所以返回值会被截断为<code>0</code>.</p>
+<p><code>Nat</code>类型能存储任意大的自然数：</p>
 <pre class="lean"><code>-- 就算是这么大的一个数也能正常存储，这是Lean语言区别于Python、C等通用编程语言的一点。
 #eval (9876543210987654321098765432109876543210 : Nat)</code></pre>
-<p><code>Nat</code> 也可以写成 <code>ℕ</code>，用 <code>\N</code> 即可在受支持的编辑器中打出 <code>ℕ</code> 符号。</p>
+<p><code>Nat</code>也可以写成<code>ℕ</code>, 用<code>\N</code>即可在受支持的编辑器中打出<code>ℕ</code>符号。</p>
 <pre class="lean"><code>#check Nat
 -- 在文件开头使用import Mathlib.Data.Nat.Defs后，你便能使用ℕ代表Nat。
 -- #check ℕ</code></pre>
-<p>Lean也提供了 <code>Int</code> 类型，表示整数。与 <code>Nat</code> 相同，<code>Int</code> 类型同样是无限精度，无溢出的。</p>
+<p>Lean也提供了<code>Int</code>类型，表示整数。与<code>Nat</code>相同，<code>Int</code>类型同样是无限精度，无溢出的。</p>
 <pre class="lean"><code>#eval -1     -- -1
 #check -1    -- Int
 #eval (1 - 2 : Int)
@@ -347,14 +257,14 @@ Note
 #check (-255 : Int32)
 #check (0.5 : Float)</code></pre>
 <p>（意外的是，作为常见的基础类型，Int32在我编写本文时前几个月才作为新功能进入Lean 4😂 可见Lean 4距离成熟的通用编程语言还有距离。）</p>
-<p>Lean也提供了 <code>Bool</code> 类型，表示布尔值。</p>
+<p>Lean也提供了<code>Bool</code>类型，表示布尔值。</p>
 <pre class="lean"><code>#check (False : Bool)</code></pre>
 </section>
-<section class="level2" id="類型的組合">
-<h2 class="anchored" data-anchor-id="類型的組合">类型的组合</h2>
-<p>新类型可以由旧类型组合而来。例如设 <code>a</code> 和 <code>b</code> 为旧类型，那么可以构造类型 <code>a -&gt; b</code> 或者 <code>a → b</code> 来表示一个从 <code>a</code> 映射到 <code>b</code> 的函数，<code>a × b</code> 表示由 <code>a</code> 中的元素和 <code>b</code> 中的元素构成的二元组，这也被称为笛卡尔积（Cartesian product）。笛卡尔积也可以通过 <code>Prod</code> 函数得到：</p>
+<section class="level2" data-number="6" id="類型的組合">
+<h2 class="anchored" data-anchor-id="類型的組合" data-number="6"><span class="header-section-number">6</span> 类型的组合</h2>
+<p>新类型可以由旧类型组合而来。例如设<code>a</code>和<code>b</code>为旧类型，那么可以构造类型<code>a -&gt; b</code>或者<code>a → b</code>来表示一个从<code>a</code>映射到<code>b</code>的函数，<code>a × b</code>表示由<code>a</code>中的元素和<code>b</code>中的元素构成的二元组，这也被称为笛卡尔积（Cartesian product）。笛卡尔积也可以通过<code>Prod</code>函数得到：</p>
 <pre class="lean"><code>#check Prod Nat Nat</code></pre>
-<p>Lean允许使用Unicode字符。可以通过输入 <code>\to</code> 或 <code>\r</code> 得到 <code>→</code>，通过输入 <code>\a \b \g</code> 得到 <code>α β γ</code>，通过输入 <code>\times</code> 得到 <code>×</code>。</p>
+<p>Lean允许使用Unicode字符。可以通过输入<code>\to</code>或<code>\r</code>得到<code>→</code>，通过输入<code>\a \b \g</code>得到<code>α β γ</code>，通过输入<code>\times</code>得到<code>×</code>.</p>
 <pre class="lean"><code>section
   variable (a b c α β γ : Nat)
   -- 自然数到自然数的映射
@@ -363,11 +273,11 @@ Note
   #check (Nat × Nat)
   #check Prod Nat Nat
 end</code></pre>
-<p>上面的代码中，<code>section</code> 和 <code>end</code> 的使用是为了限制variable的范围。在section结束后，我们就不能再使用 <code>a b c α β γ</code> 等变量了。</p>
-<section class="level3" id="函數的類型">
-<h3 class="anchored" data-anchor-id="函數的類型">函数的类型</h3>
-<p>以 <code>x</code> 为输入的函数 <code>f</code> 记为 <code>f x</code>，而不是 <code>f(x)</code>。函数的类型形如 <code>Nat -&gt; Nat</code>。</p>
-<p>举个例子：自然数加法函数 <code>Nat.add</code> 的类型为 <code>Nat -&gt; Nat -&gt; Nat</code>，其中的箭头是右结合的，因此该类型等同于 <code>Nat -&gt; (Nat -&gt; Nat)</code>。</p>
+<p>上面的代码中，<code>section</code>和<code>end</code>的使用是为了限制variable的范围。在section结束后，我们就不能再使用<code>a b c α β γ</code>等变量了。</p>
+<section class="level4" data-number="6.0.1" id="函數的類型">
+<h4 class="anchored" data-anchor-id="函數的類型" data-number="6.0.1"><span class="header-section-number">6.0.1</span> 函数的类型</h4>
+<p>以<code>x</code>为输入的函数<code>f</code>记为<code>f x</code>，而不是<code>f(x)</code>. 函数的类型形如<code>Nat -&gt; Nat</code>。</p>
+<p>举个例子：自然数加法函数<code>Nat.add</code>的类型为<code>Nat -&gt; Nat -&gt; Nat</code>，其中的箭头是右结合的，因此该类型等同于<code>Nat -&gt; (Nat -&gt; Nat)</code>.</p>
 <pre class="lean"><code>#eval Nat.add 1 1
 #check Nat.add</code></pre>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -376,56 +286,56 @@ end</code></pre>
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-结合性
+注记
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>结合性（Associativity）是运算符的一个属性。右结合说明同样的运算符连续出现时，应该将运算符的右侧视为一个整体。</p>
+<p><strong>结合性:</strong> 结合性（Associativity）是运算符的一个属性。右结合说明同样的运算符连续出现时，应该将运算符的右侧视为一个整体。</p>
 </div>
 </div>
-<p><code>Nat.add</code> 的类型为 <code>Nat -&gt; (Nat -&gt; Nat)</code>，这说明 <code>Nat.add</code> 函数可以视为输入一个自然数，返回一个函数，这个函数将输入的自然数与先前那个自然数相加然后返回。这表明我们可将部分参数应用于一个函数，得到一个新函数，例如 <code>Nat.add 3</code> 具有类型 <code>Nat -&gt; Nat</code>。</p>
+<p><code>Nat.add</code>的类型为<code>Nat -&gt; (Nat -&gt; Nat)</code>，这说明<code>Nat.add</code>函数可以视为输入一个自然数，返回一个函数，这个函数将输入的自然数与先前那个自然数相加然后返回。这表明我们可将部分参数应用于一个函数，得到一个新函数，例如<code>Nat.add 3</code>具有类型<code>Nat -&gt; Nat</code>.</p>
 <pre class="lean"><code>#check Nat.add     -- 是一个函数
 #check Nat.add 1   -- 还是函数
 #check Nat.add 1 1 -- 是一个自然数</code></pre>
 <p>请看下面这段代码：</p>
 <pre class="lean"><code>def add_one := Nat.add 1
 #eval add_one 1</code></pre>
-<p>其中 <code>def</code> 关键词用于提供定义。这里 <code>add_one</code> 被定义为将输入的自然数映射为等于它加1的那个自然数。</p>
+<p>其中<code>def</code>关键词用于提供定义。这里<code>add_one</code>被定义为将输入的自然数映射为等于它加1的那个自然数.</p>
 <p>类型是Lean语言的第一公民，我们可以对类型作运算，得到新的类型。</p>
 <pre class="lean"><code>#check Nat         -- Nat : Type
 #check Bool        -- Bool : Type
 #check Nat -&gt; Bool -- Nat → Bool : Type
 #check Nat × Nat   -- Nat × Nat : Type</code></pre>
-<p>从例子中可以看到，Lean中的每一个类型的类型都是 <code>Type</code>。那么，<code>Type</code> 的类型是什么呢？</p>
+<p>从例子中可以看到，Lean中的每一个类型的类型都是<code>Type</code>。那么，<code>Type</code>的类型是什么呢？</p>
 <pre class="lean"><code>#check Type        -- Type : Type 1
 #check Type 1      -- Type 1 : Type 2
 #check Type 2      -- Type 2 : Type 3
 #check Type 3      -- Type 3 : Type 4</code></pre>
-<p><code>Type 0</code>，等同于 <code>Type</code> 可以视为”普通”类型所在的集合，<code>Type 1</code> 是一个更大的、包含 <code>Type 0</code> 作为元素的集合，……以此类推。<code>Type n</code> 的列表是无穷的。</p>
+<p><code>Type 0</code>，等同于<code>Type</code>可以视为“普通”类型所在的集合，<code>Type 1</code>是一个更大的、包含<code>Type 0</code>作为元素的集合，……以此类推。<code>Type n</code>的列表是无穷的。</p>
 </section>
-<section class="level3" id="多態">
-<h3 class="anchored" data-anchor-id="多態">多态</h3>
-<p>一些类型，例如 <code>List α</code> 的类型由 <code>α</code> 决定。<code>List</code> 的类型为：</p>
+<section class="level4" data-number="6.0.2" id="多態">
+<h4 class="anchored" data-anchor-id="多態" data-number="6.0.2"><span class="header-section-number">6.0.2</span> 多态</h4>
+<p>一些类型，例如<code>List α</code>的类型由<code>α</code>决定。<code>List</code>的类型为：</p>
 <pre class="lean"><code>#check List</code></pre>
-<p><code>Prod</code> 函数的类型是：</p>
+<p><code>Prod</code>函数的类型是：</p>
 <pre class="lean"><code>#check Prod</code></pre>
-<p>显式定义多态常量的语法使用 <code>universe</code> 命令：</p>
+<p>显式定义多态常量的语法使用<code>universe</code>命令：</p>
 <pre class="lean"><code>namespace a
   universe u
   def F (α : Type u) : Type u := Prod α α
   #check F
 end a</code></pre>
-<p>也可以通过使用universe参数的方法来回避 <code>universe</code> 命令的使用：</p>
+<p>也可以通过使用universe参数的方法来回避<code>universe</code>命令的使用：</p>
 <pre class="lean"><code>namespace b
   def F.{u} (α : Type u) : Type u := Prod α α
   #check F
 end b</code></pre>
-<p>上面两个例子中，我使用了 <code>namespace</code> 和 <code>end</code> 语句来避免 <code>u</code> 和 <code>F</code> 的重复定义。类似其它通用编程语言，Lean语言的namespace能够避免不同的定义的撞名。</p>
+<p>上面两个例子中，我使用了<code>namespace</code>和<code>end</code>语句来避免<code>u</code>和<code>F</code>的重复定义。类似其它通用编程语言，Lean语言的namespace能够避免不同的定义的撞名。</p>
 </section>
 </section>
-<section class="level2" id="函數定義與求值">
-<h2 class="anchored" data-anchor-id="函數定義與求值">函数定义与求值</h2>
-<p>Lean可以使用 <code>fun</code> 或 <code>λ</code> 关键词创建函数：</p>
+<section class="level2" data-number="7" id="函數定義與求值">
+<h2 class="anchored" data-anchor-id="函數定義與求值" data-number="7"><span class="header-section-number">7</span> 函数定义与求值</h2>
+<p>Lean可以使用<code>fun</code>或<code>λ</code>关键词创建函数：</p>
 <pre class="lean"><code>#check fun (x : Nat) =&gt; x + 5   -- Nat → Nat
 #check λ (x : Nat) =&gt; x + 5     -- λ and fun mean the same thing
 #check fun x =&gt; x + 5     -- Nat inferred
@@ -433,24 +343,24 @@ end b</code></pre>
 <p>给函数传入参数即可求值：</p>
 <pre class="lean"><code>#eval (λ x : Nat =&gt; x + 5) 10
 #eval (fun x : Nat =&gt; x + 5) 10</code></pre>
-<p>请注意理解这个例子：下面两个函数的类型都是 <code>Nat → Bool → Nat</code></p>
+<p>请注意理解这个例子：下面两个函数的类型都是<code>Nat → Bool → Nat</code></p>
 <pre class="lean"><code>#check fun x : Nat =&gt; fun y : Bool =&gt; if not y then x + 1 else x + 2
 #check fun (x : Nat) (y : Bool) =&gt; if not y then x + 1 else x + 2</code></pre>
-<p>第一个函数接收一个自然数 <code>x</code>，然后返回一个函数，该函数接收一个布尔值 <code>y</code>，然后返回一个自然数。因此其类型为 <code>Nat → Bool → Nat</code>，本质上与第二个接收多个参数函数的类型相同。</p>
+<p>第一个函数接收一个自然数<code>x</code>，然后返回一个函数，该函数接收一个布尔值<code>y</code>，然后返回一个自然数。因此其类型为<code>Nat → Bool → Nat</code>，本质上与第二个接收多个参数函数的类型相同。</p>
 </section>
-<section class="level2" id="定義和局部定義">
-<h2 class="anchored" data-anchor-id="定義和局部定義">定义和局部定义</h2>
-<p>定义使用 <code>def</code> 关键词，局部定义使用 <code>let</code> 关键词。我们可以在函数内使用局部定义，例如</p>
+<section class="level2" data-number="8" id="定義和局部定義">
+<h2 class="anchored" data-anchor-id="定義和局部定義" data-number="8"><span class="header-section-number">8</span> 定义和局部定义</h2>
+<p>定义使用<code>def</code>关键词，局部定义使用<code>let</code>关键词。我们可以在函数内使用局部定义，例如</p>
 <pre class="lean"><code>def NatAdd (a : Nat) (b : Nat) :=
   let f := (λ (x : Nat) =&gt; a + x)
   (f b)
 #eval NatAdd 1 2</code></pre>
-<p>上面的例子中，<code>f</code> 是一个局部定义的函数，可以在 <code>NatAdd</code> 函数的后续计算中使用。</p>
+<p>上面的例子中，<code>f</code>是一个局部定义的函数，可以在<code>NatAdd</code>函数的后续计算中使用。</p>
 </section>
-<section class="level2" id="歸納類型">
-<h2 class="anchored" data-anchor-id="歸納類型">归纳类型</h2>
+<section class="level2" data-number="9" id="歸納類型">
+<h2 class="anchored" data-anchor-id="歸納類型" data-number="9"><span class="header-section-number">9</span> 归纳类型</h2>
 <p>在Lean4中，归纳类型（inductive type）是一种通过列举构造函数定义的类型。</p>
-<p>最简单的归纳类型是枚举类型。下面的 <code>Weekday</code> 类型包含七种可能的值，对应于一周的七天。它们的区别仅在于构造函数的不同。</p>
+<p>最简单的归纳类型是枚举类型。下面的<code>Weekdy</code>类型包含七种可能的值，对应于一周的七天。它们的区别仅在于构造函数的不同。</p>
 <pre class="lean"><code>inductive Weekday where
   | sunday : Weekday
   | monday : Weekday
@@ -477,17 +387,13 @@ end b</code></pre>
   | thursday  =&gt; 5
   | friday    =&gt; 6
   | saturday  =&gt; 7</code></pre>
-<p>实际上自然数也可以用归纳类型表示。<code>#print</code> 指令可以打印类型的定义。</p>
+<p>实际上自然数也可以用归纳类型表示。<code>print</code>指令可以打印类型的定义。</p>
 <pre class="lean"><code>#print Nat</code></pre>
 <p>输出为：</p>
 <pre><code>inductive Nat
   | zero : Nat
   | succ (n : Nat) : Nat</code></pre>
-<p>可以看到实际上Nat是一种归纳类型。Nat（自然数）是这样定义的：</p>
-<ol type="1">
-<li>0是一个自然数</li>
-<li>对于任意一个自然数n，<code>succ n</code> 是n的”下一个数”，也是一个自然数</li>
-</ol>
+<p>可以看到实际上Nat是一种归纳类型。Nat（自然数）是这样定义的： 1. 0是一个自然数 2. 对于任意一个自然数n，<code>succ n</code>是n的“下一个数”，也是一个自然数</p>
 <hr/>
 <p>至此，本文介绍了一些Lean语言中的基础概念。后续文章将介绍如何应用Lean语言证明一些数学定理。</p>
 </section>
@@ -536,12 +442,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
+    button.setAttribute("title", "已复制");
     let tooltip;
     if (window.bootstrap) {
       button.setAttribute("data-bs-toggle", "tooltip");
       button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
+      button.setAttribute("data-bs-title", "已复制");
       tooltip = new bootstrap.Tooltip(button, 
         { trigger: "manual", 
           customClass: "code-copy-button-tooltip",
@@ -575,8 +481,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -687,7 +591,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -915,98 +818,81 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 </div> <!-- /content -->
 </div>
-            </div>
-            <div class="post_list">
-                <span>By </span>
-                <a href="./">@執迷</a>
-                <span> in </span>
-                <span class="post_category"><a href="./" rel="bookmark"
-                                               title="Permalink to 數學">[ 數學 ]</a></span>
-                <span class="post_date">2025-01-09</span>
-                <div><span>Tags : </span>
-                    
-                        
-                            <span><a href="./">#Lean, </a></span>
-                        
-                            <span><a href="./">#Lean 4, </a></span>
-                        
-                            <span><a href="./">#定理證明, </a></span>
-                        
-                            <span><a href="./">#形式化驗證, </a></span>
-                        
-                    
-                </div>
-
-                <div class="entry-social">
-                    <span class="twitter"><a target="_blank" rel="nofollow"
-                                             onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;"
-                                             title="Twitter"
-                                             href="https://twitter.com/share?url=././lean_basics_20250109_zh-cn.html&text=Lean语言数学之旅——环境配置和一些基础概念&via="><img
-                            src="./theme/images/icons/twitter-s.png"></a></span>
-
-                    <span class="gplus"><a target="_blank" title="Google +"
-                                           href="https://plus.google.com/share?url=././lean_basics_20250109_zh-cn.html&hl=fr"
-                                           rel="nofollow"
-                                           onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
-                            src="./theme/images/icons/google-s.png"></a></span>
-
-                    <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow"
-                                              onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;"
-                                              href="https://www.facebook.com/sharer.php?u=././lean_basics_20250109_zh-cn.html&t=Lean语言数学之旅——环境配置和一些基础概念"><img
-                            src="./theme/images/icons/facebook-s.png"></a></span>
-
-                    <a target="_blank" title="Linkedin"
-                       href="https://www.linkedin.com/shareArticle?mini=true&url=././lean_basics_20250109_zh-cn.html&title=Lean语言数学之旅——环境配置和一些基础概念"
-                       rel="nofollow"
-                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
-                            src="./theme/images/icons/linkedin-s.png"></a>
-
-                    <span class="mail"><a
-                            href="mailto:?subject=Lean语言数学之旅——环境配置和一些基础概念&amp;body=Viens découvrir un article à propos de [Lean语言数学之旅——环境配置和一些基础概念] sur le site de 執迷. ././lean_basics_20250109_zh-cn.html"
-                            title="Share by Email" target="_blank"><img
-                            src="./theme/images/icons/mail-s.png"></a></span>
-                </div>
-            </div>
+    </div>
+    <div class="post_list">
+        <span>By </span>
+        <a href="https://zhimi.vercel.app/">@執迷</a>
+        <span> in </span>
+        <span class="post_category"><a href="https://zhimi.vercel.app/" rel="bookmark" title="Permalink to Lean 4">[ Lean 4 ]</a></span>
+        <span class="post_date">2025-01-09</span>
+        <div><span>Tags : </span>
             
-        </article>
-    </section>
+            
+            <span><a href="https://zhimi.vercel.app/">#Lean, </a></span>
+            
+            <span><a href="https://zhimi.vercel.app/">#自動證明器, </a></span>
+            
+            <span><a href="https://zhimi.vercel.app/">#數學, </a></span>
+            
+            
+        </div>
 
-</article>
+        <div class="entry-social-container" style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
+            
+            
+            <div class="entry-social" style="text-align: center;">
+                <span class="social-text">分享本文</span><br>
+                <div class="social-icons" style="display: flex; gap: 10px; justify-content: center;">
+                    <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=https://zhimi.vercel.app/./lean_basics_20250109_zh-cn.html&text=Lean语言数学之旅——环境配置和一些基础概念&via="><img src="https://zhimi.vercel.app/theme/images/icons/twitter-s.png"></a></span>
+                    <a target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https://zhimi.vercel.app/./lean_basics_20250109_zh-cn.html&title=Lean语言数学之旅——环境配置和一些基础概念" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="https://zhimi.vercel.app/theme/images/icons/linkedin-s.png"></a>
+                    <span class="mail"><a href="mailto:?subject=Lean语言数学之旅——环境配置和一些基础概念&amp;body=Viens découvrir un article à propos de [Lean语言数学之旅——环境配置和一些基础概念] sur le site de 執迷. https://zhimi.vercel.app/./lean_basics_20250109_zh-cn.html" title="Share by Email" target="_blank"><img src="https://zhimi.vercel.app/theme/images/icons/mail-s.png"></a></span>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    
 
-<!-- Footer -->
+</section>
 
-    <footer>
-        <p>
-            Blog powered by <a href="http://getpelican.com/">Pelican</a>,
-            which takes great advantage of <a href="http://python.org">Python</a>.
-            Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a
-                href="https://parbhatpuri.com/">@parbhat</a>.
-        </p>
-        
-        <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
-        <span id="busuanzi_container_site_uv">
-            訪客數<span id="busuanzi_value_site_uv"></span>
-        </span>
-        
-    </footer>
+<!-- Quarto Clipboard -->
+<script type="text/javascript">
+    var clipboard = new ClipboardJS(
+        '.code-copy-button',
+        {
+            target: function(trigger) {
+                console.log("Copy texts. ", trigger);
+                return trigger.previousElementSibling;
+            }
+        }
+    );    
+    clipboard.on('success', function(e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+        alert('Copied!');
+    });
+    console.log("ClipboardJS loaded.");
+</script>
 
+  </article>
 
-
-    <!-- Analytics -->
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'G-G3N739QVFZ']);
-        _gaq.push(['_trackPageview']);
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
-
-
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+    
+      
+      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+      <span id="busuanzi_container_site_uv">
+        訪客數<span id="busuanzi_value_site_uv"></span>
+      </span>
+      
+    
+  </footer>
 </body>
 </html>
