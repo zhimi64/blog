@@ -1,124 +1,203 @@
 <!doctype html>
 <html lang="" itemscope itemtype="http://schema.org/Person">
 <head>
+    
+        <meta charset="utf-8">
+        <!-- Site Meta Data -->
+        <title>About</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
+        <meta name="author" content="執迷">
 
-  
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-  
-    gtag('config', 'G-G3N739QVFZ');
-  </script>
-  
+        <link rel="shortcut icon" href="favicon.ico">
 
-  
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="./_vercel/insights/script.js"></script>
-  
+        <!-- schema.org -->
+        <meta itemprop="name" content="執迷的博客">
+        <meta itemprop="image" content="">
+        <meta itemprop="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
 
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-  
-  
-  
-  <meta charset="utf-8">
-  <!-- Site Meta Data -->
-  <title>About</title>
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="執迷">
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+        <!-- Style Meta Data -->
+        <link rel="stylesheet" href="./theme/css/style.css" type="text/css"/>
+        <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css"/>
 
-  <link rel="shortcut icon" href="favicon.ico">
+        <!-- Feed Meta Data -->
+        
+        
 
-  <!-- schema.org -->
-  <meta itemprop="name" content="執迷的博客">
-  <meta itemprop="image" content="">
-  <meta itemprop="description" content="">
+        <!-- Twitter Feed -->
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="">
+        <meta name="twitter:image" content="">
 
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
-  <!-- Style Meta Data -->
-  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/style.css" type="text/css" />
-  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/pygments.css" type="text/css" />
-
-  <!-- Feed Meta Data -->
-  
-  
-    <link href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss_zh-cn.xml" type="application/atom+xml" rel="alternate" title="執迷的博客 RSS Feed" />
-  
-
-  <!-- Twitter Feed -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="">
-  <meta name="twitter:image" content="">
-  
+        <!-- Busuanzi -->
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
 </head>
 
 <body>
-  <!-- Sidebar -->
-  <aside>
-    <!--<center><a href="https://zhimi.vercel.app"><img id="avatar" src=""></a></center>-->
+<!-- Sidebar -->
+<aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
     <h1>執迷的博客</h1>
     
-      <p>做一個有趣的人！</p>
+        <p>用喜歡的方式，度過自己的一生。</p>
     
     <br>
 
     
 
     <nav class="nav">
-      <ul class="list-bare">
-      
-        
-          <li><a class="nav__link" href="https://zhimi.vercel.app/index_zh-cn.html">Blog</a></li>
-        
-         
-        
-          <li><a class="nav__link" href="https://zhimi.vercel.app/./about_zh-cn.html">About</a></li>
-        
-         
-      </ul>
+        <ul class="list-bare">
+
+            
+                <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
+            
+
+            
+                <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
+            
+                <li><a class="nav__link" href="././job_wanted_zh-cn.html">Job Wanted (*^▽^*)┛</a></li>
+            
+
+        </ul>
     </nav>
 
     <p class="social">
-      
-      
-      
-      <a href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss_zh-cn.xml" rel="alternate">
-        <img src="https://zhimi.vercel.app/theme/images/icons/rss.png"></a>
-      
+        
+        
+        
     </p>
 
-    <!--
     
-    -->
-  </aside>
 
-  <!-- Content -->
-  <article>
     
-<section id="content" class="body">
-        
+
+</aside>
+
+<!-- Job Banner -->
+<div class="job-banner" id="job-banner">
+    <canvas id="job-banner-canvas"></canvas>
+    <div class="job-banner-content">
+        <span class="job-banner-icon">✨</span>
+        <span class="job-banner-text">本人求职中！大模型 Post-Training 方向 · 长三角、南方地区优先 · </span>如果您有兴趣，欢迎联系
+        <a class="job-banner-email" href="mailto:zhimi64@foxmail.com">zhimi64@foxmail.com</a>
+        <span class="job-banner-sep">｜</span>
+        <a class="job-banner-link" href="./job_wanted_zh-cn.html">👀 了解更多</a>
+    </div>
+</div>
+
+<script>
+(function() {
+    const banner = document.getElementById('job-banner');
+    const canvas = document.getElementById('job-banner-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let w, h, cols, rows, grid, nextGrid;
+    const CELL_SIZE = 12;
+    const ALIVE = 1, DEAD = 0;
+
+    function resize() {
+        const rect = banner.getBoundingClientRect();
+        w = canvas.width = rect.width;
+        h = canvas.height = rect.height;
+        cols = Math.ceil(w / CELL_SIZE);
+        rows = Math.ceil(h / CELL_SIZE);
+        grid = new Uint8Array(cols * rows);
+        nextGrid = new Uint8Array(cols * rows);
+        // 隨機初始化 40%
+        for (let i = 0; i < grid.length; i++) {
+            grid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
+        }
+    }
+
+    function get(x, y, g) {
+        if (x < 0 || x >= cols || y < 0 || y >= rows) return DEAD;
+        return g[y * cols + x];
+    }
+
+    function step() {
+        // 每一步隨機擾動：約 2% 的細胞被翻轉
+        for (let i = 0; i < grid.length; i++) {
+            if (Math.random() < 0.02) {
+                grid[i] = grid[i] === ALIVE ? DEAD : ALIVE;
+            }
+        }
+
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                const idx = y * cols + x;
+                let neighbors = 0;
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        if (dx === 0 && dy === 0) continue;
+                        neighbors += get(x + dx, y + dy, grid);
+                    }
+                }
+                const state = grid[idx];
+                if (state === ALIVE) {
+                    nextGrid[idx] = (neighbors === 2 || neighbors === 3) ? ALIVE : DEAD;
+                } else {
+                    nextGrid[idx] = (neighbors === 3) ? ALIVE : DEAD;
+                }
+            }
+        }
+        // 如果全部死光，重新播種
+        let alive = 0;
+        for (let i = 0; i < nextGrid.length; i++) alive += nextGrid[i];
+        if (alive === 0) {
+            for (let i = 0; i < nextGrid.length; i++) {
+                nextGrid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
+            }
+        }
+        [grid, nextGrid] = [nextGrid, grid];
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                if (grid[y * cols + x] === ALIVE) {
+                    const alpha = 0.15 + Math.random() * 0.2;  // 閃爍感
+                    ctx.fillStyle = `rgba(46, 204, 113, ${alpha})`;
+                    ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
+                }
+            }
+        }
+    }
+
+    let lastStep = 0;
+    const STEP_INTERVAL = 200; // 毫秒，原約 16ms，現放慢約 12 倍
+
+    function tick(timestamp) {
+        if (timestamp - lastStep >= STEP_INTERVAL) {
+            step();
+            draw();
+            lastStep = timestamp;
+        }
+        requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    tick();
+})();
+</script>
+
+<!-- Content -->
+<article>
+    
+    <section id="content" class="body">
+
         
         <div class="fullcontent">
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <main class="content" id="quarto-document-content">
-<header class="quarto-title-block default" id="title-block-header">
-<div class="quarto-title">
 
-</div>
-<div class="quarto-title-meta">
-</div>
-</header>
 <p>对新鲜事物充满好奇，享受探索未知的过程。我是一个兴趣广泛的算法工程师。</p>
 <p>本人才疏学浅，还有许多未能深入理解的知识。如果文章有误，还望不吝赐教。欢迎通过下述方式和我联系：</p>
 <ul>
-<li>邮箱：zhimi64<img src="https://www.svgrepo.com/show/488512/at.svg" style="height:2em;vertical-align:middle"/>foxmail.com</li>
+<li>邮箱：zhimi64@foxmail.com</li>
 </ul>
 <p>目前可通过如下链接访问本站：</p>
 <ul>
@@ -131,7 +210,7 @@
 <section class="level2" id="致謝">
 <h2 class="anchored" data-anchor-id="致謝">致谢</h2>
 <ul>
-<li>感谢<a href="https://github.com/getpelican/pelican">Pelican</a>、<a href="https://jinja.palletsprojects.com/">Jinja</a>和<a href="https://quarto.org/">Quarto</a>等项目。我参考和使用这些项目搭建了我的网页和编写文章；</li>
+<li>感谢 <a href="https://github.com/getpelican/pelican">Pelican</a>、<a href="https://jinja.palletsprojects.com/">Jinja</a> 和 <a href="https://quarto.org/">Quarto</a> 等项目。我参考和使用这些项目搭建了我的网页和编写文章；</li>
 <li>感谢所有在学习和生活中给予我帮助的朋友、同事、同学和老师！</li>
 </ul>
 </section>
@@ -168,12 +247,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
     }
-  });
-  clipboard.on('success', function(e) {
+    return false;
+  }
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -205,11 +287,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -219,8 +340,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -232,9 +362,245 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -276,25 +642,44 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 </div> <!-- /content -->
 </div>
-</section>
+    </section>
 
-  </article>
+</article>
 
-  <!-- Footer -->
-  <footer>
-    <p>
-      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
-      which takes great advantage of <a href="http://python.org">Python</a>.
-      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
-    </p>
-    
-      
-      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
-      <span id="busuanzi_container_site_uv">
-        訪客數<span id="busuanzi_value_site_uv"></span>
-      </span>
-      
-    
-  </footer>
+<!-- Footer -->
+
+    <footer>
+        <p>
+            Blog powered by <a href="http://getpelican.com/">Pelican</a>,
+            which takes great advantage of <a href="http://python.org">Python</a>.
+            Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a
+                href="https://parbhatpuri.com/">@parbhat</a>.
+        </p>
+        
+        <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+        <span id="busuanzi_container_site_uv">
+            訪客數<span id="busuanzi_value_site_uv"></span>
+        </span>
+        
+    </footer>
+
+
+
+    <!-- Analytics -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'G-G3N739QVFZ']);
+        _gaq.push(['_trackPageview']);
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
 </body>
 </html>

@@ -56,17 +56,85 @@ article section .blog-post
   font-size: 16px;
 }
 
+/* Job Banner */
+.job-banner {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  margin-left: 280px;
+  height: 44px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+#job-banner-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.job-banner-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  line-height: 44px;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  color: #555;
+}
+
+.job-banner-icon {
+  margin-right: 4px;
+}
+
+.job-banner-text {
+  font-weight: 500;
+}
+
+.job-banner-email {
+  color: #e74c3c;
+  font-weight: 600;
+  text-decoration: none;
+}
+.job-banner-email:hover {
+  text-decoration: underline;
+}
+
+.job-banner-sep {
+  margin: 0 6px;
+  color: #ccc;
+}
+
+.job-banner-link {
+  color: #e74c3c;
+  font-weight: 500;
+  text-decoration: none;
+}
+.job-banner-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 800px) {
+  .job-banner {
+    margin-left: 0;
+  }
+}
+
 /* Body */
 body {margin: 0}
 body > article, footer {
   line-height: 1.6em;
   display: block;
-  max-width: 1500px;
+  max-width: 700px;
   margin: 40px auto auto 355px;
   padding: 20px 80px 10px;
 }
 
-article ol
+article ol.posts
 {
   padding-left: 0;
 }
@@ -107,7 +175,8 @@ a:hover { text-decoration: underline; }
 /* Code */
 .highlight pre {
   font-size: 14px;
-  overflow: scroll;
+  overflow: auto;
+  padding: 8px;
 }
 
 /* Sidebar */
@@ -116,6 +185,7 @@ aside {
   width: 220px; height: 100%;
   position: fixed;
   top: 0; left: 0;
+  z-index: 200;
   padding: 30px;
   background-color: #2980b9;
   color: white;
@@ -200,6 +270,14 @@ aside > h2 {
 }
 
 
+.blog_roll_link 
+{
+  display: block;
+  padding: 0.33147rem 0;
+  border-bottom: 3px solid #328cc7;
+} 
+
+
 /*--------Responsive------------*/
 
 @media (max-width: 800px) {
@@ -241,6 +319,5 @@ aside > h2 {
 }
 
 img {
-  max-width: 100%; 
-  height: auto;   /* 高度自动，保持宽高比 */
+  max-width: 100%;
 }
