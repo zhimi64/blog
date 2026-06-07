@@ -247,6 +247,7 @@
 <li><a class="nav-link" data-scroll-target="#總結" href="#總結" id="toc-總結">总结</a></li>
 <li><a class="nav-link" data-scroll-target="#附錄" href="#附錄" id="toc-附錄">附录</a>
 <ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#筆試題" href="#筆試題" id="toc-筆試題">笔试题</a></li>
 <li><a class="nav-link" data-scroll-target="#智力題" href="#智力題" id="toc-智力題">智力题</a></li>
 </ul></li>
 <li><a class="nav-link" data-scroll-target="#references" href="#references" id="toc-references">References</a></li>
@@ -300,9 +301,67 @@
 }
 </style>
 <p>这篇文章记录我自毕业以来，为大模型算法岗位面试准备的一些知识。这篇笔记主要基于个人实际经历，希望可供后来者参考。</p>
-<p>本人水平有限，文章内容不一定正确。本文的内容也难称完整，会持续保持更新。</p>
+<p>这篇文章会搜罗和记录各种类型的题目。实际面试的时候，面试官很可能结合实际的简历提问，<strong>因此不是所有知识点都同等重要</strong>。文章里面有的题目太偏太难，请结合实际经历和目标岗位参考吧。</p>
+<p>本人水平有限，文章内容不一定正确，也难称完整，会持续保持更新。</p>
 <section class="level2" id="算法基礎知識">
 <h2 class="anchored" data-anchor-id="算法基礎知識">算法基础知识</h2>
+<div class="card">
+<p><strong>请简述机器学习中“偏差-方差权衡”的概念，并说明如何通过调整模型复杂度平衡偏差和方差</strong></p>
+<ol type="1">
+<li>偏差描述的是预测结果和真实目标之间的误差；</li>
+<li>方差描述的是模型对训练数据波动的敏感程度；</li>
+<li>如何通过调整模型复杂度平衡偏差和方差：</li>
+</ol>
+<ul>
+<li>增加模型复杂度——减低偏差</li>
+<li>降低模型复杂度——降低方差</li>
+<li>利用正则化控制复杂度——降低方差</li>
+<li>增加训练数据——降低方差</li>
+<li>交叉验证，选择最佳复杂度</li>
+</ul>
+</div>
+<div class="card">
+<p><strong>请解释什么是协同过滤推荐算法，并比较基于用户的协同过滤和基于物品的协同过滤的优缺点。</strong></p>
+<ul>
+<li>利用用户-物品交互数据，挖掘用户或物品之间的相似性，利用相似性推荐物品</li>
+<li>基于用户的协同过滤：
+<ul>
+<li>优点：可发现新物品，适用于物品远多于用户的场景；</li>
+<li>缺点：用户兴趣易变卦，相似性计算复杂度较高</li>
+</ul></li>
+<li>基于物品的协同过滤：
+<ul>
+<li>优点：物品相似度相对稳定，可解释性强；</li>
+<li>缺点：难以发现新物品，对小众物品不友好；</li>
+</ul></li>
+</ul>
+</div>
+<div class="card">
+<p><strong>请描述卷积操作的计算过程，并说明CNN在图像识别任务中为什么能取得较好的效果</strong></p>
+<ol type="1">
+<li>卷积计算过程：卷积核在特征图上滑动，对应位置相乘求和，得到对应位置的输出；</li>
+<li>CNN优势：</li>
+</ol>
+<ul>
+<li>局部感受野</li>
+<li>权值共享</li>
+<li>平移不变性</li>
+</ul>
+</div>
+<div class="card">
+<p><strong>请简述过拟合的定义、产生原因及常用的解决方法。</strong></p>
+<ul>
+<li>定义：模型过度拟合训练数据，导致在新数据上泛化能力差。</li>
+<li>产生原因：模型复杂度高于数据复杂度（如参数过多）、训练数据不足或存在噪声、训练轮次过多。解决方法：
+<ul>
+<li>增加训练数据（如数据增强）；</li>
+<li>降低模型复杂度（如减少网络层数、决策树剪枝）；</li>
+<li>正则化（L1、L2正则化、Dropout）；</li>
+<li>交叉验证（如K折交叉验证）；</li>
+<li>早停（训练中监控验证集误差，及时停止训练）。</li>
+</ul></li>
+</ul>
+</div>
 <div class="card">
 <p><strong>交叉熵、熵和KL散度之间的关系是什么？</strong></p>
 <p>设<span class="math inline">\(P\)</span>代表实际数据的分布，<span class="math inline">\(Q\)</span>是模型预测的分布，那么，</p>
@@ -329,6 +388,16 @@ H_\text{CE}(P, Q) = D_\text{KL}(P, Q) + H(P)
 <p>具体可以阅读<a href="./softmax20240109.html">这篇文章</a>了解更多。</p>
 </div>
 <div class="card">
+<p><strong>Precision、Recall和F1-Score之间的关系是什么？</strong> <span class="math display">\[
+\text{Precision}=\frac{\text{TP}}{\text{TP} + \text{FP}}
+\]</span> Precision关心“查得准不准”，即预测为正样本的，多少是真的正样本。</p>
+<p><span class="math display">\[
+\text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}
+\]</span> Recall关心“查得全不全”，即所有的正样本，有多少被找回来了。</p>
+<p>F1-score是两者的调和平均。<span class="math inline">\(F1 = \frac{2}{1 / \text{Precision} + 1 / \text{Recall}}\)</span>.</p>
+<p>F1-score不是两者的算术平均，因为调和平均更能惩罚极端情况：只要两者有一个很低，平均值就会很低。</p>
+</div>
+<div class="card">
 <p><strong>手写K-Means</strong></p>
 <p>TODO</p>
 </div>
@@ -351,6 +420,23 @@ H_\text{CE}(P, Q) = D_\text{KL}(P, Q) + H(P)
 <li>训练策略：迁移学习、部分参数微调、early stop、辅助任务、不确定性估计；</li>
 <li>推理策略：test-time augmentation；</li>
 </ol>
+</div>
+<div class="card">
+<p>某银行希望构建一个信用卡欺诈检测模型，用于实时识别交易中的欺诈行为。已知数据集包含交易金额、交易时间、商户类型、用户历史交易次数等特征，且欺诈样本占比仅为0.5%。请回答以下问题：</p>
+<ol type="1">
+<li>该问题属于什么类型的机器学习任务？数据的主要挑战是什么？</li>
+<li>针对数据不平衡问题，提出至少3种处理方法，并说明其原理。</li>
+<li>请设计一个模型构建流程，包括数据预处理、特征工程、模型选择、评估指标和部署考虑因素。</li>
+</ol>
+</div>
+<div class="card">
+<p>请使用Python实现一个简单的线性回归模型，要求：</p>
+<ol type="1">
+<li>手动推导并实现最小二乘法求解参数（不调用sklearn等第三方库）；</li>
+<li>输入为特征矩阵<span class="math inline">\(X\)</span>（<code>shape</code>为<code>n_samples × n_features</code>）和标签<span class="math inline">\(y\)</span>（<code>shape</code>为<code>n_samples × 1</code>），输出为模型参数<span class="math inline">\(w\)</span>和<span class="math inline">\(b\)</span>；</li>
+<li>给出模型训练和预测的伪代码，并解释关键步骤。</li>
+</ol>
+<p>答案：略。建议参考<a href="https://blog-a7n.pages.dev/least_squares_20220104_zh-cn">《最小二乘法求解直线拟合问题》</a></p>
 </div>
 </section>
 <section class="level2" id="llm數據工程">
@@ -1148,6 +1234,81 @@ DCG = \sum_{i=1}^n \frac{
 </section>
 <section class="level2" id="附錄">
 <h2 class="anchored" data-anchor-id="附錄">附录</h2>
+<section class="level3" id="筆試題">
+<h3 class="anchored" data-anchor-id="筆試題">笔试题</h3>
+<section class="level4" id="單選題">
+<h4 class="anchored" data-anchor-id="單選題">单选题</h4>
+<p>本节收录一些笔试题。</p>
+<div class="card">
+<p><strong>以下哪种算法不属于监督学习？</strong></p>
+<p>A. 线性回归 B. 决策树 C. K-Means D. 支持向量机</p>
+<p>答：C</p>
+</div>
+<div class="card">
+<p><strong>关于过拟合问题，下列说法错误的是？</strong></p>
+<p>A. 过拟合是模型在训练集上表现良好，但在测试集上表现较差 B. 增加训练数据量可以缓解过拟合 C. L1正则化通过增加权重的平方和惩罚模型复杂度 D. 交叉验证可以帮助检测过拟合</p>
+<p>答：C</p>
+</div>
+<div class="card">
+<p><strong>在逻辑回归中，模型的输出值表示的是？</strong></p>
+<p>A. 连续变量的预测结果 B. 类别概率 C. 特征重要性 D. 损失函数值</p>
+<p>答：B</p>
+</div>
+<div class="card">
+<p><strong>关于决策树的构建过程，下列描述正确的是？</strong></p>
+<p>A. 决策树的划分依据仅包括信息增益 B. 决策树倾向于过拟合，需通过剪枝优化 C. 决策树只能处理数值型特征 D. 决策树的深度越深，模型泛化能力越强</p>
+<p>答：B</p>
+</div>
+<div class="card">
+<p><strong>下列哪种方法不属于降维技术</strong></p>
+<p>A. PCA B. t-SNE C. 随机森林 D. LDA</p>
+<p>答：C</p>
+</div>
+<div class="card">
+<p><strong>在深度学习中，Batch Normalization的主要作用是？</strong></p>
+<p>A. 加速模型训练收敛 B. 减少模型参数数量 C. 防止过拟合 D. 增强特征非线性表达</p>
+<p>答：A</p>
+</div>
+<div class="card">
+<p><strong>关于卷积神经网络（CNN），下列说法错误的是？</strong></p>
+<p>A. 卷积层通过局部感受野提取特征 B. 池化层可以降低特征图维度 C. 全连接层通常位于网络的最后 D. CNN无法处理文本数据</p>
+<p>答：D</p>
+</div>
+<div class="card">
+<p><strong>以下哪种评估指标适用于不平衡分类问题？</strong></p>
+<p>A. 准确率（Accuracy） B. F1分数 C. 均方误差（MSE） D. R²分数</p>
+<p>答：B</p>
+</div>
+<div class="card">
+<p><strong>在推荐系统中，基于内容的推荐方法的核心思想是？</strong></p>
+<p>A. 利用用户之间的相似度推荐物品 B. 利用物品之间的相似度推荐物品 C. 基于用户历史行为预测偏好 D. 基于物品特征与用户偏好的匹配程度</p>
+<p>答：D</p>
+</div>
+</section>
+<section class="level4" id="多選題">
+<h4 class="anchored" data-anchor-id="多選題">多选题</h4>
+<div class="card">
+<p><strong>下列属于生成式模型的有？</strong></p>
+<p>A. 朴素贝叶斯 B. 隐马尔可夫模型（HMM） C. 高斯混合模型（GMM） D. 逻辑回归</p>
+<p>答：A、B、C</p>
+</div>
+<div class="card">
+<p><strong>关于梯度下降算法，下列说法正确的有？</strong></p>
+<p>A. 随机梯度下降（SGD）每次使用单个样本更新参数 B. 批量梯度下降（BGD）每次使用全部样本更新参数 C. 动量法（Momentum）可以加速梯度下降的收敛 D. Adam算法结合了动量法和自适应学习率的优点</p>
+<p>答：ABCD</p>
+</div>
+<div class="card">
+<p><strong>下列关于特征工程的描述正确的有？</strong></p>
+<p>A. 特征归一化可以消除量纲对模型的影响 B. 独热编码（One-Hot Encoding）适用于处理类别型特征 C. 特征选择的目的是减少特征数量，提高模型效率 D. 特征交叉可以捕捉特征之间的非线性关系</p>
+<p>答：A、B、C、D</p>
+</div>
+<div class="card">
+<p><strong>关于循环神经网络（RNN），下列说法正确的有？</strong></p>
+<p>A. RNN可以处理序列数据 B. LSTM通过门控机制缓解梯度消失问题 C. GRU是LSTM的简化版本 D. RNN的输入和输出长度必须相同</p>
+<p>答：A、B、C</p>
+</div>
+</section>
+</section>
 <section class="level3" id="智力題">
 <h3 class="anchored" data-anchor-id="智力題">智力题</h3>
 <p>本节记录我收集到的一些代码题或者智力题。</p>
