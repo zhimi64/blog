@@ -557,6 +557,23 @@ H_\text{CE}(P, Q) = D_\text{KL}(P, Q) + H(P)
 <p>因为DAPO的重新采样改变了数据分布。例如模型已经高概率答对了某个问题，但dynamic sampling会重新采样，直到出现负例，导致模型过度训练。</p>
 </div>
 <div class="card">
+<p><strong>RL训练为什么会让seq_len变长？</strong></p>
+<ol type="1">
+<li>Reward Model内在偏好：长回复通常更加完善，对各种情况会做出正反两方面回答，滴水不漏，有时候还会带上一些防御性的免责声明。在reward model看来，会先验地给长回复比较高的分数；</li>
+<li>强化学习损失的梯度特性：强化学习的损失函数在遇到低概率token，但是advantage为正的时候梯度较大，即鼓励哪些低频，但是与reward正相关的词汇，例如“wait a minute，let me think”等等，导致答案冗长；</li>
+<li>在RL训练过程中，模型使用高temperature进行采样，相比贪心的采样策略更容易产生冗长的、有时是自相矛盾，带有自我修正的推理过程，这些数据在RL中被奖励和放大。</li>
+</ol>
+</div>
+<div class="card">
+<p><strong>GRPO在MOE模型训练时有什么缺点？GSPO是如何改进的？</strong></p>
+<ol type="1">
+<li>GRPO 的机制：GRPO 虽然在 Sequence 级别计算一个 Group 内的相对优势（Advantage），但在算梯度时，它会把这个 Sequence 级的优势乘以每个 Token 分开计算的概率比值（Importance Weight）。</li>
+<li>MoE 的放大效应：MoE 模型中存在 Router（路由）。在 Off-Policy（即便只是小步更新的 Mini-batch）切换时，只要旧策略 <span class="math inline">\(\pi_{\theta_{old}}\)</span> 和新策略 <span class="math inline">\(\pi_\theta\)</span> 的 Router 路由选择稍微偏了一点点（比如原本进 Expert A 的 Token 走到了 Expert B），该 Token 的 Log-prob 就会暴跌，导致该 Token 上的重要度权重异常飙升。</li>
+<li>Trade-off: 必须在训练引擎中重新把旧策略的路由选择强加给当前训练模型</li>
+<li>GSPO：不应该在 Token 级别做重要度采样和裁剪。将优化单位修改为序列级。</li>
+</ol>
+</div>
+<div class="card">
 <p><strong>为什么要做偏好对齐？只做SFT不行吗？</strong></p>
 <p>只做SFT不做偏好对齐经常会导致一些问题。<br/>
 1. <strong>从训练目标来看</strong>：预训练、SFT任务本质上都是要求模型预测下一个token，而这与具体业务场景的目标——例如”以安全和有益的方式遵循人类指令”——是不一致的<span class="citation" data-cites="Ouyang2022InstructGPT">(<a href="#ref-Ouyang2022InstructGPT" role="doc-biblioref">Ouyang et al. 2022</a>)</span>。这种训练目标的不对齐导致模型容易产生不安全、不忠实或有害的信息。 2. <strong>曝光偏差问题</strong>：在预训练、SFT阶段，模型只是在训练数据的分布上进行下一个token的预测。一些基于强化学习的偏好对齐任务提供了一种在模型自身预测分布上进行训练的方法<span class="citation" data-cites="Ranzato2015SequenceLT">(<a href="#ref-Ranzato2015SequenceLT" role="doc-biblioref">Ranzato et al. 2015</a>)</span>，缓解了曝光偏差问题。</p>
