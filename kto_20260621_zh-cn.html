@@ -243,6 +243,7 @@
 </nav>
 </div>
 <main class="content" id="quarto-document-content">
+
 <p>之前我在一个实际项目里面负责一个LLM的偏好的对齐。神奇的是这个项目只有单个样本的拒绝/采样信号，没有pair-wise的数据。我还是第一次遇到这种情况。</p>
 <p>很自然的，我想到要试试KTO的效果。KTO是一种只需要单个样本偏好数据的偏好对齐算法。</p>
 <p>这篇文章记录了我阅读KTO这篇论文的笔记，以及对KTO背后思想的一些理解。</p>
@@ -284,7 +285,7 @@ L_\text{CSFT} = a v \left(l(y)\log \pi_\theta(y|x) - l(y)\log \pi_\text{ref}(y|x
 <li><span class="math inline">\(R(x)\)</span></li>
 </ul></li>
 </ul>
-<p>为了让等式对所有的y成立，<span class="math inline">\(R(x)\)</span>就必须包含<span class="math inline">\(\pi_\text{ref}\)</span>。除非<span class="math inline">\(\pi_\text{ref}\)</span>是不依赖<span class="math inline">\(y\)</span>的均匀分布，否则是无法成功构造的。</p>
+<p>为了让等式对所有的y成立，<span class="math inline">\(R(x)\)</span>就必须包含<span class="math inline">\(\pi_\text{ref}\)</span>。</p>
 <p>因此论文得出结论：CSFT不是一种HALO。</p>
 </section>
 <section class="level3" id="slic不是halo">
@@ -394,7 +395,8 @@ v(x, y) &amp;= \left \{
 &amp;\text{where} ~j = (i + 1) \mod m
 \end{aligned}
 \]</span></p>
-<p>也就是用训练集中固有的<span class="math inline">\(y\)</span>来避免重新采样。但是<span class="math inline">\(y_j\)</span>和<span class="math inline">\(x_i\)</span>完全没有关系怎么办？作者认为这是biased，但是方便啊。估计需要使用<span class="math inline">\(\max(0, \cdot)\)</span>保证估计得到的KL散度是非负的。</p>
+<p>也就是用训练集中固有的<span class="math inline">\(y\)</span>来避免重新采样。但是<span class="math inline">\(y_j\)</span>和<span class="math inline">\(x_i\)</span>完全没有关系怎么办？作者认为这是biased，但是方便啊。</p>
+<p>公式依赖<span class="math inline">\(\max(0, \cdot)\)</span>来保证得到的KL散度估计是非负的。</p>
 <p><span class="math inline">\(\hat z_0\)</span>对于每个batch计算一次，在batch内是共享的。</p>
 </section>
 <section class="level2" id="一些思考">
@@ -907,6 +909,45 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             s.parentNode.insertBefore(ga, s);
         })();
     </script>
+
+
+
+
+<div id="lang-switch-bar">
+    <a href="./kto_20260621.html" title="切换简繁" id="lang-switch-link">简/繁</a>
+</div>
+<style>
+#lang-switch-bar {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+}
+#lang-switch-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #2980b9;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(41,128,185,0.35);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    user-select: none;
+}
+#lang-switch-link:hover {
+    background: #1DAEDF;
+    box-shadow: 0 3px 12px rgba(29,174,223,0.45);
+    transform: scale(1.08);
+    text-decoration: none;
+}
+</style>
+
 
 
 </body>

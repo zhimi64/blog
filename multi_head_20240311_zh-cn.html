@@ -223,8 +223,24 @@
             </p>
 
             <div class="entry-content blog-post">
-                <div class="fullcontent">
+                <div>
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+<nav class="toc-active" id="TOC" role="doc-toc">
+<h2 id="toc-title">Table of contents</h2>
+<ul>
+<li><a class="nav-link active" data-scroll-target="#scaled-dot-product-attention" href="#scaled-dot-product-attention" id="toc-scaled-dot-product-attention">Scaled Dot-product Attention</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#attention-的縮放係數" href="#attention-的縮放係數" id="toc-attention-的縮放係數">Attention 的缩放系数</a></li>
+<li><a class="nav-link" data-scroll-target="#代碼實現" href="#代碼實現" id="toc-代碼實現">代码实现</a></li>
+</ul></li>
+<li><a class="nav-link" data-scroll-target="#multi-head-attention" href="#multi-head-attention" id="toc-multi-head-attention">Multi-head Attention</a></li>
+<li><a class="nav-link" data-scroll-target="#練習題" href="#練習題" id="toc-練習題">练习题</a></li>
+<li><a class="nav-link" data-scroll-target="#總結" href="#總結" id="toc-總結">总结</a></li>
+<li><a class="nav-link" data-scroll-target="#參考文獻" href="#參考文獻" id="toc-參考文獻">参考文献</a></li>
+</ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <p>自从 “Attention is All You need” <span class="citation" data-cites="vaswani_attention_2017"><a href="#ref-vaswani_attention_2017" role="doc-biblioref">[1]</a></span> 这篇文章发布之后，注意力机制开始广为人知。虽然一开始注意力机制被应用于自然语言处理领域，但人们很快发现它也能够用于处理图像、点云等数据结构，并且取得非常好的效果。</p>
@@ -235,8 +251,20 @@
 <p><span id="eq-sdpa"><span class="math display">\[ \text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V  \tag{1}\]</span></span></p>
 <p>其中，<span class="math inline">\(Q\)</span>、<span class="math inline">\(K\)</span> 和 <span class="math inline">\(V\)</span> 分别为输入的 query、key 和 value 向量。<span class="math inline">\(Q\)</span> 的尺寸为 <span class="math inline">\(L \times E_q\)</span>，<span class="math inline">\(K\)</span> 的尺寸为 <span class="math inline">\(S \times E_q\)</span>，<span class="math inline">\(V\)</span> 的尺寸为 <span class="math inline">\(S \times E_v\)</span>。</p>
 <p>在 <a class="quarto-xref" href="#eq-sdpa">Equation 1</a> 中，<span class="math inline">\(QK^T\)</span> 的计算可以理解为求 query 向量和 key 向量间的”匹配程度”，使得 SDPA 能够根据匹配程度从 value 中取得相关的数据。Softmax 函数在这里起到归一化的作用，使得 SDPA 的计算结果可以视为 V 的加权平均。</p>
-<p>注意力机制是一个有趣的设计。RNN（Recurrent Neural Networks）结构面临着长程记忆困难的问题；类似的，CNN（Convolutional Neural Networks）中也存在远距离像素感知困难的问题。SDPA 的特点是，为每一对 query 和 key 都作计算，而不考虑其时间或空间上的位置差距。</p>
-<p>我个人的观察是，注意力机制就好像构造了一个”完全二部图”。这个二部图由 <span class="math inline">\(A\)</span> 和 <span class="math inline">\(B\)</span> 两个顶点集合组成，其中 <span class="math inline">\(A\)</span> 集合代表 query，<span class="math inline">\(B\)</span> 集合代表 key 和 value。<span class="math inline">\(A\)</span> 和 <span class="math inline">\(B\)</span> 之间的结点两两之间都有一条边，边的权重由 query 和 key 的”匹配程度”决定。类似 SDPA，全连接层或卷积层也可以表示为二部图，只不过其边的权重是通过训练得到的、固定的值，而在注意力机制中，边的权重是动态的，根据 query 和 key 计算得到的。</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>注意力机制是一个有趣的设计。RNN（Recurrent Neural Networks）结构面临着长程记忆困难的问题；类似的，CNN（Convolutional Neural Networks）中也存在远距离像素感知困难的问题。SDPA 的特点是，为每一对 query 和 key 都作计算，不会因为query和key距离太远，就省略掉对应的计算。</p>
+<p>注意力机制就好像构造了一个”完全二部图”。这个二部图由 <span class="math inline">\(A\)</span> 和 <span class="math inline">\(B\)</span> 两个顶点集合组成，其中 <span class="math inline">\(A\)</span> 集合代表 query，<span class="math inline">\(B\)</span> 集合代表 key 和 value。<span class="math inline">\(A\)</span> 和 <span class="math inline">\(B\)</span> 之间的结点两两之间都有一条边，边的权重由 query 和 key 的”匹配程度”决定。类似 SDPA，全连接层或卷积层也可以表示为二部图，只不过其边的权重是通过训练得到的、固定的值，而在注意力机制中，边的权重是动态的，根据 query 和 key 计算得到的。</p>
+</div>
+</div>
 <section class="level3" id="attention-的縮放係數">
 <h3 class="anchored" data-anchor-id="attention-的縮放係數">Attention 的缩放系数</h3>
 <p>从 <a class="quarto-xref" href="#eq-sdpa">Equation 1</a> 可以看到，在执行 Softmax 函数前，SDPA 使用系数 <span class="math inline">\(\frac{1}{\sqrt{d_k}}\)</span> 对输入作了缩放。<strong>为什么是 <span class="math inline">\(\sqrt{d_k}\)</span>，而不是其它系数呢？</strong> 本节主要摘录<a href="https://spaces.ac.cn/archives/9812">苏剑林的系列文章</a>中的结论，对这个问题作简要的讨论。</p>
@@ -263,11 +291,11 @@
 <span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>ax.set_xticklabels([<span class="ss">f'</span><span class="sc">{</span>i<span class="sc">:.2f}</span><span class="ss">'</span> <span class="cf">for</span> s, i <span class="kw">in</span> samples])</span>
 <span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>fig.colorbar(cax)<span class="op">;</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>/tmp/ipykernel_3636085/3983590926.py:13: DeprecationWarning:
+<pre><code>/tmp/ipykernel_977613/3983590926.py:13: DeprecationWarning:
 
 __array__ implementation doesn't accept a copy keyword, so passing copy=False failed. __array__ must implement 'dtype' and 'copy' keyword arguments. To learn more, see the migration guide https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
 
-/tmp/ipykernel_3636085/3983590926.py:19: UserWarning:
+/tmp/ipykernel_977613/3983590926.py:19: UserWarning:
 
 set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
 </code></pre>
@@ -328,7 +356,7 @@ Figure 2: 图像的横轴为 Softmax 的输出最大值。当该数值接近最
 <p>从 <a class="quarto-xref" href="#fig-softmax-grad">Figure 2</a> 可以看到，当 Softmax 的输入接近 <span class="math inline">\(0\)</span> 向量或者 one-hot 向量的时候，容易发生梯度消失现象，此时梯度的绝对值接近 <span class="math inline">\(0\)</span>。</p>
 <p>综上所述，为尽量避免 Softmax 的梯度消失，<strong>控制输入向量的方差很重要</strong>。假设 <span class="math inline">\(\vec q\)</span> 和 <span class="math inline">\(\vec k\)</span> 都是 <span class="math inline">\(0\)</span> 均值的，二者相互独立，方差分别为 <span class="math inline">\(v_q\)</span> 和 <span class="math inline">\(v_k\)</span>，不难证明它们的内积 <span class="math inline">\(\vec q^T \vec k\)</span> 的数学期望为 <span class="math inline">\(0\)</span>。</p>
 <div class="callout callout-style-default callout-note callout-titled">
-<div aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout" class="callout-header d-flex align-content-center" data-bs-target=".callout-1-contents" data-bs-toggle="collapse">
+<div aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout" class="callout-header d-flex align-content-center" data-bs-target=".callout-2-contents" data-bs-toggle="collapse">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -337,7 +365,7 @@ Figure 2: 图像的横轴为 Softmax 的输出最大值。当该数值接近最
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div class="callout-1-contents callout-collapse collapse" id="callout-1">
+<div class="callout-2-contents callout-collapse collapse" id="callout-2">
 <div class="callout-body-container callout-body">
 <p><span class="math display">\[
 \begin{align*}
@@ -353,7 +381,7 @@ Figure 2: 图像的横轴为 Softmax 的输出最大值。当该数值接近最
 </div>
 <p><span class="math inline">\(\vec q^T \vec k\)</span> 的方差为 <span class="math inline">\(d_k v_q v_k\)</span>。</p>
 <div class="callout callout-style-default callout-note callout-titled">
-<div aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout" class="callout-header d-flex align-content-center" data-bs-target=".callout-2-contents" data-bs-toggle="collapse">
+<div aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout" class="callout-header d-flex align-content-center" data-bs-target=".callout-3-contents" data-bs-toggle="collapse">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -362,7 +390,7 @@ Figure 2: 图像的横轴为 Softmax 的输出最大值。当该数值接近最
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div class="callout-2-contents callout-collapse collapse" id="callout-2">
+<div class="callout-3-contents callout-collapse collapse" id="callout-3">
 <div class="callout-body-container callout-body">
 <p><span class="math display">\[
 \begin{align*}
@@ -391,7 +419,7 @@ Figure 2: 图像的横轴为 Softmax 的输出最大值。当该数值接近最
 <p>在充分理解清楚 SDPA 的计算公式的前提下，用 PyTorch 实现它就不困难。需要注意的是 <a class="quarto-xref" href="#eq-sdpa">Equation 1</a> 中没有体现 attention mask，但我们要在代码实现中支持它。attention mask 用于在训练中阻止模型看到未来的 token，这对训练聊天机器人、机器翻译模型等生成式模型是必要的。</p>
 <p>在实现中，<code>mask</code> 矩阵的值会被加到注意力矩阵上。如果 <code>mask</code> 矩阵中有一个值非常小（接近 <span class="math inline">\(-\infty\)</span>），那么对应的注意力就会在 <code>softmax</code> 中被抑制。</p>
 <p>下列代码实现了 scaled dot-product attention：</p>
-<div class="cell" data-execution_count="3" id="b696023c">
+<div class="cell" data-execution_count="3" id="e3433b48">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
@@ -409,7 +437,7 @@ Figure 2: 图像的横轴为 Softmax 的输出最大值。当该数值接近最
 <span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>    <span class="cf">return</span> ret, attn_weights</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>让我们看看实现的 <code>my_scaled_dot_product_attention</code> 函数能不能正常运行：</p>
-<div class="cell" data-execution_count="4" id="c7f01d53">
+<div class="cell" data-execution_count="4" id="2eedbb57">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">1</span></span>
 <span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>length <span class="op">=</span> <span class="dv">2</span></span>
 <span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">4</span></span>
@@ -421,14 +449,14 @@ Figure 2: 图像的横轴为 Softmax 的输出最大值。当该数值接近最
 <span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention 操作返回结果：'</span>, ret)</span>
 <span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'attention 矩阵为：'</span>, attn_weights)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>attention 操作返回结果： tensor([[[0.1592, 0.2905, 0.4648, 0.5226],
-         [0.1702, 0.2726, 0.4972, 0.5158]]])
-attention 矩阵为： tensor([[[0.4483, 0.5517],
-         [0.4844, 0.5156]]])</code></pre>
+<pre><code>attention 操作返回结果： tensor([[[0.4038, 0.5061, 0.3783, 0.6061],
+         [0.3997, 0.4910, 0.4173, 0.6179]]])
+attention 矩阵为： tensor([[[0.4494, 0.5506],
+         [0.4961, 0.5039]]])</code></pre>
 </div>
 </div>
 <p>一个检查实现正确性的小技巧是，观察返回 attention 矩阵的各列之和是否为 1。如果不为 1，说明实现有问题。</p>
-<div class="cell" data-execution_count="5" id="bb874d77">
+<div class="cell" data-execution_count="5" id="8ea007fe">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="cf">assert</span> torch.<span class="bu">all</span>(attn_weights.<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span> <span class="op">&lt;</span> <span class="fl">1e-6</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>在准备好 scaled dot product attention 的基础上，我们便可以着手实现 multi-head attention 了。</p>
@@ -446,7 +474,7 @@ attention 矩阵为： tensor([[[0.4483, 0.5517],
 </ol>
 <p>通过在多个 head 上执行 attention，MHA 允许模型在不同的子空间收集不同位置的信息，增加了 attention 机制的表达能力。</p>
 <p>代码实现如下：</p>
-<div class="cell" data-execution_count="6" id="551b1788">
+<div class="cell" data-execution_count="6" id="78b8aa62">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="kw">class</span> MyMultiheadAttention(nn.Module):</span>
 <span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
 <span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>        <span class="va">self</span>,</span>
@@ -490,7 +518,7 @@ attention 矩阵为： tensor([[[0.4483, 0.5517],
 <span id="cb8-41"><a aria-hidden="true" href="#cb8-41" tabindex="-1"></a>        <span class="cf">return</span> out, attn_weights</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>首先，我们先比较一下本文实现的 multi-head attention 和 torch 官方实现的参数设置。我们将会看到所有参数名称和参数尺寸都是一致的。这表明我们的 multi-head attention 与 torch 的官方实现兼容。</p>
-<div class="cell" data-execution_count="7" id="d1bea707">
+<div class="cell" data-execution_count="7" id="34af012a">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">2</span></span>
 <span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">16</span></span>
 <span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>num_heads <span class="op">=</span> <span class="dv">4</span></span>
@@ -515,14 +543,14 @@ out_proj.bias torch.Size([16])</code></pre>
 </div>
 </div>
 <p>接下来，我们检查我们实现的 MHA 和 torch 版本 MHA 的输出是否完全一致。在进行比较之前，我们先进行参数的复制，保持两个模块的参数完全相同。</p>
-<div class="cell" data-execution_count="8" id="b10a76e1">
+<div class="cell" data-execution_count="8" id="ab328628">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>my_mha_parameters <span class="op">=</span> <span class="bu">dict</span>(my_mha.named_parameters())</span>
 <span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a><span class="cf">for</span> n, p <span class="kw">in</span> torch_mha.named_parameters():</span>
 <span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>    my_mha_parameters[n].data.copy_(p)</span>
 <span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>    <span class="cf">assert</span> torch.<span class="bu">all</span>(p <span class="op">==</span> my_mha_parameters[n])</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </div>
 <p>下列代码对函数的输出进行检查：</p>
-<div class="cell" data-execution_count="9" id="2391b7f8">
+<div class="cell" data-execution_count="9" id="74816456">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>query <span class="op">=</span> torch.rand((length, batch_size, embed_dim))</span>
 <span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a>key <span class="op">=</span> torch.rand((length, batch_size, embed_dim))</span>
 <span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a>value <span class="op">=</span> torch.rand((length, batch_size, embed_dim))</span>
@@ -560,7 +588,7 @@ out_proj.bias torch.Size([16])</code></pre>
 <div class="callout-body-container callout-body">
 <p>改变 MHA 的 heads 数会如何改变 MHA 的参数量？</p>
 <div class="callout callout-style-default callout-note callout-titled">
-<div aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout" class="callout-header d-flex align-content-center" data-bs-target=".callout-3-contents" data-bs-toggle="collapse">
+<div aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout" class="callout-header d-flex align-content-center" data-bs-target=".callout-4-contents" data-bs-toggle="collapse">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -569,11 +597,11 @@ out_proj.bias torch.Size([16])</code></pre>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div class="callout-3-contents callout-collapse collapse" id="callout-3">
+<div class="callout-4-contents callout-collapse collapse" id="callout-4">
 <div class="callout-body-container callout-body">
 <p>MHA 的参数量与 head 的数量无关，这从代码中也能很容易看出来。</p>
 <p>实验也验证了这一点。</p>
-<div class="cell" data-execution_count="10" id="97dbf0ab">
+<div class="cell" data-execution_count="10" id="34236c90">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>embed_dim <span class="op">=</span> <span class="dv">16</span></span>
 <span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>num_heads <span class="op">=</span> <span class="dv">4</span></span>
 <span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a>mha1 <span class="op">=</span> nn.MultiheadAttention(embed_dim, num_heads)</span>
@@ -606,7 +634,7 @@ out_proj.bias torch.Size([16])</code></pre>
 <div class="callout-body-container callout-body">
 <p>在自注意力机制中，MHA 的时间复杂度是多少？和 head 数有关吗？</p>
 <div class="callout callout-style-default callout-note callout-titled">
-<div aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout" class="callout-header d-flex align-content-center" data-bs-target=".callout-5-contents" data-bs-toggle="collapse">
+<div aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout" class="callout-header d-flex align-content-center" data-bs-target=".callout-6-contents" data-bs-toggle="collapse">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -615,7 +643,7 @@ out_proj.bias torch.Size([16])</code></pre>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div class="callout-5-contents callout-collapse collapse" id="callout-5">
+<div class="callout-6-contents callout-collapse collapse" id="callout-6">
 <div class="callout-body-container callout-body">
 <p>首先，由 <a class="quarto-xref" href="#eq-sdpa">Equation 1</a> 可以看出，单头注意力机制的时间复杂度是 <span class="math inline">\(O(n^2 d)\)</span>，其中 <span class="math inline">\(n\)</span> 为序列长度，<span class="math inline">\(d\)</span> 为特征维度。</p>
 <p>接下来考虑 MHA 的时间复杂度。MHA 先对输入向量作线性变换得到 Q、K、V，这部分的时间复杂度为 <span class="math inline">\(O(n d^2)\)</span>；然后这些特征被拆分为 <span class="math inline">\(h\)</span> 个 head，分别做 attention，这个部分的时间复杂度为 <span class="math inline">\(O(n^2 \frac{d}{h} \times h)\)</span>，其中 <span class="math inline">\(h\)</span> 为 head 数。最后 MHA 再做一次线性变换，时间复杂度为 <span class="math inline">\(O(n d^2)\)</span>。</p>
@@ -1164,6 +1192,45 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             s.parentNode.insertBefore(ga, s);
         })();
     </script>
+
+
+
+
+<div id="lang-switch-bar">
+    <a href="./multi_head_20240311.html" title="切换简繁" id="lang-switch-link">简/繁</a>
+</div>
+<style>
+#lang-switch-bar {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+}
+#lang-switch-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #2980b9;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(41,128,185,0.35);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    user-select: none;
+}
+#lang-switch-link:hover {
+    background: #1DAEDF;
+    box-shadow: 0 3px 12px rgba(29,174,223,0.45);
+    transform: scale(1.08);
+    text-decoration: none;
+}
+</style>
+
 
 
 </body>
