@@ -242,7 +242,7 @@
 </ul></li>
 <li><a class="nav-link" data-scroll-target="#多模態大模型" href="#多模態大模型" id="toc-多模態大模型">多模態大模型</a></li>
 <li><a class="nav-link" data-scroll-target="#計算機視覺相關問題" href="#計算機視覺相關問題" id="toc-計算機視覺相關問題">計算機視覺相關問題</a></li>
-<li><a class="nav-link" data-scroll-target="#coding" href="#coding" id="toc-coding">Coding</a></li>
+<li><a class="nav-link" data-scroll-target="#编程能力" href="#编程能力" id="toc-编程能力">编程能力</a></li>
 <li><a class="nav-link" data-scroll-target="#開放性問題" href="#開放性問題" id="toc-開放性問題">開放性問題</a></li>
 <li><a class="nav-link" data-scroll-target="#拿到offer後的標準問題" href="#拿到offer後的標準問題" id="toc-拿到offer後的標準問題">拿到offer後的標準問題</a></li>
 <li><a class="nav-link" data-scroll-target="#總結" href="#總結" id="toc-總結">總結</a></li>
@@ -396,6 +396,7 @@ H_\text{CE}(P, Q) = D_\text{KL}(P, Q) + H(P)
 \text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}
 \]</span> Recall关心“查得全不全”，即所有的正样本，有多少被找回来了。</p>
 <p>F1-score是两者的调和平均。<span class="math inline">\(F1 = \frac{2}{1 / \text{Precision} + 1 / \text{Recall}}\)</span>.</p>
+<p>即 <span class="math inline">\(\frac{1}{F1} = \frac{1 / \text{Precision} + 1 / \text{Recall}}{2}\)</span></p>
 <p>F1-score不是两者的算术平均，因为调和平均更能惩罚极端情况：只要两者有一个很低，平均值就会很低。</p>
 </div>
 <div class="card">
@@ -1009,6 +1010,13 @@ P_\text{base}(x)
 <p><strong>簡單介紹Ring Attention</strong></p>
 <p>Ring Attention 把傳統 Context Parallel 中“一次性 All-Gather 收集齐全部 KV”的方式，改成了在环状通信拓扑中边传输、边计算的流水线模式。Ring Attention是Context Parallel的一種實現。</p>
 </div>
+<div class="card">
+<p><strong>不同权重精度下的显存需求与多卡分配</strong></p>
+<p>DeepSeek-R1-Distill-Llama-70B的BF16权重占141.11GB，8比特量化权重占73.73GB。部署在H100 SXM上，每张卡有80GB显存。为每张卡预留5GB状态与工作区，分别判断单卡部署和将权重均分到两张卡的方案能否容纳模型。再考虑两张显存容量不同的卡：一张48GB的RTX A6000和一张80GB的H100 SXM，分别判断两种精度下能否完成部署，并为可行的方案给出一种权重分配方式。最后将400 Gbit/s换成GB/s，求传输 1 GB的理想时间。</p>
+<p>答：考虑H100 SXM，80GB扣除预留的5GB剩余75GB，恰好能容纳73.73GB的8比特量化权重。同理将权重均分到两张卡的方案不仅能容纳模型8比特量化权重，也能容纳16比特的BF16权重。</p>
+<p>考虑一张48GB RTX A6000和一张80GB H100 SXM的情况，扣除预留空间后分别剩余43GB和75GB，总计118GB，不论是单卡部署还是权重切分都无法容纳141.11GB的BF16权重。但可以容纳73.73GB的8比特量化权重。权重分配方案可以是均分，两张卡各36.865GB，或者按照显存比例分配。</p>
+<p>400 Gbit/s换算为GB/s为50 GB/s，传输1 GB的理想时间为1/50 s，即0.02 s。</p>
+</div>
 </section>
 <section class="level2" id="agent設計">
 <h2 class="anchored" data-anchor-id="agent設計">Agent設計</h2>
@@ -1153,8 +1161,8 @@ DCG = \sum_{i=1}^n \frac{
 <p>TODO</p>
 </div>
 </section>
-<section class="level2" id="coding">
-<h2 class="anchored" data-anchor-id="coding">Coding</h2>
+<section class="level2" id="编程能力">
+<h2 class="anchored" data-anchor-id="编程能力">编程能力</h2>
 <p>接下来简单记录一些面试过程中实际遇到的或其它面試經驗推薦的題。</p>
 <p>在面試過程中要求現場手寫的算法題常常不會很難，但作答過程中要思路清晰，能夠有效地與面試官溝通，盡量減少試錯次數，一次通過。</p>
 <p>答題之前記得問清楚數據規模，時間複雜度和空間複雜度需求。</p>
@@ -1178,6 +1186,10 @@ DCG = \sum_{i=1}^n \frac{
 </ul></li>
 <li>⭐給定一個字符串和一個詞典，問字符串能否由詞典中的單詞拼接而成。用DFS可解。可考慮引入緩存等策略進行優化。</li>
 </ul>
+<div class="card">
+<p><strong>c++中deque的实现是怎样的？</strong>（商汤Infra）</p>
+<p>答案略。</p>
+</div>
 </section>
 <section class="level2" id="開放性問題">
 <h2 class="anchored" data-anchor-id="開放性問題">開放性問題</h2>
@@ -1227,7 +1239,13 @@ DCG = \sum_{i=1}^n \frac{
 <li>是否需要背競業協議</li>
 <li>競業協議是否與期權等權利挂鈎</li>
 </ul></li>
-<li>工作強度：可以開門見山地詢問新工作的工作強度如何</li>
+<li>工作強度：
+<ul>
+<li>可以開門見山地詢問新工作的工作強度如何</li>
+<li>是否需要oncall</li>
+<li>团队过去一年人员变化？（離職率、末位淘汰？）</li>
+<li>你的岗位为什么开放？（末位淘汰需要找人背績效？新項目出現需要擴充人力趕項目？）</li>
+</ul></li>
 <li>總包、總包構成和職級
 <ul>
 <li>總包構成：
