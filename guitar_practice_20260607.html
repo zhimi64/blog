@@ -227,7 +227,7 @@
                 <div>
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
-<nav class="toc-active" id="TOC" role="doc-toc">
+<nav class="toc-active" data-toc-expanded="-1" id="TOC" role="doc-toc">
 <h2 id="toc-title">Table of contents</h2>
 <ul>
 <li><a class="nav-link active" data-scroll-target="#week-1" href="#week-1" id="toc-week-1">Week 1</a>
@@ -337,7 +337,23 @@
   margin-top: 0;
   color: #4a90d9;
 }
+.vextab-auto .vex-canvas {
+  max-width: 100%;
+}
+.vextab-auto svg {
+  max-width: 100%;
+  height: auto;
+}
 </style>
+<!--
+注意：vextab 區塊上的 `scale=0.6` 屬性其實不會生效。
+Quarto/Pandoc 會把非標準的 `scale` 屬性轉成 `data-scale`，
+但 VexTab 的 div.prod.js 讀的是 `scale` 屬性（attr('scale')），
+所以譜子會一直以全尺寸（width 的值）渲染，scale 被忽略。
+想縮小譜子請直接調整 `width=`（例如 width=480）。
+若譜子寬度超出內容欄、蓋到右側浮動的 TOC，已透過上方 CSS
+（.vextab-auto svg { max-width: 100%; height: auto; }）使其自適應縮小。
+-->
 <p>這篇文章記錄了我學習電吉他積累的筆記。主要是一些譜子和每個練習的注意要點。</p>
 <p>筆記對應線上課程：<a href="https://www.bilibili.com/video/BV1FT411Z7iu/?spm_id_from=333.337.search-card.all.click&amp;vd_source=256865b0d3b9d9cceef7aa169a591be5">課程鏈接</a></p>
 <section class="level1" id="week-1">
@@ -1090,10 +1106,10 @@ notes :8 0/1 0/1 0/1 0/1 0/1 0/1 0/1 0/1 =:|</code></pre>
 <h2 class="anchored" data-anchor-id="exercise-2-三個弦換弦的交替撥弦">Exercise 2 三個弦換弦的交替撥弦</h2>
 <div class="vextab-auto" data-scale="0.6" width="768">
 <pre><code>tabstave notation=false tablature=true time=4/4
-notes :8 X/1 X/1 X/2 X/2 X/3 X/3 X/2 X/2 |
+notes :8 =|: X/1 X/1 X/2 X/2 X/3 X/3 X/2 X/2 |
 
 tabstave notation=false tablature=true time=4/4
-notes :8 X/1 X/1 X/2 X/2 X/3 X/3 X/2 X/2 =:|</code></pre>
+notes :8 | X/1 X/1 X/2 X/2 X/3 X/3 X/2 X/2 =:|</code></pre>
 </div>
 </section>
 <section class="level2" id="exercise-3-41指全指板爬格子">
@@ -1784,6 +1800,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 </div> <!-- /content -->
 <script src="https://cdn.jsdelivr.net/npm/vextab@4.0.5/dist/div.prod.js"></script>
+<script>vextab.Artist.NOLOGO = true;</script>
 </div>
             </div>
             <div class="post_list">
