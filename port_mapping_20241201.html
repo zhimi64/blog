@@ -1,198 +1,264 @@
 <!doctype html>
 <html lang="" itemscope itemtype="http://schema.org/Person">
 <head>
+    
+    
+        <meta charset="utf-8">
+        <!-- Site Meta Data -->
+        <title>記錄一些端口映射的配置命令：iptables、ssh和netsh</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
+        <meta name="author" content="執迷">
 
-  
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-  
-    gtag('config', 'G-G3N739QVFZ');
-  </script>
-  
+        <link rel="shortcut icon" href="favicon.ico">
 
-  
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="./_vercel/insights/script.js"></script>
-  
+        <!-- schema.org -->
+        <meta itemprop="name" content="執迷的博客">
+        <meta itemprop="image" content="">
+        <meta itemprop="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
 
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-  
-  
-  
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+        <!-- Style Meta Data -->
+        <link rel="stylesheet" href="./theme/css/style.css" type="text/css"/>
+        <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css"/>
 
-<!-- Quarto -->
-<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
-<script src="./theme/scripts/quarto/quarto.js"></script>
+        <!-- Feed Meta Data -->
+        
+        
 
+        <!-- Twitter Feed -->
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="">
+        <meta name="twitter:image" content="">
 
-  <meta charset="utf-8">
-  <!-- Site Meta Data -->
-  <title>記錄一些端口映射的配置命令：iptables、ssh和netsh</title>
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="分別介紹了使用iptables、ssh、netsh命令配置端口映射的方法，講解了如何在不同的操作系統（Linux/Windows）下配置端口映射，介紹了長期或臨時配置端口映射的方法。">
-  <meta name="author" content="執迷">
-
-  <link rel="shortcut icon" href="favicon.ico">
-
-  <!-- schema.org -->
-  <meta itemprop="name" content="執迷的博客">
-  <meta itemprop="image" content="">
-  <meta itemprop="description" content="分別介紹了使用iptables、ssh、netsh命令配置端口映射的方法，講解了如何在不同的操作系統（Linux/Windows）下配置端口映射，介紹了長期或臨時配置端口映射的方法。">
-
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
-  <!-- Style Meta Data -->
-  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/style.css" type="text/css" />
-  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/pygments.css" type="text/css" />
-
-  <!-- Feed Meta Data -->
-  
-  
-    <link href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss.xml" type="application/atom+xml" rel="alternate" title="執迷的博客 RSS Feed" />
-  
-
-  <!-- Twitter Feed -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="">
-  <meta name="twitter:image" content="">
-  
-<meta name="twitter:creator" content="">
-<meta name="twitter:url" content="https://zhimi.vercel.app/./port_mapping_20241201.html">
-<meta name="twitter:title" content="執迷的博客 ~ 記錄一些端口映射的配置命令：iptables、ssh和netsh">
-<meta name="twitter:description" content="">
-
-<!-- Facebook Meta Data -->
-<meta property="og:title" content="執迷的博客 ~ 記錄一些端口映射的配置命令：iptables、ssh和netsh" />
-<meta property="og:description" content="" />
-<meta property="og:image" content="" />
-
-
-<!-- MathJax -->
-
+        <!-- Busuanzi -->
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
+    <meta name="twitter:creator" content="">
+    <meta name="twitter:url" content="././port_mapping_20241201.html">
+    <meta name="twitter:title" content="執迷的博客 ~ 記錄一些端口映射的配置命令：iptables、ssh和netsh">
+    <meta name="twitter:description" content="">
 
+    <!-- Quarto -->
+    <link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+    <script src="./theme/scripts/quarto/bootstrap.min.js"></script>
+    <script src="./theme/scripts/quarto/quarto.js"></script>
 
+    <!-- AnchorJS -->
+    <script src="https://cdn.jsdelivr.net/npm/anchor-js@5/anchor.min.js"></script>
+
+    <!-- Facebook Meta Data -->
+    <meta property="og:title" content="執迷的博客 ~ 記錄一些端口映射的配置命令：iptables、ssh和netsh"/>
+    <meta property="og:description" content=""/>
+    <meta property="og:image" content=""/>
+    
 
 </head>
 
 <body>
-  <!-- Sidebar -->
-  <aside>
-    <!--<center><a href="https://zhimi.vercel.app"><img id="avatar" src=""></a></center>-->
+<!-- Sidebar -->
+<aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
     <h1>執迷的博客</h1>
     
-      <p>做一個有趣的人！</p>
+        <p>用喜歡的方式，度過自己的一生。</p>
     
     <br>
 
     
 
     <nav class="nav">
-      <ul class="list-bare">
-      
-        
-          <li><a class="nav__link" href="https://zhimi.vercel.app/index.html">Blog</a></li>
-        
-         
-        
-          <li><a class="nav__link" href="https://zhimi.vercel.app/./about.html">About</a></li>
-        
-         
-      </ul>
+        <ul class="list-bare">
+
+            
+                <li><a class="nav__link" href="./index.html">Blog</a></li>
+            
+
+            
+                <li><a class="nav__link" href="././about.html">About</a></li>
+            
+                <li><a class="nav__link" href="././job_wanted.html">Job Wanted (*^▽^*)┛</a></li>
+            
+
+        </ul>
     </nav>
 
     <p class="social">
-      
-      
-      
-      <a href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss.xml" rel="alternate">
-        <img src="https://zhimi.vercel.app/theme/images/icons/rss.png"></a>
-      
+        
+        
+        
     </p>
 
-    <!--
     
-    -->
-  </aside>
 
-  <!-- Content -->
-  <article>
     
-<section id="content">
-    <h2 class="post_title post_detail"><a href="https://zhimi.vercel.app/./port_mapping_20241201.html" rel="bookmark" title="Permalink to 記錄一些端口映射的配置命令：iptables、ssh和netsh">記錄一些端口映射的配置命令：iptables、ssh和netsh</a></h2>
+
+</aside>
+
+<!-- Job Banner -->
+<div class="job-banner" id="job-banner">
+    <canvas id="job-banner-canvas"></canvas>
+    <div class="job-banner-content">
+        <span class="job-banner-icon">✨</span>
+        <span class="job-banner-text">本人求职中！大模型 Post-Training 方向 · 长三角、福建地区优先 · </span>如果您有兴趣，欢迎联系
+        <a class="job-banner-email" href="mailto:zhimi64@foxmail.com">zhimi64@foxmail.com</a>
+        <span class="job-banner-sep">｜</span>
+        <a class="job-banner-link" href="./job_wanted_zh-cn.html">👀 了解更多</a>
+    </div>
+</div>
+
+<script>
+(function() {
+    const banner = document.getElementById('job-banner');
+    const canvas = document.getElementById('job-banner-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let w, h, cols, rows, grid, nextGrid;
+    const CELL_SIZE = 12;
+    const ALIVE = 1, DEAD = 0;
+
+    function resize() {
+        const rect = banner.getBoundingClientRect();
+        w = canvas.width = rect.width;
+        h = canvas.height = rect.height;
+        cols = Math.ceil(w / CELL_SIZE);
+        rows = Math.ceil(h / CELL_SIZE);
+        grid = new Uint8Array(cols * rows);
+        nextGrid = new Uint8Array(cols * rows);
+        // 隨機初始化 40%
+        for (let i = 0; i < grid.length; i++) {
+            grid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
+        }
+    }
+
+    function get(x, y, g) {
+        if (x < 0 || x >= cols || y < 0 || y >= rows) return DEAD;
+        return g[y * cols + x];
+    }
+
+    function step() {
+        // 每一步隨機擾動：約 2% 的細胞被翻轉
+        for (let i = 0; i < grid.length; i++) {
+            if (Math.random() < 0.02) {
+                grid[i] = grid[i] === ALIVE ? DEAD : ALIVE;
+            }
+        }
+
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                const idx = y * cols + x;
+                let neighbors = 0;
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        if (dx === 0 && dy === 0) continue;
+                        neighbors += get(x + dx, y + dy, grid);
+                    }
+                }
+                const state = grid[idx];
+                if (state === ALIVE) {
+                    nextGrid[idx] = (neighbors === 2 || neighbors === 3) ? ALIVE : DEAD;
+                } else {
+                    nextGrid[idx] = (neighbors === 3) ? ALIVE : DEAD;
+                }
+            }
+        }
+        // 如果全部死光，重新播種
+        let alive = 0;
+        for (let i = 0; i < nextGrid.length; i++) alive += nextGrid[i];
+        if (alive === 0) {
+            for (let i = 0; i < nextGrid.length; i++) {
+                nextGrid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
+            }
+        }
+        [grid, nextGrid] = [nextGrid, grid];
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                if (grid[y * cols + x] === ALIVE) {
+                    const alpha = 0.15 + Math.random() * 0.2;  // 閃爍感
+                    ctx.fillStyle = `rgba(46, 204, 113, ${alpha})`;
+                    ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
+                }
+            }
+        }
+    }
+
+    let lastStep = 0;
+    const STEP_INTERVAL = 200; // 毫秒，原約 16ms，現放慢約 12 倍
+
+    function tick(timestamp) {
+        if (timestamp - lastStep >= STEP_INTERVAL) {
+            step();
+            draw();
+            lastStep = timestamp;
+        }
+        requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    tick();
+})();
+</script>
+
+<!-- Content -->
+<article>
     
-    <p>
-        <span id="busuanzi_container_page_pv">
-            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
-        </span>
-    </p>
+    <section id="content">
+        <article>
+            <h2 class="post_title post_detail"><a href="././port_mapping_20241201.html" rel="bookmark"
+                                                  title="Permalink to 記錄一些端口映射的配置命令：iptables、ssh和netsh">記錄一些端口映射的配置命令：iptables、ssh和netsh</a></h2>
+            
     
-    <div class="entry-content blog-post">
-        <div>
+            <p>
+                <span id="busuanzi_container_page_pv">
+                    本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+                </span>
+            </p>
+
+            <div class="entry-content blog-post">
+                <div>
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
 <nav class="toc-active" id="TOC" role="doc-toc">
 <h2 id="toc-title">Table of contents</h2>
 <ul>
-<li><a class="nav-link active" data-scroll-target="#前置步驟開啟linux的ip轉發功能" href="#前置步驟開啟linux的ip轉發功能" id="toc-前置步驟開啟linux的ip轉發功能"><span class="header-section-number">1</span> 前置步驟：開啟Linux的IP轉發功能</a></li>
-<li><a class="nav-link" data-scroll-target="#用iptables配置端口映射" href="#用iptables配置端口映射" id="toc-用iptables配置端口映射"><span class="header-section-number">2</span> 用iptables配置端口映射</a>
+<li><a class="nav-link active" data-scroll-target="#前置步驟開啟linux的ip轉發功能" href="#前置步驟開啟linux的ip轉發功能" id="toc-前置步驟開啟linux的ip轉發功能">前置步驟：開啟Linux的IP轉發功能</a></li>
+<li><a class="nav-link" data-scroll-target="#用iptables配置端口映射" href="#用iptables配置端口映射" id="toc-用iptables配置端口映射">用iptables配置端口映射</a>
 <ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#添加規則" href="#添加規則" id="toc-添加規則"><span class="header-section-number">2.1</span> 添加規則</a></li>
-<li><a class="nav-link" data-scroll-target="#羅列現有的nat規則" href="#羅列現有的nat規則" id="toc-羅列現有的nat規則"><span class="header-section-number">2.2</span> 羅列現有的NAT規則</a></li>
-<li><a class="nav-link" data-scroll-target="#刪除iptables的nat規則" href="#刪除iptables的nat規則" id="toc-刪除iptables的nat規則"><span class="header-section-number">2.3</span> 刪除iptables的NAT規則</a></li>
-<li><a class="nav-link" data-scroll-target="#iptables規則的保存" href="#iptables規則的保存" id="toc-iptables規則的保存"><span class="header-section-number">2.4</span> iptables規則的保存</a></li>
+<li><a class="nav-link" data-scroll-target="#添加規則" href="#添加規則" id="toc-添加規則">添加規則</a></li>
+<li><a class="nav-link" data-scroll-target="#羅列現有的nat規則" href="#羅列現有的nat規則" id="toc-羅列現有的nat規則">羅列現有的NAT規則</a></li>
+<li><a class="nav-link" data-scroll-target="#刪除iptables的nat規則" href="#刪除iptables的nat規則" id="toc-刪除iptables的nat規則">刪除iptables的NAT規則</a></li>
+<li><a class="nav-link" data-scroll-target="#iptables規則的保存" href="#iptables規則的保存" id="toc-iptables規則的保存">iptables規則的保存</a></li>
 </ul></li>
-<li><a class="nav-link" data-scroll-target="#ssh搭建端口映射" href="#ssh搭建端口映射" id="toc-ssh搭建端口映射"><span class="header-section-number">3</span> SSH搭建端口映射</a></li>
-<li><a class="nav-link" data-scroll-target="#在windows的powershell中配置端口映射" href="#在windows的powershell中配置端口映射" id="toc-在windows的powershell中配置端口映射"><span class="header-section-number">4</span> 在Windows的Powershell中配置端口映射</a></li>
-<li><a class="nav-link" data-scroll-target="#後記" href="#後記" id="toc-後記"><span class="header-section-number">5</span> 後記</a></li>
+<li><a class="nav-link" data-scroll-target="#ssh搭建端口映射" href="#ssh搭建端口映射" id="toc-ssh搭建端口映射">SSH搭建端口映射</a>
+<ul class="collapse">
+<li><a class="nav-link" data-scroll-target="#ssh反向代理" href="#ssh反向代理" id="toc-ssh反向代理">SSH反向代理</a></li>
+</ul></li>
+<li><a class="nav-link" data-scroll-target="#在windows的powershell中配置端口映射" href="#在windows的powershell中配置端口映射" id="toc-在windows的powershell中配置端口映射">在Windows的Powershell中配置端口映射</a></li>
+<li><a class="nav-link" data-scroll-target="#注意事項" href="#注意事項" id="toc-注意事項">注意事項</a></li>
 </ul>
 </nav>
 </div>
 <main class="content" id="quarto-document-content">
-<header class="quarto-title-block default" id="title-block-header">
-<div class="quarto-title">
 
-</div>
-<div class="quarto-title-meta">
-<div>
-<div class="quarto-title-meta-heading">Published</div>
-<div class="quarto-title-meta-contents">
-<p class="date">December 1, 2024</p>
-</div>
-</div>
-</div>
-</header>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-前言
-</div>
-</div>
-<div class="callout-body-container callout-body">
 <p>最近租了一台便宜的雲主機。我想把雲主機的公網ip上的一些端口映射到宿舍台式機上的一些服務上（例如SSH、jupyter lab），這樣就可以遠程登陸管理自己的台式機了。</p>
-<p>我採取的辦法是</p>
+<p>我採取的辦法是：</p>
 <ol type="1">
 <li>使用Zerotier組成一個局域網，使得雲主機和宿舍台式機可以互相訪問；</li>
 <li>使用端口映射，將宿舍台式機的服務暴露到公網ip上；</li>
 </ol>
 <p>在這個背景下，我寫下這篇筆記來記錄<strong>使用iptables配置端口映射的方法</strong>，同時順帶記錄一下<strong>如何用ssh命令以及Windows下的netsh命令配置端口映射</strong>。這幾種方法都很實用。</p>
-</div>
-</div>
-<section class="level2" data-number="1" id="前置步驟開啟linux的ip轉發功能">
-<h2 class="anchored" data-anchor-id="前置步驟開啟linux的ip轉發功能" data-number="1"><span class="header-section-number">1</span> 前置步驟：開啟Linux的IP轉發功能</h2>
-<p>在 Linux 系統中，IP 轉發（IP Forwarding）功能允許數據包從一個網絡接口轉發到另一個網絡接口。 默認情況下，大多數 Linux 系統將 IP 轉發禁用，防止非路由器設備意外充當路由器。</p>
+<section class="level2" id="前置步驟開啟linux的ip轉發功能">
+<h2 class="anchored" data-anchor-id="前置步驟開啟linux的ip轉發功能">前置步驟：開啟Linux的IP轉發功能</h2>
+<p>在 Linux 系統中，IP 轉發（IP Forwarding）功能允許數據包從一個網絡接口轉發到另一個網絡接口。默認情況下，大多數 Linux 系統將 IP 轉發禁用，防止非路由器設備意外充當路由器。</p>
 <p>請打開<code>/etc/sysctl.conf</code>文件，例如</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="fu">sudo</span> nano /etc/sysctl.conf</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>然後添加或確保以下行存在：</p>
@@ -200,14 +266,14 @@
 <p>然後加載配置：</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="fu">sudo</span> sysctl <span class="at">-p</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </section>
-<section class="level2" data-number="2" id="用iptables配置端口映射">
-<h2 class="anchored" data-anchor-id="用iptables配置端口映射" data-number="2"><span class="header-section-number">2</span> 用iptables配置端口映射</h2>
+<section class="level2" id="用iptables配置端口映射">
+<h2 class="anchored" data-anchor-id="用iptables配置端口映射">用iptables配置端口映射</h2>
 <p>在Linux系統上，可以使用iptables命令來配置端口的轉發規則。端口轉發技術允許網絡流量從一個端口轉發到另一個端口，通常是將流量從一個網絡接口轉發到另一個網絡接口上的不同端口。</p>
 <p>例如，假設我們有A主機及其端口P_A, B主機及其端口P_B，我們想將P_A端口映射到B主機的P_B端口。假如P_B端口對應著B主機的ssh服務，那麼經過端口映射，我們可以使用</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="fu">ssh</span> <span class="va">${USER_NAME}</span>@<span class="va">${A}</span> <span class="at">-p</span> <span class="va">${P_A}</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>命令來訪問P_B主機的服務。這裡我用<code>${A}</code>表示A主機的IP地址，<code>${P_A}</code>表示端口號。</p>
-<section class="level3" data-number="2.1" id="添加規則">
-<h3 class="anchored" data-anchor-id="添加規則" data-number="2.1"><span class="header-section-number">2.1</span> 添加規則</h3>
+<section class="level3" id="添加規則">
+<h3 class="anchored" data-anchor-id="添加規則">添加規則</h3>
 <p>要實現這個任務，可以在A主機上使用以下命令：</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-A</span> PREROUTING <span class="at">-p</span> tcp <span class="at">--dport</span> <span class="va">${P_A}</span> <span class="at">-j</span> DNAT <span class="at">--to-destination</span> <span class="va">${B}</span>:<span class="va">${P_B}</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>這裡<code>-t nat</code>選項指定了要操作的表（table）。nat（network address translation）表用於網絡地址轉換，包括源地址轉換（SNAT）和目的地址轉換（DNAT）。<code>-A</code>是Append的縮寫，表示將一條規則添加到指定的鏈（chain）的末尾。PREROUTING是nat表中的一個鏈，用於處理進入（ingress）流量，在路由決策之前應用NAT規則。<code>-p tcp</code>這個選項指定了要匹配的協議類型，這裏是tcp，表示這條規則只適用於TCP協議的流量。<code>--dport</code>指定了要匹配的目的端口。<code>-j</code>是jump的縮寫，指定了匹配規則後的動作。DNAT表示目的地址轉換，即修改流量的目的IP地址。<code>--to-destination</code>選項指定了DNAT的目標地址和端口。</p>
@@ -219,51 +285,69 @@
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-A</span> OUTPUT <span class="at">-p</span> tcp <span class="at">--dport</span> <span class="va">${P_A}</span> <span class="at">-j</span> DNAT <span class="at">--to-destination</span> <span class="va">${B}</span>:<span class="va">${P_B}</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>這條命令應用於OUTPUT鏈，可以處理從主機A內部發起的連接。</p>
 </section>
-<section class="level3" data-number="2.2" id="羅列現有的nat規則">
-<h3 class="anchored" data-anchor-id="羅列現有的nat規則" data-number="2.2"><span class="header-section-number">2.2</span> 羅列現有的NAT規則</h3>
+<section class="level3" id="羅列現有的nat規則">
+<h3 class="anchored" data-anchor-id="羅列現有的nat規則">羅列現有的NAT規則</h3>
 <p>可以用如下命令列出所有的NAT規則。</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-L</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </section>
-<section class="level3" data-number="2.3" id="刪除iptables的nat規則">
-<h3 class="anchored" data-anchor-id="刪除iptables的nat規則" data-number="2.3"><span class="header-section-number">2.3</span> 刪除iptables的NAT規則</h3>
+<section class="level3" id="刪除iptables的nat規則">
+<h3 class="anchored" data-anchor-id="刪除iptables的nat規則">刪除iptables的NAT規則</h3>
 <p>在羅列NAT規則時，我們可以讓iptables命令顯示每條規則的行號，然後用行號告訴iptables我們想刪除哪條規則：</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">--list</span> <span class="at">-t</span> nat <span class="at">-n</span> <span class="at">--line-numbers</span></span>
 <span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a></span>
 <span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a><span class="fu">sudo</span> iptables <span class="at">-t</span> nat <span class="at">-D</span> POSTROUTING 2  <span class="co"># ←刪除POSTROUTING鏈下的第二條規則</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </section>
-<section class="level3" data-number="2.4" id="iptables規則的保存">
-<h3 class="anchored" data-anchor-id="iptables規則的保存" data-number="2.4"><span class="header-section-number">2.4</span> iptables規則的保存</h3>
+<section class="level3" id="iptables規則的保存">
+<h3 class="anchored" data-anchor-id="iptables規則的保存">iptables規則的保存</h3>
 <p>用上面的命令設置的規則在機器重啟後將會丟失，你需要通過額外的命令將iptables的規則保存下來。</p>
 <p>在Ubuntu 18.04 LTS系統上，可以用下面的命令保存iptables的規則：</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="fu">sudo</span> apt install iptables-persistent</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>執行該命令後，程序將詢問你是否保存規則。</p>
-<p>後續你還可以通過使用<code>sudo netfilter-persistent save</code>命令，將iptables規則的更改保存下來。</p>
+<p>後續你還可以使用<code>sudo netfilter-persistent save</code>命令，將iptables規則的更改保存下來。</p>
 </section>
 </section>
-<section class="level2" data-number="3" id="ssh搭建端口映射">
-<h2 class="anchored" data-anchor-id="ssh搭建端口映射" data-number="3"><span class="header-section-number">3</span> SSH搭建端口映射</h2>
+<section class="level2" id="ssh搭建端口映射">
+<h2 class="anchored" data-anchor-id="ssh搭建端口映射">SSH搭建端口映射</h2>
 <p>ssh命令也提供了一個非常方便的搭建端口映射的辦法：</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-L</span> <span class="op">&lt;</span>本地的一個空閒端口<span class="op">&gt;</span>:<span class="va">$B</span>:<span class="va">$P_B</span> <span class="op">&lt;</span>用戶名<span class="op">&gt;</span>@<span class="va">$A</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>這段命令會將指定的本地端口映射到B主機的P_B端口。前提是你能登陸A主機，且A主機能夠訪問B主機的P_B端口。</p>
+<section class="level3" id="ssh反向代理">
+<h3 class="anchored" data-anchor-id="ssh反向代理">SSH反向代理</h3>
+<p>除了本地端口轉發（<code>-L</code>），SSH還支持<strong>反向代理</strong>（Remote Port Forwarding，<code>-R</code>）。反向代理的場景與本地端口轉發相反：我們希望將<strong>遠端服務器</strong>上的某個端口映射到<strong>本地機器</strong>上，使得其他人可以通過訪問遠端服務器的端口來訪問本地機器上的服務。</p>
+<p>這在以下場景中特別有用：</p>
+<ul>
+<li>本地機器沒有公網IP（例如在公司內網或家庭網絡中），但有一台具有公網IP的雲主機；</li>
+<li>希望將本地開發環境（如Jupyter Lab、Web服務）臨時暴露到公網，方便他人訪問；</li>
+<li>需要從外部網絡訪問本地機器上的SSH服務。</li>
+</ul>
+<p>假設本地機器為C，雲主機為A，我們希望將A主機的端口<code>P_A</code>映射到本地機器C的SSH端口（22），可以使用以下命令：</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-R</span> <span class="op">&lt;</span>P_A<span class="op">&gt;</span>:localhost:22 <span class="op">&lt;</span>用戶名<span class="op">&gt;</span>@<span class="va">$A</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<p>執行後，任何連接到A主機<code>P_A</code>端口的請求都會被轉發到本地機器C的22端口。這樣，即使C機器在防火牆或NAT之後，我們也可以通過雲主機A來訪問C機器的SSH服務。</p>
+<p>爲了確保反向代理正常工作，可能需要在A主機的<code>/etc/ssh/sshd_config</code>中啓用<code>GatewayPorts</code>選項：</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a><span class="ex">GatewayPorts</span> yes</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<p>然後重啟SSH服務：</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a><span class="fu">sudo</span> systemctl restart sshd</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </section>
-<section class="level2" data-number="4" id="在windows的powershell中配置端口映射">
-<h2 class="anchored" data-anchor-id="在windows的powershell中配置端口映射" data-number="4"><span class="header-section-number">4</span> 在Windows的Powershell中配置端口映射</h2>
+</section>
+<section class="level2" id="在windows的powershell中配置端口映射">
+<h2 class="anchored" data-anchor-id="在windows的powershell中配置端口映射">在Windows的Powershell中配置端口映射</h2>
 <p>Windows系統帶有netsh命令，可以幫助你配置端口映射規則，使用方法如下。</p>
 <p>首先你需要以管理員身份打開Powershell，然後才能執行各命令。</p>
 <p>查看所有端口映射規則：</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>netsh interface portproxy show all</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a>netsh interface portproxy show all</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>添加端口映射規則，（以8888端口為例）：</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a>netsh interface portproxy add v4tov4 listenaddress<span class="op">=</span><span class="dv">0.0</span><span class="op">.</span><span class="dv">0.0</span> listenport<span class="op">=</span><span class="dv">8888</span> connectaddress<span class="op">=</span>localhost connectport<span class="op">=</span><span class="dv">8888</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb16-1"><a aria-hidden="true" href="#cb16-1" tabindex="-1"></a>netsh interface portproxy add v4tov4 listenaddress<span class="op">=</span><span class="dv">0.0</span><span class="op">.</span><span class="dv">0.0</span> listenport<span class="op">=</span><span class="dv">8888</span> connectaddress<span class="op">=</span>localhost connectport<span class="op">=</span><span class="dv">8888</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>刪除轉發規則：</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>netsh interface portproxy delete v4tov4 listenaddress<span class="op">=</span><span class="dv">0.0</span><span class="op">.</span><span class="dv">0.0</span> listenport<span class="op">=</span><span class="dv">8888</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb17-1"><a aria-hidden="true" href="#cb17-1" tabindex="-1"></a>netsh interface portproxy delete v4tov4 listenaddress<span class="op">=</span><span class="dv">0.0</span><span class="op">.</span><span class="dv">0.0</span> listenport<span class="op">=</span><span class="dv">8888</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 </section>
-<section class="level2" data-number="5" id="後記">
-<h2 class="anchored" data-anchor-id="後記" data-number="5"><span class="header-section-number">5</span> 後記</h2>
-<p>本文的背景是將自己台式機上的一些網絡服務暴露到公網。這其實還蠻危險的，需要注意</p>
+<section class="level2" id="注意事項">
+<h2 class="anchored" data-anchor-id="注意事項">注意事項</h2>
+<p>本文的背景是將自己台式機上的一些網絡服務暴露到公網。這其實還蠻危險的，需要注意：</p>
 <ol type="1">
 <li>可以盡量改用比較複雜的密碼</li>
 <li>不使用默認的端口號，例如不把SSH服務開放在22端口，而是隨機選擇一個端口</li>
 <li>能不開放的服務盡量不開放，而只在要使用的時候，臨時搭一個端口映射。例如可以臨時用ssh命令搭一個端口映射，用完就關閉</li>
+<li>使用SSH反向代理將本地服務暴露到公網存在安全風險。建議僅在必要時臨時使用，並配合防火牆規則、密鑰認證等安全措施。使用完畢後應及時關閉連接</li>
 </ol>
 </section>
 </main>
@@ -350,6 +434,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -460,6 +546,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
+      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -687,83 +774,143 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 </div> <!-- /content -->
 </div>
-    </div>
-    <div class="post_list">
-        <span>By </span>
-        <a href="https://zhimi.vercel.app/">@執迷</a>
-        <span> in </span>
-        <span class="post_category"><a href="https://zhimi.vercel.app/" rel="bookmark" title="Permalink to 網絡技術">[ 網絡技術 ]</a></span>
-        <span class="post_date">2024-12-01</span>
-        <div><span>Tags : </span>
-            
-            
-            <span><a href="https://zhimi.vercel.app/">#端口映射, </a></span>
-            
-            <span><a href="https://zhimi.vercel.app/">#iptables, </a></span>
-            
-            <span><a href="https://zhimi.vercel.app/">#網絡技術, </a></span>
-            
-            <span><a href="https://zhimi.vercel.app/">#Linux, </a></span>
-            
-            
-        </div>
+            </div>
+            <div class="post_list">
+                <span>By </span>
+                <a href="./">@執迷</a>
+                <span> in </span>
+                <span class="post_category"><a href="./" rel="bookmark"
+                                               title="Permalink to 工具">[ 工具 ]</a></span>
+                <span class="post_date">2024-12-01</span>
+                <div><span>Tags : </span>
+                    
+                        
+                            <span><a href="./">#端口映射, </a></span>
+                        
+                            <span><a href="./">#SSH, </a></span>
+                        
+                            <span><a href="./">#iptables, </a></span>
+                        
+                            <span><a href="./">#netsh, </a></span>
+                        
+                            <span><a href="./">#Linux, </a></span>
+                        
+                            <span><a href="./">#Windows, </a></span>
+                        
+                            <span><a href="./">#反向代理, </a></span>
+                        
+                    
+                </div>
 
-        <div class="entry-social-container" style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
-            
-            
-            <div class="entry-social" style="text-align: center;">
-                <span class="social-text">分享本文</span><br>
-                <div class="social-icons" style="display: flex; gap: 10px; justify-content: center;">
-                    <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=https://zhimi.vercel.app/./port_mapping_20241201.html&text=記錄一些端口映射的配置命令：iptables、ssh和netsh&via="><img src="https://zhimi.vercel.app/theme/images/icons/twitter-s.png"></a></span>
-                    <a target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https://zhimi.vercel.app/./port_mapping_20241201.html&title=記錄一些端口映射的配置命令：iptables、ssh和netsh" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="https://zhimi.vercel.app/theme/images/icons/linkedin-s.png"></a>
-                    <span class="mail"><a href="mailto:?subject=記錄一些端口映射的配置命令：iptables、ssh和netsh&amp;body=Viens découvrir un article à propos de [記錄一些端口映射的配置命令：iptables、ssh和netsh] sur le site de 執迷. https://zhimi.vercel.app/./port_mapping_20241201.html" title="Share by Email" target="_blank"><img src="https://zhimi.vercel.app/theme/images/icons/mail-s.png"></a></span>
+                <div class="entry-social">
+                    <span class="twitter"><a target="_blank" rel="nofollow"
+                                             onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;"
+                                             title="Twitter"
+                                             href="https://twitter.com/share?url=././port_mapping_20241201.html&text=記錄一些端口映射的配置命令：iptables、ssh和netsh&via="><img
+                            src="./theme/images/icons/twitter-s.png"></a></span>
+
+                    <span class="gplus"><a target="_blank" title="Google +"
+                                           href="https://plus.google.com/share?url=././port_mapping_20241201.html&hl=fr"
+                                           rel="nofollow"
+                                           onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
+                            src="./theme/images/icons/google-s.png"></a></span>
+
+                    <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow"
+                                              onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;"
+                                              href="https://www.facebook.com/sharer.php?u=././port_mapping_20241201.html&t=記錄一些端口映射的配置命令：iptables、ssh和netsh"><img
+                            src="./theme/images/icons/facebook-s.png"></a></span>
+
+                    <a target="_blank" title="Linkedin"
+                       href="https://www.linkedin.com/shareArticle?mini=true&url=././port_mapping_20241201.html&title=記錄一些端口映射的配置命令：iptables、ssh和netsh"
+                       rel="nofollow"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
+                            src="./theme/images/icons/linkedin-s.png"></a>
+
+                    <span class="mail"><a
+                            href="mailto:?subject=記錄一些端口映射的配置命令：iptables、ssh和netsh&amp;body=Viens découvrir un article à propos de [記錄一些端口映射的配置命令：iptables、ssh和netsh] sur le site de 執迷. ././port_mapping_20241201.html"
+                            title="Share by Email" target="_blank"><img
+                            src="./theme/images/icons/mail-s.png"></a></span>
                 </div>
             </div>
-        </div>
-        </div>
-    </div>
-    
+            
+        </article>
+    </section>
 
-</section>
+</article>
 
-<!-- Quarto Clipboard -->
-<script type="text/javascript">
-    var clipboard = new ClipboardJS(
-        '.code-copy-button',
-        {
-            target: function(trigger) {
-                console.log("Copy texts. ", trigger);
-                return trigger.previousElementSibling;
-            }
-        }
-    );    
-    clipboard.on('success', function(e) {
-        console.info('Action:', e.action);
-        console.info('Text:', e.text);
-        console.info('Trigger:', e.trigger);
-        e.clearSelection();
-        alert('Copied!');
-    });
-    console.log("ClipboardJS loaded.");
-</script>
+<!-- Footer -->
 
-  </article>
+    <footer>
+        <p>
+            Blog powered by <a href="http://getpelican.com/">Pelican</a>,
+            which takes great advantage of <a href="http://python.org">Python</a>.
+            Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a
+                href="https://parbhatpuri.com/">@parbhat</a>.
+        </p>
+        
+        <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+        <span id="busuanzi_container_site_uv">
+            訪客數<span id="busuanzi_value_site_uv"></span>
+        </span>
+        
+    </footer>
 
-  <!-- Footer -->
-  <footer>
-    <p>
-      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
-      which takes great advantage of <a href="http://python.org">Python</a>.
-      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
-    </p>
-    
-      
-      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
-      <span id="busuanzi_container_site_uv">
-        訪客數<span id="busuanzi_value_site_uv"></span>
-      </span>
-      
-    
-  </footer>
+
+
+    <!-- Analytics -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'G-G3N739QVFZ']);
+        _gaq.push(['_trackPageview']);
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
+
+
+<div id="lang-switch-bar">
+    <a href="./port_mapping_20241201_zh-cn.html" title="切换简繁" id="lang-switch-link">简/繁</a>
+</div>
+<style>
+#lang-switch-bar {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+}
+#lang-switch-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #2980b9;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(41,128,185,0.35);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    user-select: none;
+}
+#lang-switch-link:hover {
+    background: #1DAEDF;
+    box-shadow: 0 3px 12px rgba(29,174,223,0.45);
+    transform: scale(1.08);
+    text-decoration: none;
+}
+</style>
+
+
+
 </body>
 </html>
