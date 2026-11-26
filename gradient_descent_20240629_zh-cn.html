@@ -1,205 +1,275 @@
 <!doctype html>
 <html lang="" itemscope itemtype="http://schema.org/Person">
 <head>
+    
+    
+        <meta charset="utf-8">
+        <!-- Site Meta Data -->
+        <title>用numpy实现神经网络梯度下降</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
+        <meta name="author" content="執迷">
 
-  
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-  
-    gtag('config', 'G-G3N739QVFZ');
-  </script>
-  
+        <link rel="shortcut icon" href="favicon.ico">
 
-  
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="./_vercel/insights/script.js"></script>
-  
+        <!-- schema.org -->
+        <meta itemprop="name" content="執迷的博客">
+        <meta itemprop="image" content="">
+        <meta itemprop="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
 
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-  
-  
-  
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+        <!-- Style Meta Data -->
+        <link rel="stylesheet" href="./theme/css/style.css" type="text/css"/>
+        <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css"/>
 
-<!-- Quarto -->
-<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
-<script src="./theme/scripts/quarto/quarto.js"></script>
+        <!-- Feed Meta Data -->
+        
+        
 
+        <!-- Twitter Feed -->
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="">
+        <meta name="twitter:image" content="">
 
-  <meta charset="utf-8">
-  <!-- Site Meta Data -->
-  <title>用numpy实现神经网络梯度下降</title>
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="梯度下降法（Gradient Descent）构成了现代深度学习技术的基础。本文通过numpy库实现梯度下降，不依赖任何深度学习工具，从而展示了梯度下降的底层实现原理。代码实现了使用多层感知机拟合sin函数，讲解了如何做梯度检查，附带介绍了多种常见激活函数的梯度推导。">
-  <meta name="author" content="執迷">
-
-  <link rel="shortcut icon" href="favicon.ico">
-
-  <!-- schema.org -->
-  <meta itemprop="name" content="執迷的博客">
-  <meta itemprop="image" content="">
-  <meta itemprop="description" content="梯度下降法（Gradient Descent）构成了现代深度学习技术的基础。本文通过numpy库实现梯度下降，不依赖任何深度学习工具，从而展示了梯度下降的底层实现原理。代码实现了使用多层感知机拟合sin函数，讲解了如何做梯度检查，附带介绍了多种常见激活函数的梯度推导。">
-
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
-  <!-- Style Meta Data -->
-  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/style.css" type="text/css" />
-  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/pygments.css" type="text/css" />
-
-  <!-- Feed Meta Data -->
-  
-  
-    <link href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss_zh-cn.xml" type="application/atom+xml" rel="alternate" title="執迷的博客 RSS Feed" />
-  
-
-  <!-- Twitter Feed -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="">
-  <meta name="twitter:image" content="">
-  
-<meta name="twitter:creator" content="">
-<meta name="twitter:url" content="https://zhimi.vercel.app/./gradient_descent_20240629_zh-cn.html">
-<meta name="twitter:title" content="執迷的博客 ~ 用numpy实现神经网络梯度下降">
-<meta name="twitter:description" content="">
-
-<!-- Facebook Meta Data -->
-<meta property="og:title" content="執迷的博客 ~ 用numpy实现神经网络梯度下降" />
-<meta property="og:description" content="" />
-<meta property="og:image" content="" />
-
-
-<!-- MathJax -->
-
+        <!-- Busuanzi -->
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
+    <meta name="twitter:creator" content="">
+    <meta name="twitter:url" content="././gradient_descent_20240629_zh-cn.html">
+    <meta name="twitter:title" content="執迷的博客 ~ 用numpy实现神经网络梯度下降">
+    <meta name="twitter:description" content="">
 
+    <!-- Quarto -->
+    <link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+    <script src="./theme/scripts/quarto/bootstrap.min.js"></script>
+    <script src="./theme/scripts/quarto/quarto.js"></script>
 
+    <!-- AnchorJS -->
+    <script src="https://cdn.jsdelivr.net/npm/anchor-js@5/anchor.min.js"></script>
+
+    <!-- Facebook Meta Data -->
+    <meta property="og:title" content="執迷的博客 ~ 用numpy实现神经网络梯度下降"/>
+    <meta property="og:description" content=""/>
+    <meta property="og:image" content=""/>
+    
 
 </head>
 
 <body>
-  <!-- Sidebar -->
-  <aside>
-    <!--<center><a href="https://zhimi.vercel.app"><img id="avatar" src=""></a></center>-->
+<!-- Sidebar -->
+<aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
     <h1>執迷的博客</h1>
     
-      <p>做一個有趣的人！</p>
+        <p>用喜歡的方式，度過自己的一生。</p>
     
     <br>
 
     
 
     <nav class="nav">
-      <ul class="list-bare">
-      
-        
-          <li><a class="nav__link" href="https://zhimi.vercel.app/index_zh-cn.html">Blog</a></li>
-        
-         
-        
-          <li><a class="nav__link" href="https://zhimi.vercel.app/./about_zh-cn.html">About</a></li>
-        
-         
-      </ul>
+        <ul class="list-bare">
+
+            
+                <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
+            
+
+            
+                <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
+            
+                <li><a class="nav__link" href="././job_wanted_zh-cn.html">Job Wanted (*^▽^*)┛</a></li>
+            
+
+        </ul>
     </nav>
 
     <p class="social">
-      
-      
-      
-      <a href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss_zh-cn.xml" rel="alternate">
-        <img src="https://zhimi.vercel.app/theme/images/icons/rss.png"></a>
-      
+        
+        
+        
     </p>
 
-    <!--
     
-    -->
-  </aside>
 
-  <!-- Content -->
-  <article>
     
-<section id="content">
-    <h2 class="post_title post_detail"><a href="https://zhimi.vercel.app/./gradient_descent_20240629_zh-cn.html" rel="bookmark" title="Permalink to 用numpy实现神经网络梯度下降">用numpy实现神经网络梯度下降</a></h2>
+
+</aside>
+
+<!-- Job Banner -->
+<div class="job-banner" id="job-banner">
+    <canvas id="job-banner-canvas"></canvas>
+    <div class="job-banner-content">
+        <span class="job-banner-icon">✨</span>
+        <span class="job-banner-text">本人求职中！大模型 Post-Training 方向 · 长三角、福建地区优先 · </span>如果您有兴趣，欢迎联系
+        <a class="job-banner-email" href="mailto:zhimi64@foxmail.com">zhimi64@foxmail.com</a>
+        <span class="job-banner-sep">｜</span>
+        <a class="job-banner-link" href="./job_wanted_zh-cn.html">👀 了解更多</a>
+    </div>
+</div>
+
+<script>
+(function() {
+    const banner = document.getElementById('job-banner');
+    const canvas = document.getElementById('job-banner-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let w, h, cols, rows, grid, nextGrid;
+    const CELL_SIZE = 12;
+    const ALIVE = 1, DEAD = 0;
+
+    function resize() {
+        const rect = banner.getBoundingClientRect();
+        w = canvas.width = rect.width;
+        h = canvas.height = rect.height;
+        cols = Math.ceil(w / CELL_SIZE);
+        rows = Math.ceil(h / CELL_SIZE);
+        grid = new Uint8Array(cols * rows);
+        nextGrid = new Uint8Array(cols * rows);
+        // 隨機初始化 40%
+        for (let i = 0; i < grid.length; i++) {
+            grid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
+        }
+    }
+
+    function get(x, y, g) {
+        if (x < 0 || x >= cols || y < 0 || y >= rows) return DEAD;
+        return g[y * cols + x];
+    }
+
+    function step() {
+        // 每一步隨機擾動：約 2% 的細胞被翻轉
+        for (let i = 0; i < grid.length; i++) {
+            if (Math.random() < 0.02) {
+                grid[i] = grid[i] === ALIVE ? DEAD : ALIVE;
+            }
+        }
+
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                const idx = y * cols + x;
+                let neighbors = 0;
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        if (dx === 0 && dy === 0) continue;
+                        neighbors += get(x + dx, y + dy, grid);
+                    }
+                }
+                const state = grid[idx];
+                if (state === ALIVE) {
+                    nextGrid[idx] = (neighbors === 2 || neighbors === 3) ? ALIVE : DEAD;
+                } else {
+                    nextGrid[idx] = (neighbors === 3) ? ALIVE : DEAD;
+                }
+            }
+        }
+        // 如果全部死光，重新播種
+        let alive = 0;
+        for (let i = 0; i < nextGrid.length; i++) alive += nextGrid[i];
+        if (alive === 0) {
+            for (let i = 0; i < nextGrid.length; i++) {
+                nextGrid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
+            }
+        }
+        [grid, nextGrid] = [nextGrid, grid];
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                if (grid[y * cols + x] === ALIVE) {
+                    const alpha = 0.15 + Math.random() * 0.2;  // 閃爍感
+                    ctx.fillStyle = `rgba(46, 204, 113, ${alpha})`;
+                    ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
+                }
+            }
+        }
+    }
+
+    let lastStep = 0;
+    const STEP_INTERVAL = 200; // 毫秒，原約 16ms，現放慢約 12 倍
+
+    function tick(timestamp) {
+        if (timestamp - lastStep >= STEP_INTERVAL) {
+            step();
+            draw();
+            lastStep = timestamp;
+        }
+        requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    tick();
+})();
+</script>
+
+<!-- Content -->
+<article>
     
-    <p>
-        <span id="busuanzi_container_page_pv">
-            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
-        </span>
-    </p>
+    <section id="content">
+        <article>
+            <h2 class="post_title post_detail"><a href="././gradient_descent_20240629_zh-cn.html" rel="bookmark"
+                                                  title="Permalink to 用numpy实现神经网络梯度下降">用numpy实现神经网络梯度下降</a></h2>
+            
     
-    <div class="entry-content blog-post">
-        <div>
+            <p>
+                <span id="busuanzi_container_page_pv">
+                    本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+                </span>
+            </p>
+
+            <div class="entry-content blog-post">
+                <div>
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
 <nav class="toc-active" id="TOC" role="doc-toc">
 <h2 id="toc-title">Table of contents</h2>
 <ul>
-<li><a class="nav-link active" data-scroll-target="#多層感知機的前向計算" href="#多層感知機的前向計算" id="toc-多層感知機的前向計算"><span class="toc-section-number">1</span>  多层感知机的前向计算</a>
+<li><a class="nav-link active" data-scroll-target="#多層感知機的前向計算" href="#多層感知機的前向計算" id="toc-多層感知機的前向計算"><span class="header-section-number">1</span> 多层感知机的前向计算</a>
 <ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#建立模型" href="#建立模型" id="toc-建立模型"><span class="toc-section-number">1.1</span>  建立模型</a></li>
+<li><a class="nav-link" data-scroll-target="#建立模型" href="#建立模型" id="toc-建立模型"><span class="header-section-number">1.1</span> 建立模型</a></li>
 </ul></li>
-<li><a class="nav-link" data-scroll-target="#多層感知機的反向傳播" href="#多層感知機的反向傳播" id="toc-多層感知機的反向傳播"><span class="toc-section-number">2</span>  多层感知机的反向传播</a>
+<li><a class="nav-link" data-scroll-target="#多層感知機的反向傳播" href="#多層感知機的反向傳播" id="toc-多層感知機的反向傳播"><span class="header-section-number">2</span> 多层感知机的反向传播</a>
 <ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#mae函數的梯度" href="#mae函數的梯度" id="toc-mae函數的梯度"><span class="toc-section-number">2.1</span>  MAE函数的梯度</a></li>
-<li><a class="nav-link" data-scroll-target="#relu函數的梯度" href="#relu函數的梯度" id="toc-relu函數的梯度"><span class="toc-section-number">2.2</span>  ReLU函数的梯度</a></li>
-<li><a class="nav-link" data-scroll-target="#綫性層的梯度" href="#綫性層的梯度" id="toc-綫性層的梯度"><span class="toc-section-number">2.3</span>  线性层的梯度</a></li>
-<li><a class="nav-link" data-scroll-target="#反向傳播代碼" href="#反向傳播代碼" id="toc-反向傳播代碼"><span class="toc-section-number">2.4</span>  反向传播代码</a></li>
-<li><a class="nav-link" data-scroll-target="#梯度检查" href="#梯度检查" id="toc-梯度检查"><span class="toc-section-number">2.5</span>  梯度检查</a></li>
+<li><a class="nav-link" data-scroll-target="#mae函數的梯度" href="#mae函數的梯度" id="toc-mae函數的梯度"><span class="header-section-number">2.1</span> MAE函数的梯度</a></li>
+<li><a class="nav-link" data-scroll-target="#relu函數的梯度" href="#relu函數的梯度" id="toc-relu函數的梯度"><span class="header-section-number">2.2</span> ReLU函数的梯度</a></li>
+<li><a class="nav-link" data-scroll-target="#綫性層的梯度" href="#綫性層的梯度" id="toc-綫性層的梯度"><span class="header-section-number">2.3</span> 线性层的梯度</a></li>
+<li><a class="nav-link" data-scroll-target="#反向傳播代碼" href="#反向傳播代碼" id="toc-反向傳播代碼"><span class="header-section-number">2.4</span> 反向传播代码</a></li>
+<li><a class="nav-link" data-scroll-target="#梯度检查" href="#梯度检查" id="toc-梯度检查"><span class="header-section-number">2.5</span> 梯度检查</a></li>
 </ul></li>
-<li><a class="nav-link" data-scroll-target="#训练" href="#训练" id="toc-训练"><span class="toc-section-number">3</span>  训练</a></li>
-<li><a class="nav-link" data-scroll-target="#附录" href="#附录" id="toc-附录"><span class="toc-section-number">4</span>  附录</a>
+<li><a class="nav-link" data-scroll-target="#训练" href="#训练" id="toc-训练"><span class="header-section-number">3</span> 训练</a></li>
+<li><a class="nav-link" data-scroll-target="#附录" href="#附录" id="toc-附录"><span class="header-section-number">4</span> 附录</a>
 <ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#sigmoid的梯度推導" href="#sigmoid的梯度推導" id="toc-sigmoid的梯度推導"><span class="toc-section-number">4.1</span>  Sigmoid的梯度推导</a></li>
-<li><a class="nav-link" data-scroll-target="#二值交叉熵函數的梯度推導" href="#二值交叉熵函數的梯度推導" id="toc-二值交叉熵函數的梯度推導"><span class="toc-section-number">4.2</span>  二值交叉熵函数的梯度推导</a></li>
+<li><a class="nav-link" data-scroll-target="#sigmoid的梯度推導" href="#sigmoid的梯度推導" id="toc-sigmoid的梯度推導"><span class="header-section-number">4.1</span> Sigmoid的梯度推导</a></li>
+<li><a class="nav-link" data-scroll-target="#二值交叉熵函數的梯度推導" href="#二值交叉熵函數的梯度推導" id="toc-二值交叉熵函數的梯度推導"><span class="header-section-number">4.2</span> 二值交叉熵函数的梯度推导</a></li>
 </ul></li>
-<li><a class="nav-link" data-scroll-target="#參考材料" href="#參考材料" id="toc-參考材料"><span class="toc-section-number">5</span>  参考材料</a></li>
+<li><a class="nav-link" data-scroll-target="#參考材料" href="#參考材料" id="toc-參考材料"><span class="header-section-number">5</span> 参考材料</a></li>
 </ul>
 </nav>
 </div>
 <main class="content" id="quarto-document-content">
-<header class="quarto-title-block default" id="title-block-header">
-<div class="quarto-title">
 
-</div>
-<div class="quarto-title-meta">
-<div>
-<div class="quarto-title-meta-heading">Published</div>
-<div class="quarto-title-meta-contents">
-<p class="date">June 29, 2024</p>
-</div>
-</div>
-</div>
-</header>
 <p>之前有一段时间，我需要复习梯度下降和反向传播来应付面试。 虽然梯度下降和反向传播都属于基础，但要想顺畅地在有限时间内把它写出来，还是挺不容易，必须要提前准备才行。本文记录了笔者的复习成果。</p>
 <p>在编写代码的过程中，尤其要注意数组尺寸的正确性。计算和编写代码的过程中，犯错常有的。最好能通过梯度检查来校验梯度计算的正确性，这样我们才有信心根据计算得到的梯度进行梯度下降。</p>
 <p>本文代码以示范为目的，并不适用于工程实践，因此文中的程序不会追求扩展性、运行效率等，而是尽量简洁明了。</p>
 <p>本文尝试通过numpy库实现梯度下降，不依赖任何深度学习工具。我们先<code>import numpy</code>.</p>
-<div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
 <span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
-</div>
 <section class="level2" data-number="1" id="多層感知機的前向計算">
 <h2 class="anchored" data-anchor-id="多層感知機的前向計算" data-number="1"><span class="header-section-number">1</span> 多层感知机的前向计算</h2>
 <p>本节将实现一个多层感知机，用它来回归sin函数。</p>
 <p>为简便起见，这个多层感知机只使用relu激活函数。</p>
 <section class="level3" data-number="1.1" id="建立模型">
 <h3 class="anchored" data-anchor-id="建立模型" data-number="1.1"><span class="header-section-number">1.1</span> 建立模型</h3>
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="kw">def</span> relu(x):</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="kw">def</span> relu(x):</span>
 <span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>    <span class="cf">return</span> np.clip(x, <span class="dv">0</span>, <span class="va">None</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
-</div>
 <p>以下代码定义了MLPRegression类的初始化函数。我们通过硬编码的方式将这个多层感知机设置为3层，并规定每层的输入输出维度。</p>
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="kw">class</span> MLPRegression:</span>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="kw">class</span> MLPRegression:</span>
 <span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
 <span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>        <span class="va">self</span>,</span>
 <span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>    ):</span>
@@ -211,11 +281,9 @@
 <span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a></span>
 <span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>        <span class="va">self</span>.w3 <span class="op">=</span> np.random.randn(<span class="dv">32</span>, <span class="dv">1</span>)</span>
 <span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>        <span class="va">self</span>.b3 <span class="op">=</span> np.random.randn(<span class="dv">1</span>, <span class="dv">1</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
-</div>
 <p>在前向传播阶段，这个多层感知机在每一层线性层后应用了一个relu激活函数。最后一层是例外的，没有任何激活函数，这样就不会限制模型拟合函数的值域。</p>
 <p>与一般的torch代码不同，我们在forward过程中需要手动保存cache变量，记录模型的中间执行结果。在反向传播过程中，我们需要使用它们来计算梯度。</p>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="kw">def</span> mlp_regression_forward(<span class="va">self</span>, x, y<span class="op">=</span><span class="va">None</span>): </span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="kw">def</span> mlp_regression_forward(<span class="va">self</span>, x, y<span class="op">=</span><span class="va">None</span>): </span>
 <span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    d_in, bs <span class="op">=</span> x.shape </span>
 <span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>    h1 <span class="op">=</span> <span class="va">self</span>.w1.transpose() <span class="op">@</span> x <span class="op">+</span> <span class="va">self</span>.b1   <span class="co"># d_1, bs</span></span>
 <span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    a1 <span class="op">=</span> relu(h1)</span>
@@ -243,14 +311,11 @@
 <span id="cb4-26"><a aria-hidden="true" href="#cb4-26" tabindex="-1"></a>    <span class="cf">return</span> h3, loss, cache </span>
 <span id="cb4-27"><a aria-hidden="true" href="#cb4-27" tabindex="-1"></a></span>
 <span id="cb4-28"><a aria-hidden="true" href="#cb4-28" tabindex="-1"></a>MLPRegression.forward <span class="op">=</span> mlp_regression_forward</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
-</div>
 <p>接下来我们试运行一下forward函数。函数返回pred，loss，cache三个变量，分别对应模型的预测值，损失以及用于计算梯度的中间变量。</p>
-<div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>r <span class="op">=</span> MLPRegression()</span>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>r <span class="op">=</span> MLPRegression()</span>
 <span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>pred, loss, cache <span class="op">=</span> r.forward(np.random.random((<span class="dv">1</span>, <span class="dv">2</span>)))</span>
 <span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a><span class="cf">for</span> k, v <span class="kw">in</span> cache.items():</span>
 <span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>    <span class="bu">print</span>(k, v.shape <span class="cf">if</span> v <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="st">'None'</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
 <pre><code>x (1, 2)
 h1 (16, 2)
 a1 (16, 2)
@@ -258,8 +323,6 @@ h2 (32, 2)
 a2 (32, 2)
 h3 (1, 2)
 y None</code></pre>
-</div>
-</div>
 </section>
 </section>
 <section class="level2" data-number="2" id="多層感知機的反向傳播">
@@ -267,9 +330,12 @@ y None</code></pre>
 <p>反向传播代码是本文的重点。在编写反向传播代码之前，我们先复习几个重要函数的梯度计算。</p>
 <section class="level3" data-number="2.1" id="mae函數的梯度">
 <h3 class="anchored" data-anchor-id="mae函數的梯度" data-number="2.1"><span class="header-section-number">2.1</span> MAE函数的梯度</h3>
-<p>代码中，我们使用的损失函数为MAE，即 <span class="math display">\[
+<p>代码中，我们使用的损失函数为MAE，即</p>
+<p><span class="math display">\[
 l=\frac{1}{m} \sum_i^m |\hat y - y|
-\]</span> 易知其导数为 <span class="math display">\[
+\]</span></p>
+<p>易知其导数为</p>
+<p><span class="math display">\[
 \frac{\mathrm d l}{\mathrm d \hat y} =
 \left\{
     \begin{aligned}
@@ -277,13 +343,16 @@ l=\frac{1}{m} \sum_i^m |\hat y - y|
     -1&amp;, \hat y &lt; y
     \end{aligned}
 \right.
-\]</span> 姑且不考虑0点処该函数没有导数的问题。</p>
+\]</span></p>
+<p>姑且不考虑0点処该函数没有导数的问题。</p>
 </section>
 <section class="level3" data-number="2.2" id="relu函數的梯度">
 <h3 class="anchored" data-anchor-id="relu函數的梯度" data-number="2.2"><span class="header-section-number">2.2</span> ReLU函数的梯度</h3>
-<p>ReLU函数的公式为： <span class="math display">\[
+<p>ReLU函数的公式为：</p>
+<p><span class="math display">\[
 a=\text{ReLU}(h)=\max(0, h)
-\]</span> 易得其导数（同样不考虑<span class="math inline">\(h=0\)</span> 时没有导数的问题）为 <span class="math display">\[
+\]</span></p>
+<p>易得其导数（同样不考虑<span class="math inline">\(h=0\)</span> 时没有导数的问题）为 <span class="math display">\[
 \frac{\mathrm d a}{\mathrm dh} =
 \left\{
 \begin{aligned}
@@ -295,20 +364,24 @@ a=\text{ReLU}(h)=\max(0, h)
 </section>
 <section class="level3" data-number="2.3" id="綫性層的梯度">
 <h3 class="anchored" data-anchor-id="綫性層的梯度" data-number="2.3"><span class="header-section-number">2.3</span> 线性层的梯度</h3>
-<p>设MLP的一层线性变换为 <span class="math display">\[
+<p>设MLP的一层线性变换为</p>
+<p><span class="math display">\[
 \vec y=\mathbf W^T \vec x + \vec b,
-\]</span> 其中<span class="math inline">\(\vec b\in \mathbb R^{d_\text{out}}, \vec x\in \mathbb R^{d_\text{in}, 1}\)</span> , 应用链式法则，可以求得以下梯度： <span class="math display">\[\begin{aligned}
+\]</span></p>
+<p>其中<span class="math inline">\(\vec b\in \mathbb R^{d_\text{out}}, \vec x\in \mathbb R^{d_\text{in}, 1}\)</span> , 应用链式法则，可以求得以下梯度：</p>
+<p><span class="math display">\[
+\begin{aligned}
 \frac{\partial l}{\partial \mathbf W} &amp;= \vec x \left(\frac{\partial l}{\partial \vec y}\right)^T\\
 \frac{\partial l}{\partial \vec b} &amp;= \frac{\partial l}{\partial \vec y}\\
 \frac{\partial l}{\partial \vec x} &amp;= \mathbf W \left(\frac{\partial l}{\partial \vec y}\right) \\
 \end{aligned},
-\]</span> 其中<span class="math inline">\(l\)</span>为模型的损失。</p>
+\]</span></p>
+<p>其中<span class="math inline">\(l\)</span>为模型的损失。</p>
 </section>
 <section class="level3" data-number="2.4" id="反向傳播代碼">
 <h3 class="anchored" data-anchor-id="反向傳播代碼" data-number="2.4"><span class="header-section-number">2.4</span> 反向传播代码</h3>
 <p>根据以上推导，可以写出如下的反向传播代码。该函数返回一个<code>dict</code>用于存储各个变量的梯度。</p>
-<div class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="kw">def</span> mlp_regression_backward(<span class="va">self</span>, cache):</span>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="kw">def</span> mlp_regression_backward(<span class="va">self</span>, cache):</span>
 <span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>    y <span class="op">=</span> cache[<span class="st">'y'</span>]</span>
 <span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>    _, bs <span class="op">=</span> y.shape</span>
 <span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>    pred <span class="op">=</span> cache[<span class="st">'h3'</span>]</span>
@@ -353,23 +426,21 @@ a=\text{ReLU}(h)=\max(0, h)
 <span id="cb7-43"><a aria-hidden="true" href="#cb7-43" tabindex="-1"></a>grads <span class="op">=</span> r.backward(cache)</span>
 <span id="cb7-44"><a aria-hidden="true" href="#cb7-44" tabindex="-1"></a><span class="cf">for</span> k, v <span class="kw">in</span> grads.items():</span>
 <span id="cb7-45"><a aria-hidden="true" href="#cb7-45" tabindex="-1"></a>    <span class="bu">print</span>(k, v.shape)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
 <pre><code>dw3 (32, 1)
 db3 (1, 1)
 dw2 (16, 32)
 db2 (32, 1)
 dw1 (1, 16)
 db1 (16, 1)</code></pre>
-</div>
-</div>
 </section>
 <section class="level3" data-number="2.5" id="梯度检查">
 <h3 class="anchored" data-anchor-id="梯度检查" data-number="2.5"><span class="header-section-number">2.5</span> 梯度检查</h3>
-<p>一次性正确写完梯度反传并不容易。梯度检查是校验梯度计算正确性的重要方法。 根据梯度的定义，设损失函数为<span class="math inline">\(J\)</span> ，那么梯度可以用如下方法估计： <span class="math display">\[
+<p>一次性正确写完梯度反传并不容易。梯度检查是校验梯度计算正确性的重要方法。 根据梯度的定义，设损失函数为<span class="math inline">\(J\)</span> ，那么梯度可以用如下方法估计：</p>
+<p><span class="math display">\[
 \frac{\partial J(x;\vec \theta)}{\partial \theta_i} \approx \frac{J(x;[\theta_1, \theta_2, \cdots, \theta_i + \epsilon, \cdots, \theta_n]) - J(x;[\theta_1, \theta_2, \cdots, \theta_i - \epsilon, \cdots, \theta_n] )}{2\epsilon}
-\]</span> 下面提供的<code>parameters_to_vector</code>，<code>restore_parameters_from_vector</code>函数实现了将模型参数转化为向量和从向量恢复模型参数的功能。<code>grads_to_vector</code>和<code>vector_to_grads</code>也起类似作用。基于此我们可以实现梯度检查。</p>
-<div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="kw">def</span> parameters_to_vector(<span class="va">self</span>):</span>
+\]</span></p>
+<p>下面提供的<code>parameters_to_vector</code>，<code>restore_parameters_from_vector</code>函数实现了将模型参数转化为向量和从向量恢复模型参数的功能。<code>grads_to_vector</code>和<code>vector_to_grads</code>也起类似作用。基于此我们可以实现梯度检查。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="kw">def</span> parameters_to_vector(<span class="va">self</span>):</span>
 <span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>    ret <span class="op">=</span> [<span class="va">self</span>.w1, <span class="va">self</span>.b1, <span class="va">self</span>.w2, <span class="va">self</span>.b2, <span class="va">self</span>.w3, <span class="va">self</span>.b3]</span>
 <span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>    ret <span class="op">=</span> [it.reshape((<span class="op">-</span><span class="dv">1</span>,)) <span class="cf">for</span> it <span class="kw">in</span> ret]</span>
 <span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a>    <span class="cf">return</span> np.concatenate(ret)</span>
@@ -381,76 +452,69 @@ db1 (16, 1)</code></pre>
 <span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a>    <span class="cf">return</span> np.concatenate(ret)</span>
 <span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a>MLPRegression.grads_to_vector <span class="op">=</span> grads_to_vector</span>
 <span id="cb9-12"><a aria-hidden="true" href="#cb9-12" tabindex="-1"></a></span>
-<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a></span>
-<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a><span class="kw">def</span> vector_to_grads(<span class="va">self</span>, vec):</span>
-<span id="cb9-15"><a aria-hidden="true" href="#cb9-15" tabindex="-1"></a>    params <span class="op">=</span> [<span class="va">self</span>.w1, <span class="va">self</span>.b1, <span class="va">self</span>.w2, <span class="va">self</span>.b2, <span class="va">self</span>.w3, <span class="va">self</span>.b3]</span>
-<span id="cb9-16"><a aria-hidden="true" href="#cb9-16" tabindex="-1"></a>    names <span class="op">=</span> [<span class="st">'dw1'</span>, <span class="st">'db1'</span>, <span class="st">'dw2'</span>, <span class="st">'db2'</span>, <span class="st">'dw3'</span>, <span class="st">'db3'</span>]</span>
-<span id="cb9-17"><a aria-hidden="true" href="#cb9-17" tabindex="-1"></a>    param_sizes <span class="op">=</span> [it.size <span class="cf">for</span> it <span class="kw">in</span> params]</span>
-<span id="cb9-18"><a aria-hidden="true" href="#cb9-18" tabindex="-1"></a>    param_offsets <span class="op">=</span> [<span class="dv">0</span>] <span class="op">+</span> param_sizes</span>
-<span id="cb9-19"><a aria-hidden="true" href="#cb9-19" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(param_offsets) <span class="op">-</span> <span class="dv">1</span>):</span>
-<span id="cb9-20"><a aria-hidden="true" href="#cb9-20" tabindex="-1"></a>        param_offsets[i <span class="op">+</span> <span class="dv">1</span>] <span class="op">+=</span> param_offsets[i]</span>
-<span id="cb9-21"><a aria-hidden="true" href="#cb9-21" tabindex="-1"></a>    grads <span class="op">=</span> [vec[param_offsets[i]:param_offsets[i <span class="op">+</span> <span class="dv">1</span>]].reshape(p.shape) <span class="cf">for</span> i, p <span class="kw">in</span> <span class="bu">enumerate</span>(params)]</span>
-<span id="cb9-22"><a aria-hidden="true" href="#cb9-22" tabindex="-1"></a>    <span class="cf">return</span> {k: v <span class="cf">for</span> k, v <span class="kw">in</span> <span class="bu">zip</span>(names, grads)}</span>
-<span id="cb9-23"><a aria-hidden="true" href="#cb9-23" tabindex="-1"></a>MLPRegression.vector_to_grads <span class="op">=</span> vector_to_grads</span>
-<span id="cb9-24"><a aria-hidden="true" href="#cb9-24" tabindex="-1"></a></span>
-<span id="cb9-25"><a aria-hidden="true" href="#cb9-25" tabindex="-1"></a></span>
-<span id="cb9-26"><a aria-hidden="true" href="#cb9-26" tabindex="-1"></a><span class="kw">def</span> restore_parameters_from_vector(<span class="va">self</span>, vec):</span>
-<span id="cb9-27"><a aria-hidden="true" href="#cb9-27" tabindex="-1"></a>    params <span class="op">=</span> [<span class="va">self</span>.w1, <span class="va">self</span>.b1, <span class="va">self</span>.w2, <span class="va">self</span>.b2, <span class="va">self</span>.w3, <span class="va">self</span>.b3]</span>
-<span id="cb9-28"><a aria-hidden="true" href="#cb9-28" tabindex="-1"></a>    param_sizes <span class="op">=</span> [it.size <span class="cf">for</span> it <span class="kw">in</span> params]</span>
-<span id="cb9-29"><a aria-hidden="true" href="#cb9-29" tabindex="-1"></a>    param_offsets <span class="op">=</span> [<span class="dv">0</span>] <span class="op">+</span> param_sizes</span>
-<span id="cb9-30"><a aria-hidden="true" href="#cb9-30" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(param_offsets) <span class="op">-</span> <span class="dv">1</span>):</span>
-<span id="cb9-31"><a aria-hidden="true" href="#cb9-31" tabindex="-1"></a>        param_offsets[i <span class="op">+</span> <span class="dv">1</span>] <span class="op">+=</span> param_offsets[i]</span>
-<span id="cb9-32"><a aria-hidden="true" href="#cb9-32" tabindex="-1"></a>    params2 <span class="op">=</span> [vec[param_offsets[i]:param_offsets[i <span class="op">+</span> <span class="dv">1</span>]].reshape(p.shape) <span class="cf">for</span> i, p <span class="kw">in</span> <span class="bu">enumerate</span>(params)]</span>
-<span id="cb9-33"><a aria-hidden="true" href="#cb9-33" tabindex="-1"></a>    w1, b1, w2, b2, w3, b3 <span class="op">=</span> params2 </span>
-<span id="cb9-34"><a aria-hidden="true" href="#cb9-34" tabindex="-1"></a>    <span class="va">self</span>.w1 <span class="op">=</span> w1 </span>
-<span id="cb9-35"><a aria-hidden="true" href="#cb9-35" tabindex="-1"></a>    <span class="va">self</span>.b1 <span class="op">=</span> b1 </span>
-<span id="cb9-36"><a aria-hidden="true" href="#cb9-36" tabindex="-1"></a>    <span class="va">self</span>.w2 <span class="op">=</span> w2 </span>
-<span id="cb9-37"><a aria-hidden="true" href="#cb9-37" tabindex="-1"></a>    <span class="va">self</span>.b2 <span class="op">=</span> b2 </span>
-<span id="cb9-38"><a aria-hidden="true" href="#cb9-38" tabindex="-1"></a>    <span class="va">self</span>.w3 <span class="op">=</span> w3 </span>
-<span id="cb9-39"><a aria-hidden="true" href="#cb9-39" tabindex="-1"></a>    <span class="va">self</span>.b3 <span class="op">=</span> b3 </span>
-<span id="cb9-40"><a aria-hidden="true" href="#cb9-40" tabindex="-1"></a>MLPRegression.restore_parameters_from_vector <span class="op">=</span> restore_parameters_from_vector</span>
-<span id="cb9-41"><a aria-hidden="true" href="#cb9-41" tabindex="-1"></a></span>
-<span id="cb9-42"><a aria-hidden="true" href="#cb9-42" tabindex="-1"></a></span>
-<span id="cb9-43"><a aria-hidden="true" href="#cb9-43" tabindex="-1"></a>r <span class="op">=</span> MLPRegression()</span>
-<span id="cb9-44"><a aria-hidden="true" href="#cb9-44" tabindex="-1"></a>x <span class="op">=</span> np.random.randn(<span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb9-45"><a aria-hidden="true" href="#cb9-45" tabindex="-1"></a>y <span class="op">=</span> np.random.randn(<span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb9-46"><a aria-hidden="true" href="#cb9-46" tabindex="-1"></a>yh, loss, cache <span class="op">=</span> r.forward(x, y)</span>
-<span id="cb9-47"><a aria-hidden="true" href="#cb9-47" tabindex="-1"></a>grads <span class="op">=</span> r.backward(cache)</span>
-<span id="cb9-48"><a aria-hidden="true" href="#cb9-48" tabindex="-1"></a>grads_vec <span class="op">=</span> r.grads_to_vector(grads)</span>
-<span id="cb9-49"><a aria-hidden="true" href="#cb9-49" tabindex="-1"></a>grads_est <span class="op">=</span> grads_vec <span class="op">*</span> <span class="dv">0</span> </span>
-<span id="cb9-50"><a aria-hidden="true" href="#cb9-50" tabindex="-1"></a>parameters_vec <span class="op">=</span> r.parameters_to_vector()</span>
-<span id="cb9-51"><a aria-hidden="true" href="#cb9-51" tabindex="-1"></a><span class="bu">print</span>(grads_vec.shape)</span>
-<span id="cb9-52"><a aria-hidden="true" href="#cb9-52" tabindex="-1"></a>num_parameters <span class="op">=</span> <span class="bu">len</span>(grads_vec)</span>
-<span id="cb9-53"><a aria-hidden="true" href="#cb9-53" tabindex="-1"></a>eps <span class="op">=</span> <span class="fl">1e-4</span></span>
-<span id="cb9-54"><a aria-hidden="true" href="#cb9-54" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_parameters):</span>
-<span id="cb9-55"><a aria-hidden="true" href="#cb9-55" tabindex="-1"></a>    parameters_vec_copy <span class="op">=</span> parameters_vec.copy()</span>
-<span id="cb9-56"><a aria-hidden="true" href="#cb9-56" tabindex="-1"></a>    parameters_vec_copy[i] <span class="op">+=</span> eps </span>
-<span id="cb9-57"><a aria-hidden="true" href="#cb9-57" tabindex="-1"></a>    r.restore_parameters_from_vector(parameters_vec_copy)</span>
-<span id="cb9-58"><a aria-hidden="true" href="#cb9-58" tabindex="-1"></a>    _, loss, _ <span class="op">=</span> r.forward(x, y)</span>
-<span id="cb9-59"><a aria-hidden="true" href="#cb9-59" tabindex="-1"></a></span>
-<span id="cb9-60"><a aria-hidden="true" href="#cb9-60" tabindex="-1"></a>    parameters_vec_copy <span class="op">=</span> parameters_vec.copy()</span>
-<span id="cb9-61"><a aria-hidden="true" href="#cb9-61" tabindex="-1"></a>    parameters_vec_copy[i] <span class="op">-=</span> eps </span>
-<span id="cb9-62"><a aria-hidden="true" href="#cb9-62" tabindex="-1"></a>    r.restore_parameters_from_vector(parameters_vec_copy)</span>
-<span id="cb9-63"><a aria-hidden="true" href="#cb9-63" tabindex="-1"></a>    _, loss2, _ <span class="op">=</span> r.forward(x, y)</span>
+<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a><span class="kw">def</span> vector_to_grads(<span class="va">self</span>, vec):</span>
+<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a>    params <span class="op">=</span> [<span class="va">self</span>.w1, <span class="va">self</span>.b1, <span class="va">self</span>.w2, <span class="va">self</span>.b2, <span class="va">self</span>.w3, <span class="va">self</span>.b3]</span>
+<span id="cb9-15"><a aria-hidden="true" href="#cb9-15" tabindex="-1"></a>    names <span class="op">=</span> [<span class="st">'dw1'</span>, <span class="st">'db1'</span>, <span class="st">'dw2'</span>, <span class="st">'db2'</span>, <span class="st">'dw3'</span>, <span class="st">'db3'</span>]</span>
+<span id="cb9-16"><a aria-hidden="true" href="#cb9-16" tabindex="-1"></a>    param_sizes <span class="op">=</span> [it.size <span class="cf">for</span> it <span class="kw">in</span> params]</span>
+<span id="cb9-17"><a aria-hidden="true" href="#cb9-17" tabindex="-1"></a>    param_offsets <span class="op">=</span> [<span class="dv">0</span>] <span class="op">+</span> param_sizes</span>
+<span id="cb9-18"><a aria-hidden="true" href="#cb9-18" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(param_offsets) <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb9-19"><a aria-hidden="true" href="#cb9-19" tabindex="-1"></a>        param_offsets[i <span class="op">+</span> <span class="dv">1</span>] <span class="op">+=</span> param_offsets[i]</span>
+<span id="cb9-20"><a aria-hidden="true" href="#cb9-20" tabindex="-1"></a>    grads <span class="op">=</span> [vec[param_offsets[i]:param_offsets[i <span class="op">+</span> <span class="dv">1</span>]].reshape(p.shape) <span class="cf">for</span> i, p <span class="kw">in</span> <span class="bu">enumerate</span>(params)]</span>
+<span id="cb9-21"><a aria-hidden="true" href="#cb9-21" tabindex="-1"></a>    <span class="cf">return</span> {k: v <span class="cf">for</span> k, v <span class="kw">in</span> <span class="bu">zip</span>(names, grads)}</span>
+<span id="cb9-22"><a aria-hidden="true" href="#cb9-22" tabindex="-1"></a>MLPRegression.vector_to_grads <span class="op">=</span> vector_to_grads</span>
+<span id="cb9-23"><a aria-hidden="true" href="#cb9-23" tabindex="-1"></a></span>
+<span id="cb9-24"><a aria-hidden="true" href="#cb9-24" tabindex="-1"></a><span class="kw">def</span> restore_parameters_from_vector(<span class="va">self</span>, vec):</span>
+<span id="cb9-25"><a aria-hidden="true" href="#cb9-25" tabindex="-1"></a>    params <span class="op">=</span> [<span class="va">self</span>.w1, <span class="va">self</span>.b1, <span class="va">self</span>.w2, <span class="va">self</span>.b2, <span class="va">self</span>.w3, <span class="va">self</span>.b3]</span>
+<span id="cb9-26"><a aria-hidden="true" href="#cb9-26" tabindex="-1"></a>    param_sizes <span class="op">=</span> [it.size <span class="cf">for</span> it <span class="kw">in</span> params]</span>
+<span id="cb9-27"><a aria-hidden="true" href="#cb9-27" tabindex="-1"></a>    param_offsets <span class="op">=</span> [<span class="dv">0</span>] <span class="op">+</span> param_sizes</span>
+<span id="cb9-28"><a aria-hidden="true" href="#cb9-28" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(param_offsets) <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb9-29"><a aria-hidden="true" href="#cb9-29" tabindex="-1"></a>        param_offsets[i <span class="op">+</span> <span class="dv">1</span>] <span class="op">+=</span> param_offsets[i]</span>
+<span id="cb9-30"><a aria-hidden="true" href="#cb9-30" tabindex="-1"></a>    params2 <span class="op">=</span> [vec[param_offsets[i]:param_offsets[i <span class="op">+</span> <span class="dv">1</span>]].reshape(p.shape) <span class="cf">for</span> i, p <span class="kw">in</span> <span class="bu">enumerate</span>(params)]</span>
+<span id="cb9-31"><a aria-hidden="true" href="#cb9-31" tabindex="-1"></a>    w1, b1, w2, b2, w3, b3 <span class="op">=</span> params2 </span>
+<span id="cb9-32"><a aria-hidden="true" href="#cb9-32" tabindex="-1"></a>    <span class="va">self</span>.w1 <span class="op">=</span> w1 </span>
+<span id="cb9-33"><a aria-hidden="true" href="#cb9-33" tabindex="-1"></a>    <span class="va">self</span>.b1 <span class="op">=</span> b1 </span>
+<span id="cb9-34"><a aria-hidden="true" href="#cb9-34" tabindex="-1"></a>    <span class="va">self</span>.w2 <span class="op">=</span> w2 </span>
+<span id="cb9-35"><a aria-hidden="true" href="#cb9-35" tabindex="-1"></a>    <span class="va">self</span>.b2 <span class="op">=</span> b2 </span>
+<span id="cb9-36"><a aria-hidden="true" href="#cb9-36" tabindex="-1"></a>    <span class="va">self</span>.w3 <span class="op">=</span> w3 </span>
+<span id="cb9-37"><a aria-hidden="true" href="#cb9-37" tabindex="-1"></a>    <span class="va">self</span>.b3 <span class="op">=</span> b3 </span>
+<span id="cb9-38"><a aria-hidden="true" href="#cb9-38" tabindex="-1"></a>MLPRegression.restore_parameters_from_vector <span class="op">=</span> restore_parameters_from_vector</span>
+<span id="cb9-39"><a aria-hidden="true" href="#cb9-39" tabindex="-1"></a></span>
+<span id="cb9-40"><a aria-hidden="true" href="#cb9-40" tabindex="-1"></a>r <span class="op">=</span> MLPRegression()</span>
+<span id="cb9-41"><a aria-hidden="true" href="#cb9-41" tabindex="-1"></a>x <span class="op">=</span> np.random.randn(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb9-42"><a aria-hidden="true" href="#cb9-42" tabindex="-1"></a>y <span class="op">=</span> np.random.randn(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb9-43"><a aria-hidden="true" href="#cb9-43" tabindex="-1"></a>yh, loss, cache <span class="op">=</span> r.forward(x, y)</span>
+<span id="cb9-44"><a aria-hidden="true" href="#cb9-44" tabindex="-1"></a>grads <span class="op">=</span> r.backward(cache)</span>
+<span id="cb9-45"><a aria-hidden="true" href="#cb9-45" tabindex="-1"></a>grads_vec <span class="op">=</span> r.grads_to_vector(grads)</span>
+<span id="cb9-46"><a aria-hidden="true" href="#cb9-46" tabindex="-1"></a>grads_est <span class="op">=</span> grads_vec <span class="op">*</span> <span class="dv">0</span> </span>
+<span id="cb9-47"><a aria-hidden="true" href="#cb9-47" tabindex="-1"></a>parameters_vec <span class="op">=</span> r.parameters_to_vector()</span>
+<span id="cb9-48"><a aria-hidden="true" href="#cb9-48" tabindex="-1"></a><span class="bu">print</span>(grads_vec.shape)</span>
+<span id="cb9-49"><a aria-hidden="true" href="#cb9-49" tabindex="-1"></a>num_parameters <span class="op">=</span> <span class="bu">len</span>(grads_vec)</span>
+<span id="cb9-50"><a aria-hidden="true" href="#cb9-50" tabindex="-1"></a>eps <span class="op">=</span> <span class="fl">1e-4</span></span>
+<span id="cb9-51"><a aria-hidden="true" href="#cb9-51" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_parameters):</span>
+<span id="cb9-52"><a aria-hidden="true" href="#cb9-52" tabindex="-1"></a>    parameters_vec_copy <span class="op">=</span> parameters_vec.copy()</span>
+<span id="cb9-53"><a aria-hidden="true" href="#cb9-53" tabindex="-1"></a>    parameters_vec_copy[i] <span class="op">+=</span> eps </span>
+<span id="cb9-54"><a aria-hidden="true" href="#cb9-54" tabindex="-1"></a>    r.restore_parameters_from_vector(parameters_vec_copy)</span>
+<span id="cb9-55"><a aria-hidden="true" href="#cb9-55" tabindex="-1"></a>    _, loss, _ <span class="op">=</span> r.forward(x, y)</span>
+<span id="cb9-56"><a aria-hidden="true" href="#cb9-56" tabindex="-1"></a></span>
+<span id="cb9-57"><a aria-hidden="true" href="#cb9-57" tabindex="-1"></a>    parameters_vec_copy <span class="op">=</span> parameters_vec.copy()</span>
+<span id="cb9-58"><a aria-hidden="true" href="#cb9-58" tabindex="-1"></a>    parameters_vec_copy[i] <span class="op">-=</span> eps </span>
+<span id="cb9-59"><a aria-hidden="true" href="#cb9-59" tabindex="-1"></a>    r.restore_parameters_from_vector(parameters_vec_copy)</span>
+<span id="cb9-60"><a aria-hidden="true" href="#cb9-60" tabindex="-1"></a>    _, loss2, _ <span class="op">=</span> r.forward(x, y)</span>
+<span id="cb9-61"><a aria-hidden="true" href="#cb9-61" tabindex="-1"></a></span>
+<span id="cb9-62"><a aria-hidden="true" href="#cb9-62" tabindex="-1"></a>    grad <span class="op">=</span> (loss <span class="op">-</span> loss2) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> eps)</span>
+<span id="cb9-63"><a aria-hidden="true" href="#cb9-63" tabindex="-1"></a>    grads_est[i] <span class="op">=</span> grad </span>
 <span id="cb9-64"><a aria-hidden="true" href="#cb9-64" tabindex="-1"></a></span>
-<span id="cb9-65"><a aria-hidden="true" href="#cb9-65" tabindex="-1"></a>    grad <span class="op">=</span> (loss <span class="op">-</span> loss2) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> eps)</span>
-<span id="cb9-66"><a aria-hidden="true" href="#cb9-66" tabindex="-1"></a>    grads_est[i] <span class="op">=</span> grad </span>
-<span id="cb9-67"><a aria-hidden="true" href="#cb9-67" tabindex="-1"></a></span>
-<span id="cb9-68"><a aria-hidden="true" href="#cb9-68" tabindex="-1"></a>difference <span class="op">=</span> np.<span class="bu">max</span>(np.<span class="bu">abs</span>(grads_vec <span class="op">-</span> grads_est))</span>
-<span id="cb9-69"><a aria-hidden="true" href="#cb9-69" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Diff:'</span>, difference)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
+<span id="cb9-65"><a aria-hidden="true" href="#cb9-65" tabindex="-1"></a>difference <span class="op">=</span> np.<span class="bu">max</span>(np.<span class="bu">abs</span>(grads_vec <span class="op">-</span> grads_est))</span>
+<span id="cb9-66"><a aria-hidden="true" href="#cb9-66" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Diff:'</span>, difference)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <pre><code>(609,)
 Diff: 3.414629690112747e-11</code></pre>
-</div>
-</div>
 <p>由代码输出可见，文章给出的梯度计算方法与梯度估算法的结果相差无几，这证明了本文推导的正确性。</p>
 </section>
 </section>
 <section class="level2" data-number="3" id="训练">
 <h2 class="anchored" data-anchor-id="训练" data-number="3"><span class="header-section-number">3</span> 训练</h2>
 <p>以下程序以最基础的SGD方法训练了给出的模型，并打印损失函数。</p>
-<div class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="im">import</span> tqdm.notebook <span class="im">as</span> tqdm</span>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="im">import</span> tqdm.notebook <span class="im">as</span> tqdm</span>
 <span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a></span>
 <span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>learning_rate <span class="op">=</span> <span class="fl">1e-3</span></span>
 <span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>r <span class="op">=</span> MLPRegression()</span>
@@ -474,25 +538,14 @@ Diff: 3.414629690112747e-11</code></pre>
 <span id="cb11-22"><a aria-hidden="true" href="#cb11-22" tabindex="-1"></a></span>
 <span id="cb11-23"><a aria-hidden="true" href="#cb11-23" tabindex="-1"></a>    pbar.set_description(<span class="ss">f'loss: </span><span class="sc">{</span>loss<span class="sc">:.4f}</span><span class="ss">'</span>)</span>
 <span id="cb11-24"><a aria-hidden="true" href="#cb11-24" tabindex="-1"></a>    pbar.update()</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"422fec12cd644d8f9e6005b14e4d3de8","version_major":2,"version_minor":0}
-</script>
-</div>
-</div>
-<div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
 <span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a></span>
 <span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a>loss_records <span class="op">=</span> np.array(loss_records)</span>
 <span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a>plt.plot(loss_records[:, <span class="dv">0</span>], loss_records[:, <span class="dv">1</span>])</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
 <p><img class="img-fluid" src="gradient_descent_20240629/figure-html/cell-10-output-1.png"/></p>
-</div>
-</div>
 <p>训练完成后，模型的推理效果如图所示。由图可见，模型成功拟合了 函数。</p>
 <p>这里模型的拟合效果并不完美。毕竟这只是一个三层的小型MLP，它还是有很大改进空间的。</p>
-<div class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">1000</span>)[<span class="va">None</span>, :]</span>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">1000</span>)[<span class="va">None</span>, :]</span>
 <span id="cb13-2"><a aria-hidden="true" href="#cb13-2" tabindex="-1"></a>y, _, _ <span class="op">=</span> r.forward(x)</span>
 <span id="cb13-3"><a aria-hidden="true" href="#cb13-3" tabindex="-1"></a>plt.figure()</span>
 <span id="cb13-4"><a aria-hidden="true" href="#cb13-4" tabindex="-1"></a>x <span class="op">=</span> x.reshape((<span class="op">-</span><span class="dv">1</span>,))</span>
@@ -504,17 +557,15 @@ Diff: 3.414629690112747e-11</code></pre>
 <span id="cb13-10"><a aria-hidden="true" href="#cb13-10" tabindex="-1"></a>    <span class="st">'pred'</span></span>
 <span id="cb13-11"><a aria-hidden="true" href="#cb13-11" tabindex="-1"></a>])</span>
 <span id="cb13-12"><a aria-hidden="true" href="#cb13-12" tabindex="-1"></a>plt.show()</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
 <p><img class="img-fluid" src="gradient_descent_20240629/figure-html/cell-11-output-1.png"/></p>
-</div>
-</div>
 </section>
 <section class="level2" data-number="4" id="附录">
 <h2 class="anchored" data-anchor-id="附录" data-number="4"><span class="header-section-number">4</span> 附录</h2>
 <p>附录提供了正文未使用到的一些常用函数的梯度推导。这些推导对实现分类器会有帮助，但本文就不给出详细实现了。</p>
 <section class="level3" data-number="4.1" id="sigmoid的梯度推導">
 <h3 class="anchored" data-anchor-id="sigmoid的梯度推導" data-number="4.1"><span class="header-section-number">4.1</span> Sigmoid的梯度推导</h3>
-<p>设<span class="math inline">\(\sigma(x)=\frac{1}{1+e^{-x}}\)</span>是sigmoid函数。那么<span class="math inline">\(\sigma(x)\)</span> 的导数为 <span class="math display">\[\begin{aligned}
+<p>设<span class="math inline">\(\sigma(x)=\frac{1}{1+e^{-x}}\)</span>是sigmoid函数。那么<span class="math inline">\(\sigma(x)\)</span> 的导数为 <span class="math display">\[
+\begin{aligned}
 \sigma'(x) &amp;= \frac{e^{-x}}{(1 + e^{-x})^2} \\
 &amp;= \frac{1}{1 + e^{-x}} \frac{e^{-x}}{1+e^{-x}} \\
 &amp;= \sigma(x)(1-\sigma(x))
@@ -523,19 +574,23 @@ Diff: 3.414629690112747e-11</code></pre>
 </section>
 <section class="level3" data-number="4.2" id="二值交叉熵函數的梯度推導">
 <h3 class="anchored" data-anchor-id="二值交叉熵函數的梯度推導" data-number="4.2"><span class="header-section-number">4.2</span> 二值交叉熵函数的梯度推导</h3>
-<p>假设模型的最后一层激活函数为sigmoid函数，即<span class="math inline">\(\vec a = \sigma(\vec h)\)</span>. 损失函数为： <span class="math display">\[
+<p>假设模型的最后一层激活函数为sigmoid函数，即<span class="math inline">\(\vec a = \sigma(\vec h)\)</span>. 损失函数为：</p>
+<p><span class="math display">\[
 J(\vec a)=-\frac{1}{m}
 \sum_i^m \left(
 y_i \log (a_i)
 + (1-y_i)\log(1 - a_i)
 \right)
-\]</span> 于是 <span class="math display">\[
+\]</span></p>
+<p>于是</p>
+<p><span class="math display">\[
 \frac{\partial J}{\partial a_i} = -\frac{1}{m}
 \left(
 y_i \frac{1}{a_i}
 -(1 - y_i)\frac{1}{1-a_i}
 \right)
-\]</span> <span class="math display">\[
+\]</span></p>
+<p><span class="math display">\[
 \begin{aligned}
 \therefore \frac{\partial J}{\partial h_i} =
 \frac{\partial J}{\partial a_i} \frac{\partial a_i}{\partial h_i} &amp; = -\frac{1}{m}
@@ -547,11 +602,15 @@ y_i \frac{1}{a_i}
 &amp;= -\frac{1}{m} \left(y_i - y_ia_i - a_i + y_ia_i\right) \\
 &amp;= \frac{1}{m} (a_i - y_i)
 \end{aligned}
-\]</span> <span class="math display">\[
+\]</span></p>
+<p><span class="math display">\[
 \therefore \frac{\partial J}{\partial \vec h} = \frac{1}{m}(\mathbf A - \mathbf Y)
-\]</span> 假设<span class="math inline">\(\mathbf A\)</span> 是由特征<span class="math inline">\(\vec x\)</span>经过一层线性层，再经过softmax激活函数得来的，即 <span class="math display">\[
+\]</span></p>
+<p>假设<span class="math inline">\(\mathbf A\)</span> 是由特征<span class="math inline">\(\vec x\)</span>经过一层线性层，再经过softmax激活函数得来的，即</p>
+<p><span class="math display">\[
 \mathbf A=\sigma(\vec h) = \sigma( \vec w^T\mathbf X+ \vec b),
-\]</span> 那么 <span class="math display">\[
+\]</span></p>
+<p>那么 <span class="math display">\[
 \begin{aligned}
 \therefore \frac{\partial J}{\partial \vec w} &amp;= \frac{1}{m}\mathbf X(\mathbf A- \mathbf Y)^T \\
 \frac{\partial J}{\partial \vec b} &amp;= \frac{1}{m}(\mathbf A - \mathbf Y)
@@ -594,12 +653,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
     }
-  });
-  clipboard.on('success', function(e) {
+    return false;
+  }
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -631,11 +693,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -645,8 +746,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -658,9 +768,245 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -702,83 +1048,137 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 </div> <!-- /content -->
 </div>
-    </div>
-    <div class="post_list">
-        <span>By </span>
-        <a href="https://zhimi.vercel.app/">@執迷</a>
-        <span> in </span>
-        <span class="post_category"><a href="https://zhimi.vercel.app/" rel="bookmark" title="Permalink to 深度學習">[ 深度學習 ]</a></span>
-        <span class="post_date">2024-06-29</span>
-        <div><span>Tags : </span>
-            
-            
-            <span><a href="https://zhimi.vercel.app/">#深度學習, </a></span>
-            
-            <span><a href="https://zhimi.vercel.app/">#多層感知機, </a></span>
-            
-            <span><a href="https://zhimi.vercel.app/">#梯度反向傳播, </a></span>
-            
-            <span><a href="https://zhimi.vercel.app/">#梯度下降, </a></span>
-            
-            
-        </div>
+            </div>
+            <div class="post_list">
+                <span>By </span>
+                <a href="./">@執迷</a>
+                <span> in </span>
+                <span class="post_category"><a href="./" rel="bookmark"
+                                               title="Permalink to 深度學習">[ 深度學習 ]</a></span>
+                <span class="post_date">2024-06-29</span>
+                <div><span>Tags : </span>
+                    
+                        
+                            <span><a href="./">#深度學習, </a></span>
+                        
+                            <span><a href="./">#多層感知機, </a></span>
+                        
+                            <span><a href="./">#梯度反向傳播, </a></span>
+                        
+                            <span><a href="./">#梯度下降, </a></span>
+                        
+                    
+                </div>
 
-        <div class="entry-social-container" style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
-            
-            
-            <div class="entry-social" style="text-align: center;">
-                <span class="social-text">分享本文</span><br>
-                <div class="social-icons" style="display: flex; gap: 10px; justify-content: center;">
-                    <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=https://zhimi.vercel.app/./gradient_descent_20240629_zh-cn.html&text=用numpy实现神经网络梯度下降&via="><img src="https://zhimi.vercel.app/theme/images/icons/twitter-s.png"></a></span>
-                    <a target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https://zhimi.vercel.app/./gradient_descent_20240629_zh-cn.html&title=用numpy实现神经网络梯度下降" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="https://zhimi.vercel.app/theme/images/icons/linkedin-s.png"></a>
-                    <span class="mail"><a href="mailto:?subject=用numpy实现神经网络梯度下降&amp;body=Viens découvrir un article à propos de [用numpy实现神经网络梯度下降] sur le site de 執迷. https://zhimi.vercel.app/./gradient_descent_20240629_zh-cn.html" title="Share by Email" target="_blank"><img src="https://zhimi.vercel.app/theme/images/icons/mail-s.png"></a></span>
+                <div class="entry-social">
+                    <span class="twitter"><a target="_blank" rel="nofollow"
+                                             onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;"
+                                             title="Twitter"
+                                             href="https://twitter.com/share?url=././gradient_descent_20240629_zh-cn.html&text=用numpy实现神经网络梯度下降&via="><img
+                            src="./theme/images/icons/twitter-s.png"></a></span>
+
+                    <span class="gplus"><a target="_blank" title="Google +"
+                                           href="https://plus.google.com/share?url=././gradient_descent_20240629_zh-cn.html&hl=fr"
+                                           rel="nofollow"
+                                           onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
+                            src="./theme/images/icons/google-s.png"></a></span>
+
+                    <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow"
+                                              onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;"
+                                              href="https://www.facebook.com/sharer.php?u=././gradient_descent_20240629_zh-cn.html&t=用numpy实现神经网络梯度下降"><img
+                            src="./theme/images/icons/facebook-s.png"></a></span>
+
+                    <a target="_blank" title="Linkedin"
+                       href="https://www.linkedin.com/shareArticle?mini=true&url=././gradient_descent_20240629_zh-cn.html&title=用numpy实现神经网络梯度下降"
+                       rel="nofollow"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
+                            src="./theme/images/icons/linkedin-s.png"></a>
+
+                    <span class="mail"><a
+                            href="mailto:?subject=用numpy实现神经网络梯度下降&amp;body=Viens découvrir un article à propos de [用numpy实现神经网络梯度下降] sur le site de 執迷. ././gradient_descent_20240629_zh-cn.html"
+                            title="Share by Email" target="_blank"><img
+                            src="./theme/images/icons/mail-s.png"></a></span>
                 </div>
             </div>
-        </div>
-        </div>
-    </div>
-    
+            
+        </article>
+    </section>
 
-</section>
+</article>
 
-<!-- Quarto Clipboard -->
-<script type="text/javascript">
-    var clipboard = new ClipboardJS(
-        '.code-copy-button',
-        {
-            target: function(trigger) {
-                console.log("Copy texts. ", trigger);
-                return trigger.previousElementSibling;
-            }
-        }
-    );    
-    clipboard.on('success', function(e) {
-        console.info('Action:', e.action);
-        console.info('Text:', e.text);
-        console.info('Trigger:', e.trigger);
-        e.clearSelection();
-        alert('Copied!');
-    });
-    console.log("ClipboardJS loaded.");
-</script>
+<!-- Footer -->
 
-  </article>
+    <footer>
+        <p>
+            Blog powered by <a href="http://getpelican.com/">Pelican</a>,
+            which takes great advantage of <a href="http://python.org">Python</a>.
+            Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a
+                href="https://parbhatpuri.com/">@parbhat</a>.
+        </p>
+        
+        <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+        <span id="busuanzi_container_site_uv">
+            訪客數<span id="busuanzi_value_site_uv"></span>
+        </span>
+        
+    </footer>
 
-  <!-- Footer -->
-  <footer>
-    <p>
-      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
-      which takes great advantage of <a href="http://python.org">Python</a>.
-      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
-    </p>
-    
-      
-      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
-      <span id="busuanzi_container_site_uv">
-        訪客數<span id="busuanzi_value_site_uv"></span>
-      </span>
-      
-    
-  </footer>
+
+
+    <!-- Analytics -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'G-G3N739QVFZ']);
+        _gaq.push(['_trackPageview']);
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
+
+
+<div id="lang-switch-bar">
+    <a href="./gradient_descent_20240629.html" title="切换简繁" id="lang-switch-link">简/繁</a>
+</div>
+<style>
+#lang-switch-bar {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+}
+#lang-switch-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #2980b9;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(41,128,185,0.35);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    user-select: none;
+}
+#lang-switch-link:hover {
+    background: #1DAEDF;
+    box-shadow: 0 3px 12px rgba(29,174,223,0.45);
+    transform: scale(1.08);
+    text-decoration: none;
+}
+</style>
+
+
+
 </body>
 </html>

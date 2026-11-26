@@ -1,186 +1,256 @@
 <!doctype html>
 <html lang="" itemscope itemtype="http://schema.org/Person">
 <head>
+    
+    
+        <meta charset="utf-8">
+        <!-- Site Meta Data -->
+        <title>批归一化（Batch Normalization）原理分析和代码实现</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
+        <meta name="author" content="執迷">
 
-  
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3N739QVFZ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-  
-    gtag('config', 'G-G3N739QVFZ');
-  </script>
-  
+        <link rel="shortcut icon" href="favicon.ico">
 
-  
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="./_vercel/insights/script.js"></script>
-  
+        <!-- schema.org -->
+        <meta itemprop="name" content="執迷的博客">
+        <meta itemprop="image" content="">
+        <meta itemprop="description" content="一名普通算法工程師，關注計算機視覺和大模型。這裡是我的個人博客。">
 
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-  
-  
-  
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+        <!-- Style Meta Data -->
+        <link rel="stylesheet" href="./theme/css/style.css" type="text/css"/>
+        <link rel="stylesheet" href="./theme/css/pygments.css" type="text/css"/>
 
-<!-- Quarto -->
-<link href="./theme/css/quarto/quarto.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
-<script src="./theme/scripts/quarto/quarto.js"></script>
+        <!-- Feed Meta Data -->
+        
+        
 
+        <!-- Twitter Feed -->
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="">
+        <meta name="twitter:image" content="">
 
-  <meta charset="utf-8">
-  <!-- Site Meta Data -->
-  <title>批归一化（Batch Normalization）原理分析和代码实现</title>
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="文章介绍了Batch Norm的实现原理，给出了代码实现。尽管Batch Norm的提出有效了解决了一些问题，但也有其局限性。文章也总结了一些Batch Norm的踩坑经验，例如BN在测试阶段和训练阶段行为差异、分布式训练的注意事项等。">
-  <meta name="author" content="執迷">
-
-  <link rel="shortcut icon" href="favicon.ico">
-
-  <!-- schema.org -->
-  <meta itemprop="name" content="執迷的博客">
-  <meta itemprop="image" content="">
-  <meta itemprop="description" content="文章介绍了Batch Norm的实现原理，给出了代码实现。尽管Batch Norm的提出有效了解决了一些问题，但也有其局限性。文章也总结了一些Batch Norm的踩坑经验，例如BN在测试阶段和训练阶段行为差异、分布式训练的注意事项等。">
-
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
-  <!-- Style Meta Data -->
-  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/style.css" type="text/css" />
-  <link rel="stylesheet" href="https://zhimi.vercel.app/theme/css/pygments.css" type="text/css" />
-
-  <!-- Feed Meta Data -->
-  
-  
-    <link href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss_zh-cn.xml" type="application/atom+xml" rel="alternate" title="執迷的博客 RSS Feed" />
-  
-
-  <!-- Twitter Feed -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="">
-  <meta name="twitter:image" content="">
-  
-<meta name="twitter:creator" content="">
-<meta name="twitter:url" content="https://zhimi.vercel.app/./bn_20240318_zh-cn.html">
-<meta name="twitter:title" content="執迷的博客 ~ 批归一化（Batch Normalization）原理分析和代码实现">
-<meta name="twitter:description" content="">
-
-<!-- Facebook Meta Data -->
-<meta property="og:title" content="執迷的博客 ~ 批归一化（Batch Normalization）原理分析和代码实现" />
-<meta property="og:description" content="" />
-<meta property="og:image" content="" />
-
-
-<!-- MathJax -->
-
+        <!-- Busuanzi -->
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
+    <meta name="twitter:creator" content="">
+    <meta name="twitter:url" content="././bn_20240318_zh-cn.html">
+    <meta name="twitter:title" content="執迷的博客 ~ 批归一化（Batch Normalization）原理分析和代码实现">
+    <meta name="twitter:description" content="">
 
+    <!-- Quarto -->
+    <link href="./theme/css/quarto/quarto.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+    <script src="./theme/scripts/quarto/bootstrap.min.js"></script>
+    <script src="./theme/scripts/quarto/quarto.js"></script>
 
+    <!-- AnchorJS -->
+    <script src="https://cdn.jsdelivr.net/npm/anchor-js@5/anchor.min.js"></script>
+
+    <!-- Facebook Meta Data -->
+    <meta property="og:title" content="執迷的博客 ~ 批归一化（Batch Normalization）原理分析和代码实现"/>
+    <meta property="og:description" content=""/>
+    <meta property="og:image" content=""/>
+    
 
 </head>
 
 <body>
-  <!-- Sidebar -->
-  <aside>
-    <!--<center><a href="https://zhimi.vercel.app"><img id="avatar" src=""></a></center>-->
+<!-- Sidebar -->
+<aside>
+    <!--<center><a href="."><img id="avatar" src=""></a></center>-->
     <h1>執迷的博客</h1>
     
-      <p>做一個有趣的人！</p>
+        <p>用喜歡的方式，度過自己的一生。</p>
     
     <br>
 
     
 
     <nav class="nav">
-      <ul class="list-bare">
-      
-        
-          <li><a class="nav__link" href="https://zhimi.vercel.app/index_zh-cn.html">Blog</a></li>
-        
-         
-        
-          <li><a class="nav__link" href="https://zhimi.vercel.app/./about_zh-cn.html">About</a></li>
-        
-         
-      </ul>
+        <ul class="list-bare">
+
+            
+                <li><a class="nav__link" href="./index_zh-cn.html">Blog</a></li>
+            
+
+            
+                <li><a class="nav__link" href="././about_zh-cn.html">About</a></li>
+            
+                <li><a class="nav__link" href="././job_wanted_zh-cn.html">Job Wanted (*^▽^*)┛</a></li>
+            
+
+        </ul>
     </nav>
 
     <p class="social">
-      
-      
-      
-      <a href="https://zhimi.vercel.app/https://zhimi.vercel.app/feeds/rss_zh-cn.xml" rel="alternate">
-        <img src="https://zhimi.vercel.app/theme/images/icons/rss.png"></a>
-      
+        
+        
+        
     </p>
 
-    <!--
     
-    -->
-  </aside>
 
-  <!-- Content -->
-  <article>
     
-<section id="content">
-    <h2 class="post_title post_detail"><a href="https://zhimi.vercel.app/./bn_20240318_zh-cn.html" rel="bookmark" title="Permalink to 批归一化（Batch Normalization）原理分析和代码实现">批归一化（Batch Normalization）原理分析和代码实现</a></h2>
+
+</aside>
+
+<!-- Job Banner -->
+<div class="job-banner" id="job-banner">
+    <canvas id="job-banner-canvas"></canvas>
+    <div class="job-banner-content">
+        <span class="job-banner-icon">✨</span>
+        <span class="job-banner-text">本人求职中！大模型 Post-Training 方向 · 长三角、福建地区优先 · </span>如果您有兴趣，欢迎联系
+        <a class="job-banner-email" href="mailto:zhimi64@foxmail.com">zhimi64@foxmail.com</a>
+        <span class="job-banner-sep">｜</span>
+        <a class="job-banner-link" href="./job_wanted_zh-cn.html">👀 了解更多</a>
+    </div>
+</div>
+
+<script>
+(function() {
+    const banner = document.getElementById('job-banner');
+    const canvas = document.getElementById('job-banner-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let w, h, cols, rows, grid, nextGrid;
+    const CELL_SIZE = 12;
+    const ALIVE = 1, DEAD = 0;
+
+    function resize() {
+        const rect = banner.getBoundingClientRect();
+        w = canvas.width = rect.width;
+        h = canvas.height = rect.height;
+        cols = Math.ceil(w / CELL_SIZE);
+        rows = Math.ceil(h / CELL_SIZE);
+        grid = new Uint8Array(cols * rows);
+        nextGrid = new Uint8Array(cols * rows);
+        // 隨機初始化 40%
+        for (let i = 0; i < grid.length; i++) {
+            grid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
+        }
+    }
+
+    function get(x, y, g) {
+        if (x < 0 || x >= cols || y < 0 || y >= rows) return DEAD;
+        return g[y * cols + x];
+    }
+
+    function step() {
+        // 每一步隨機擾動：約 2% 的細胞被翻轉
+        for (let i = 0; i < grid.length; i++) {
+            if (Math.random() < 0.02) {
+                grid[i] = grid[i] === ALIVE ? DEAD : ALIVE;
+            }
+        }
+
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                const idx = y * cols + x;
+                let neighbors = 0;
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        if (dx === 0 && dy === 0) continue;
+                        neighbors += get(x + dx, y + dy, grid);
+                    }
+                }
+                const state = grid[idx];
+                if (state === ALIVE) {
+                    nextGrid[idx] = (neighbors === 2 || neighbors === 3) ? ALIVE : DEAD;
+                } else {
+                    nextGrid[idx] = (neighbors === 3) ? ALIVE : DEAD;
+                }
+            }
+        }
+        // 如果全部死光，重新播種
+        let alive = 0;
+        for (let i = 0; i < nextGrid.length; i++) alive += nextGrid[i];
+        if (alive === 0) {
+            for (let i = 0; i < nextGrid.length; i++) {
+                nextGrid[i] = Math.random() < 0.4 ? ALIVE : DEAD;
+            }
+        }
+        [grid, nextGrid] = [nextGrid, grid];
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                if (grid[y * cols + x] === ALIVE) {
+                    const alpha = 0.15 + Math.random() * 0.2;  // 閃爍感
+                    ctx.fillStyle = `rgba(46, 204, 113, ${alpha})`;
+                    ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
+                }
+            }
+        }
+    }
+
+    let lastStep = 0;
+    const STEP_INTERVAL = 200; // 毫秒，原約 16ms，現放慢約 12 倍
+
+    function tick(timestamp) {
+        if (timestamp - lastStep >= STEP_INTERVAL) {
+            step();
+            draw();
+            lastStep = timestamp;
+        }
+        requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    tick();
+})();
+</script>
+
+<!-- Content -->
+<article>
     
-    <p>
-        <span id="busuanzi_container_page_pv">
-            本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
-        </span>
-    </p>
+    <section id="content">
+        <article>
+            <h2 class="post_title post_detail"><a href="././bn_20240318_zh-cn.html" rel="bookmark"
+                                                  title="Permalink to 批归一化（Batch Normalization）原理分析和代码实现">批归一化（Batch Normalization）原理分析和代码实现</a></h2>
+            
     
-    <div class="entry-content blog-post">
-        <div>
+            <p>
+                <span id="busuanzi_container_page_pv">
+                    本文瀏覽次數<span id="busuanzi_value_page_pv"></span>
+                </span>
+            </p>
+
+            <div class="entry-content blog-post">
+                <div>
 <div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
 <div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
 <nav class="toc-active" id="TOC" role="doc-toc">
 <h2 id="toc-title">目录</h2>
 <ul>
-<li><a class="nav-link active" data-scroll-target="#簡介" href="#簡介" id="toc-簡介"><span class="toc-section-number">1</span>  简介</a></li>
-<li><a class="nav-link" data-scroll-target="#實現方法" href="#實現方法" id="toc-實現方法"><span class="toc-section-number">2</span>  实现方法</a>
+<li><a class="nav-link active" data-scroll-target="#簡介" href="#簡介" id="toc-簡介"><span class="header-section-number">1</span> 简介</a></li>
+<li><a class="nav-link" data-scroll-target="#實現方法" href="#實現方法" id="toc-實現方法"><span class="header-section-number">2</span> 实现方法</a>
 <ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#batch-size" href="#batch-size" id="toc-batch-size"><span class="toc-section-number">2.1</span>  Batch size</a></li>
-<li><a class="nav-link" data-scroll-target="#測試和訓練階段的行為不一致" href="#測試和訓練階段的行為不一致" id="toc-測試和訓練階段的行為不一致"><span class="toc-section-number">2.2</span>  测试和训练阶段的行为不一致</a></li>
+<li><a class="nav-link" data-scroll-target="#batch-size" href="#batch-size" id="toc-batch-size"><span class="header-section-number">2.1</span> Batch size</a></li>
+<li><a class="nav-link" data-scroll-target="#測試和訓練階段的行為不一致" href="#測試和訓練階段的行為不一致" id="toc-測試和訓練階段的行為不一致"><span class="header-section-number">2.2</span> 测试和训练阶段的行为不一致</a></li>
 </ul></li>
-<li><a class="nav-link" data-scroll-target="#代碼實現" href="#代碼實現" id="toc-代碼實現"><span class="toc-section-number">3</span>  代码实现</a></li>
-<li><a class="nav-link" data-scroll-target="#正確地使用bn" href="#正確地使用bn" id="toc-正確地使用bn"><span class="toc-section-number">4</span>  正确地使用BN</a>
+<li><a class="nav-link" data-scroll-target="#代碼實現" href="#代碼實現" id="toc-代碼實現"><span class="header-section-number">3</span> 代码实现</a></li>
+<li><a class="nav-link" data-scroll-target="#正確地使用bn" href="#正確地使用bn" id="toc-正確地使用bn"><span class="header-section-number">4</span> 正确地使用BN</a>
 <ul class="collapse">
-<li><a class="nav-link" data-scroll-target="#bn在訓練階段與測試階段的行為差異" href="#bn在訓練階段與測試階段的行為差異" id="toc-bn在訓練階段與測試階段的行為差異"><span class="toc-section-number">4.1</span>  BN在训练阶段与测试阶段的行为差异</a></li>
-<li><a class="nav-link" data-scroll-target="#如何正確地凍結bn模塊" href="#如何正確地凍結bn模塊" id="toc-如何正確地凍結bn模塊"><span class="toc-section-number">4.2</span>  如何正确地冻结BN模块</a></li>
-<li><a class="nav-link" data-scroll-target="#分佈式訓練" href="#分佈式訓練" id="toc-分佈式訓練"><span class="toc-section-number">4.3</span>  分布式训练</a></li>
-<li><a class="nav-link" data-scroll-target="#不要遞歸地使用bn" href="#不要遞歸地使用bn" id="toc-不要遞歸地使用bn"><span class="toc-section-number">4.4</span>  不要递归地使用BN</a></li>
+<li><a class="nav-link" data-scroll-target="#bn在訓練階段與測試階段的行為差異" href="#bn在訓練階段與測試階段的行為差異" id="toc-bn在訓練階段與測試階段的行為差異"><span class="header-section-number">4.1</span> BN在训练阶段与测试阶段的行为差异</a></li>
+<li><a class="nav-link" data-scroll-target="#如何正確地凍結bn模塊" href="#如何正確地凍結bn模塊" id="toc-如何正確地凍結bn模塊"><span class="header-section-number">4.2</span> 如何正确地冻结BN模块</a></li>
+<li><a class="nav-link" data-scroll-target="#分佈式訓練" href="#分佈式訓練" id="toc-分佈式訓練"><span class="header-section-number">4.3</span> 分布式训练</a></li>
+<li><a class="nav-link" data-scroll-target="#不要遞歸地使用bn" href="#不要遞歸地使用bn" id="toc-不要遞歸地使用bn"><span class="header-section-number">4.4</span> 不要递归地使用BN</a></li>
 </ul></li>
-<li><a class="nav-link" data-scroll-target="#總結" href="#總結" id="toc-總結"><span class="toc-section-number">5</span>  总结</a></li>
+<li><a class="nav-link" data-scroll-target="#總結" href="#總結" id="toc-總結"><span class="header-section-number">5</span> 总结</a></li>
+<li><a class="nav-link" data-scroll-target="#参考" href="#参考" id="toc-参考">参考</a></li>
 </ul>
 </nav>
 </div>
 <main class="content" id="quarto-document-content">
-<header class="quarto-title-block default" id="title-block-header">
-<div class="quarto-title">
 
-</div>
-<div class="quarto-title-meta">
-<div>
-<div class="quarto-title-meta-heading">发布日期</div>
-<div class="quarto-title-meta-contents">
-<p class="date">2024年3月18日</p>
-</div>
-</div>
-</div>
-<div>
-<div class="abstract">
-<div class="abstract-title">摘要</div>
-    本文介绍了Batch Norm的实现原理，给出了代码实现。尽管Batch Norm的提出有效了解决了一些问题，但也有其局限性。文章也总结了一些Batch Norm的踩坑经验，例如BN在测试阶段和训练阶段行为差异、分布式训练的注意事项等。
-  </div>
-</div>
-</header>
 <section class="level2" data-number="1" id="簡介">
 <h2 class="anchored" data-anchor-id="簡介" data-number="1"><span class="header-section-number">1</span> 简介</h2>
 <p>批归一化（Batch Normalization，BN）是在2015年由Sergey Loffe和Christan Szegedy<span class="citation" data-cites="ioffe_batch_nodate"><sup>[<a href="#ref-ioffe_batch_nodate" role="doc-biblioref">1</a>]</sup></span>提出的一种加速深度学习模型收敛的方法。</p>
@@ -191,7 +261,8 @@
 <h2 class="anchored" data-anchor-id="實現方法" data-number="2"><span class="header-section-number">2</span> 实现方法</h2>
 <p>BN用如下公式作输入样本的归一化： <span id="eq-bn-normalization"><span class="math display">\[
 \hat x = \frac{x - E(x)}{\sqrt{Var(x) + \epsilon}},
-\tag{1}\]</span></span> 其中<span class="math inline">\(x\)</span>为BN模块的输入。<span class="math inline">\(E(x)\)</span>为<span class="math inline">\(x\)</span>的数学期望，<span class="math inline">\(Var(x)\)</span>为<span class="math inline">\(x\)</span>的方差，<span class="math inline">\(\epsilon\)</span>是防止除零异常的一个接近<span class="math inline">\(0\)</span>的正数。</p>
+\tag{1}
+\]</span></span> 其中<span class="math inline">\(x\)</span>为BN模块的输入。<span class="math inline">\(E(x)\)</span>为<span class="math inline">\(x\)</span>的数学期望，<span class="math inline">\(Var(x)\)</span>为<span class="math inline">\(x\)</span>的方差，<span class="math inline">\(\epsilon\)</span>是防止除零异常的一个接近<span class="math inline">\(0\)</span>的正数。</p>
 <p>随后，归一化的样本经过一层线性层得到BN的输出： <span class="math display">\[
 y = \hat x\gamma  + \beta.
 \]</span></p>
@@ -211,27 +282,22 @@ y = \hat x\gamma  + \beta.
 <section class="level2" data-number="3" id="代碼實現">
 <h2 class="anchored" data-anchor-id="代碼實現" data-number="3"><span class="header-section-number">3</span> 代码实现</h2>
 <p>在实现BatchNorm之前，我们不妨先看看pytorch官方的<code>BatchNorm2d</code>模块，观察BatchNorm层要有哪些参数：</p>
-<div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> torch </span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> torch </span>
 <span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn </span>
 <span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a>batch, ch, h, w <span class="op">=</span> <span class="dv">2</span>, <span class="dv">32</span>, <span class="dv">128</span>, <span class="dv">128</span></span>
 <span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a>torch_batch_norm <span class="op">=</span> nn.BatchNorm2d(num_features<span class="op">=</span>ch)</span>
 <span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="cf">for</span> k, v <span class="kw">in</span> torch_batch_norm.named_parameters():</span>
 <span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'parameter: </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">'</span>, v.shape)</span>
 <span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a><span class="cf">for</span> k, v <span class="kw">in</span> torch_batch_norm.named_buffers():</span>
-<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'buffer: </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">'</span>, v.shape)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'buffer: </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">'</span>, v.shape)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <pre><code>parameter: weight torch.Size([32])
 parameter: bias torch.Size([32])
 buffer: running_mean torch.Size([32])
 buffer: running_var torch.Size([32])
 buffer: num_batches_tracked torch.Size([])</code></pre>
-</div>
-</div>
 <p>注意到BatchNorm的参数有两种。一种是<em>parameter</em>（<code>weight</code>、<code>bias</code>），一种是<em>buffer</em>（<code>running_mean</code>、<code>running_var</code>、<code>num_batches_tracked</code>）。对于parameter，torch默认其参数是需要梯度反传的；而buffer则用于存储一些不需要梯度反传的模型参数。与<code>parameter</code>一样，在保存模型时，<code>buffer</code>参数也会存储到<code>state_dict</code>中。</p>
 <p>下面是本文提供的BN实现：</p>
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="im">import</span> torch</span>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn </span>
 <span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a><span class="kw">class</span> MyBatchNorm(nn.Module):</span>
 <span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, num_features, eps<span class="op">=</span><span class="fl">1e-5</span>, momentum<span class="op">=</span><span class="fl">0.1</span>):</span>
@@ -275,12 +341,10 @@ buffer: num_batches_tracked torch.Size([])</code></pre>
 <span id="cb3-42"><a aria-hidden="true" href="#cb3-42" tabindex="-1"></a>        <span class="co"># 归一化完成后，做线性变换。</span></span>
 <span id="cb3-43"><a aria-hidden="true" href="#cb3-43" tabindex="-1"></a>        ret <span class="op">=</span> tensor_flatten <span class="op">*</span> <span class="va">self</span>.weight <span class="op">+</span> <span class="va">self</span>.bias </span>
 <span id="cb3-44"><a aria-hidden="true" href="#cb3-44" tabindex="-1"></a>        ret <span class="op">=</span> ret.view(bs, h, w, ch).permute(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb3-45"><a aria-hidden="true" href="#cb3-45" tabindex="-1"></a>        <span class="cf">return</span> ret </span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
-</div>
+<span id="cb3-45"><a aria-hidden="true" href="#cb3-45" tabindex="-1"></a>        <span class="cf">return</span> ret </span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <p>接下来验证看看<code>MyBatchNorm</code>的行为和<code>torch.nn.BatchNorm2d</code>是否完全一致。</p>
 <p>我们先检查训练模式下两者的行为：</p>
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>my_batch_norm <span class="op">=</span> MyBatchNorm(num_features<span class="op">=</span>ch)</span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>my_batch_norm <span class="op">=</span> MyBatchNorm(num_features<span class="op">=</span>ch)</span>
 <span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a><span class="co"># 因为BN涉及running_mean和running_var的更新，所以我们要多跑几轮来检查moving average的正确性。</span></span>
 <span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
 <span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    a <span class="op">=</span> torch.rand(batch, ch, h, w)</span>
@@ -295,71 +359,53 @@ buffer: num_batches_tracked torch.Size([])</code></pre>
 <span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a>    running_var1 <span class="op">=</span> torch_batch_norm.running_var </span>
 <span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a>    running_var2 <span class="op">=</span> my_batch_norm.running_var</span>
 <span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>    diff_var <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(running_var1 <span class="op">-</span> running_var2)).item()</span>
-<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">'</span>.<span class="bu">format</span>(diff, diff_mean, diff_var))</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0.000000;0.000000;0.000000
-0.000000;0.000000;0.000000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-0.000000;0.000000;0.000000
-0.000000;0.000000;0.000000
-0.000000;0.000000;0.000000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-0.000000;0.000000;0.000000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
+<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">'</span>.<span class="bu">format</span>(diff, diff_mean, diff_var))</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <pre><code>0.000000;0.000000;0.000000
 0.000000;0.000000;0.000000
+
+0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000
+
+0.000000;0.000000;0.000000
+
+0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000
+
 0.000000;0.000000;0.000000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0.000000;0.000000;0.000000</code></pre>
-</div>
-</div>
 <p>可以看到，输出的所有误差项都为0！这表明<code>MyBatchNorm</code>的实现和torch的BN相吻合。</p>
 <p>不要忘记BN在训练时的行为和测试时的行为不同。我们需要再检查一遍测试阶段下<code>MyBatchNorm</code>的行为。</p>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="co"># .eval()开启测试模型</span></span>
-<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a>torch_batch_norm.<span class="bu">eval</span>()  </span>
-<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>my_batch_norm.<span class="bu">eval</span>()</span>
-<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
-<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>    a <span class="op">=</span> torch.rand(batch, ch, h, w)</span>
-<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a>    ret1 <span class="op">=</span> torch_batch_norm(a)</span>
-<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a>    ret2 <span class="op">=</span> my_batch_norm(a)</span>
-<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a>    diff <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(ret1 <span class="op">-</span> ret2)).item()</span>
-<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a>    </span>
-<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a>    running_mean1 <span class="op">=</span> torch_batch_norm.running_mean </span>
-<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a>    running_mean2 <span class="op">=</span> my_batch_norm.running_mean </span>
-<span id="cb10-12"><a aria-hidden="true" href="#cb10-12" tabindex="-1"></a>    diff_mean <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(running_mean1 <span class="op">-</span> running_mean2)).item()</span>
-<span id="cb10-13"><a aria-hidden="true" href="#cb10-13" tabindex="-1"></a></span>
-<span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a>    running_var1 <span class="op">=</span> torch_batch_norm.running_var </span>
-<span id="cb10-15"><a aria-hidden="true" href="#cb10-15" tabindex="-1"></a>    running_var2 <span class="op">=</span> my_batch_norm.running_var</span>
-<span id="cb10-16"><a aria-hidden="true" href="#cb10-16" tabindex="-1"></a>    diff_var <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(running_var1 <span class="op">-</span> running_var2)).item()</span>
-<span id="cb10-17"><a aria-hidden="true" href="#cb10-17" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">'</span>.<span class="bu">format</span>(diff, diff_mean, diff_var))</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="co"># .eval()开启测试模型</span></span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>torch_batch_norm.<span class="bu">eval</span>()  </span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a>my_batch_norm.<span class="bu">eval</span>()</span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a>    a <span class="op">=</span> torch.rand(batch, ch, h, w)</span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a>    ret1 <span class="op">=</span> torch_batch_norm(a)</span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a>    ret2 <span class="op">=</span> my_batch_norm(a)</span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a>    diff <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(ret1 <span class="op">-</span> ret2)).item()</span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a>    </span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a>    running_mean1 <span class="op">=</span> torch_batch_norm.running_mean </span>
+<span id="cb6-11"><a aria-hidden="true" href="#cb6-11" tabindex="-1"></a>    running_mean2 <span class="op">=</span> my_batch_norm.running_mean </span>
+<span id="cb6-12"><a aria-hidden="true" href="#cb6-12" tabindex="-1"></a>    diff_mean <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(running_mean1 <span class="op">-</span> running_mean2)).item()</span>
+<span id="cb6-13"><a aria-hidden="true" href="#cb6-13" tabindex="-1"></a></span>
+<span id="cb6-14"><a aria-hidden="true" href="#cb6-14" tabindex="-1"></a>    running_var1 <span class="op">=</span> torch_batch_norm.running_var </span>
+<span id="cb6-15"><a aria-hidden="true" href="#cb6-15" tabindex="-1"></a>    running_var2 <span class="op">=</span> my_batch_norm.running_var</span>
+<span id="cb6-16"><a aria-hidden="true" href="#cb6-16" tabindex="-1"></a>    diff_var <span class="op">=</span> torch.mean(torch.<span class="bu">abs</span>(running_var1 <span class="op">-</span> running_var2)).item()</span>
+<span id="cb6-17"><a aria-hidden="true" href="#cb6-17" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">;</span><span class="sc">{:.6f}</span><span class="st">'</span>.<span class="bu">format</span>(diff, diff_mean, diff_var))</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
 <pre><code>0.000000;0.000000;0.000000
 0.000000;0.000000;0.000000
 0.000000;0.000000;0.000000
-0.000000;0.000000;0.000000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-0.000000;0.000000;0.000000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000
+
+0.000000;0.000000;0.000000
+
+0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000
+0.000000;0.000000;0.000000
+
 0.000000;0.000000;0.000000
 0.000000;0.000000;0.000000</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-0.000000;0.000000;0.000000
-0.000000;0.000000;0.000000</code></pre>
-</div>
-</div>
 <p>至此我们已经完成了全部检查，实验结果表明<code>MyBatchNorm</code>的实现是正确的。</p>
 </section>
 <section class="level2" data-number="4" id="正確地使用bn">
@@ -386,11 +432,15 @@ buffer: num_batches_tracked torch.Size([])</code></pre>
 <section class="level3" data-number="4.4" id="不要遞歸地使用bn">
 <h3 class="anchored" data-anchor-id="不要遞歸地使用bn" data-number="4.4"><span class="header-section-number">4.4</span> 不要递归地使用BN</h3>
 <p>最后介绍一个我踩过的，印象深刻的坑。 假如有这样一段代码：</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a>x2 <span class="op">=</span> batch_norm(x1)</span>
-<span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a>x3 <span class="op">=</span> batch_norm(x2)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15">
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>x2 <span class="op">=</span> batch_norm(x1)</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>x3 <span class="op">=</span> batch_norm(x2)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
 <p>或</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a aria-hidden="true" href="#cb16-1" tabindex="-1"></a>x2 <span class="op">=</span> conv(x1)  <span class="co"># conv中包含BN模块</span></span>
-<span id="cb16-2"><a aria-hidden="true" href="#cb16-2" tabindex="-1"></a>x3 <span class="op">=</span> conv(x2)</span></code><button class="code-copy-button" title="复制到剪贴板"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16">
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>x2 <span class="op">=</span> conv(x1)  <span class="co"># conv中包含BN模块</span></span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>x3 <span class="op">=</span> conv(x2)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
 <p>前面的一段代码的问题或许容易识别，后者的问题则稍隐蔽些。你能预测到会发生什么吗？在这样的代码中，同一个BN模块在训练时会分别获取<code>x2</code>和<code>x1</code>的均值和方差，然后通过moving average将它们计入<code>running_mean</code>和<code>running_var</code>。然而，由于<code>x1</code>和<code>x2</code>服从不同的分布，因此<code>running_mean</code>和<code>running_var</code>的统计将失去意义。 问题的表现是，在训练阶段，我们会观察到损失正常下降。测试时，我们开启<code>eval</code>模式，模型的表现不如预期；可是如果你关闭<code>eval</code>模式，也许会发现模型又能正常工作。</p>
 <p>类似的问题也存在于特征金字塔（FPN）的实现中。如果你希望在类特征金字塔的结构中实现不同层级共享参数的话，注意卷积的参数也许能共享，但BN的参数不要共享。</p>
 </section>
@@ -400,14 +450,30 @@ buffer: num_batches_tracked torch.Size([])</code></pre>
 <p>本文介绍了BN的工作原理，给出了一种基于pytorch的BN模块实现，并提供了详细的代码检查。最后，本文讨论了应用BN过程中容易遇到的几种问题。</p>
 <p>在接触深度学习的过程中，Batch Normalization是一个让我反复（大概得有两三次吧）踩坑的模块，每次踩坑都得琢磨好久才能发现问题所在。现在我已经习惯性的选择Group Normalization<span class="citation" data-cites="wu_group_2018"><sup>[<a href="#ref-wu_group_2018" role="doc-biblioref">2</a>]</sup></span>，抛弃BN了。尽管如此，BN仍是一个经典的工作，它背后的思想很值得学习研究。</p>
 </section>
-<div class="default" id="quarto-appendix"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">参考</h2><div class="references csl-bib-body" id="refs" role="doc-bibliography">
+<div class="default" id="quarto-appendix">
+<section class="level2 unnumbered" id="参考">
+<h2 class="unnumbered anchored" data-anchor-id="参考">参考</h2>
+<div class="references csl-bib-body" id="refs" role="doc-bibliography">
 <div class="csl-entry" id="ref-ioffe_batch_nodate" role="doc-biblioentry">
-<div class="csl-left-margin">[1] </div><div class="csl-right-inline">IOFFE S, SZEGEDY C. Batch <span>Normalization</span>: <span>Accelerating</span> <span>Deep</span> <span>Network</span> <span>Training</span> by <span>Reducing</span> <span>Internal</span> <span>Covariate</span> <span>Shift</span>[J]. : 9.</div>
+<div class="csl-left-margin">
+[1]
+</div>
+<div class="csl-right-inline">
+IOFFE S, SZEGEDY C. Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift[J]. : 9.
+</div>
 </div>
 <div class="csl-entry" id="ref-wu_group_2018" role="doc-biblioentry">
-<div class="csl-left-margin">[2] </div><div class="csl-right-inline">WU Y, HE K. <a href="http://arxiv.org/abs/1803.08494">Group <span>Normalization</span></a>[J]. arXiv:1803.08494 [cs], 2018.</div>
+<div class="csl-left-margin">
+[2]
 </div>
-</div></section></div></main>
+<div class="csl-right-inline">
+WU Y, HE K. <a href="http://arxiv.org/abs/1803.08494">Group Normalization</a>[J]. arXiv:1803.08494 [cs], 2018.
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -436,12 +502,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
     }
-  });
-  clipboard.on('success', function(e) {
+    return false;
+  }
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -449,12 +518,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "已复制");
+    button.setAttribute("title", "Copied!");
     let tooltip;
     if (window.bootstrap) {
       button.setAttribute("data-bs-toggle", "tooltip");
       button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "已复制");
+      button.setAttribute("data-bs-title", "Copied!");
       tooltip = new bootstrap.Tooltip(button, 
         { trigger: "manual", 
           customClass: "code-copy-button-tooltip",
@@ -473,11 +542,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -487,8 +595,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -500,9 +617,245 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -544,85 +897,139 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 </div> <!-- /content -->
 </div>
-    </div>
-    <div class="post_list">
-        <span>By </span>
-        <a href="https://zhimi.vercel.app/">@執迷</a>
-        <span> in </span>
-        <span class="post_category"><a href="https://zhimi.vercel.app/" rel="bookmark" title="Permalink to 深度學習">[ 深度學習 ]</a></span>
-        <span class="post_date">2024-03-18</span>
-        <div><span>Tags : </span>
-            
-            
-            <span><a href="https://zhimi.vercel.app/">#Batch Normalization, </a></span>
-            
-            <span><a href="https://zhimi.vercel.app/">#Layer Normalization, </a></span>
-            
-            <span><a href="https://zhimi.vercel.app/">#歸一化方法, </a></span>
-            
-            <span><a href="https://zhimi.vercel.app/">#自然語言處理, </a></span>
-            
-            <span><a href="https://zhimi.vercel.app/">#計算機視覺, </a></span>
-            
-            
-        </div>
+            </div>
+            <div class="post_list">
+                <span>By </span>
+                <a href="./">@執迷</a>
+                <span> in </span>
+                <span class="post_category"><a href="./" rel="bookmark"
+                                               title="Permalink to 深度學習">[ 深度學習 ]</a></span>
+                <span class="post_date">2024-03-18</span>
+                <div><span>Tags : </span>
+                    
+                        
+                            <span><a href="./">#Batch Normalization, </a></span>
+                        
+                            <span><a href="./">#Layer Normalization, </a></span>
+                        
+                            <span><a href="./">#歸一化方法, </a></span>
+                        
+                            <span><a href="./">#自然語言處理, </a></span>
+                        
+                            <span><a href="./">#計算機視覺, </a></span>
+                        
+                    
+                </div>
 
-        <div class="entry-social-container" style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
-            
-            
-            <div class="entry-social" style="text-align: center;">
-                <span class="social-text">分享本文</span><br>
-                <div class="social-icons" style="display: flex; gap: 10px; justify-content: center;">
-                    <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=https://zhimi.vercel.app/./bn_20240318_zh-cn.html&text=批归一化（Batch Normalization）原理分析和代码实现&via="><img src="https://zhimi.vercel.app/theme/images/icons/twitter-s.png"></a></span>
-                    <a target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https://zhimi.vercel.app/./bn_20240318_zh-cn.html&title=批归一化（Batch Normalization）原理分析和代码实现" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="https://zhimi.vercel.app/theme/images/icons/linkedin-s.png"></a>
-                    <span class="mail"><a href="mailto:?subject=批归一化（Batch Normalization）原理分析和代码实现&amp;body=Viens découvrir un article à propos de [批归一化（Batch Normalization）原理分析和代码实现] sur le site de 執迷. https://zhimi.vercel.app/./bn_20240318_zh-cn.html" title="Share by Email" target="_blank"><img src="https://zhimi.vercel.app/theme/images/icons/mail-s.png"></a></span>
+                <div class="entry-social">
+                    <span class="twitter"><a target="_blank" rel="nofollow"
+                                             onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;"
+                                             title="Twitter"
+                                             href="https://twitter.com/share?url=././bn_20240318_zh-cn.html&text=批归一化（Batch Normalization）原理分析和代码实现&via="><img
+                            src="./theme/images/icons/twitter-s.png"></a></span>
+
+                    <span class="gplus"><a target="_blank" title="Google +"
+                                           href="https://plus.google.com/share?url=././bn_20240318_zh-cn.html&hl=fr"
+                                           rel="nofollow"
+                                           onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
+                            src="./theme/images/icons/google-s.png"></a></span>
+
+                    <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow"
+                                              onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;"
+                                              href="https://www.facebook.com/sharer.php?u=././bn_20240318_zh-cn.html&t=批归一化（Batch Normalization）原理分析和代码实现"><img
+                            src="./theme/images/icons/facebook-s.png"></a></span>
+
+                    <a target="_blank" title="Linkedin"
+                       href="https://www.linkedin.com/shareArticle?mini=true&url=././bn_20240318_zh-cn.html&title=批归一化（Batch Normalization）原理分析和代码实现"
+                       rel="nofollow"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
+                            src="./theme/images/icons/linkedin-s.png"></a>
+
+                    <span class="mail"><a
+                            href="mailto:?subject=批归一化（Batch Normalization）原理分析和代码实现&amp;body=Viens découvrir un article à propos de [批归一化（Batch Normalization）原理分析和代码实现] sur le site de 執迷. ././bn_20240318_zh-cn.html"
+                            title="Share by Email" target="_blank"><img
+                            src="./theme/images/icons/mail-s.png"></a></span>
                 </div>
             </div>
-        </div>
-        </div>
-    </div>
-    
+            
+        </article>
+    </section>
 
-</section>
+</article>
 
-<!-- Quarto Clipboard -->
-<script type="text/javascript">
-    var clipboard = new ClipboardJS(
-        '.code-copy-button',
-        {
-            target: function(trigger) {
-                console.log("Copy texts. ", trigger);
-                return trigger.previousElementSibling;
-            }
-        }
-    );    
-    clipboard.on('success', function(e) {
-        console.info('Action:', e.action);
-        console.info('Text:', e.text);
-        console.info('Trigger:', e.trigger);
-        e.clearSelection();
-        alert('Copied!');
-    });
-    console.log("ClipboardJS loaded.");
-</script>
+<!-- Footer -->
 
-  </article>
+    <footer>
+        <p>
+            Blog powered by <a href="http://getpelican.com/">Pelican</a>,
+            which takes great advantage of <a href="http://python.org">Python</a>.
+            Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a
+                href="https://parbhatpuri.com/">@parbhat</a>.
+        </p>
+        
+        <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
+        <span id="busuanzi_container_site_uv">
+            訪客數<span id="busuanzi_value_site_uv"></span>
+        </span>
+        
+    </footer>
 
-  <!-- Footer -->
-  <footer>
-    <p>
-      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
-      which takes great advantage of <a href="http://python.org">Python</a>.
-      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
-    </p>
-    
-      
-      <span id="busuanzi_container_site_pv">總訪問量<span id="busuanzi_value_site_pv"></span></span>
-      <span id="busuanzi_container_site_uv">
-        訪客數<span id="busuanzi_value_site_uv"></span>
-      </span>
-      
-    
-  </footer>
+
+
+    <!-- Analytics -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'G-G3N739QVFZ']);
+        _gaq.push(['_trackPageview']);
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
+
+
+<div id="lang-switch-bar">
+    <a href="./bn_20240318.html" title="切换简繁" id="lang-switch-link">简/繁</a>
+</div>
+<style>
+#lang-switch-bar {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+}
+#lang-switch-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #2980b9;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(41,128,185,0.35);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    user-select: none;
+}
+#lang-switch-link:hover {
+    background: #1DAEDF;
+    box-shadow: 0 3px 12px rgba(29,174,223,0.45);
+    transform: scale(1.08);
+    text-decoration: none;
+}
+</style>
+
+
+
 </body>
 </html>
